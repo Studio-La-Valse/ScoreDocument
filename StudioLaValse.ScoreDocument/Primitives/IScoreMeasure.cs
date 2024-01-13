@@ -4,7 +4,7 @@
     {
         TimeSignature TimeSignature { get; }
 
-        IEnumerable<IRibbonMeasure> EnumerateMeasures();
+        IEnumerable<IInstrumentMeasure> EnumerateMeasures();
 
 
         IStaffSystem GetStaffSystemOrigin();

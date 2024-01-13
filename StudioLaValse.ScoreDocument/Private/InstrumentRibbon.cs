@@ -1,10 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Editor;
-using StudioLaValse.ScoreDocument.Layout;
-using StudioLaValse.ScoreDocument.Primitives;
-using StudioLaValse.ScoreDocument.Reader;
-using System.Collections;
-
-namespace StudioLaValse.ScoreDocument.Private
+﻿namespace StudioLaValse.ScoreDocument.Private
 {
     internal class InstrumentRibbon : ScoreElement, IInstrumentRibbonEditor, IInstrumentRibbonReader
     {
@@ -12,7 +6,7 @@ namespace StudioLaValse.ScoreDocument.Private
         private readonly Instrument instrument;
         private IInstrumentRibbonLayout layout;
 
-        
+
         public Instrument Instrument =>
             instrument;
         public int IndexInScore =>
@@ -29,26 +23,26 @@ namespace StudioLaValse.ScoreDocument.Private
 
 
 
-        public IRibbonMeasureReader ReadMeasure(int index)
+        public IInstrumentMeasureReader ReadMeasure(int index)
         {
             return score.contentTable.GetCell(index, IndexInScore);
         }
-        public IRibbonMeasureEditor EditMeasure(int index)
+        public IInstrumentMeasureEditor EditMeasure(int index)
         {
             return score.contentTable.GetCell(index, IndexInScore);
         }
 
 
 
-        public IEnumerable<IRibbonMeasure> EnumerateMeasures()
+        public IEnumerable<IInstrumentMeasure> EnumerateMeasures()
         {
             return score.contentTable.GetCellsRow(IndexInScore);
         }
-        public IEnumerable<IRibbonMeasureReader> ReadMeasures()
+        public IEnumerable<IInstrumentMeasureReader> ReadMeasures()
         {
             return score.contentTable.GetCellsRow(IndexInScore);
         }
-        public IEnumerable<IRibbonMeasureEditor> EditMeasures()
+        public IEnumerable<IInstrumentMeasureEditor> EditMeasures()
         {
             return score.contentTable.GetCellsRow(IndexInScore);
         }

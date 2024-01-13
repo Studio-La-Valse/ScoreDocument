@@ -1,7 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Layout;
-using StudioLaValse.ScoreDocument.Primitives;
-
-namespace StudioLaValse.ScoreDocument.Editor
+﻿namespace StudioLaValse.ScoreDocument.Editor
 {
     public interface IChordEditor : IChord, IPositionElement
     {
@@ -16,7 +13,7 @@ namespace StudioLaValse.ScoreDocument.Editor
         void Set(params Pitch[] pitches);
 
 
-        void ApplyLayout(IMeasureElementContainerLayout layout);
-        IMeasureElementContainerLayout ReadLayout();
+        void ApplyLayout(IChordLayout layout);
+        IChordLayout ReadLayout();
     }
 }

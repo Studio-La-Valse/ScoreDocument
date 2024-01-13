@@ -1,9 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Editor;
-using StudioLaValse.ScoreDocument.Extensions;
-using StudioLaValse.ScoreDocument.Layout;
-using StudioLaValse.ScoreDocument.Primitives;
-using StudioLaValse.ScoreDocument.Reader;
-using System.Collections;
+﻿using StudioLaValse.ScoreDocument.Extensions;
 
 namespace StudioLaValse.ScoreDocument.Private
 {
@@ -12,7 +7,7 @@ namespace StudioLaValse.ScoreDocument.Private
         private readonly List<Note> measureElements;
         private readonly MeasureBlock hostBlock;
         private readonly IKeyGenerator<int> keyGenerator;
-        private IMeasureElementContainerLayout layout;
+        private IChordLayout layout;
 
 
 
@@ -64,12 +59,12 @@ namespace StudioLaValse.ScoreDocument.Private
             this.keyGenerator = keyGenerator;
             measureElements = [];
             RythmicDuration = displayDuration;
-            layout = new MeasureElementContainerLayout();
+            layout = new ChordLayout();
         }
 
 
 
-        public IRibbonMeasureReader ReadContext() =>
+        public IInstrumentMeasureReader ReadContext() =>
             hostBlock.RibbonMeasure;
 
 
@@ -123,11 +118,11 @@ namespace StudioLaValse.ScoreDocument.Private
 
 
 
-        public IMeasureElementContainerLayout ReadLayout()
+        public IChordLayout ReadLayout()
         {
             return layout;
         }
-        public void ApplyLayout(IMeasureElementContainerLayout layout)
+        public void ApplyLayout(IChordLayout layout)
         {
             this.layout = layout;
         }

@@ -6,12 +6,12 @@ using StudioLaValse.ScoreDocument.Primitives;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.ScoreDocumentEditor
 {
-    internal class RibbonMeasureEditorWithStateWatcher : IRibbonMeasureEditor
+    internal class RibbonMeasureEditorWithStateWatcher : IInstrumentMeasureEditor
     {
-        private readonly IRibbonMeasureEditor source;
+        private readonly IInstrumentMeasureEditor source;
         private readonly INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged;
 
-        public RibbonMeasureEditorWithStateWatcher(IRibbonMeasureEditor source, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged)
+        public RibbonMeasureEditorWithStateWatcher(IInstrumentMeasureEditor source, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged)
         {
             this.source = source;
             this.notifyEntityChanged = notifyEntityChanged;
@@ -39,7 +39,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ScoreDocumentEditor
             notifyEntityChanged.Invalidate(source);
         }
 
-        public void ApplyLayout(IRibbonMeasureLayout layout)
+        public void ApplyLayout(IInstrumentMeasureLayout layout)
         {
             source.ApplyLayout(layout);
             notifyEntityChanged.Invalidate(source);
@@ -83,7 +83,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ScoreDocumentEditor
             notifyEntityChanged.Invalidate(source);
         }
 
-        public IRibbonMeasureLayout ReadLayout()
+        public IInstrumentMeasureLayout ReadLayout()
         {
             return source.ReadLayout();
         }

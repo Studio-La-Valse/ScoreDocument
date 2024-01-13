@@ -61,7 +61,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.ContentWrappers
                 return new DrawableScoreGlyph(canvasLeft - glyph.Width - 0.1, canvasTop, glyph, color);
             }
         }
-        public IRibbonMeasureReader FirstMeasure =>
+        public IInstrumentMeasureReader FirstMeasure =>
             staffGroup.ReadMeasures().First();
 
 

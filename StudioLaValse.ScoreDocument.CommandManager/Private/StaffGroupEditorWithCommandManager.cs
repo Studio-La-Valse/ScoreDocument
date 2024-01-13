@@ -50,7 +50,7 @@
             return source.EditStaves().Select(e => e.UseTransaction(commandManager));
         }
 
-        public IEnumerable<IRibbonMeasure> EnumerateMeasures()
+        public IEnumerable<IInstrumentMeasure> EnumerateMeasures()
         {
             return source.EnumerateMeasures();
         }

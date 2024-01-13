@@ -105,7 +105,7 @@
 
 
 
-        public static InstrumentMeasureMemento GetMemento(this IRibbonMeasureReader ribbonMeasure)
+        public static InstrumentMeasureMemento GetMemento(this IInstrumentMeasureReader ribbonMeasure)
         {
             return new InstrumentMeasureMemento
             {
@@ -125,7 +125,7 @@
                     .ToList()
             };
         }
-        public static InstrumentMeasureMemento GetMemento(this IRibbonMeasureEditor ribbonMeasure)
+        public static InstrumentMeasureMemento GetMemento(this IInstrumentMeasureEditor ribbonMeasure)
         {
             return new InstrumentMeasureMemento
             {
@@ -145,7 +145,7 @@
                     .ToList()
             };
         }
-        public static void ApplyMemento(this IRibbonMeasureEditor ribbonMeasure, InstrumentMeasureMemento memento)
+        public static void ApplyMemento(this IInstrumentMeasureEditor ribbonMeasure, InstrumentMeasureMemento memento)
         {
             ribbonMeasure.Clear();
             ribbonMeasure.ApplyLayout(memento.Layout);
@@ -157,7 +157,7 @@
 
 
 
-        public static RibbonMeasureVoiceMemento GetMemento(this IRibbonMeasureReader ribbonMeasure, int voice)
+        public static RibbonMeasureVoiceMemento GetMemento(this IInstrumentMeasureReader ribbonMeasure, int voice)
         {
             return new RibbonMeasureVoiceMemento
             {
@@ -165,7 +165,7 @@
                 ChordGroups = ribbonMeasure.ReadBlocks(voice).Select(e => e.GetMemento()).ToList()
             };
         }
-        public static RibbonMeasureVoiceMemento GetMemento(this IRibbonMeasureEditor ribbonMeasure, int voice)
+        public static RibbonMeasureVoiceMemento GetMemento(this IInstrumentMeasureEditor ribbonMeasure, int voice)
         {
             return new RibbonMeasureVoiceMemento
             {
@@ -173,7 +173,7 @@
                 ChordGroups = ribbonMeasure.EditBlocks(voice).Select(e => e.GetMemento()).ToList()
             };
         }
-        public static void ApplyMemento(this IRibbonMeasureEditor ribbonMeasure, RibbonMeasureVoiceMemento memento)
+        public static void ApplyMemento(this IInstrumentMeasureEditor ribbonMeasure, RibbonMeasureVoiceMemento memento)
         {
             ribbonMeasure.ClearVoice(memento.Voice);
             ribbonMeasure.AddVoice(memento.Voice);

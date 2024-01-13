@@ -1,9 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Editor;
-using StudioLaValse.ScoreDocument.Extensions;
-using StudioLaValse.ScoreDocument.Layout;
-using StudioLaValse.ScoreDocument.Reader;
-
-namespace StudioLaValse.ScoreDocument.Private
+﻿namespace StudioLaValse.ScoreDocument.Private
 {
     internal class Note : ScoreElement, INoteEditor, INoteReader
     {
@@ -26,7 +21,7 @@ namespace StudioLaValse.ScoreDocument.Private
             container.RythmicDuration;
         public Tuplet Tuplet =>
             container.Tuplet;
-        
+
 
         internal Note(Pitch pitch, MeasureElementContainer container, IKeyGenerator<int> keyGenerator) : base(keyGenerator)
         {
@@ -40,7 +35,7 @@ namespace StudioLaValse.ScoreDocument.Private
 
         public IChordReader ReadContext() =>
             container;
-        
+
 
 
         public IMeasureElementLayout ReadLayout()

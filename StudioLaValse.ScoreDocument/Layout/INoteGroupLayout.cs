@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace StudioLaValse.ScoreDocument.Layout
+﻿namespace StudioLaValse.ScoreDocument.Layout
 {
     public interface INoteGroupLayout : IScoreElementLayout<INoteGroupLayout>
     {

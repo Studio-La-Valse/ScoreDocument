@@ -1,9 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Editor;
-using StudioLaValse.ScoreDocument.Layout;
-using StudioLaValse.ScoreDocument.Primitives;
-using StudioLaValse.ScoreDocument.Reader;
-
-namespace StudioLaValse.ScoreDocument.Private
+﻿namespace StudioLaValse.ScoreDocument.Private
 {
     internal class StaffGroup : ScoreElement, IStaffGroupEditor, IStaffGroupReader
     {
@@ -13,9 +8,9 @@ namespace StudioLaValse.ScoreDocument.Private
         private readonly IKeyGenerator<int> keyGenerator;
         private IStaffGroupLayout layout;
 
-        public Instrument Instrument => 
+        public Instrument Instrument =>
             host.Instrument;
-        public int IndexInScore => 
+        public int IndexInScore =>
             host.IndexInScore;
 
         public StaffGroup(StaffGroupLayout layout, IInstrumentRibbonReader host, StaffSystem staffSystem, IKeyGenerator<int> keyGenerator) : base(keyGenerator)
@@ -81,11 +76,11 @@ namespace StudioLaValse.ScoreDocument.Private
         }
 
 
-        public IEnumerable<IRibbonMeasureReader> ReadMeasures()
+        public IEnumerable<IInstrumentMeasureReader> ReadMeasures()
         {
             return staffSystem.ReadMeasures().Select(m => m.ReadMeasure(host.IndexInScore));
         }
-        public IEnumerable<IRibbonMeasure> EnumerateMeasures()
+        public IEnumerable<IInstrumentMeasure> EnumerateMeasures()
         {
             return ReadMeasures();
         }
@@ -109,4 +104,3 @@ namespace StudioLaValse.ScoreDocument.Private
         }
     }
 }
- 

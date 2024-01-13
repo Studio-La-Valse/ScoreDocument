@@ -1,6 +1,6 @@
 ﻿namespace StudioLaValse.ScoreDocument.Primitives
 {
-    public interface IRibbonMeasure : IUniqueScoreElement
+    public interface IInstrumentMeasure : IUniqueScoreElement
     {
         TimeSignature TimeSignature { get; }
         Instrument Instrument { get; }

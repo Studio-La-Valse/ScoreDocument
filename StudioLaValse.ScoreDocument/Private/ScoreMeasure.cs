@@ -1,11 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Editor;
-using StudioLaValse.ScoreDocument.Layout;
-using StudioLaValse.ScoreDocument.Primitives;
-using StudioLaValse.ScoreDocument.Reader;
-using System;
-using System.Collections;
-using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace StudioLaValse.ScoreDocument.Private
 {
@@ -24,8 +17,8 @@ namespace StudioLaValse.ScoreDocument.Private
         public bool IsLastInScore =>
             IndexInScore == score.NumberOfMeasures - 1;
         public StaffSystem StaffSystemOrigin
-        { 
-            get => staffSystemReturnCarriage; 
+        {
+            get => staffSystemReturnCarriage;
         }
 
 
@@ -38,16 +31,16 @@ namespace StudioLaValse.ScoreDocument.Private
         }
 
 
-        public IEnumerable<IRibbonMeasure> EnumerateMeasures()
+        public IEnumerable<IInstrumentMeasure> EnumerateMeasures()
         {
             return EditMeasures();
         }
-        public IEnumerable<IRibbonMeasureEditor> EditMeasures()
+        public IEnumerable<IInstrumentMeasureEditor> EditMeasures()
         {
             var measures = score.contentTable.GetCellsColumn(IndexInScore);
             return measures;
         }
-        public IEnumerable<IRibbonMeasureReader> ReadMeasures()
+        public IEnumerable<IInstrumentMeasureReader> ReadMeasures()
         {
             var measures = score.contentTable.GetCellsColumn(IndexInScore);
             return measures;
@@ -55,11 +48,11 @@ namespace StudioLaValse.ScoreDocument.Private
 
 
 
-        public IRibbonMeasureEditor EditMeasure(int indexInScore)
+        public IInstrumentMeasureEditor EditMeasure(int indexInScore)
         {
             return score.contentTable.GetCell(IndexInScore, indexInScore);
         }
-        public IRibbonMeasureReader ReadMeasure(int indexInScore)
+        public IInstrumentMeasureReader ReadMeasure(int indexInScore)
         {
             return score.contentTable.GetCell(IndexInScore, indexInScore);
         }
@@ -69,7 +62,7 @@ namespace StudioLaValse.ScoreDocument.Private
         public bool TryReadPrevious([NotNullWhen(true)] out IScoreMeasureReader? previous)
         {
             previous = null;
-            if(IndexInScore == 0)
+            if (IndexInScore == 0)
             {
                 return false;
             }
@@ -85,7 +78,7 @@ namespace StudioLaValse.ScoreDocument.Private
         public bool TryReadNext([NotNullWhen(true)] out IScoreMeasureReader? next)
         {
             next = null;
-            if(IndexInScore + 1 >= score.NumberOfMeasures)
+            if (IndexInScore + 1 >= score.NumberOfMeasures)
             {
                 return false;
             }

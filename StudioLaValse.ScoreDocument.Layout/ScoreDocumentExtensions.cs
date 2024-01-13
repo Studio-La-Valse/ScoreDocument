@@ -27,7 +27,7 @@ namespace StudioLaValse.ScoreDocument.Layout
             return new NoteEditorWithLayoutDictionary(noteEditor, dictionary);
         }
 
-        public static IRibbonMeasureEditor UseLayout(this IRibbonMeasureEditor measureEditor, IScoreLayoutDictionary dictionary)
+        public static IInstrumentMeasureEditor UseLayout(this IInstrumentMeasureEditor measureEditor, IScoreLayoutDictionary dictionary)
         {
             return new  RibbonMeasureEditorWithLayoutDictionary(measureEditor, dictionary);
         }
@@ -77,7 +77,7 @@ namespace StudioLaValse.ScoreDocument.Layout
             return new NoteReaderWithLayoutDictionary(noteReader, dictionary);
         }
 
-        public static IRibbonMeasureReader UseLayout(this IRibbonMeasureReader measureReader, IScoreLayoutDictionary dictionary)
+        public static IInstrumentMeasureReader UseLayout(this IInstrumentMeasureReader measureReader, IScoreLayoutDictionary dictionary)
         {
             return new RibbonMeasureReaderWithLayoutDictionary(measureReader, dictionary);
         }

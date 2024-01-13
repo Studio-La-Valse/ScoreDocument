@@ -22,7 +22,7 @@
 
         public IEnumerable<Step> EnumerateSteps(int number)
         {
-            if(number <= 0)
+            if (number <= 0)
             {
                 yield break;
             }

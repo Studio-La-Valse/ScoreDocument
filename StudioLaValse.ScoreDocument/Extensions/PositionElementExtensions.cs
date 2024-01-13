@@ -1,6 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Primitives;
-
-namespace StudioLaValse.ScoreDocument.Extensions
+﻿namespace StudioLaValse.ScoreDocument.Extensions
 {
     public static class PositionElementExtensions
     {

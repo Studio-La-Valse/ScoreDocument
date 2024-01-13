@@ -5,6 +5,6 @@
         Instrument Instrument { get; }
 
         IEnumerable<IStaff> EnumerateStaves();
-        IEnumerable<IRibbonMeasure> EnumerateMeasures();
+        IEnumerable<IInstrumentMeasure> EnumerateMeasures();
     }
 }

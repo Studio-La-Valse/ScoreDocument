@@ -38,7 +38,7 @@ namespace StudioLaValse.ScoreDocument.Layout.Private.Editors
             return staffGruopEditor.EditStaves().Select(e => e.UseLayout(layoutDictionary));
         }
 
-        public IEnumerable<IRibbonMeasure> EnumerateMeasures()
+        public IEnumerable<IInstrumentMeasure> EnumerateMeasures()
         {
             return staffGruopEditor.EnumerateMeasures();
         }

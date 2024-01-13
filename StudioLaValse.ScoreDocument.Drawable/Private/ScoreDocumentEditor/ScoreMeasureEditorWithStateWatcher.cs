@@ -31,12 +31,12 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ScoreDocumentEditor
             notifyEntityChanged.Invalidate(host);
         }
 
-        public IRibbonMeasureEditor EditMeasure(int ribbonIndex)
+        public IInstrumentMeasureEditor EditMeasure(int ribbonIndex)
         {
             return source.EditMeasure(ribbonIndex).UseStateWatcher(notifyEntityChanged);
         }
 
-        public IEnumerable<IRibbonMeasureEditor> EditMeasures()
+        public IEnumerable<IInstrumentMeasureEditor> EditMeasures()
         {
             return source.EditMeasures().Select(e => e.UseStateWatcher(notifyEntityChanged));
         }
@@ -46,7 +46,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ScoreDocumentEditor
             return source.EditStaffSystemOrigin().UseStateWatcher(host, notifyEntityChanged);
         }
 
-        public IEnumerable<IRibbonMeasure> EnumerateMeasures()
+        public IEnumerable<IInstrumentMeasure> EnumerateMeasures()
         {
             return source.EnumerateMeasures();
         }

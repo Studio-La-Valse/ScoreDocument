@@ -163,7 +163,7 @@
 
         public override bool Equals(object? obj)
         {
-            if(obj is null)
+            if (obj is null)
             {
                 return false;
             }
@@ -203,7 +203,7 @@
 
         public static Step operator +(Step step, Interval interval)
         {
-            if(interval.Steps == 0)
+            if (interval.Steps == 0)
             {
                 return new Step(step.StepsFromC, step.Shifts + interval.Shifts);
             }

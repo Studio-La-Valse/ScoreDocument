@@ -1,7 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Editor;
-using StudioLaValse.ScoreDocument.Extensions;
-
-namespace StudioLaValse.ScoreDocument.Private
+﻿namespace StudioLaValse.ScoreDocument.Private
 {
     internal class MeasureBlockChain
     {
@@ -9,7 +6,7 @@ namespace StudioLaValse.ScoreDocument.Private
         private readonly IKeyGenerator<int> keyGenerator;
 
 
-        public RibbonMeasure RibbonMeasure { get; }
+        public InstrumentMeasure RibbonMeasure { get; }
         public int Voice { get; }
 
 
@@ -20,7 +17,7 @@ namespace StudioLaValse.ScoreDocument.Private
 
 
 
-        public MeasureBlockChain(RibbonMeasure ribbonMeasure, int voice, IKeyGenerator<int> keyGenerator)
+        public MeasureBlockChain(InstrumentMeasure ribbonMeasure, int voice, IKeyGenerator<int> keyGenerator)
         {
             this.keyGenerator = keyGenerator;
 
@@ -60,7 +57,7 @@ namespace StudioLaValse.ScoreDocument.Private
         public IMeasureBlockEditor Prepend(Duration duration, bool grace)
         {
             var newLength = blocks.Select(e => e.Duration).Sum() + duration;
-            if(newLength > RibbonMeasure.TimeSignature)
+            if (newLength > RibbonMeasure.TimeSignature)
             {
                 throw new Exception("New measure block cannot fit in this measure.");
             }

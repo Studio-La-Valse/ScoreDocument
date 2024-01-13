@@ -4,6 +4,6 @@
     {
         Instrument Instrument { get; }
 
-        IEnumerable<IRibbonMeasure> EnumerateMeasures();
+        IEnumerable<IInstrumentMeasure> EnumerateMeasures();
     }
 }

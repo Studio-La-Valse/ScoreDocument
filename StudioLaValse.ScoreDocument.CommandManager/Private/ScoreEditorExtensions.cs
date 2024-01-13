@@ -17,7 +17,7 @@
             return new ScoreMeasureEditorWithCommandManager(measureEditor, commandManager);
         }
 
-        public static IRibbonMeasureEditor UseTransaction(this IRibbonMeasureEditor measureEditor, ICommandManager commandManager)
+        public static IInstrumentMeasureEditor UseTransaction(this IInstrumentMeasureEditor measureEditor, ICommandManager commandManager)
         {
             return new RibbonMeasureEditorWithCommandManager(measureEditor, commandManager);
         }

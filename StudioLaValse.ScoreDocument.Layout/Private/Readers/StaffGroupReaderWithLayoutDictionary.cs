@@ -20,7 +20,7 @@ namespace StudioLaValse.ScoreDocument.Layout.Private.Readers
 
         public int Id => source.Id;
 
-        public IEnumerable<IRibbonMeasure> EnumerateMeasures()
+        public IEnumerable<IInstrumentMeasure> EnumerateMeasures()
         {
             return source.EnumerateMeasures();
         }
@@ -45,7 +45,7 @@ namespace StudioLaValse.ScoreDocument.Layout.Private.Readers
             return layoutDictionary.GetOrCreate(source);
         }
 
-        public IEnumerable<IRibbonMeasureReader> ReadMeasures()
+        public IEnumerable<IInstrumentMeasureReader> ReadMeasures()
         {
             return source.ReadMeasures();
         }

@@ -95,11 +95,11 @@ namespace StudioLaValse.ScoreDocument.CommandManager.Private
                 }));
         }
 
-        public void ApplyLayout(IMeasureElementContainerLayout layout)
+        public void ApplyLayout(IChordLayout layout)
         {
             var transaction = commandManager.ThrowIfNoTransactionOpen();
 
-            IMeasureElementContainerLayout? oldLayout = null;
+            IChordLayout? oldLayout = null;
 
             transaction.Enqueue(new SimpleCommand(
                 () =>
@@ -118,7 +118,7 @@ namespace StudioLaValse.ScoreDocument.CommandManager.Private
                 }));
         }
 
-        public IMeasureElementContainerLayout ReadLayout()
+        public IChordLayout ReadLayout()
         {
             return source.ReadLayout();
         }

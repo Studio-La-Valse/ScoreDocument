@@ -13,12 +13,12 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private
             return new ScoreDocumentEditorWithStateWatcher(scoreDocumentEditor, notifyEntityChanged);
         }
 
-        public static IMeasureBlockEditor UseStateWatcher(this IMeasureBlockEditor chordEditor, IRibbonMeasure host, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged)
+        public static IMeasureBlockEditor UseStateWatcher(this IMeasureBlockEditor chordEditor, IInstrumentMeasure host, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged)
         {
             return new MeasureBlockEditorWithStateWatcher(chordEditor, host, notifyEntityChanged);
         }
 
-        public static IChordEditor UseStateWatcher(this IChordEditor chordEditor, IRibbonMeasure host, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged)
+        public static IChordEditor UseStateWatcher(this IChordEditor chordEditor, IInstrumentMeasure host, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged)
         {
             return new ChordEditorWithStateWatcher(chordEditor, host, notifyEntityChanged);
         }
@@ -28,12 +28,12 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private
             return new InstrumentRibbonEditorWithStateWatcher(instrumentRibbon, notifyEntityChanged);
         }
 
-        public static INoteEditor UseStateWatcher(this INoteEditor noteEditor, IRibbonMeasure host, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged)
+        public static INoteEditor UseStateWatcher(this INoteEditor noteEditor, IInstrumentMeasure host, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged)
         {
             return new NoteEditorWithStateWatcher(noteEditor, host, notifyEntityChanged);
         }
 
-        public static IRibbonMeasureEditor UseStateWatcher(this IRibbonMeasureEditor measureEditor, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged)
+        public static IInstrumentMeasureEditor UseStateWatcher(this IInstrumentMeasureEditor measureEditor, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged)
         {
             return new RibbonMeasureEditorWithStateWatcher(measureEditor, notifyEntityChanged);
         }

@@ -22,7 +22,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.VisualParents
         private readonly double paddingRight;
         private readonly ColorARGB color;
         private readonly IVisualNoteGroupFactory visualNoteGroupFactory;
-        private readonly IRibbonMeasureReader source;
+        private readonly IInstrumentMeasureReader source;
 
 
 
@@ -64,7 +64,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.VisualParents
             width - paddingLeft - paddingRight;
 
 
-        public VisualStaffGroupMeasure(IRibbonMeasureReader source, IStaffGroupReader staffGroup, double canvasTop, double canvasLeft, double width, double paddingLeft, double paddingRight, ColorARGB color, IVisualNoteGroupFactory visualNoteGroupFactory, ISelection<IUniqueScoreElement> selection) : base(source, selection)
+        public VisualStaffGroupMeasure(IInstrumentMeasureReader source, IStaffGroupReader staffGroup, double canvasTop, double canvasLeft, double width, double paddingLeft, double paddingRight, ColorARGB color, IVisualNoteGroupFactory visualNoteGroupFactory, ISelection<IUniqueScoreElement> selection) : base(source, selection)
         {
             this.staffGroup = staffGroup;
             this.canvasTop = canvasTop;

@@ -1,7 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Editor;
-using StudioLaValse.ScoreDocument.Reader;
-
-namespace StudioLaValse.ScoreDocument
+﻿namespace StudioLaValse.ScoreDocument
 {
     public abstract class BaseScoreBuilder
     {

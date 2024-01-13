@@ -41,7 +41,7 @@ namespace StudioLaValse.ScoreDocument.Layout.Private.Editors
             chordEditor.Set(pitches);
         }
 
-        public void ApplyLayout(IMeasureElementContainerLayout layout)
+        public void ApplyLayout(IChordLayout layout)
         {
             layoutDictionary.Assign(chordEditor, layout);
         }
@@ -66,7 +66,7 @@ namespace StudioLaValse.ScoreDocument.Layout.Private.Editors
             return chordEditor.EnumerateNotes();
         }
 
-        public IMeasureElementContainerLayout ReadLayout()
+        public IChordLayout ReadLayout()
         {
             return layoutDictionary.GetOrCreate(chordEditor);
         }

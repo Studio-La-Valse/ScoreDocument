@@ -1,11 +1,8 @@
-﻿using StudioLaValse.ScoreDocument.Private;
-using StudioLaValse.ScoreDocument.Reader;
-
-namespace StudioLaValse.ScoreDocument.Extensions
+﻿namespace StudioLaValse.ScoreDocument.Extensions
 {
     public static class RibbonMeasureReaderExtensions
     {
-        public static Clef OpeningClefAtOrDefault(this IRibbonMeasureReader ribbonMeasure, int staffIndex)
+        public static Clef OpeningClefAtOrDefault(this IInstrumentMeasureReader ribbonMeasure, int staffIndex)
         {
             foreach (var clefChange in ribbonMeasure.ReadLayout().ClefChanges.Where(c => c.Position.Decimal == 0))
             {

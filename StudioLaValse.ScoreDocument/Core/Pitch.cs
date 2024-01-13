@@ -119,7 +119,7 @@
             return $"{midiIndexForOctave0.ElementAt(Step.StepsFromC).Key}{shift}{Octave}";
         }
 
-        public static Pitch operator + (Pitch pitch, Interval interval)
+        public static Pitch operator +(Pitch pitch, Interval interval)
         {
             var step = pitch.Step;
             var newStep = step + interval;
@@ -136,7 +136,7 @@
             return new Pitch(newStep, octave);
         }
 
-        public static bool operator == (Pitch pitch, Pitch other)
+        public static bool operator ==(Pitch pitch, Pitch other)
         {
             return pitch.Step == other.Step && pitch.Octave == other.Octave;
         }
@@ -158,7 +158,7 @@
                 return false;
             }
 
-            if(obj is Pitch pitch)
+            if (obj is Pitch pitch)
             {
                 return Equals(pitch);
             }
@@ -168,7 +168,7 @@
 
         public bool Equals(Pitch other)
         {
-            if(other is null)
+            if (other is null)
             {
                 return false;
             }

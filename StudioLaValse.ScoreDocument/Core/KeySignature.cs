@@ -35,7 +35,7 @@
                 {
                     var pitch = new Pitch(accidental, 5);
                     var line = targetClef.LineIndexAtPitch(pitch);
-                    while(line < targetClef.TopMostSharpLine)
+                    while (line < targetClef.TopMostSharpLine)
                     {
                         line += 7;
                     }
@@ -45,7 +45,7 @@
                     return line;
                 });
         }
-        
+
         public IEnumerable<int> EnumerateFlatLines(Clef targetClef)
         {
             var highestPitchOnTrebleClef = new Pitch(Step.EFlat, 5);
@@ -124,9 +124,9 @@
             return other.Origin.Equals(Origin);
         }
 
-        public static bool operator == (KeySignature? left, KeySignature? right)
+        public static bool operator ==(KeySignature? left, KeySignature? right)
         {
-            if(left is null || right is null)
+            if (left is null || right is null)
             {
                 return false;
             }
@@ -134,7 +134,7 @@
             return left.Equals(right);
         }
 
-        public static bool operator != (KeySignature? left, KeySignature? right)
+        public static bool operator !=(KeySignature? left, KeySignature? right)
         {
             return !(left == right);
         }

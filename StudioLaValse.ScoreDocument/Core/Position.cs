@@ -15,7 +15,7 @@
                 return new Position(position.Numinator + step.Numinator, position.Denominator);
             }
 
-            var nominator = 
+            var nominator =
                 position.Numinator * step.Denominator +
                 position.Denominator * step.Numinator;
 

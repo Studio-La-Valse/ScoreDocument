@@ -11,14 +11,14 @@ namespace StudioLaValse.ScoreDocument.Layout
         IMeasureElementLayout GetOrCreate(INote element);
         void Assign(INote element, IMeasureElementLayout layout);
 
-        IMeasureElementContainerLayout GetOrCreate(IChord element);
-        void Assign(IChord chord, IMeasureElementContainerLayout layout);
+        IChordLayout GetOrCreate(IChord element);
+        void Assign(IChord chord, IChordLayout layout);
 
         INoteGroupLayout GetOrCreate(IMeasureBlockReader element);
         void Assign(IMeasureBlockReader chord, INoteGroupLayout layout);
 
-        IRibbonMeasureLayout GetOrCreate(IRibbonMeasure element);
-        void Assign(IRibbonMeasure ribbonMeasure, IRibbonMeasureLayout layout);
+        IInstrumentMeasureLayout GetOrCreate(IInstrumentMeasure element);
+        void Assign(IInstrumentMeasure ribbonMeasure, IInstrumentMeasureLayout layout);
 
         IInstrumentRibbonLayout GetOrCreate(IInstrumentRibbon element);
         void Assign(IInstrumentRibbon instrumentRibbon, IInstrumentRibbonLayout layout);

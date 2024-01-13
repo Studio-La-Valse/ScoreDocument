@@ -4,7 +4,6 @@ using StudioLaValse.ScoreDocument.Core;
 using StudioLaValse.ScoreDocument.Drawable.ContentWrappers;
 using StudioLaValse.ScoreDocument.Drawable.DrawableElements;
 using StudioLaValse.ScoreDocument.Drawable.Scenes;
-using StudioLaValse.ScoreDocument.Layout.Models;
 using System.Diagnostics;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Models

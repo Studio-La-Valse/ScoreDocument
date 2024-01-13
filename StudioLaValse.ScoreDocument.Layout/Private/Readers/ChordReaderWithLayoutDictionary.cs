@@ -40,12 +40,12 @@ namespace StudioLaValse.ScoreDocument.Layout.Private.Readers
             return chordReader.Equals(other);
         }
 
-        public IRibbonMeasureReader ReadContext()
+        public IInstrumentMeasureReader ReadContext()
         {
             return chordReader.ReadContext().UseLayout(layoutDictionary);
         }
 
-        public IMeasureElementContainerLayout ReadLayout()
+        public IChordLayout ReadLayout()
         {
             return layoutDictionary.GetOrCreate(chordReader);
         }

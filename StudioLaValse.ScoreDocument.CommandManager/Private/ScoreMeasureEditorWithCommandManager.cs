@@ -42,12 +42,12 @@ namespace StudioLaValse.ScoreDocument.CommandManager.Private
                 }));
         }
 
-        public IRibbonMeasureEditor EditMeasure(int ribbonIndex)
+        public IInstrumentMeasureEditor EditMeasure(int ribbonIndex)
         {
             return source.EditMeasure(ribbonIndex).UseTransaction(commandManager);
         }
 
-        public IEnumerable<IRibbonMeasureEditor> EditMeasures()
+        public IEnumerable<IInstrumentMeasureEditor> EditMeasures()
         {
             return source.EditMeasures().Select(e => e.UseTransaction(commandManager));
         }
@@ -57,7 +57,7 @@ namespace StudioLaValse.ScoreDocument.CommandManager.Private
             return source.EditStaffSystemOrigin().UseTransaction(commandManager);
         }
 
-        public IEnumerable<IRibbonMeasure> EnumerateMeasures()
+        public IEnumerable<IInstrumentMeasure> EnumerateMeasures()
         {
             return source.EnumerateMeasures();
         }

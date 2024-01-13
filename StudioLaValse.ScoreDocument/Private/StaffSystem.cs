@@ -1,10 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Editor;
-using StudioLaValse.ScoreDocument.Layout;
-using StudioLaValse.ScoreDocument.Primitives;
-using StudioLaValse.ScoreDocument.Reader;
-using System.Diagnostics;
-
-namespace StudioLaValse.ScoreDocument.Private
+﻿namespace StudioLaValse.ScoreDocument.Private
 {
     internal class StaffSystem : ScoreElement, IStaffSystemEditor, IStaffSystemReader
     {
@@ -71,9 +65,9 @@ namespace StudioLaValse.ScoreDocument.Private
             var measure = (IScoreMeasureReader)firstMeasure;
             yield return measure;
 
-            while(true)
+            while (true)
             {
-                if(measure.TryReadNext(out measure))
+                if (measure.TryReadNext(out measure))
                 {
                     if (measure.ReadLayout().IsNewSystem)
                     {

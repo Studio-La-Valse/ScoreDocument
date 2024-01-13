@@ -1,4 +1,4 @@
-﻿namespace StudioLaValse.ScoreDocument.Layout
+﻿namespace StudioLaValse.ScoreDocument.Core
 {
     public enum AccidentalDisplay
     {

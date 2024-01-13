@@ -3,12 +3,12 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace StudioLaValse.ScoreDocument.CommandManager.Private
 {
-    internal class RibbonMeasureEditorWithCommandManager : IRibbonMeasureEditor
+    internal class RibbonMeasureEditorWithCommandManager : IInstrumentMeasureEditor
     {
-        private readonly IRibbonMeasureEditor source;
+        private readonly IInstrumentMeasureEditor source;
         private readonly ICommandManager commandManager;
 
-        public RibbonMeasureEditorWithCommandManager(IRibbonMeasureEditor source, ICommandManager commandManager)
+        public RibbonMeasureEditorWithCommandManager(IInstrumentMeasureEditor source, ICommandManager commandManager)
         {
             this.source = source;
             this.commandManager = commandManager;
@@ -136,11 +136,11 @@ namespace StudioLaValse.ScoreDocument.CommandManager.Private
             return source.Equals(other);
         }
 
-        public void ApplyLayout(IRibbonMeasureLayout layout)
+        public void ApplyLayout(IInstrumentMeasureLayout layout)
         {
             var transaction = commandManager.ThrowIfNoTransactionOpen();
 
-            IRibbonMeasureLayout? memento = null;
+            IInstrumentMeasureLayout? memento = null;
             transaction.Enqueue(new SimpleCommand(
                 () =>
                 {
@@ -158,7 +158,7 @@ namespace StudioLaValse.ScoreDocument.CommandManager.Private
                 }));
         }
 
-        public IRibbonMeasureLayout ReadLayout()
+        public IInstrumentMeasureLayout ReadLayout()
         {
             return source.ReadLayout();
         }

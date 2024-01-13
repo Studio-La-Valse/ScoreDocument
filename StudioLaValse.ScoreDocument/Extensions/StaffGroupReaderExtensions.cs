@@ -1,6 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Reader;
-
-namespace StudioLaValse.ScoreDocument.Extensions
+﻿namespace StudioLaValse.ScoreDocument.Extensions
 {
     public static class StaffGroupReaderExtensions
     {
@@ -8,7 +6,7 @@ namespace StudioLaValse.ScoreDocument.Extensions
         {
             foreach (var staff in staffGroup.EnumerateStaves())
             {
-                var clef = 
+                var clef =
                     staffGroup.Instrument.DefaultClefs.ElementAtOrDefault(staff.IndexInStaffGroup) ??
                     staffGroup.Instrument.DefaultClefs.Last();
 

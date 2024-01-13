@@ -1,6 +1,4 @@
-﻿using System.Data.Common;
-
-namespace StudioLaValse.ScoreDocument.Private
+﻿namespace StudioLaValse.ScoreDocument.Private
 {
     public abstract class Table<TCell, TColumn, TRow> where TCell : class
     {
@@ -40,7 +38,7 @@ namespace StudioLaValse.ScoreDocument.Private
 
             var values = new List<TCell>();
 
-            foreach(var column in columns)
+            foreach (var column in columns)
             {
                 var cell = cellFactory.Create(column, identifier);
                 values.Add(cell);

@@ -40,17 +40,17 @@
                 }));
         }
 
-        public IRibbonMeasureEditor EditMeasure(int measureIndex)
+        public IInstrumentMeasureEditor EditMeasure(int measureIndex)
         {
             return source.EditMeasure(measureIndex).UseTransaction(commandManager);
         }
 
-        public IEnumerable<IRibbonMeasureEditor> EditMeasures()
+        public IEnumerable<IInstrumentMeasureEditor> EditMeasures()
         {
             return source.EditMeasures().Select(e => e.UseTransaction(commandManager));
         }
 
-        public IEnumerable<IRibbonMeasure> EnumerateMeasures()
+        public IEnumerable<IInstrumentMeasure> EnumerateMeasures()
         {
             return source.EnumerateMeasures();
         }

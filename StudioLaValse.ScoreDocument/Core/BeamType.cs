@@ -1,4 +1,4 @@
-﻿namespace StudioLaValse.ScoreDocument.Layout.Models
+﻿namespace StudioLaValse.ScoreDocument.Core
 {
     public enum BeamType
     {

@@ -9,10 +9,10 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ScoreDocumentEditor
     internal class NoteEditorWithStateWatcher : INoteEditor
     {
         private readonly INoteEditor source;
-        private readonly IRibbonMeasure host;
+        private readonly IInstrumentMeasure host;
         private readonly INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged;
 
-        public NoteEditorWithStateWatcher(INoteEditor source, IRibbonMeasure scoreMeasure, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged)
+        public NoteEditorWithStateWatcher(INoteEditor source, IInstrumentMeasure scoreMeasure, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged)
         {
             this.source = source;
             host = scoreMeasure;

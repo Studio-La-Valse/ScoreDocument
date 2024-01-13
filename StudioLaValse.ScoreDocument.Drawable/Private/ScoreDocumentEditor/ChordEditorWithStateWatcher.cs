@@ -9,10 +9,10 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ScoreDocumentEditor
     internal class ChordEditorWithStateWatcher : IChordEditor
     {
         private readonly IChordEditor source;
-        private readonly IRibbonMeasure host;
+        private readonly IInstrumentMeasure host;
         private readonly INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged;
 
-        public ChordEditorWithStateWatcher(IChordEditor source, IRibbonMeasure host, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged)
+        public ChordEditorWithStateWatcher(IChordEditor source, IInstrumentMeasure host, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged)
         {
             this.source = source;
             this.host = host;
@@ -39,7 +39,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ScoreDocumentEditor
             notifyEntityChanged.Invalidate(host);
         }
 
-        public void ApplyLayout(IMeasureElementContainerLayout layout)
+        public void ApplyLayout(IChordLayout layout)
         {
             source.ApplyLayout(layout);
             notifyEntityChanged.Invalidate(host);
@@ -66,7 +66,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ScoreDocumentEditor
             return source.Equals(other);
         }
 
-        public IMeasureElementContainerLayout ReadLayout()
+        public IChordLayout ReadLayout()
         {
             return source.ReadLayout();
         }

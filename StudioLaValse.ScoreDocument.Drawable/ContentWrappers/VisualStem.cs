@@ -1,7 +1,7 @@
 ﻿using StudioLaValse.Drawable.ContentWrappers;
 using StudioLaValse.Drawable.DrawableElements;
 using StudioLaValse.Geometry;
-using StudioLaValse.ScoreDocument.Layout.Models;
+using StudioLaValse.ScoreDocument.Core;
 
 namespace StudioLaValse.ScoreDocument.Drawable.ContentWrappers
 {

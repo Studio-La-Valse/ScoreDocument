@@ -12,7 +12,7 @@
 
         public override Duration Simplify()
         {
-            if(Numinator == 0)
+            if (Numinator == 0)
             {
                 return new Duration(0, 1);
             }
@@ -22,7 +22,7 @@
             var halfDenom = denom / 2M;
             var halfNum = num / 2M;
 
-            while(halfDenom % 1 == 0 && halfNum % 1 == 0)
+            while (halfDenom % 1 == 0 && halfNum % 1 == 0)
             {
                 denom /= 2;
                 num /= 2;
@@ -44,7 +44,7 @@
                 return new Duration(first.Numinator + second.Numinator, first.Denominator);
             }
 
-            var nominator = 
+            var nominator =
                 first.Numinator * second.Denominator +
                 first.Denominator * second.Numinator;
 
@@ -73,6 +73,6 @@
             return first.Decimal >= second;
         }
 
-        public static implicit operator Position (Duration duration) => new (duration.Numinator, duration.Denominator);
+        public static implicit operator Position(Duration duration) => new(duration.Numinator, duration.Denominator);
     }
 }

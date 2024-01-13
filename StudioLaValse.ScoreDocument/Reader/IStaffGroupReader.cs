@@ -1,15 +1,12 @@
-﻿using StudioLaValse.ScoreDocument.Layout;
-using StudioLaValse.ScoreDocument.Primitives;
-
-namespace StudioLaValse.ScoreDocument.Reader
+﻿namespace StudioLaValse.ScoreDocument.Reader
 {
     public interface IStaffGroupReader : IStaffGroup
     {
         IInstrumentRibbonReader ReadContext();
-        
+
 
         IEnumerable<IStaffReader> ReadStaves();
-        IEnumerable<IRibbonMeasureReader> ReadMeasures();
+        IEnumerable<IInstrumentMeasureReader> ReadMeasures();
 
 
         IStaffGroupLayout ReadLayout();

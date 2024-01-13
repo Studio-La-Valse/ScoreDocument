@@ -3,8 +3,8 @@
     public interface IScoreMeasureEditor : IScoreMeasure
     {
         int IndexInScore { get; }
-        IEnumerable<IRibbonMeasureEditor> EditMeasures();
-        IRibbonMeasureEditor EditMeasure(int ribbonIndex);
+        IEnumerable<IInstrumentMeasureEditor> EditMeasures();
+        IInstrumentMeasureEditor EditMeasure(int ribbonIndex);
         void ApplyLayout(IScoreMeasureLayout layout);
         IScoreMeasureLayout ReadLayout();
         IStaffSystemEditor EditStaffSystemOrigin();

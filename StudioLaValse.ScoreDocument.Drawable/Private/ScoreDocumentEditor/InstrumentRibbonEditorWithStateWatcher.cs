@@ -29,17 +29,17 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ScoreDocumentEditor
             notifyEntityChanged.Invalidate(source);
         }
 
-        public IRibbonMeasureEditor EditMeasure(int measureIndex)
+        public IInstrumentMeasureEditor EditMeasure(int measureIndex)
         {
             return source.EditMeasure(measureIndex).UseStateWatcher(notifyEntityChanged);
         }
 
-        public IEnumerable<IRibbonMeasureEditor> EditMeasures()
+        public IEnumerable<IInstrumentMeasureEditor> EditMeasures()
         {
             return source.EditMeasures().Select(e => e.UseStateWatcher(notifyEntityChanged));
         }
 
-        public IEnumerable<IRibbonMeasure> EnumerateMeasures()
+        public IEnumerable<IInstrumentMeasure> EnumerateMeasures()
         {
             return source.EnumerateMeasures();
         }

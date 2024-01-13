@@ -11,7 +11,7 @@
 
 
 
-        public RythmicDuration(PowerOfTwo powerOfTwo, int dots = 0) : base(IntPow(2, (uint)(dots + 1)) -1, powerOfTwo * IntPow(2, (uint)dots))
+        public RythmicDuration(PowerOfTwo powerOfTwo, int dots = 0) : base(IntPow(2, (uint)(dots + 1)) - 1, powerOfTwo * IntPow(2, (uint)dots))
         {
             PowerOfTwo = powerOfTwo;
             Dots = dots;

@@ -1,12 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Core;
-using StudioLaValse.ScoreDocument.Editor;
-using StudioLaValse.ScoreDocument.Extensions;
-using StudioLaValse.ScoreDocument.Layout;
-using StudioLaValse.ScoreDocument.Layout.Models;
-using StudioLaValse.ScoreDocument.Primitives;
-using StudioLaValse.ScoreDocument.Reader;
-using System.Collections;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
 namespace StudioLaValse.ScoreDocument.Private
@@ -45,13 +37,13 @@ namespace StudioLaValse.ScoreDocument.Private
                 return position;
             }
         }
-        public RibbonMeasure RibbonMeasure =>
+        public InstrumentMeasure RibbonMeasure =>
             host.RibbonMeasure;
         public IEnumerable<MeasureElementContainer> Containers =>
             containers;
         public bool Grace =>
             grace;
-        public Duration Duration => 
+        public Duration Duration =>
             duration;
 
 

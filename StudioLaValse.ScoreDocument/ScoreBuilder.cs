@@ -4,7 +4,7 @@
     {
         private ScoreBuilder(ScoreDocumentCore score) : base(score, score)
         {
-  
+
         }
 
         public static BaseScoreBuilder CreateDefault(string title, string subtitle)

@@ -1,10 +1,6 @@
-﻿using StudioLaValse.ScoreDocument.Layout;
-using StudioLaValse.ScoreDocument.Primitives;
-using StudioLaValse.ScoreDocument.Reader;
-
-namespace StudioLaValse.ScoreDocument.Editor
+﻿namespace StudioLaValse.ScoreDocument.Editor
 {
-    public interface IRibbonMeasureEditor : IRibbonMeasure
+    public interface IInstrumentMeasureEditor : IInstrumentMeasure
     {
         int MeasureIndex { get; }
         int RibbonIndex { get; }
@@ -22,7 +18,7 @@ namespace StudioLaValse.ScoreDocument.Editor
         void AppendBlock(int voice, Duration duration, bool grace);
 
 
-        void ApplyLayout(IRibbonMeasureLayout layout);
-        IRibbonMeasureLayout ReadLayout();
+        void ApplyLayout(IInstrumentMeasureLayout layout);
+        IInstrumentMeasureLayout ReadLayout();
     }
 }

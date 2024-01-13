@@ -41,7 +41,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ScoreDocumentEditor
             return source.EditStaves().Select(e => e.UseStateWatcher(scoreDocument, notifyEntityChanged));
         }
 
-        public IEnumerable<IRibbonMeasure> EnumerateMeasures()
+        public IEnumerable<IInstrumentMeasure> EnumerateMeasures()
         {
             return source.EnumerateMeasures();
         }

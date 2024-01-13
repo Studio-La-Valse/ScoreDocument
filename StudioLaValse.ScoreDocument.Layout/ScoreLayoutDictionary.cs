@@ -8,10 +8,10 @@ namespace StudioLaValse.ScoreDocument.Layout
         private readonly Dictionary<IScoreDocument, IScoreDocumentLayout> scoreDocumentLayoutDictionary = [];
 
         private readonly Dictionary<INote, IMeasureElementLayout> measureElementLayoutDictionary = [];
-        private readonly Dictionary<IChord, IMeasureElementContainerLayout> chordLayoutDictionary = [];
+        private readonly Dictionary<IChord, IChordLayout> chordLayoutDictionary = [];
         private readonly Dictionary<IMeasureBlockReader, INoteGroupLayout> chordGroupReaderDictionary = [];
 
-        private readonly Dictionary<IRibbonMeasure, IRibbonMeasureLayout> instrumentMeasureLayoutDictionary = [];
+        private readonly Dictionary<IInstrumentMeasure, IInstrumentMeasureLayout> instrumentMeasureLayoutDictionary = [];
         private readonly Dictionary<IScoreMeasure, IScoreMeasureLayout> scoreMeasureLayoutDictionary = [];
         private readonly Dictionary<IInstrumentRibbon, IInstrumentRibbonLayout> instrumentRibbonLayoutDictionary = [];
 
@@ -51,19 +51,19 @@ namespace StudioLaValse.ScoreDocument.Layout
             measureElementLayoutDictionary[element] = layout;
         }
 
-        public IMeasureElementContainerLayout GetOrCreate(IChord element)
+        public IChordLayout GetOrCreate(IChord element)
         {
             if (chordLayoutDictionary.TryGetValue(element, out var value))
             {
                 return value;
             }
 
-            var layout = new MeasureElementContainerLayout();
+            var layout = new ChordLayout();
             chordLayoutDictionary.Add(element, layout);
 
             return chordLayoutDictionary[element];
         }
-        public void Assign(IChord chord, IMeasureElementContainerLayout layout)
+        public void Assign(IChord chord, IChordLayout layout)
         {
             chordLayoutDictionary[chord] = layout;
         }
@@ -84,19 +84,19 @@ namespace StudioLaValse.ScoreDocument.Layout
             chordGroupReaderDictionary[chordGroup] = layout;
         }
 
-        public IRibbonMeasureLayout GetOrCreate(IRibbonMeasure element)
+        public IInstrumentMeasureLayout GetOrCreate(IInstrumentMeasure element)
         {
             if (instrumentMeasureLayoutDictionary.TryGetValue(element, out var value))
             {
                 return value;
             }
 
-            var layout = new RibbonMeasureLayout();
+            var layout = new InstrumentMeasureLayout();
             instrumentMeasureLayoutDictionary.Add(element, layout);
 
             return instrumentMeasureLayoutDictionary[element];
         }
-        public void Assign(IRibbonMeasure ribbonMeasure, IRibbonMeasureLayout layout)
+        public void Assign(IInstrumentMeasure ribbonMeasure, IInstrumentMeasureLayout layout)
         {
             instrumentMeasureLayoutDictionary[ribbonMeasure] = layout;
         }

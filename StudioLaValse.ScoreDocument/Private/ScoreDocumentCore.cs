@@ -1,13 +1,8 @@
-﻿using StudioLaValse.ScoreDocument.Editor;
-using StudioLaValse.ScoreDocument.Layout;
-using StudioLaValse.ScoreDocument.Primitives;
-using StudioLaValse.ScoreDocument.Reader;
-
-namespace StudioLaValse.ScoreDocument.Private
+﻿namespace StudioLaValse.ScoreDocument.Private
 {
     internal class ScoreDocumentCore : ScoreElement, IScoreDocumentEditor, IScoreDocumentReader
     {
-        internal readonly Table<RibbonMeasure, ScoreMeasure, InstrumentRibbon> contentTable;
+        internal readonly Table<InstrumentMeasure, ScoreMeasure, InstrumentRibbon> contentTable;
         private readonly IKeyGenerator<int> keyGenerator;
         private IScoreDocumentLayout layout;
 
@@ -23,7 +18,7 @@ namespace StudioLaValse.ScoreDocument.Private
 
 
 
-        public ScoreDocumentCore(Table<RibbonMeasure, ScoreMeasure, InstrumentRibbon> contentTable, IScoreDocumentLayout layout, IKeyGenerator<int> keyGenerator) : base(keyGenerator)
+        public ScoreDocumentCore(Table<InstrumentMeasure, ScoreMeasure, InstrumentRibbon> contentTable, IScoreDocumentLayout layout, IKeyGenerator<int> keyGenerator) : base(keyGenerator)
         {
             this.contentTable = contentTable;
             this.layout = layout;
@@ -49,7 +44,7 @@ namespace StudioLaValse.ScoreDocument.Private
         public void RemoveInstrumentRibbon(int elementId)
         {
             var ribbon = contentTable.RowHeaders.FirstOrDefault(r => r.ElementId.IntValue == elementId);
-            if(ribbon is null)
+            if (ribbon is null)
             {
                 throw new InvalidOperationException("Ribbon with element id not found!");
             }
@@ -119,12 +114,12 @@ namespace StudioLaValse.ScoreDocument.Private
 
         public void Clear()
         {
-            while(contentTable.Height > 0)
+            while (contentTable.Height > 0)
             {
                 contentTable.RemoveRow(0);
             }
 
-            while(contentTable.Width > 0)
+            while (contentTable.Width > 0)
             {
                 contentTable.RemoveColumn(0);
             }

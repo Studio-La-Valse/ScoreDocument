@@ -1,8 +1,6 @@
-﻿using StudioLaValse.ScoreDocument.Layout;
-
-namespace StudioLaValse.ScoreDocument.Private
+﻿namespace StudioLaValse.ScoreDocument.Private
 {
-    internal class CellFactory : ICellFactory<RibbonMeasure, ScoreMeasure, InstrumentRibbon>
+    internal class CellFactory : ICellFactory<InstrumentMeasure, ScoreMeasure, InstrumentRibbon>
     {
         private readonly IKeyGenerator<int> keyGenerator;
 
@@ -11,10 +9,10 @@ namespace StudioLaValse.ScoreDocument.Private
             this.keyGenerator = keyGenerator;
         }
 
-        public RibbonMeasure Create(ScoreMeasure column, InstrumentRibbon row)
+        public InstrumentMeasure Create(ScoreMeasure column, InstrumentRibbon row)
         {
-            var layout = new RibbonMeasureLayout();
-            return new RibbonMeasure(column, row, layout, keyGenerator);
+            var layout = new InstrumentMeasureLayout();
+            return new InstrumentMeasure(column, row, layout, keyGenerator);
         }
     }
 }

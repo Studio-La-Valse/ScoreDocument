@@ -24,12 +24,12 @@ namespace StudioLaValse.ScoreDocument.Layout.Private.Editors
 
         public int Id => scoreMeasureEditor.Id;
 
-        public IEnumerable<IRibbonMeasureEditor> EditMeasures()
+        public IEnumerable<IInstrumentMeasureEditor> EditMeasures()
         {
             return scoreMeasureEditor.EditMeasures().Select(e => e.UseLayout(layoutDictionary));
         }
 
-        public IEnumerable<IRibbonMeasure> EnumerateMeasures()
+        public IEnumerable<IInstrumentMeasure> EnumerateMeasures()
         {
             return scoreMeasureEditor.EnumerateMeasures();
         }
@@ -44,7 +44,7 @@ namespace StudioLaValse.ScoreDocument.Layout.Private.Editors
             layoutDictionary.Assign(scoreMeasureEditor, layout);
         }
 
-        public IRibbonMeasureEditor EditMeasure(int ribbonIndex)
+        public IInstrumentMeasureEditor EditMeasure(int ribbonIndex)
         {
             return scoreMeasureEditor.EditMeasure(ribbonIndex);
         }

@@ -5,12 +5,12 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace StudioLaValse.ScoreDocument.Layout.Private.Readers
 {
-    internal class RibbonMeasureReaderWithLayoutDictionary : IRibbonMeasureReader
+    internal class RibbonMeasureReaderWithLayoutDictionary : IInstrumentMeasureReader
     {
-        private readonly IRibbonMeasureReader source;
+        private readonly IInstrumentMeasureReader source;
         private readonly IScoreLayoutDictionary layoutDictionary;
 
-        public RibbonMeasureReaderWithLayoutDictionary(IRibbonMeasureReader source, IScoreLayoutDictionary layoutDictionary)
+        public RibbonMeasureReaderWithLayoutDictionary(IInstrumentMeasureReader source, IScoreLayoutDictionary layoutDictionary)
         {
             this.source = source;
             this.layoutDictionary = layoutDictionary;
@@ -46,7 +46,7 @@ namespace StudioLaValse.ScoreDocument.Layout.Private.Readers
             return source.ReadBlocks(voice);
         }
 
-        public IRibbonMeasureLayout ReadLayout()
+        public IInstrumentMeasureLayout ReadLayout()
         {
             return layoutDictionary.GetOrCreate(source);
         }
@@ -56,7 +56,7 @@ namespace StudioLaValse.ScoreDocument.Layout.Private.Readers
             return source.ReadMeasureContext().UseLayout(layoutDictionary);
         }
 
-        public bool TryReadNext([NotNullWhen(true)] out IRibbonMeasureReader? next)
+        public bool TryReadNext([NotNullWhen(true)] out IInstrumentMeasureReader? next)
         {
             if(source.TryReadNext(out next))
             {
@@ -67,7 +67,7 @@ namespace StudioLaValse.ScoreDocument.Layout.Private.Readers
             return false;
         }
 
-        public bool TryReadPrevious([NotNullWhen(true)] out IRibbonMeasureReader? previous)
+        public bool TryReadPrevious([NotNullWhen(true)] out IInstrumentMeasureReader? previous)
         {
             if( source.TryReadPrevious(out previous))
             {

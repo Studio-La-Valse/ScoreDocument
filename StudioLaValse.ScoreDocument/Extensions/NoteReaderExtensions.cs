@@ -8,13 +8,13 @@
                 .ReadContext()
                 .ReadContext();
 
-            foreach(var voice in ribbonMeasure.EnumerateVoices())
+            foreach (var voice in ribbonMeasure.EnumerateVoices())
             {
                 var blocks = ribbonMeasure.ReadBlocks(voice);
                 var chords = blocks.SelectMany(b => b.ReadChords());
-                foreach(var chord in chords)
+                foreach (var chord in chords)
                 {
-                    if(chord.PositionEnd().Decimal > noteReader.Position.Decimal)
+                    if (chord.PositionEnd().Decimal > noteReader.Position.Decimal)
                     {
                         break;
                     }

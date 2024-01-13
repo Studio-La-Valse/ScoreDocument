@@ -1,6 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Primitives;
-
-namespace StudioLaValse.ScoreDocument.Editor
+﻿namespace StudioLaValse.ScoreDocument.Editor
 {
     public interface IStaffSystemEditor : IStaffSystem
     {

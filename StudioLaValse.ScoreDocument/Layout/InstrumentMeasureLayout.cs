@@ -1,13 +1,13 @@
 ﻿namespace StudioLaValse.ScoreDocument.Layout
 {
-    public class RibbonMeasureLayout : IRibbonMeasureLayout
+    public class InstrumentMeasureLayout : IInstrumentMeasureLayout
     {
         private readonly HashSet<ClefChange> _changeList = [];
         public IEnumerable<ClefChange> ClefChanges => _changeList;
 
-        public RibbonMeasureLayout()
+        public InstrumentMeasureLayout()
         {
-            
+
         }
 
         public void AddClefChange(ClefChange clefChange)
@@ -21,10 +21,10 @@
             _changeList.Remove(clefChange);
         }
 
-        public IRibbonMeasureLayout Copy()
+        public IInstrumentMeasureLayout Copy()
         {
-            var layout = new RibbonMeasureLayout(); 
-            foreach(var change in _changeList)
+            var layout = new InstrumentMeasureLayout();
+            foreach (var change in _changeList)
             {
                 layout.AddClefChange(change);
             }

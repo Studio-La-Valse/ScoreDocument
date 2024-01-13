@@ -7,12 +7,12 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace StudioLaValse.ScoreDocument.Layout.Private.Editors
 {
-    internal class RibbonMeasureEditorWithLayoutDictionary : IRibbonMeasureEditor
+    internal class RibbonMeasureEditorWithLayoutDictionary : IInstrumentMeasureEditor
     {
-        private readonly IRibbonMeasureEditor ribbonMeasureEditor;
+        private readonly IInstrumentMeasureEditor ribbonMeasureEditor;
         private readonly IScoreLayoutDictionary layoutDictionary;
 
-        public RibbonMeasureEditorWithLayoutDictionary(IRibbonMeasureEditor ribbonMeasureEditor, IScoreLayoutDictionary layoutDictionary)
+        public RibbonMeasureEditorWithLayoutDictionary(IInstrumentMeasureEditor ribbonMeasureEditor, IScoreLayoutDictionary layoutDictionary)
         {
             this.ribbonMeasureEditor = ribbonMeasureEditor;
             this.layoutDictionary = layoutDictionary;
@@ -53,12 +53,12 @@ namespace StudioLaValse.ScoreDocument.Layout.Private.Editors
             ribbonMeasureEditor.PrependBlock(voice, duration, grace);
         }
 
-        public IRibbonMeasureLayout ReadLayout()
+        public IInstrumentMeasureLayout ReadLayout()
         {
             return layoutDictionary.GetOrCreate(ribbonMeasureEditor);
         }
 
-        public void ApplyLayout(IRibbonMeasureLayout layout)
+        public void ApplyLayout(IInstrumentMeasureLayout layout)
         {
             layoutDictionary.Assign(ribbonMeasureEditor, layout);
         }

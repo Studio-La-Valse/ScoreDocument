@@ -30,7 +30,7 @@ namespace StudioLaValse.ScoreDocument.Layout.Private.Readers
             return source.Equals(other);
         }
 
-        public IEnumerable<IRibbonMeasure> EnumerateMeasures()
+        public IEnumerable<IInstrumentMeasure> EnumerateMeasures()
         {
             return source.EnumerateMeasures();
         }
@@ -40,12 +40,12 @@ namespace StudioLaValse.ScoreDocument.Layout.Private.Readers
             return layoutDictionary.GetOrCreate(source);
         }
 
-        public IRibbonMeasureReader ReadMeasure(int ribbonIndex)
+        public IInstrumentMeasureReader ReadMeasure(int ribbonIndex)
         {
             return source.ReadMeasure(ribbonIndex);
         }
 
-        public IEnumerable<IRibbonMeasureReader> ReadMeasures()
+        public IEnumerable<IInstrumentMeasureReader> ReadMeasures()
         {
             return source.ReadMeasures().Select(e => e.UseLayout(layoutDictionary));
         }

@@ -22,7 +22,7 @@ namespace StudioLaValse.ScoreDocument.Layout.Private.Readers
 
         public int IndexInScore => source.IndexInScore;
 
-        public IEnumerable<IRibbonMeasure> EnumerateMeasures()
+        public IEnumerable<IInstrumentMeasure> EnumerateMeasures()
         {
             return source.EnumerateMeasures();
         }
@@ -37,12 +37,12 @@ namespace StudioLaValse.ScoreDocument.Layout.Private.Readers
             return layoutDictionary.GetOrCreate(source);
         }
 
-        public IRibbonMeasureReader ReadMeasure(int indexInScore)
+        public IInstrumentMeasureReader ReadMeasure(int indexInScore)
         {
             return source.ReadMeasure(indexInScore).UseLayout(layoutDictionary);
         }
 
-        public IEnumerable<IRibbonMeasureReader> ReadMeasures()
+        public IEnumerable<IInstrumentMeasureReader> ReadMeasures()
         {
             return source.ReadMeasures().Select(e => e.UseLayout(layoutDictionary));
         }

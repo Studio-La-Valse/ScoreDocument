@@ -19,7 +19,7 @@
 
         public INoteGroupLayout Copy()
         {
-            return new NoteGroupLayout(StemLength, BeamAngle); 
+            return new NoteGroupLayout(StemLength, BeamAngle);
         }
     }
 }

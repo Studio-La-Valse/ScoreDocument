@@ -1,7 +1,7 @@
 ﻿namespace StudioLaValse.ScoreDocument.Editor
 {
     public interface IMeasureBlockEditor : IMeasureBlock
-    {      
+    {
         IEnumerable<IChordEditor> EditChords();
 
 

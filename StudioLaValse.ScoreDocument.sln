@@ -5,7 +5,7 @@ VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudioLaValse.ScoreDocument", "StudioLaValse.ScoreDocument\StudioLaValse.ScoreDocument.csproj", "{0E2FF98E-B2E6-48B9-9A41-5A4AA67AFAB6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudioLaValse.ScoreDocument.Drawable", "StudioLaValse.ScoreDocument.Visuals\StudioLaValse.ScoreDocument.Drawable.csproj", "{CB4D9B8C-ED34-43F8-9A09-794443FE532B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudioLaValse.ScoreDocument.Drawable", "StudioLaValse.ScoreDocument.Drawable\StudioLaValse.ScoreDocument.Drawable.csproj", "{CB4D9B8C-ED34-43F8-9A09-794443FE532B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudioLaValse.ScoreDocument.Tests", "StudioLaValse.ScoreDocument.Tests\StudioLaValse.ScoreDocument.Tests.csproj", "{6D0E1686-0C05-48D6-AE15-7F25AD9CE8AF}"
 EndProject

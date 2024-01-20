@@ -41,14 +41,9 @@
                 staffSystem.Register(instrumentRibbon);
             }
         }
-        public void RemoveInstrumentRibbon(int elementId)
+        public void RemoveInstrumentRibbon(int indexInScore)
         {
-            var ribbon = contentTable.RowHeaders.FirstOrDefault(r => r.ElementId.IntValue == elementId);
-            if (ribbon is null)
-            {
-                throw new InvalidOperationException("Ribbon with element id not found!");
-            }
-
+            var ribbon = contentTable.RowAt(indexInScore);
             foreach (var staffSystem in contentTable.ColumnHeaders.Select(m => m.StaffSystemOrigin))
             {
                 staffSystem.Unregister(ribbon);

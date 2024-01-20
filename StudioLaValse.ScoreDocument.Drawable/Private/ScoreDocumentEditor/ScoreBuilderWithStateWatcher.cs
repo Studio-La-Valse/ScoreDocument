@@ -1,5 +1,4 @@
 ﻿using StudioLaValse.Drawable;
-using StudioLaValse.ScoreDocument.Core;
 using StudioLaValse.ScoreDocument.Editor;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.ScoreDocumentEditor

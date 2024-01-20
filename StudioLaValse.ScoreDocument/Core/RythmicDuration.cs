@@ -5,13 +5,23 @@
     /// </summary>
     public class RythmicDuration : Duration
     {
-        public int Dots { get; }
+        /// <summary>
+        /// The number of dots.
+        /// </summary>
+        public uint Dots { get; }
+        /// <summary>
+        /// The 
+        /// </summary>
         public PowerOfTwo PowerOfTwo { get; }
 
 
 
-
-        public RythmicDuration(PowerOfTwo powerOfTwo, int dots = 0) : base(IntPow(2, (uint)(dots + 1)) - 1, powerOfTwo * IntPow(2, (uint)dots))
+        /// <summary>
+        /// Constructs a rythmic duration from a power of two and the number of dots.
+        /// </summary>
+        /// <param name="powerOfTwo">The power of two for the duration, for example 8 in the case of a 1/8th duration.</param>
+        /// <param name="dots">The number of dots.</param>
+        public RythmicDuration(PowerOfTwo powerOfTwo, uint dots = 0) : base(IntPow(2, (dots + 1)) - 1, powerOfTwo * IntPow(2, dots))
         {
             PowerOfTwo = powerOfTwo;
             Dots = dots;
@@ -34,7 +44,11 @@
             return ret;
         }
 
-
+        /// <summary>
+        /// Transform the rythmic duration to an actual duration for the specified tuplet.
+        /// </summary>
+        /// <param name="tupletInformation"></param>
+        /// <returns></returns>
         public Fraction ToActualDuration(Tuplet tupletInformation)
         {
             if (tupletInformation.IsRedundant)
@@ -81,13 +95,14 @@
             return result.Simplify();
         }
 
-
+        /// <summary>
+        /// Halves the rythmic duration.
+        /// </summary>
+        /// <returns></returns>
         public RythmicDuration HalfDuration() =>
             new RythmicDuration(new PowerOfTwo(PowerOfTwo.Power + 1), Dots);
 
-
-
-
+        /// <inheritdoc/>
         public override string ToString()
         {
             var start = $"1 / {PowerOfTwo.Value}";

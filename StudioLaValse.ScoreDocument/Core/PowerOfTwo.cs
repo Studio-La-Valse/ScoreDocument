@@ -2,10 +2,19 @@
 
 namespace StudioLaValse.ScoreDocument.Core
 {
+    /// <summary>
+    /// Reprents a non-zero, non-negative integer that is a power of two.
+    /// </summary>
     public class PowerOfTwo
     {
-        public uint Power { get; }
+        /// <summary>
+        /// Raise two to this power. This value may never be negative.
+        /// </summary>
+        public int Power { get; }
 
+        /// <summary>
+        /// The actual value.
+        /// </summary>
         public int Value
         {
             get
@@ -21,8 +30,13 @@ namespace StudioLaValse.ScoreDocument.Core
             }
         }
 
-
-        public PowerOfTwo(uint power)
+        /// <summary>
+        /// Construct a power of two by specifying what number to raise two to.
+        /// The power may never be negative.
+        /// </summary>
+        /// <param name="power"></param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        public PowerOfTwo(int power)
         {
             if (power < 0)
             {
@@ -32,13 +46,19 @@ namespace StudioLaValse.ScoreDocument.Core
             Power = power;
         }
 
+        /// <summary>
+        /// Try create a power of two from an integer.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="powerOfTwo"></param>
+        /// <returns></returns>
         public static bool TryCreate(int value, [NotNullWhen(true)] out PowerOfTwo? powerOfTwo)
         {
             powerOfTwo = null;
 
             var _val = 1;
 
-            uint power = 0;
+            int power = 0;
 
             while (_val <= value)
             {
@@ -59,6 +79,11 @@ namespace StudioLaValse.ScoreDocument.Core
 
             return false;
         }
+        /// <summary>
+        /// Try to divide the power of two by two.
+        /// </summary>
+        /// <param name="half"></param>
+        /// <returns></returns>
         public bool TryDivideByTwo([NotNullWhen(true)] out PowerOfTwo? half)
         {
             half = null;
@@ -73,19 +98,35 @@ namespace StudioLaValse.ScoreDocument.Core
             return true;
         }
 
+        /// <summary>
+        /// Double the power of two.
+        /// </summary>
+        /// <returns></returns>
         public PowerOfTwo Double()
         {
             return new PowerOfTwo(Power + 1);
         }
 
+        /// <summary>
+        /// Cast the power of two to an integer value.
+        /// </summary>
+        /// <param name="p"></param>
         public static implicit operator int(PowerOfTwo p) => p.Value;
-        public static implicit operator PowerOfTwo(int i) => FromInt(i) ?? throw new InvalidCastException();
-
-        public static PowerOfTwo? FromInt(int i)
+        /// <summary>
+        /// Cast the integer value to a power of two. Throws <see cref="InvalidCastException"/> if the number cannot be casted.
+        /// </summary>
+        /// <param name="i"></param>
+        public static implicit operator PowerOfTwo(int i)
         {
-            return TryCreate(i, out var result) ? result : default;
+            if (TryCreate(i, out var result))
+            {
+                return result;
+            }
+
+            throw new InvalidCastException();
         }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return $"2 ^ {Power} = {Value}";

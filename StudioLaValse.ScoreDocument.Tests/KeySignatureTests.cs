@@ -9,7 +9,7 @@ namespace StudioLaValse.ScoreDocument.Tests
         public void TestScales()
         {
             var keySignature = new KeySignature(Step.AFlat, MajorOrMinor.Minor);
-            
+
             var clef = Clef.Treble;
             var predictedLines = keySignature
                 .EnumerateFlatLines(clef)
@@ -52,8 +52,8 @@ namespace StudioLaValse.ScoreDocument.Tests
 
             trueLines = new List<int>
             {
-                2, 5, 1, 4, 7, 3 
-            }; 
+                2, 5, 1, 4, 7, 3
+            };
 
             Assert.IsTrue(predictedLines.SequenceEqual(trueLines));
         }

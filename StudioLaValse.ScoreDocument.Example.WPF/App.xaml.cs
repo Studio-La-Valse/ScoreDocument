@@ -1,17 +1,17 @@
-﻿using StudioLaValse.Drawable.WPF.Painters;
-using StudioLaValse.Drawable.WPF.UserControls;
-using StudioLaValse.ScoreDocument.Drawable.Scenes;
-using System.Windows;
-using StudioLaValse.Geometry;
-using StudioLaValse.Drawable;
+﻿using StudioLaValse.Drawable;
 using StudioLaValse.Drawable.Extensions;
 using StudioLaValse.Drawable.Interaction.Extensions;
 using StudioLaValse.Drawable.Interaction.Selection;
 using StudioLaValse.Drawable.Interaction.UserInput;
-using System;
+using StudioLaValse.Drawable.WPF.Painters;
+using StudioLaValse.Drawable.WPF.UserControls;
+using StudioLaValse.Geometry;
 using StudioLaValse.ScoreDocument.Core;
+using StudioLaValse.ScoreDocument.Drawable;
+using StudioLaValse.ScoreDocument.Drawable.Scenes;
 using StudioLaValse.ScoreDocument.Layout;
-using StudioLaValse.ScoreDocument.Drawable.Models;
+using System;
+using System.Windows;
 
 namespace StudioLaValse.ScoreDocument.Example.WPF
 {
@@ -40,11 +40,11 @@ namespace StudioLaValse.ScoreDocument.Example.WPF
                     {
                         score.AppendScoreMeasure(new TimeSignature(4, 4));
                         var measure = score.EditScoreMeasure(i);
-                        measure.ApplyLayout(new ScoreMeasureLayout()
-                        {
-                            KeySignature = new(Step.C, MajorOrMinor.Major),
-                            IsNewSystem = i % 6 == 0
-                        });
+                        measure.ApplyLayout(new ScoreMeasureLayout
+                        (
+                            keySignature: new(Step.C, MajorOrMinor.Major),
+                            isNewSystem: i % 6 == 0)
+                        );
                     }
                 })
                 .Build();
@@ -58,8 +58,7 @@ namespace StudioLaValse.ScoreDocument.Example.WPF
 
             var noteFactory = new VisualNoteFactory(selectionManager);
             var restFactory = new VisualRestFactory(selectionManager);
-            var beamBuilder = new VisualBeamBuilder();
-            var noteGroupFactory = new VisualNoteGroupFactory(noteFactory, restFactory, beamBuilder);
+            var noteGroupFactory = new VisualNoteGroupFactory(noteFactory, restFactory);
             var staffMeasusureFactory = new VisualStaffMeasureFactory(selectionManager, noteGroupFactory);
             var systemMeasureFactory = new VisualSystemMeasureFactory(selectionManager, staffMeasusureFactory);
             var staffSystemFactory = new VisualStaffSystemFactory(systemMeasureFactory, selectionManager);

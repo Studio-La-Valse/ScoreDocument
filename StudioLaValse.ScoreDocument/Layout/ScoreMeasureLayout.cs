@@ -1,15 +1,29 @@
 ﻿namespace StudioLaValse.ScoreDocument.Layout
 {
+    /// <summary>
+    /// The layout of a score measure.
+    /// </summary>
     public class ScoreMeasureLayout : IScoreMeasureLayout
     {
+        /// <inheritdoc/>
+        public KeySignature KeySignature { get; }
+        /// <inheritdoc/>
+        public double PaddingLeft { get; }
+        /// <inheritdoc/>
+        public double PaddingRight { get; }
+        /// <inheritdoc/>
+        public double Width { get; }
+        /// <inheritdoc/>
+        public bool IsNewSystem { get; }
 
-        public KeySignature KeySignature { get; init; }
-        public double PaddingLeft { get; init; }
-        public double PaddingRight { get; init; }
-        public double Width { get; init; }
-        public bool IsNewSystem { get; init; }
-
-
+        /// <summary>
+        /// The default constructor.
+        /// </summary>
+        /// <param name="keySignature"></param>
+        /// <param name="paddingleft"></param>
+        /// <param name="paddingright"></param>
+        /// <param name="width"></param>
+        /// <param name="isNewSystem"></param>
         public ScoreMeasureLayout(KeySignature? keySignature = null, double paddingleft = 10, double paddingright = 5, double width = 100, bool isNewSystem = false)
         {
             KeySignature = keySignature ?? new KeySignature(Step.C, MajorOrMinor.Major);
@@ -19,7 +33,7 @@
             IsNewSystem = isNewSystem;
         }
 
-
+        /// <inheritdoc/>
         public IScoreMeasureLayout Copy()
         {
             return new ScoreMeasureLayout(KeySignature, PaddingLeft, PaddingRight, Width, IsNewSystem);

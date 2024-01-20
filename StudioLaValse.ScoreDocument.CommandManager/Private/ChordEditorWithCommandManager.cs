@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace StudioLaValse.ScoreDocument.CommandManager.Private
 {
@@ -13,8 +12,6 @@ namespace StudioLaValse.ScoreDocument.CommandManager.Private
             this.source = source;
             this.commandManager = commandManager;
         }
-
-        public int Voice => source.Voice;
 
         public bool Grace => source.Grace;
 

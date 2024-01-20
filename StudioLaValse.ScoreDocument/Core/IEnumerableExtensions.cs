@@ -1,7 +1,17 @@
 ﻿namespace StudioLaValse.ScoreDocument.Core
 {
+    /// <summary>
+    /// Extensions to generic enumerables.
+    /// </summary>
     public static class IEnumerableExtensions
     {
+        /// <summary>
+        /// Find the index of the specified element in the enumerable. If the element is not found, -1 is returned.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="values"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
         public static int IndexOf<T>(this IEnumerable<T> values, Predicate<T> predicate)
         {
             var count = 0;

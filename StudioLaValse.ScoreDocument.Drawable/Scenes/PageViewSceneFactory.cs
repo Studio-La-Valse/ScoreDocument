@@ -1,12 +1,8 @@
-﻿using StudioLaValse.Drawable.ContentWrappers;
-using StudioLaValse.Geometry;
-using StudioLaValse.ScoreDocument.Drawable.ContentWrappers;
-using StudioLaValse.ScoreDocument.Drawable.Models;
-using StudioLaValse.ScoreDocument.Extensions;
-using StudioLaValse.ScoreDocument.Reader;
-
-namespace StudioLaValse.ScoreDocument.Drawable.Scenes
+﻿namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
+    /// <summary>
+    /// The default implementation of the visual score document factory.
+    /// </summary>
     public class PageViewSceneFactory : IVisualScoreDocumentContentFactory
     {
         private readonly IVisualStaffSystemFactory staffSystemContentFactory;
@@ -16,6 +12,15 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         private readonly ColorARGB foregroundColor;
         private readonly ColorARGB pageColor;
 
+        /// <summary>
+        /// The default constructor.
+        /// </summary>
+        /// <param name="staffSystemContentFactory"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="smallPadding"></param>
+        /// <param name="largePadding"></param>
+        /// <param name="foregroundColor"></param>
+        /// <param name="pageColor"></param>
         public PageViewSceneFactory(IVisualStaffSystemFactory staffSystemContentFactory, PageSize pageSize, double smallPadding, double largePadding, ColorARGB foregroundColor, ColorARGB pageColor)
         {
             this.staffSystemContentFactory = staffSystemContentFactory;
@@ -26,6 +31,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
             this.pageColor = pageColor;
         }
 
+        /// <inheritdoc/>
         public BaseContentWrapper CreateContent(IScoreDocumentReader scoreDocument)
         {
             var pages = new List<VisualPage>()

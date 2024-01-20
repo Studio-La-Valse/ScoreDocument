@@ -1,7 +1,15 @@
 ﻿namespace StudioLaValse.ScoreDocument.Extensions
 {
+    /// <summary>
+    /// Extensions to the <see cref="INoteReader"/> interface.
+    /// </summary>
     public static class NoteReaderExtensions
     {
+        /// <summary>
+        /// Read all chords in the measure that appear before the specified note reader.
+        /// </summary>
+        /// <param name="noteReader"></param>
+        /// <returns></returns>
         public static IEnumerable<IChordReader> ReadPrecedingChordsInMeasure(this INoteReader noteReader)
         {
             var ribbonMeasure = noteReader
@@ -24,6 +32,11 @@
             }
         }
 
+        /// <summary>
+        /// Calculates the appropriate accidental for the note. Takes into account the layout of the note.
+        /// </summary>
+        /// <param name="note"></param>
+        /// <returns></returns>
         public static Accidental? GetAccidental(this INoteReader note)
         {
             var forceAccidental = note.ReadLayout().ForceAccidental;
@@ -69,7 +82,11 @@
             return systemSays;
         }
 
-
+        /// <summary>
+        /// Gets the clef for the note. Takes into account the staff index specified in the layout of the ntoe.
+        /// </summary>
+        /// <param name="note"></param>
+        /// <returns></returns>
         public static Clef GetClef(this INoteReader note)
         {
             var hostMeasure = note.ReadContext().ReadContext();

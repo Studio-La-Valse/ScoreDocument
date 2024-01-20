@@ -1,7 +1,6 @@
 ﻿using StudioLaValse.ScoreDocument.Core;
 using StudioLaValse.ScoreDocument.Editor;
 using StudioLaValse.ScoreDocument.Primitives;
-using StudioLaValse.ScoreDocument.Reader;
 
 namespace StudioLaValse.ScoreDocument.Layout.Private.Editors
 {
@@ -17,8 +16,6 @@ namespace StudioLaValse.ScoreDocument.Layout.Private.Editors
         }
 
         public Pitch Pitch { get => noteEditor.Pitch; set => noteEditor.Pitch = value; }
-
-        public int Voice => noteEditor.Voice;
 
         public bool Grace => noteEditor.Grace;
 

@@ -11,8 +11,7 @@
 
 
 
-        public int Voice =>
-            container.Voice;
+
         public bool Grace =>
             container.Grace;
         public Position Position =>

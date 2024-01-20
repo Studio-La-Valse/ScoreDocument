@@ -1,0 +1,12 @@
+﻿global using StudioLaValse.Drawable.ContentWrappers;
+global using StudioLaValse.Drawable.DrawableElements;
+global using StudioLaValse.Drawable.Interaction.ContentWrappers;
+global using StudioLaValse.Drawable.Interaction.Selection;
+global using StudioLaValse.Drawable.Text;
+global using StudioLaValse.Geometry;
+global using StudioLaValse.ScoreDocument.Core;
+global using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.ContentWrappers;
+global using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.Ghosts;
+global using StudioLaValse.ScoreDocument.Drawable.Scenes;
+global using StudioLaValse.ScoreDocument.Extensions;
+global using StudioLaValse.ScoreDocument.Reader;

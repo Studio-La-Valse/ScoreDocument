@@ -1,25 +1,40 @@
 ﻿namespace StudioLaValse.ScoreDocument.Core
 {
+    /// <summary>
+    /// Represents a musical scale.
+    /// </summary>
     public class Scale
     {
         private readonly Step origin;
         private readonly ScaleStructure scaleStructure;
 
 
-
+        /// <summary>
+        /// Construct a scale from an origin and a scale structure.
+        /// </summary>
+        /// <param name="origin"></param>
+        /// <param name="scaleStructure"></param>
         public Scale(Step origin, ScaleStructure scaleStructure)
         {
             this.origin = origin;
             this.scaleStructure = scaleStructure;
         }
 
-
+        /// <summary>
+        /// Enumerate the steps in the scale.
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<Step> EnumerateSteps()
         {
             var number = scaleStructure.Length + 1;
             return EnumerateSteps(number);
         }
 
+        /// <summary>
+        /// Enumerate the steps in this scale for a number of steps.
+        /// </summary>
+        /// <param name="number"></param>
+        /// <returns></returns>
         public IEnumerable<Step> EnumerateSteps(int number)
         {
             if (number <= 0)
@@ -63,74 +78,11 @@
             return new Step(newStep, newShifts);
         }
 
-
-        public IEnumerable<Pitch> EnumeratePitches(Pitch pitch, int number)
-        {
-            if (number <= 0)
-            {
-                yield break;
-            }
-
-            var stepsInScale = EnumerateSteps().ToArray();
-            var indexOfPitchInScale = stepsInScale.IndexOf(i => i.Equals(pitch.Step));
-            if (indexOfPitchInScale == -1)
-            {
-                throw new Exception("Cannot find pitch in this scale. The pitch has to be part of the scale to start enumeration.");
-            }
-
-            yield return pitch;
-            var octave = pitch.Octave;
-            for (int i = indexOfPitchInScale; i < indexOfPitchInScale + (number - 1); i++)
-            {
-                var safeIndexOfCurrentStep = MathUtils.UnsignedModulo(i, scaleStructure.Length);
-                var safeIndexOfNextStep = MathUtils.UnsignedModulo(i + 1, scaleStructure.Length);
-
-                var currentStep = stepsInScale[safeIndexOfCurrentStep];
-                var nextStep = stepsInScale[safeIndexOfNextStep];
-                var intervalToNext = scaleStructure.Intervals.ElementAt(safeIndexOfCurrentStep);
-                if (intervalToNext.SemiTones + currentStep.SemiTones >= 12)
-                {
-                    octave++;
-                }
-
-                pitch = new Pitch(nextStep, octave);
-                yield return pitch;
-            }
-        }
-        public IEnumerable<Pitch> EnumeratePitchesDownwards(Pitch pitch, int number)
-        {
-            if (number <= 0)
-            {
-                yield break;
-            }
-
-            var stepsInScale = EnumerateSteps().ToArray();
-            var indexOfPitchInScale = stepsInScale.IndexOf(i => i.Equals(pitch.Step));
-            if (indexOfPitchInScale == -1)
-            {
-                throw new Exception("Cannot find pitch in this scale. The pitch has to be part of the scale to start enumeration.");
-            }
-
-            yield return pitch;
-            var octave = pitch.Octave;
-            for (int i = indexOfPitchInScale; i > indexOfPitchInScale - (number - 1); i--)
-            {
-                var safeIndexOfCurrentStep = MathUtils.UnsignedModulo(i, scaleStructure.Length);
-                var safeIndexOfNextStep = MathUtils.UnsignedModulo(i - 1, scaleStructure.Length);
-
-                var currentStep = stepsInScale[safeIndexOfCurrentStep];
-                var nextStep = stepsInScale[safeIndexOfNextStep];
-                var intervalToNextStep = scaleStructure.Intervals.ElementAt(safeIndexOfCurrentStep);
-                if (currentStep.SemiTones - intervalToNextStep.SemiTones <= 0)
-                {
-                    octave--;
-                }
-
-                pitch = new Pitch(nextStep, octave);
-                yield return pitch;
-            }
-        }
-
+        /// <summary>
+        /// Specifies whether the scale contains the specified step.
+        /// </summary>
+        /// <param name="step"></param>
+        /// <returns></returns>
         public bool Contains(Step step)
         {
             return EnumerateSteps().Any(_step => _step.Equals(step));

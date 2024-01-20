@@ -1,7 +1,6 @@
 ﻿using StudioLaValse.ScoreDocument.Core;
 using StudioLaValse.ScoreDocument.Primitives;
 using StudioLaValse.ScoreDocument.Reader;
-using System.Collections;
 
 namespace StudioLaValse.ScoreDocument.Layout.Private.Readers
 {
@@ -15,8 +14,6 @@ namespace StudioLaValse.ScoreDocument.Layout.Private.Readers
             this.chordReader = chordReader;
             this.layoutDictionary = layoutDictionary;
         }
-
-        public int Voice => chordReader.Voice;
 
         public bool Grace => chordReader.Grace;
 
@@ -50,19 +47,9 @@ namespace StudioLaValse.ScoreDocument.Layout.Private.Readers
             return layoutDictionary.GetOrCreate(chordReader);
         }
 
-        public IChordReader? ReadNext()
-        {
-            return chordReader.ReadNext()?.UseLayout(layoutDictionary);
-        }
-
         public IEnumerable<INoteReader> ReadNotes()
         {
             return chordReader.ReadNotes().Select(e => e.UseLayout(layoutDictionary));
-        }
-
-        public IChordReader? ReadPrevious()
-        {
-            return chordReader.ReadPrevious()?.UseLayout(layoutDictionary);
         }
     }
 }

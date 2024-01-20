@@ -1,102 +1,219 @@
-﻿namespace StudioLaValse.ScoreDocument.Core
+﻿using StudioLaValse.ScoreDocument.Core.Private;
+
+namespace StudioLaValse.ScoreDocument.Core
 {
     /// <summary>
-    /// C = 0
+    /// Represents a musical step.
     /// </summary>
-    public class Step
+    public class Step : IEquatable<Step>
     {
-        private static readonly string[] stepNames = new string[]
-        {
-            "C", "D", "E",  "F", "G", "A", "B",
-        };
+        private static readonly string[] stepNames =
+        [
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "A",
+            "B",
+        ];
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static Step ADoubleFlat =>
             new Step(5, -2);
+        /// <summary>
+        /// 
+        /// </summary>
         public static Step AFlat =>
             new Step(5, -1);
+        /// <summary>
+        /// 
+        /// </summary>
         public static Step A =>
             new Step(5, 0);
+        /// <summary>
+        /// 
+        /// </summary>
         public static Step ASharp =>
             new Step(5, 1);
+        /// <summary>
+        /// 
+        /// </summary>
         public static Step ADoubleSharp =>
             new Step(5, 2);
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static Step BDoubleFlat =>
             new Step(6, -2);
+        /// <summary>
+        /// 
+        /// </summary>
         public static Step BFlat =>
             new Step(6, -1);
+        /// <summary>
+        /// 
+        /// </summary>
         public static Step B =>
             new Step(6, 0);
+        /// <summary>
+        /// 
+        /// </summary>
         public static Step BSharp =>
             new Step(6, 1);
+        /// <summary>
+        /// 
+        /// </summary>
         public static Step BDoubleSharp =>
             new Step(6, 2);
 
-
+        /// <summary>
+        /// 
+        /// </summary>
         public static Step CDoubleFlat =>
             new Step(0, -2);
+        /// <summary>
+        /// 
+        /// </summary>
         public static Step CFlat =>
             new Step(0, -1);
+        /// <summary>
+        /// 
+        /// </summary>
         public static Step C =>
             new Step(0, 0);
+        /// <summary>
+        /// 
+        /// </summary>
         public static Step CSharp =>
             new Step(0, 1);
+        /// <summary>
+        /// 
+        /// </summary>
         public static Step CDoubleSharp =>
             new Step(0, 2);
 
-
+        /// <summary>
+        /// 
+        /// </summary>
         public static Step DDoubleFlat =>
             new Step(1, -2);
+        /// <summary>
+        /// 
+        /// </summary>
         public static Step DFlat =>
             new Step(1, -1);
+        /// <summary>
+        /// 
+        /// </summary>
         public static Step D =>
             new Step(1, 0);
+        /// <summary>
+        /// 
+        /// </summary>
         public static Step DSharp =>
             new Step(1, 1);
+        /// <summary>
+        /// 
+        /// </summary>
         public static Step DDoubleSharp =>
             new Step(1, 2);
 
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static Step EDoubleFlat =>
             new Step(2, -2);
+        /// <summary>
+        /// 
+        /// </summary>
         public static Step EFlat =>
             new Step(2, -1);
+        /// <summary>
+        /// 
+        /// </summary>
         public static Step E =>
             new Step(2, 0);
+        /// <summary>
+        /// 
+        /// </summary>
         public static Step ESharp =>
             new Step(2, 1);
+        /// <summary>
+        /// 
+        /// </summary>
         public static Step EDoubleSharp =>
             new Step(2, 2);
 
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static Step FDoubleFlat =>
             new Step(3, -2);
+        /// <summary>
+        /// 
+        /// </summary>
         public static Step FFlat =>
             new Step(3, -1);
+        /// <summary>
+        /// 
+        /// </summary>
         public static Step F =>
             new Step(3, 0);
+        /// <summary>
+        /// 
+        /// </summary>
         public static Step FSharp =>
             new Step(3, 1);
+        /// <summary>
+        /// 
+        /// </summary>
         public static Step FDoubleSharp =>
             new Step(3, 2);
 
-
+        /// <summary>
+        /// 
+        /// </summary>
         public static Step GDoubleFlat =>
             new Step(4, -2);
+        /// <summary>
+        /// 
+        /// </summary>
         public static Step GFlat =>
             new Step(4, -1);
+        /// <summary>
+        /// 
+        /// </summary>
         public static Step G =>
             new Step(4, 0);
+        /// <summary>
+        /// 
+        /// </summary>
         public static Step GSharp =>
             new Step(4, 1);
+        /// <summary>
+        /// 
+        /// </summary>
         public static Step GDoubleSharp =>
             new Step(4, 2);
 
-
+        /// <summary>
+        /// The steps taken from c.
+        /// </summary>
         public int StepsFromC { get; }
+        /// <summary>
+        /// The number of shifts, after taking the specified amount of steps.
+        /// </summary>
         public int Shifts { get; }
 
-
+        /// <summary>
+        /// Calculates the number of semitones in the step.
+        /// </summary>
         public int SemiTones
         {
             get
@@ -113,19 +230,32 @@
                 return (int)MathUtils.UnsignedModulo(value + Shifts, 12);
             }
         }
+        /// <summary>
+        /// The index in the circle of fifths, for the major scale.
+        /// </summary>
         public int PositionCircleOfFifths =>
             SemiTones * 7 % 12;
+        /// <summary>
+        /// Calculates the relative major step. Assumes a minor scale origin for this step.
+        /// For example, the relative major for an 'a' step would be 'c', because the relative major of a minor is c major.
+        /// </summary>
         public Step RelativeMajor =>
             new Scale(this, ScaleStructure.Minor).EnumerateSteps().ElementAt(2);
+        /// <summary>
+        /// Calculates the relative minor step. Assumes a major scale origin for this step.
+        /// For example, the relative major for an 'c' step would be 'a', because the relative minor of c major is a minor.
+        /// </summary>
         public Step RelativeMinor =>
             new Scale(this, ScaleStructure.Major).EnumerateSteps().ElementAt(5);
+        /// <summary>
+        /// Calculates the dominant of this step.
+        /// </summary>
         public Step Dominant =>
             new Scale(this, ScaleStructure.Major).EnumerateSteps().ElementAt(4);
 
-
-        public Step(int step, int shifts)
+        internal Step(int step, int shifts)
         {
-            if (shifts < -3 || shifts > 3)
+            if (shifts <= -3 || shifts >= 3)
             {
                 throw new ArgumentOutOfRangeException(nameof(shifts));
             }
@@ -133,34 +263,9 @@
             StepsFromC = (int)MathUtils.UnsignedModulo(step, 7);
             Shifts = shifts;
         }
-        public static Step FromPositionInCircleOfFifths(int position)
-        {
-            return position switch
-            {
-                -6 => GFlat,
-                -5 => DFlat,
-                -4 => AFlat,
-                -3 => EFlat,
-                -2 => BFlat,
-                -1 => F,
-                0 => C,
-                1 => G,
-                2 => D,
-                3 => A,
-                4 => E,
-                5 => B,
-                6 => FSharp,
-                7 => DFlat,
-                8 => AFlat,
-                9 => EFlat,
-                10 => BFlat,
-                11 => F,
-                _ => throw new NotImplementedException()
-            };
-        }
 
 
-
+        /// <inheritdoc/>
         public override bool Equals(object? obj)
         {
             if (obj is null)
@@ -175,12 +280,13 @@
 
             return Equals(other);
         }
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             return new Tuple<int, int>(StepsFromC, Shifts).GetHashCode();
         }
-
-        public bool Equals(Step other)
+        /// <inheritdoc/>
+        public bool Equals(Step? other)
         {
             if (other is null)
             {
@@ -189,6 +295,12 @@
 
             return other.StepsFromC == StepsFromC && other.Shifts == Shifts;
         }
+        /// <summary>
+        /// Determines whether the other step resembles this instance.
+        /// For example, an a flat resembles a g sharp.
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
         public bool EqualsOrResembles(Step other)
         {
             if (other is null)
@@ -200,7 +312,7 @@
         }
 
 
-
+        /// <inheritdoc/>
         public static Step operator +(Step step, Interval interval)
         {
             if (interval.Steps == 0)
@@ -212,15 +324,17 @@
             var element = scale.EnumerateSteps(interval.Steps + 1).ElementAt(interval.Steps);
             return new Step(element.StepsFromC, element.Shifts + interval.Shifts);
         }
+        /// <inheritdoc/>
         public static bool operator ==(Step step, Step second)
         {
             return step.Equals(second);
         }
+        /// <inheritdoc/>
         public static bool operator !=(Step step, Step second)
         {
             return !step.Equals(second);
         }
-
+        /// <inheritdoc/>
         public override string ToString()
         {
             var shift = Shifts switch

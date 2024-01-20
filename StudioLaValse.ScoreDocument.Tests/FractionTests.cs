@@ -114,14 +114,25 @@ namespace StudioLaValse.ScoreDocument.Tests
         public void TestTuplet()
         {
             var oneEight = new RythmicDuration(8);
-            var tuplet = new Tuplet(new Duration(3, 8), new Duration(1, 4));
-            var adjustedLength = oneEight.ToActualDuration(tuplet);
+            var threeEights = new RythmicDuration[]
+            {
+                new RythmicDuration(8),
+                new RythmicDuration(4)
+            };
+            var tuplet = new Tuplet(new Duration(1, 4), threeEights);
 
+            //the length of one eights in a tuplet of three eights in the space of one fourth is one twelveth.
+            var adjustedLength = oneEight.ToActualDuration(tuplet);
             Assert.AreEqual(adjustedLength.Numinator, 1);
             Assert.AreEqual(adjustedLength.Denominator, 12);
 
             var oneSixteenth = new RythmicDuration(16);
-            tuplet = new Tuplet(new Duration(13, 16), new Duration(1, 4));
+            var thirteenOneSixtheenths = new RythmicDuration[13];
+            for (int i = 0; i < 13; i++)
+            {
+                thirteenOneSixtheenths[i] = oneSixteenth;
+            }
+            tuplet = new Tuplet(new Duration(1, 4), thirteenOneSixtheenths);
             adjustedLength = oneSixteenth.ToActualDuration(tuplet);
 
             Assert.AreEqual(adjustedLength.Numinator, 1);

@@ -21,7 +21,7 @@
         {
             var transaction = commandManager.ThrowIfNoTransactionOpen();
 
-            ChordGroupMemento? memento = null;
+            MeasureBlockMemento? memento = null;
 
             transaction.Enqueue(new SimpleCommand(
                 () =>
@@ -44,7 +44,7 @@
         {
             var transaction = commandManager.ThrowIfNoTransactionOpen();
 
-            ChordGroupMemento? memento = null;
+            MeasureBlockMemento? memento = null;
 
             transaction.Enqueue(new SimpleCommand(
                 () =>
@@ -115,7 +115,7 @@
         {
             var transaction = commandManager.ThrowIfNoTransactionOpen();
 
-            ChordGroupMemento? memento = null;
+            MeasureBlockMemento? memento = null;
 
             transaction.Enqueue(new SimpleCommand(
                 () =>

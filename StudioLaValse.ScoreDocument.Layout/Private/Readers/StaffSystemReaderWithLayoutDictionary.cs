@@ -47,9 +47,9 @@ namespace StudioLaValse.ScoreDocument.Layout.Private.Readers
             return source.ReadStaffGroups().Select(e => e.UseLayout(layoutDictionary));
         }
 
-        public IStaffGroupReader ReadStaffGroup(IInstrumentRibbonReader instrumentRibbon)
+        public IStaffGroupReader ReadStaffGroup(int indexInScore)
         {
-            return source.ReadStaffGroup(instrumentRibbon).UseLayout(layoutDictionary);
+            return source.ReadStaffGroup(indexInScore).UseLayout(layoutDictionary);
         }
     }
 }

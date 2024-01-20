@@ -1,9 +1,6 @@
 ﻿using StudioLaValse.ScoreDocument.Core;
 using StudioLaValse.ScoreDocument.Editor;
 using StudioLaValse.ScoreDocument.Primitives;
-using StudioLaValse.ScoreDocument.Reader;
-using System.Collections;
-using System.Diagnostics.CodeAnalysis;
 
 namespace StudioLaValse.ScoreDocument.Layout.Private.Editors
 {

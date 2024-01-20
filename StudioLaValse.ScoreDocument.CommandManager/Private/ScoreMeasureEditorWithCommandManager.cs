@@ -1,8 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace StudioLaValse.ScoreDocument.CommandManager.Private
+﻿namespace StudioLaValse.ScoreDocument.CommandManager.Private
 {
-    public class ScoreMeasureEditorWithCommandManager : IScoreMeasureEditor
+    internal class ScoreMeasureEditorWithCommandManager : IScoreMeasureEditor
     {
         private readonly IScoreMeasureEditor source;
         private readonly ICommandManager commandManager;

@@ -18,8 +18,6 @@ namespace StudioLaValse.ScoreDocument.Layout.Private.Readers
 
         public Pitch Pitch => source.Pitch;
 
-        public int Voice => source.Voice;
-
         public bool Grace => source.Grace;
 
         public Position Position => source.Position;

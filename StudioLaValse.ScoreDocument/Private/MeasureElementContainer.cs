@@ -15,15 +15,7 @@ namespace StudioLaValse.ScoreDocument.Private
 
 
 
-        public Tuplet Tuplet
-        {
-            get
-            {
-                var targetLength = hostBlock.Duration;
-                var groupLength = hostBlock.ReadChords().Select(e => e.RythmicDuration).Sum();
-                return new Tuplet(groupLength, targetLength);
-            }
-        }
+        public Tuplet Tuplet => hostBlock.Tuplet;
         public Position Position
         {
             get
@@ -34,7 +26,7 @@ namespace StudioLaValse.ScoreDocument.Private
                 }
 
                 var index = hostBlock.IndexOfOrThrow(this);
-                var position = hostBlock.Position.ToPosition();
+                var position = hostBlock.Position;
 
                 foreach (var container in hostBlock.Containers.Take(index))
                 {

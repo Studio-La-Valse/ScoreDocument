@@ -1,12 +1,8 @@
-﻿using StudioLaValse.Drawable.ContentWrappers;
-using StudioLaValse.Geometry;
-using StudioLaValse.ScoreDocument.Drawable.ContentWrappers;
-using StudioLaValse.ScoreDocument.Drawable.Models;
-using StudioLaValse.ScoreDocument.Extensions;
-using StudioLaValse.ScoreDocument.Reader;
-
-namespace StudioLaValse.ScoreDocument.Drawable.Scenes
+﻿namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
+    /// <summary>
+    /// An implementation of the visual score document factory, that visualizes a single page of the score document.
+    /// </summary>
     public class SinglePageViewSceneFactory : IVisualScoreDocumentContentFactory
     {
         private readonly int pageIndex;
@@ -15,6 +11,14 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         private readonly ColorARGB foregroundColor;
         private readonly ColorARGB pagecolor;
 
+        /// <summary>
+        /// The default constructor.
+        /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="staffSystemContentFactory"></param>
+        /// <param name="foregroundColor"></param>
+        /// <param name="pageColor"></param>
         public SinglePageViewSceneFactory(int pageIndex, PageSize pageSize, IVisualStaffSystemFactory staffSystemContentFactory, ColorARGB foregroundColor, ColorARGB pageColor)
         {
             this.pageIndex = pageIndex;
@@ -23,7 +27,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
             this.foregroundColor = foregroundColor;
             pagecolor = pageColor;
         }
-
+        /// <inheritdoc/>
         public BaseContentWrapper CreateContent(IScoreDocumentReader scoreDocument)
         {
             var pages = new List<VisualPage>()

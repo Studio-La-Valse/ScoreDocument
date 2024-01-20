@@ -47,9 +47,9 @@
 
 
 
-        public IStaffGroupReader ReadStaffGroup(IInstrumentRibbonReader instrumentRibbon)
+        public IStaffGroupReader ReadStaffGroup(int indexInScore)
         {
-            return staffGroups.First(s => s.Key.IndexInScore == instrumentRibbon.IndexInScore).Value;
+            return staffGroups.First(s => s.Key.IndexInScore == indexInScore).Value;
         }
         public IStaffGroupEditor EditStaffGroup(int indexInScore)
         {

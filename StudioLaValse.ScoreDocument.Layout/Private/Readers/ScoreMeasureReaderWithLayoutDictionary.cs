@@ -1,7 +1,6 @@
 ﻿using StudioLaValse.ScoreDocument.Core;
 using StudioLaValse.ScoreDocument.Primitives;
 using StudioLaValse.ScoreDocument.Reader;
-using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 
 namespace StudioLaValse.ScoreDocument.Layout.Private.Readers
@@ -52,7 +51,7 @@ namespace StudioLaValse.ScoreDocument.Layout.Private.Readers
 
         public bool TryReadNext([NotNullWhen(true)] out IScoreMeasureReader? next)
         {
-            if(source.TryReadNext(out next))
+            if (source.TryReadNext(out next))
             {
                 next = next.UseLayout(layoutDictionary);
                 return true;
@@ -63,7 +62,7 @@ namespace StudioLaValse.ScoreDocument.Layout.Private.Readers
 
         public bool TryReadPrevious([NotNullWhen(true)] out IScoreMeasureReader? previous)
         {
-            if(source.TryReadPrevious(out previous))
+            if (source.TryReadPrevious(out previous))
             {
                 previous = previous.UseLayout(layoutDictionary);
                 return true;

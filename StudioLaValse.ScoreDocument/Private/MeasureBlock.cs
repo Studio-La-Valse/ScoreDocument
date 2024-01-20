@@ -16,13 +16,13 @@ namespace StudioLaValse.ScoreDocument.Private
 
         public int Voice =>
             host.Voice;
-        public Duration Position
+        public Position Position
         {
             get
             {
                 var index = host.IndexOfOrThrow(this);
 
-                var position = new Duration(0, 4);
+                var position = new Position(0, 4);
 
                 foreach (var block in host.Blocks.Take(index))
                 {
@@ -45,7 +45,14 @@ namespace StudioLaValse.ScoreDocument.Private
             grace;
         public Duration Duration =>
             duration;
-
+        public Tuplet Tuplet
+        {
+            get
+            {
+                var groupLength = Containers.Select(e => e.RythmicDuration).ToArray();
+                return new Tuplet(Duration, groupLength);
+            }
+        }
 
         public MeasureBlock(Duration duration, MeasureBlockChain host, bool grace, IKeyGenerator<int> keyGenerator) : base(keyGenerator)
         {
@@ -173,8 +180,8 @@ namespace StudioLaValse.ScoreDocument.Private
                         continue;
                     }
 
-                    var receives = leftChord != null && leftChord.RythmicDuration.PowerOfTwo >= 1 / duration;
-                    var sends = rightChord != null && rightChord.RythmicDuration.PowerOfTwo >= 1 / duration;
+                    var receives = leftChord is not null && leftChord.RythmicDuration.PowerOfTwo >= 1 / duration;
+                    var sends = rightChord is not null && rightChord.RythmicDuration.PowerOfTwo >= 1 / duration;
 
                     if (leftChord is null && rightChord is null)
                     {

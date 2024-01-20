@@ -1,8 +1,6 @@
 ﻿using StudioLaValse.ScoreDocument.Core;
 using StudioLaValse.ScoreDocument.Editor;
 using StudioLaValse.ScoreDocument.Primitives;
-using StudioLaValse.ScoreDocument.Reader;
-using System.Collections;
 
 namespace StudioLaValse.ScoreDocument.Layout.Private.Editors
 {
@@ -16,8 +14,6 @@ namespace StudioLaValse.ScoreDocument.Layout.Private.Editors
             this.chordEditor = chordEditor;
             this.layoutDictionary = layoutDictionary;
         }
-
-        public int Voice => chordEditor.Voice;
 
         public bool Grace => chordEditor.Grace;
 

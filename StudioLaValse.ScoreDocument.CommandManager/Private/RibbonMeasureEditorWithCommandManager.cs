@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Diagnostics.CodeAnalysis;
-
-namespace StudioLaValse.ScoreDocument.CommandManager.Private
+﻿namespace StudioLaValse.ScoreDocument.CommandManager.Private
 {
     internal class RibbonMeasureEditorWithCommandManager : IInstrumentMeasureEditor
     {

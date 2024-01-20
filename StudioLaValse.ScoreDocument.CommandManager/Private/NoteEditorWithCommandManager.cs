@@ -39,9 +39,6 @@
                     }));
             }
         }
-
-        public int Voice => source.Voice;
-
         public bool Grace => source.Grace;
 
         public Position Position => source.Position;

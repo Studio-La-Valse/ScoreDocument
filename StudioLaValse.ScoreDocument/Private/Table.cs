@@ -1,6 +1,6 @@
 ﻿namespace StudioLaValse.ScoreDocument.Private
 {
-    public abstract class Table<TCell, TColumn, TRow> where TCell : class
+    internal abstract class Table<TCell, TColumn, TRow> where TCell : class
     {
         private readonly List<(TRow header, List<TCell> cells)> rows;
         private readonly List<TColumn> columns;

@@ -1,5 +1,4 @@
 ﻿using StudioLaValse.Drawable;
-using StudioLaValse.ScoreDocument.Core;
 using StudioLaValse.ScoreDocument.Editor;
 using StudioLaValse.ScoreDocument.Layout;
 using StudioLaValse.ScoreDocument.Primitives;
@@ -20,8 +19,6 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ScoreDocumentEditor
         }
 
         public int IndexInBlock => source.IndexInBlock;
-
-        public int Voice => source.Voice;
 
         public bool Grace => source.Grace;
 

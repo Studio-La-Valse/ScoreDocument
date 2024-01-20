@@ -3,6 +3,9 @@ using StudioLaValse.ScoreDocument.Reader;
 
 namespace StudioLaValse.ScoreDocument.Layout
 {
+    /// <summary>
+    /// The default implementation of the score layout dictionary.
+    /// </summary>
     public class ScoreLayoutDictionary : IScoreLayoutDictionary
     {
         private readonly Dictionary<IScoreDocument, IScoreDocumentLayout> scoreDocumentLayoutDictionary = [];
@@ -25,15 +28,18 @@ namespace StudioLaValse.ScoreDocument.Layout
 
         }
 
-
+        /// <summary>
+        /// Create the default implementation.
+        /// </summary>
+        /// <returns></returns>
         public static IScoreLayoutDictionary CreateDefault()
         {
             return new ScoreLayoutDictionary();
         }
 
-        
-        
-        
+
+
+        /// <inheritdoc/>
         public IMeasureElementLayout GetOrCreate(INote element)
         {
             if (measureElementLayoutDictionary.TryGetValue(element, out var value))
@@ -46,11 +52,14 @@ namespace StudioLaValse.ScoreDocument.Layout
 
             return measureElementLayoutDictionary[element];
         }
+        /// <inheritdoc/>
         public void Assign(INote element, IMeasureElementLayout layout)
         {
             measureElementLayoutDictionary[element] = layout;
         }
 
+
+        /// <inheritdoc/>
         public IChordLayout GetOrCreate(IChord element)
         {
             if (chordLayoutDictionary.TryGetValue(element, out var value))
@@ -63,14 +72,17 @@ namespace StudioLaValse.ScoreDocument.Layout
 
             return chordLayoutDictionary[element];
         }
+        /// <inheritdoc/>
         public void Assign(IChord chord, IChordLayout layout)
         {
             chordLayoutDictionary[chord] = layout;
         }
 
+
+        /// <inheritdoc/>
         public INoteGroupLayout GetOrCreate(IMeasureBlockReader reader)
         {
-            if(chordGroupReaderDictionary.TryGetValue(reader, out var value))
+            if (chordGroupReaderDictionary.TryGetValue(reader, out var value))
             {
                 return value;
             }
@@ -79,11 +91,14 @@ namespace StudioLaValse.ScoreDocument.Layout
             chordGroupReaderDictionary[reader] = layout;
             return chordGroupReaderDictionary[reader];
         }
+        /// <inheritdoc/>
         public void Assign(IMeasureBlockReader chordGroup, INoteGroupLayout layout)
         {
             chordGroupReaderDictionary[chordGroup] = layout;
         }
 
+
+        /// <inheritdoc/>
         public IInstrumentMeasureLayout GetOrCreate(IInstrumentMeasure element)
         {
             if (instrumentMeasureLayoutDictionary.TryGetValue(element, out var value))
@@ -96,11 +111,14 @@ namespace StudioLaValse.ScoreDocument.Layout
 
             return instrumentMeasureLayoutDictionary[element];
         }
+        /// <inheritdoc/>
         public void Assign(IInstrumentMeasure ribbonMeasure, IInstrumentMeasureLayout layout)
         {
             instrumentMeasureLayoutDictionary[ribbonMeasure] = layout;
         }
 
+
+        /// <inheritdoc/>
         public IScoreMeasureLayout GetOrCreate(IScoreMeasure element)
         {
             if (scoreMeasureLayoutDictionary.TryGetValue(element, out var value))
@@ -113,11 +131,14 @@ namespace StudioLaValse.ScoreDocument.Layout
             scoreMeasureLayoutDictionary.Add(element, layout);
             return scoreMeasureLayoutDictionary[element];
         }
+        /// <inheritdoc/>
         public void Assign(IScoreMeasure scoreMeasure, IScoreMeasureLayout layout)
         {
             scoreMeasureLayoutDictionary[scoreMeasure] = layout;
         }
 
+
+        /// <inheritdoc/>
         public IInstrumentRibbonLayout GetOrCreate(IInstrumentRibbon element)
         {
             if (instrumentRibbonLayoutDictionary.TryGetValue(element, out var value))
@@ -131,11 +152,14 @@ namespace StudioLaValse.ScoreDocument.Layout
             instrumentRibbonLayoutDictionary.Add(element, layout);
             return instrumentRibbonLayoutDictionary[element];
         }
+        /// <inheritdoc/>
         public void Assign(IInstrumentRibbon instrumentRibbon, IInstrumentRibbonLayout layout)
         {
             instrumentRibbonLayoutDictionary[instrumentRibbon] = layout;
         }
 
+
+        /// <inheritdoc/>
         public IStaffLayout GetOrCreate(IStaff element)
         {
             if (staffLayoutDictionary.TryGetValue(element, out var layout))
@@ -147,11 +171,14 @@ namespace StudioLaValse.ScoreDocument.Layout
             staffLayoutDictionary.Add(element, layout);
             return staffLayoutDictionary[element];
         }
+        /// <inheritdoc/>
         public void Assign(IStaff staffReader, IStaffLayout layout)
         {
             staffLayoutDictionary[staffReader] = layout;
         }
 
+
+        /// <inheritdoc/>
         public IStaffGroupLayout GetOrCreate(IStaffGroup element)
         {
             if (staffGroupLayoutDictionary.TryGetValue(element, out var layout))
@@ -163,11 +190,14 @@ namespace StudioLaValse.ScoreDocument.Layout
             staffGroupLayoutDictionary.Add(element, layout);
             return staffGroupLayoutDictionary[element];
         }
+        /// <inheritdoc/>
         public void Assign(IStaffGroup staffGroup, IStaffGroupLayout layout)
         {
             staffGroupLayoutDictionary[staffGroup] = layout;
         }
 
+
+        /// <inheritdoc/>
         public IStaffSystemLayout GetOrCreate(IStaffSystem element)
         {
             if (staffSystemLayoutDictionary.TryGetValue(element, out var layout))
@@ -179,15 +209,19 @@ namespace StudioLaValse.ScoreDocument.Layout
             staffSystemLayoutDictionary.Add(element, layout);
             return staffSystemLayoutDictionary[element];
         }
+        /// <inheritdoc/>
         public void Assign(IStaffSystem staffSystem, IStaffSystemLayout layout)
         {
             staffSystemLayoutDictionary[staffSystem] = layout;
         }
 
+
+        /// <inheritdoc/>
         public IScoreDocumentLayout GetOrCreate(IScoreDocument scoreDocument)
         {
             throw new NotImplementedException();
         }
+        /// <inheritdoc/>
         public void Assign(IScoreDocument scoreDocument, IScoreDocumentLayout layout)
         {
             scoreDocumentLayoutDictionary[scoreDocument] = layout;

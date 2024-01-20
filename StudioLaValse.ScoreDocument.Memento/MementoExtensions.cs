@@ -1,7 +1,15 @@
 ﻿namespace StudioLaValse.ScoreDocument.Memento
 {
+    /// <summary>
+    /// All extensions related to the memento namespace.
+    /// </summary>
     public static class MementoExtensions
     {
+        /// <summary>
+        /// Get the memento for the specified element.
+        /// </summary>
+        /// <param name="scoreDocument"></param>
+        /// <returns></returns>
         public static ScoreDocumentMemento GetMemento(this IScoreDocumentReader scoreDocument)
         {
             return new ScoreDocumentMemento
@@ -11,6 +19,11 @@
                 ScoreMeasures = scoreDocument.ReadScoreMeasures().Select(e => e.GetMemento()).ToList()
             };
         }
+        /// <summary>
+        /// Get the memento for the specified element.
+        /// </summary>
+        /// <param name="scoreDocument"></param>
+        /// <returns></returns>
         public static ScoreDocumentMemento GetMemento(this IScoreDocumentEditor scoreDocument)
         {
             return new ScoreDocumentMemento
@@ -20,6 +33,11 @@
                 ScoreMeasures = scoreDocument.EditScoreMeasures().Select(e => e.GetMemento()).ToList()
             };
         }
+        /// <summary>
+        /// Apply the memento to the specified element.
+        /// </summary>
+        /// <param name="scoreDocument"></param>
+        /// <param name="memento"></param>
         public static void ApplyMemento(this IScoreDocumentEditor scoreDocument, ScoreDocumentMemento memento)
         {
             scoreDocument.Clear();
@@ -40,6 +58,11 @@
         }
 
 
+        /// <summary>
+        /// Get the memento for the specified element.
+        /// </summary>
+        /// <param name="instrumentRibbon"></param>
+        /// <returns></returns>
         public static InstrumentRibbonMemento GetMemento(this IInstrumentRibbonReader instrumentRibbon)
         {
             return new InstrumentRibbonMemento
@@ -49,6 +72,11 @@
                 Instrument = instrumentRibbon.Instrument
             };
         }
+        /// <summary>
+        /// Get the memento for the specified element.
+        /// </summary>
+        /// <param name="instrumentRibbon"></param>
+        /// <returns></returns>
         public static InstrumentRibbonMemento GetMemento(this IInstrumentRibbonEditor instrumentRibbon)
         {
             return new InstrumentRibbonMemento
@@ -58,6 +86,11 @@
                 Instrument = instrumentRibbon.Instrument
             };
         }
+        /// <summary>
+        /// Apply the memento to the specified element.
+        /// </summary>
+        /// <param name="instrumentRibbon"></param>
+        /// <param name="memento"></param>
         public static void ApplyMemento(this IInstrumentRibbonEditor instrumentRibbon, InstrumentRibbonMemento memento)
         {
             instrumentRibbon.ApplyLayout(memento.Layout);
@@ -70,7 +103,11 @@
         }
 
 
-
+        /// <summary>
+        /// Get the memento for the specified element.
+        /// </summary>
+        /// <param name="scoreMeasure"></param>
+        /// <returns></returns>
         public static ScoreMeasureMemento GetMemento(this IScoreMeasureReader scoreMeasure)
         {
             return new ScoreMeasureMemento
@@ -81,6 +118,11 @@
                 StaffSystem = scoreMeasure.ReadStaffSystemOrigin().GetMemento()
             };
         }
+        /// <summary>
+        /// Get the memento for the specified element.
+        /// </summary>
+        /// <param name="scoreMeasure"></param>
+        /// <returns></returns>
         public static ScoreMeasureMemento GetMemento(this IScoreMeasureEditor scoreMeasure)
         {
             return new ScoreMeasureMemento
@@ -91,6 +133,11 @@
                 StaffSystem = scoreMeasure.EditStaffSystemOrigin().GetMemento()
             };
         }
+        /// <summary>
+        /// Apply the memento to the specified element.
+        /// </summary>
+        /// <param name="scoreMeasure"></param>
+        /// <param name="memento"></param>
         public static void ApplyMemento(this IScoreMeasureEditor scoreMeasure, ScoreMeasureMemento memento)
         {
             scoreMeasure.ApplyLayout(memento.Layout);
@@ -104,7 +151,11 @@
         }
 
 
-
+        /// <summary>
+        /// Get the memento for the specified element.
+        /// </summary>
+        /// <param name="ribbonMeasure"></param>
+        /// <returns></returns>
         public static InstrumentMeasureMemento GetMemento(this IInstrumentMeasureReader ribbonMeasure)
         {
             return new InstrumentMeasureMemento
@@ -125,6 +176,11 @@
                     .ToList()
             };
         }
+        /// <summary>
+        /// Get the memento for the specified element.
+        /// </summary>
+        /// <param name="ribbonMeasure"></param>
+        /// <returns></returns>
         public static InstrumentMeasureMemento GetMemento(this IInstrumentMeasureEditor ribbonMeasure)
         {
             return new InstrumentMeasureMemento
@@ -145,6 +201,11 @@
                     .ToList()
             };
         }
+        /// <summary>
+        /// Apply the memento to the specified element.
+        /// </summary>
+        /// <param name="ribbonMeasure"></param>
+        /// <param name="memento"></param>
         public static void ApplyMemento(this IInstrumentMeasureEditor ribbonMeasure, InstrumentMeasureMemento memento)
         {
             ribbonMeasure.Clear();
@@ -156,7 +217,12 @@
         }
 
 
-
+        /// <summary>
+        /// Get the memento for the specified element.
+        /// </summary>
+        /// <param name="ribbonMeasure"></param>
+        /// <param name="voice"></param>
+        /// <returns></returns>
         public static RibbonMeasureVoiceMemento GetMemento(this IInstrumentMeasureReader ribbonMeasure, int voice)
         {
             return new RibbonMeasureVoiceMemento
@@ -165,6 +231,12 @@
                 ChordGroups = ribbonMeasure.ReadBlocks(voice).Select(e => e.GetMemento()).ToList()
             };
         }
+        /// <summary>
+        /// Get the memento for the specified element.
+        /// </summary>
+        /// <param name="ribbonMeasure"></param>
+        /// <param name="voice"></param>
+        /// <returns></returns>
         public static RibbonMeasureVoiceMemento GetMemento(this IInstrumentMeasureEditor ribbonMeasure, int voice)
         {
             return new RibbonMeasureVoiceMemento
@@ -173,6 +245,11 @@
                 ChordGroups = ribbonMeasure.EditBlocks(voice).Select(e => e.GetMemento()).ToList()
             };
         }
+        /// <summary>
+        /// Apply the memento to the specified element.
+        /// </summary>
+        /// <param name="ribbonMeasure"></param>
+        /// <param name="memento"></param>
         public static void ApplyMemento(this IInstrumentMeasureEditor ribbonMeasure, RibbonMeasureVoiceMemento memento)
         {
             ribbonMeasure.ClearVoice(memento.Voice);
@@ -187,10 +264,14 @@
         }
 
 
-
-        public static ChordGroupMemento GetMemento(this IMeasureBlockReader chordGroup)
+        /// <summary>
+        /// Get the memento for the specified element.
+        /// </summary>
+        /// <param name="chordGroup"></param>
+        /// <returns></returns>
+        public static MeasureBlockMemento GetMemento(this IMeasureBlockReader chordGroup)
         {
-            return new ChordGroupMemento
+            return new MeasureBlockMemento
             {
                 Chords = chordGroup.ReadChords().Select(c => c.GetMemento()).ToList(),
                 Layout = chordGroup.ReadLayout(),
@@ -198,9 +279,14 @@
                 Grace = chordGroup.Grace
             };
         }
-        public static ChordGroupMemento GetMemento(this IMeasureBlockEditor chordGroup)
+        /// <summary>
+        /// Get the memento for the specified element.
+        /// </summary>
+        /// <param name="chordGroup"></param>
+        /// <returns></returns>
+        public static MeasureBlockMemento GetMemento(this IMeasureBlockEditor chordGroup)
         {
-            return new ChordGroupMemento
+            return new MeasureBlockMemento
             {
                 Chords = chordGroup.EditChords().Select(c => c.GetMemento()).ToList(),
                 Layout = chordGroup.ReadLayout(),
@@ -208,7 +294,12 @@
                 Grace = chordGroup.Grace
             };
         }
-        public static void ApplyMemento(this IMeasureBlockEditor chordGroup, ChordGroupMemento memento)
+        /// <summary>
+        /// Apply the memento to the specified element.
+        /// </summary>
+        /// <param name="chordGroup"></param>
+        /// <param name="memento"></param>
+        public static void ApplyMemento(this IMeasureBlockEditor chordGroup, MeasureBlockMemento memento)
         {
             chordGroup.Clear();
             chordGroup.ApplyLayout(memento.Layout);
@@ -221,7 +312,11 @@
         }
 
 
-
+        /// <summary>
+        /// Get the memento for the specified element.
+        /// </summary>
+        /// <param name="chord"></param>
+        /// <returns></returns>
         public static ChordMemento GetMemento(this IChordReader chord)
         {
             return new ChordMemento
@@ -231,6 +326,11 @@
                 RythmicDuration = chord.RythmicDuration
             };
         }
+        /// <summary>
+        /// Get the memento for the specified element.
+        /// </summary>
+        /// <param name="chord"></param>
+        /// <returns></returns>
         public static ChordMemento GetMemento(this IChordEditor chord)
         {
             return new ChordMemento
@@ -240,6 +340,11 @@
                 RythmicDuration = chord.RythmicDuration
             };
         }
+        /// <summary>
+        /// Apply the memento to the specified element.
+        /// </summary>
+        /// <param name="chord"></param>
+        /// <param name="chordMemento"></param>
         public static void ApplyMemento(this IChordEditor chord, ChordMemento chordMemento)
         {
             chord.Clear();
@@ -253,7 +358,11 @@
         }
 
 
-
+        /// <summary>
+        /// Get the memento for the specified element.
+        /// </summary>
+        /// <param name="note"></param>
+        /// <returns></returns>
         public static NoteMemento GetMemento(this INoteReader note)
         {
             return new NoteMemento
@@ -262,6 +371,11 @@
                 Layout = note.ReadLayout()
             };
         }
+        /// <summary>
+        /// Get the memento for the specified element.
+        /// </summary>
+        /// <param name="note"></param>
+        /// <returns></returns>
         public static NoteMemento GetMemento(this INoteEditor note)
         {
             return new NoteMemento
@@ -270,6 +384,11 @@
                 Layout = note.ReadLayout()
             };
         }
+        /// <summary>
+        /// Apply the memento to the specified element.
+        /// </summary>
+        /// <param name="note"></param>
+        /// <param name="noteMemento"></param>
         public static void ApplyMemento(this INoteEditor note, NoteMemento noteMemento)
         {
             note.ApplyLayout(noteMemento.Layout);
@@ -277,7 +396,11 @@
         }
 
 
-
+        /// <summary>
+        /// Get the memento for the specified element.
+        /// </summary>
+        /// <param name="staffSystem"></param>
+        /// <returns></returns>
         public static StaffSystemMemento GetMemento(this IStaffSystemReader staffSystem)
         {
             return new StaffSystemMemento()
@@ -286,6 +409,11 @@
                 StaffGroups = staffSystem.ReadStaffGroups().Select(g => g.GetMemento()).ToArray()
             };
         }
+        /// <summary>
+        /// Get the memento for the specified element.
+        /// </summary>
+        /// <param name="staffSystem"></param>
+        /// <returns></returns>
         public static StaffSystemMemento GetMemento(this IStaffSystemEditor staffSystem)
         {
             return new StaffSystemMemento()
@@ -294,6 +422,11 @@
                 StaffGroups = staffSystem.EditStaffGroups().Select(g => g.GetMemento()).ToArray()
             };
         }
+        /// <summary>
+        /// Apply the memento to the specified element.
+        /// </summary>
+        /// <param name="staffSystem"></param>
+        /// <param name="memento"></param>
         public static void ApplyMemento(this IStaffSystemEditor staffSystem, StaffSystemMemento memento)
         {
             staffSystem.ApplyLayout(memento.Layout);
@@ -305,7 +438,11 @@
         }
 
 
-
+        /// <summary>
+        /// Get the memento for the specified element.
+        /// </summary>
+        /// <param name="staffGroup"></param>
+        /// <returns></returns>
         public static StaffGroupMemento GetMemento(this IStaffGroupReader staffGroup)
         {
             return new StaffGroupMemento()
@@ -315,6 +452,11 @@
                 Staves = staffGroup.ReadStaves().Select(e => e.GetMemento()).ToArray()
             };
         }
+        /// <summary>
+        /// Get the memento for the specified element.
+        /// </summary>
+        /// <param name="staffGroup"></param>
+        /// <returns></returns>
         public static StaffGroupMemento GetMemento(this IStaffGroupEditor staffGroup)
         {
             return new StaffGroupMemento()
@@ -324,6 +466,11 @@
                 Staves = staffGroup.EditStaves().Select(e => e.GetMemento()).ToArray()
             };
         }
+        /// <summary>
+        /// Apply the memento to the specified element.
+        /// </summary>
+        /// <param name="staffGroup"></param>
+        /// <param name="memento"></param>
         public static void ApplyMemento(this IStaffGroupEditor staffGroup, StaffGroupMemento memento)
         {
             staffGroup.ApplyLayout(memento.Layout);
@@ -335,7 +482,11 @@
         }
 
 
-
+        /// <summary>
+        /// Get the memento for the specified element.
+        /// </summary>
+        /// <param name="staffReader"></param>
+        /// <returns></returns>
         public static StaffMemento GetMemento(this IStaffReader staffReader)
         {
             return new StaffMemento()
@@ -344,6 +495,11 @@
                 IndexInStaffGroup = staffReader.IndexInStaffGroup
             };
         }
+        /// <summary>
+        /// Get the memento for the specified element.
+        /// </summary>
+        /// <param name="staffReader"></param>
+        /// <returns></returns>
         public static StaffMemento GetMemento(this IStaffEditor staffReader)
         {
             return new StaffMemento()
@@ -352,6 +508,11 @@
                 IndexInStaffGroup = staffReader.IndexInStaffGroup
             };
         }
+        /// <summary>
+        /// Apply the memento to the specified element.
+        /// </summary>
+        /// <param name="staff"></param>
+        /// <param name="memento"></param>
         public static void ApplyMemento(this IStaffEditor staff, StaffMemento memento)
         {
             staff.ApplyLayout(memento.Layout);

@@ -1,24 +1,30 @@
 ﻿namespace StudioLaValse.ScoreDocument.Layout
 {
+    /// <inheritdoc/>
     public class ChordLayout : IChordLayout
     {
-        public double StemLength { get; }
+        /// <inheritdoc/>
         public double XOffset { get; }
+        /// <inheritdoc/>
         public Dictionary<int, BeamType> Beams { get; }
 
+        /// <summary>
+        /// Create a default layout.
+        /// </summary>
+        /// <param name="xOffset"></param>
+        /// <param name="stemLength"></param>
         public ChordLayout(double xOffset = 0, double stemLength = 4)
         {
-            StemLength = stemLength;
             XOffset = xOffset;
             Beams = [];
         }
-        public ChordLayout(Dictionary<int, BeamType> beams, double xOffset = 0, double stemLength = 4)
+        private ChordLayout(Dictionary<int, BeamType> beams, double xOffset = 0, double stemLength = 4)
         {
-            StemLength = stemLength;
             XOffset = xOffset;
             Beams = beams;
         }
 
+        /// <inheritdoc/>
         public IChordLayout Copy()
         {
             var beams = new Dictionary<int, BeamType>();
@@ -27,7 +33,7 @@
                 beams.Add(entry.Key, entry.Value);
             }
 
-            return new ChordLayout(beams, XOffset, StemLength);
+            return new ChordLayout(beams, XOffset);
         }
     }
 }

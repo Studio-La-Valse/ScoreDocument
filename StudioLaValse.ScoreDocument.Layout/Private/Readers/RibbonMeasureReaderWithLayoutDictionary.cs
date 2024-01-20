@@ -58,7 +58,7 @@ namespace StudioLaValse.ScoreDocument.Layout.Private.Readers
 
         public bool TryReadNext([NotNullWhen(true)] out IInstrumentMeasureReader? next)
         {
-            if(source.TryReadNext(out next))
+            if (source.TryReadNext(out next))
             {
                 next = next.UseLayout(layoutDictionary);
                 return true;
@@ -69,7 +69,7 @@ namespace StudioLaValse.ScoreDocument.Layout.Private.Readers
 
         public bool TryReadPrevious([NotNullWhen(true)] out IInstrumentMeasureReader? previous)
         {
-            if( source.TryReadPrevious(out previous))
+            if (source.TryReadPrevious(out previous))
             {
                 previous = previous.UseLayout(layoutDictionary);
                 return true;

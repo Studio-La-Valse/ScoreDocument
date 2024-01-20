@@ -1,5 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Extensions;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace StudioLaValse.ScoreDocument.Private
 {

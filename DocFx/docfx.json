@@ -1,0 +1,49 @@
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "src": "../.",
+          "files": [
+            "**/*.csproj"
+          ],
+          "exclude":[
+            "StudioLaValse.ScoreDocument.Example.WPF/*",
+            "StudioLaValse.ScoreDocument.Tests/*"
+          ]
+        }
+      ],
+      "dest": "api"
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "files": [
+          "**/*.{md,yml}"
+        ],
+        "exclude": [
+          "_site/**"
+        ]
+      }
+    ],
+    "resource": [
+      {
+        "files": [
+          "images/**"
+        ]
+      }
+    ],
+    "output": "_site",
+    "template": [
+      "default",
+      "modern"
+    ],
+    "globalMetadata": {
+      "_appName": "score-document.lavalse.net",
+      "_appTitle": "score-document.lavalse.net",
+      "_enableSearch": true,
+      "pdf": false
+    }
+  }
+}

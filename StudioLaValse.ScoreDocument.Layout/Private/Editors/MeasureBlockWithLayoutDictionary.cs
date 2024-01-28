@@ -1,54 +1,48 @@
-﻿using StudioLaValse.Drawable;
+﻿using StudioLaValse.ScoreDocument.Core;
 using StudioLaValse.ScoreDocument.Editor;
-using StudioLaValse.ScoreDocument.Layout;
 using StudioLaValse.ScoreDocument.Primitives;
 
-namespace StudioLaValse.ScoreDocument.Drawable.Private.ScoreDocumentEditor
+namespace StudioLaValse.ScoreDocument.Layout.Private.Editors
 {
-    internal class MeasureBlockEditorWithStateWatcher : IMeasureBlockEditor
+    internal class MeasureBlockWithLayoutDictionary : IMeasureBlockEditor
     {
         private readonly IMeasureBlockEditor source;
-        private readonly IInstrumentMeasure host;
-        private readonly INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged;
+        private readonly IScoreLayoutDictionary layoutDictionary;
 
-        public MeasureBlockEditorWithStateWatcher(IMeasureBlockEditor source, IInstrumentMeasure host, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged)
+        public MeasureBlockWithLayoutDictionary(IMeasureBlockEditor source, IScoreLayoutDictionary layoutDictionary)
         {
             this.source = source;
-            this.host = host;
-            this.notifyEntityChanged = notifyEntityChanged;
+            this.layoutDictionary = layoutDictionary;
         }
 
         public bool Grace => source.Grace;
 
-        public RythmicDuration RythmicDuration => source.RythmicDuration;
-
-        public int Id => source.Id;
-
         public Position Position => source.Position;
 
+        public RythmicDuration RythmicDuration => source.RythmicDuration;
+
         public Tuplet Tuplet => source.Tuplet;
+
+        public int Id => source.Id;
 
         public void AppendChord(RythmicDuration rythmicDuration)
         {
             source.AppendChord(rythmicDuration);
-            notifyEntityChanged.Invalidate(host);
         }
 
         public void ApplyLayout(INoteGroupLayout layout)
         {
-            source.ApplyLayout(layout);
-            notifyEntityChanged.Invalidate(host);
+            layoutDictionary.Assign(source, layout);
         }
 
         public void Clear()
         {
             source.Clear();
-            notifyEntityChanged.Invalidate(host);
         }
 
         public IEnumerable<IChordEditor> EditChords()
         {
-            return source.EditChords().Select(e => e.UseStateWatcher(host, notifyEntityChanged));
+            return source.EditChords();
         }
 
         public IEnumerable<IChord> EnumerateChords()
@@ -63,19 +57,17 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ScoreDocumentEditor
 
         public INoteGroupLayout ReadLayout()
         {
-            return source.ReadLayout();
+            return layoutDictionary.GetOrCreate(source);
         }
 
         public void Rebeam()
         {
             source.Rebeam();
-            notifyEntityChanged.Invalidate(host);
         }
 
         public void Splice(int index)
         {
             source.Splice(index);
-            notifyEntityChanged.Invalidate(host);
         }
     }
 }

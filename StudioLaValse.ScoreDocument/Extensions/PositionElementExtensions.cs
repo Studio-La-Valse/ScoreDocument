@@ -22,7 +22,7 @@
                 return positionElement.RythmicDuration;
             }
 
-            return positionElement.RythmicDuration.ToActualDuration(positionElement.Tuplet);
+            return positionElement.Tuplet.ToActualDuration(positionElement.RythmicDuration);
         }
 
         /// <summary>
@@ -33,6 +33,21 @@
         public static Fraction PositionEnd(this IPositionElement positionElement)
         {
             return positionElement.Position + positionElement.ActualDuration();
+        }
+
+        /// <summary>
+        /// Calculates whether the specified position element contais the specified position. 
+        /// If the position and the start of the position are equal, this method will return true.
+        /// If the position and the end of the position are equal, this method will return false;
+        /// </summary>
+        /// <param name="positionElement"></param>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        public static bool ContainsPosition(this IPositionElement positionElement, Position position)
+        {
+            return 
+                positionElement.Position.Decimal >= position.Decimal &&
+                (positionElement.Position + positionElement.RythmicDuration).Decimal < position.Decimal;
         }
     }
 }

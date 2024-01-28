@@ -5,7 +5,7 @@ namespace StudioLaValse.ScoreDocument.Core
     /// <summary>
     /// Reprents a non-zero, non-negative integer that is a power of two.
     /// </summary>
-    public class PowerOfTwo
+    public class PowerOfTwo : IEquatable<PowerOfTwo>
     {
         /// <summary>
         /// Raise two to this power. This value may never be negative.
@@ -38,10 +38,7 @@ namespace StudioLaValse.ScoreDocument.Core
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public PowerOfTwo(int power)
         {
-            if (power < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(power));
-            }
+            ArgumentOutOfRangeException.ThrowIfNegative(power);
 
             Power = power;
         }
@@ -55,6 +52,11 @@ namespace StudioLaValse.ScoreDocument.Core
         public static bool TryCreate(int value, [NotNullWhen(true)] out PowerOfTwo? powerOfTwo)
         {
             powerOfTwo = null;
+
+            if (value <= 0)
+            {
+                return false;
+            }
 
             var _val = 1;
 
@@ -130,6 +132,23 @@ namespace StudioLaValse.ScoreDocument.Core
         public override string ToString()
         {
             return $"2 ^ {Power} = {Value}";
+        }
+
+        /// <inheritdoc/>
+        public bool Equals(PowerOfTwo? other)
+        {
+            if(other == null)
+            {
+                return false;
+            }
+
+            return other.Value == this.Value;
+        }
+
+        /// <inheritdoc/>
+        public override int GetHashCode()
+        {
+            return Value.GetHashCode();
         }
     }
 }

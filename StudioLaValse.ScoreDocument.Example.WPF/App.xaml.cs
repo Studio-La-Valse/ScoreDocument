@@ -9,9 +9,12 @@ using StudioLaValse.Geometry;
 using StudioLaValse.ScoreDocument.Core;
 using StudioLaValse.ScoreDocument.Drawable;
 using StudioLaValse.ScoreDocument.Drawable.Scenes;
-using StudioLaValse.ScoreDocument.Layout;
+using StudioLaValse.ScoreDocument.MusicXml;
+using StudioLaValse.ScoreDocument.Reader;
 using System;
+using System.IO;
 using System.Windows;
+using System.Xml.Linq;
 
 namespace StudioLaValse.ScoreDocument.Example.WPF
 {
@@ -27,28 +30,13 @@ namespace StudioLaValse.ScoreDocument.Example.WPF
             var notifyEntityChanged = SceneManager<IUniqueScoreElement>.CreateObservable();
             var selectionManager = SelectionManager<IUniqueScoreElement>.CreateDefault().OnChangedNotify(notifyEntityChanged);
 
-            var kortjakje = System.Text.Encoding.Default.GetString(WPF.Resources.Kortjakje);
-            var score = ScoreBuilder.CreateDefault(string.Empty, string.Empty)
-                .Edit(score =>
-                {
-                    score.AddInstrumentRibbon(Instrument.Violin);
-                    score.AddInstrumentRibbon(Instrument.Piano);
-                })
-                .Edit(score =>
-                {
-                    for (int i = 0; i < 21; i++)
-                    {
-                        score.AppendScoreMeasure(new TimeSignature(4, 4));
-                        var measure = score.EditScoreMeasure(i);
-                        measure.ApplyLayout(new ScoreMeasureLayout
-                        (
-                            keySignature: new(Step.C, MajorOrMinor.Major),
-                            isNewSystem: i % 6 == 0)
-                        );
-                    }
-                })
-                .Build();
-
+            IScoreDocumentReader? score;
+            using (var ms = new MemoryStream(WPF.Resources.Kortjakje))
+            {
+                var document = XDocument.Load(ms);
+                score = MusicXmlScoreDocumentBuilder.Create(document).Build();
+            }
+            
             var canvas = new WindowsDrawingContextUserControl();
             var canvasPainter = new WindowsDrawingContextBitmapPainter(canvas);
             var selectionBorder = new DragSelectionUserControl();

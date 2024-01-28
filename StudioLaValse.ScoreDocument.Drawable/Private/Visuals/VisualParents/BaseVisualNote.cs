@@ -19,10 +19,6 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
 
 
 
-        public XY CenterPosition =>
-            new XY(XPosition, HeightOnCanvas);
-        public Fraction ActualDuration =>
-            measureElement.ActualDuration();
         public RythmicDuration DisplayDuration =>
             measureElement.RythmicDuration;
         public ColorARGB DisplayColor =>

@@ -59,7 +59,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
         {
             get
             {
-                var glyph = ActualDuration.Decimal switch
+                var glyph = DisplayDuration.Decimal switch
                 {
                     1M => GlyphLibrary.NoteHeadWhole,
                     0.5M => GlyphLibrary.NoteHeadWhite,

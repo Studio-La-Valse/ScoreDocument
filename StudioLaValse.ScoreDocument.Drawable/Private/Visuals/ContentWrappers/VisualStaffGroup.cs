@@ -45,6 +45,11 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.ContentWrappers
                     return null;
                 }
 
+                if(staffGroup.EnumerateStaves().Count() == 1)
+                {
+                    return null;
+                }
+
                 var heightOfGroup = staffGroup.CalculateHeight();
                 var heightOfOneStaff = 4 * 1.2;
                 var scale = heightOfGroup / heightOfOneStaff;

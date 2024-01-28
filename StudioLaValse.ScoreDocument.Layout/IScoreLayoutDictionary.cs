@@ -58,13 +58,13 @@ namespace StudioLaValse.ScoreDocument.Layout
         /// </summary>
         /// <param name="element"></param>
         /// <returns></returns>
-        INoteGroupLayout GetOrCreate(IMeasureBlockReader element);
+        INoteGroupLayout GetOrCreate(IMeasureBlock element);
         /// <summary>
         /// Assign the specified layout to the specified element.
         /// </summary>
         /// <param name="measureBlock"></param>
         /// <param name="layout"></param>
-        void Assign(IMeasureBlockReader measureBlock, INoteGroupLayout layout);
+        void Assign(IMeasureBlock measureBlock, INoteGroupLayout layout);
 
 
 

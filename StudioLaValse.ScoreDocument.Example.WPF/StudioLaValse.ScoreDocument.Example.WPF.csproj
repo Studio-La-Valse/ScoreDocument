@@ -16,6 +16,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\StudioLaValse.ScoreDocument.Drawable\StudioLaValse.ScoreDocument.Drawable.csproj" />
+        <ProjectReference Include="..\StudioLaValse.ScoreDocument.MusicXml\StudioLaValse.ScoreDocument.MusicXml.csproj" />
         <ProjectReference Include="..\StudioLaValse.ScoreDocument\StudioLaValse.ScoreDocument.csproj" />
     </ItemGroup>
 

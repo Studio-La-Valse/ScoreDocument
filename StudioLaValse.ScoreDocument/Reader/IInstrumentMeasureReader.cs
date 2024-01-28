@@ -28,7 +28,7 @@ namespace StudioLaValse.ScoreDocument.Reader
         /// </summary>
         /// <param name="voice"></param>
         /// <returns></returns>
-        IEnumerable<IMeasureBlockReader> ReadBlocks(int voice);
+        IMeasureBlockChainReader ReadBlockChainAt(int voice);
 
         /// <summary>
         /// Tries to read the previous instrument measure.

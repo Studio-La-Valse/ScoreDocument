@@ -9,7 +9,7 @@ namespace StudioLaValse.ScoreDocument.Private
         private readonly MeasureBlockChain host;
         private readonly bool grace;
         private readonly IKeyGenerator<int> keyGenerator;
-        private readonly Duration duration;
+        private readonly RythmicDuration duration;
         private INoteGroupLayout layout;
 
 
@@ -31,7 +31,7 @@ namespace StudioLaValse.ScoreDocument.Private
                         continue;
                     }
 
-                    position += block.Duration;
+                    position += block.RythmicDuration;
                 }
 
                 return position;
@@ -43,18 +43,18 @@ namespace StudioLaValse.ScoreDocument.Private
             containers;
         public bool Grace =>
             grace;
-        public Duration Duration =>
+        public RythmicDuration RythmicDuration =>
             duration;
         public Tuplet Tuplet
         {
             get
             {
                 var groupLength = Containers.Select(e => e.RythmicDuration).ToArray();
-                return new Tuplet(Duration, groupLength);
+                return new Tuplet(RythmicDuration, groupLength);
             }
         }
 
-        public MeasureBlock(Duration duration, MeasureBlockChain host, bool grace, IKeyGenerator<int> keyGenerator) : base(keyGenerator)
+        public MeasureBlock(RythmicDuration duration, MeasureBlockChain host, bool grace, IKeyGenerator<int> keyGenerator) : base(keyGenerator)
         {
             this.host = host;
             this.grace = grace;
@@ -99,10 +99,7 @@ namespace StudioLaValse.ScoreDocument.Private
 
             return index;
         }
-        public bool ContainsPosition(Position position)
-        {
-            return (Position + duration).Decimal >= position.Decimal && Position.Decimal < position.Decimal;
-        }
+        
 
 
         public IEnumerable<IChord> EnumerateChords()
@@ -163,6 +160,11 @@ namespace StudioLaValse.ScoreDocument.Private
 
         public void Rebeam()
         {
+            foreach(var chord in containers)
+            {
+                chord.ReadLayout().Beams.Clear();
+            }
+
             for (int i = 8; i <= 64; i *= 2)
             {
                 var duration = 1M / i;
@@ -173,7 +175,6 @@ namespace StudioLaValse.ScoreDocument.Private
                     var middleChord = containers[j];
                     var rightChord = j < containers.Count - 1 ? containers[j + 1] : null;
                     var middleChordBeams = middleChord.ReadLayout().Beams;
-                    middleChordBeams.Clear();
 
                     if (middleChord.RythmicDuration.PowerOfTwo < 1 / duration)
                     {

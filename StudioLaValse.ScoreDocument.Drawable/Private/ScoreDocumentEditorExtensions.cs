@@ -17,6 +17,11 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private
             return new MeasureBlockEditorWithStateWatcher(chordEditor, host, notifyEntityChanged);
         }
 
+        public static IMeasureBlockChainEditor UseStateWatcher(this IMeasureBlockChainEditor chordEditor, IInstrumentMeasure host, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged)
+        {
+            return new MeasureBlockChainWithStateWatcher(chordEditor, host, notifyEntityChanged);
+        }
+
         public static IChordEditor UseStateWatcher(this IChordEditor chordEditor, IInstrumentMeasure host, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged)
         {
             return new ChordEditorWithStateWatcher(chordEditor, host, notifyEntityChanged);

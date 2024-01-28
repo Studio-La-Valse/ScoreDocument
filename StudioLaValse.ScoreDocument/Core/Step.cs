@@ -253,14 +253,27 @@ namespace StudioLaValse.ScoreDocument.Core
         public Step Dominant =>
             new Scale(this, ScaleStructure.Major).EnumerateSteps().ElementAt(4);
 
-        internal Step(int step, int shifts)
+        /// <summary>
+        /// Construct a step from the number of steps from c, and the number of shifts. 
+        /// If the number of steps is smaller than 0, an exeption will be thrown.
+        /// If the number of shifts is smaller than -2 or larger than 2, an exception will be thrown.
+        /// </summary>
+        /// <param name="step"></param>
+        /// <param name="shifts"></param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        public Step(int step, int shifts)
         {
-            if (shifts <= -3 || shifts >= 3)
+            if (shifts < -2 || shifts > 2)
             {
                 throw new ArgumentOutOfRangeException(nameof(shifts));
             }
 
-            StepsFromC = (int)MathUtils.UnsignedModulo(step, 7);
+            if(step < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(step));
+            }
+
+            StepsFromC = step % 7;
             Shifts = shifts;
         }
 
@@ -311,6 +324,21 @@ namespace StudioLaValse.ScoreDocument.Core
             return other.SemiTones == SemiTones;
         }
 
+        /// <summary>
+        /// Moves this step along the circle of fifths for the given amount of steps. 
+        /// </summary>
+        /// <param name="steps"></param>
+        /// <returns></returns>
+        public Step MoveAlongCircleOfFifths(int steps)
+        {
+            var step = this;
+            for (int i = 0; i < steps; i++)
+            {
+                step += Interval.Fifth;
+            }
+
+            return step;
+        }
 
         /// <inheritdoc/>
         public static Step operator +(Step step, Interval interval)
@@ -339,13 +367,11 @@ namespace StudioLaValse.ScoreDocument.Core
         {
             var shift = Shifts switch
             {
-                -3 => "bbb",
                 -2 => "bb",
                 -1 => "b",
                 0 => "",
                 1 => "#",
                 2 => "##",
-                3 => "###",
                 _ => throw new NotSupportedException()
             };
 

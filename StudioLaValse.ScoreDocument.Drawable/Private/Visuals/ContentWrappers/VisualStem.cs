@@ -5,13 +5,6 @@
         private static readonly double thickness = 0.08;
         private readonly ColorARGB color;
 
-        private double Length
-        {
-            get
-            {
-                return End.Y - Origin.Y;
-            }
-        }
         public bool VisuallyUp
         {
             get
@@ -41,7 +34,7 @@
         {
             var list = new List<BaseDrawableElement>()
             {
-                new DrawableLineVertical(Origin.X, Origin.Y, Length * -1, color: color, thickness: thickness),
+                new DrawableLine(Origin, End, color: color, thickness: thickness),
             };
 
             return list;

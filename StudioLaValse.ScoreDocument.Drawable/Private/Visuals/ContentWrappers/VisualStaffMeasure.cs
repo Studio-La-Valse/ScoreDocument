@@ -122,7 +122,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.ContentWrappers
                     _ => throw new NotSupportedException()
                 };
 
-                var bottomGlyph = timeSignature.Denominator switch
+                var bottomGlyph = timeSignature.Denominator.Value switch
                 {
                     2 => GlyphLibrary.NumberTwo,
                     4 => GlyphLibrary.NumberFour,

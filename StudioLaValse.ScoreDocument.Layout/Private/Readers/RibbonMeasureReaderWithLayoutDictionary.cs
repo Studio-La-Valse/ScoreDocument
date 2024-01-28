@@ -1,5 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Core;
-using StudioLaValse.ScoreDocument.Primitives;
+using StudioLaValse.ScoreDocument.Editor;
 using StudioLaValse.ScoreDocument.Reader;
 using System.Diagnostics.CodeAnalysis;
 
@@ -26,9 +26,9 @@ namespace StudioLaValse.ScoreDocument.Layout.Private.Readers
 
         public Instrument Instrument => source.Instrument;
 
-        public IEnumerable<IMeasureBlock> EnumerateBlocks(int voice)
+        public IMeasureBlockChain BlockChainAt(int voice)
         {
-            return source.EnumerateBlocks(voice);
+            return source.BlockChainAt(voice);
         }
 
         public IEnumerable<int> EnumerateVoices()
@@ -41,9 +41,9 @@ namespace StudioLaValse.ScoreDocument.Layout.Private.Readers
             return source.Equals(other);
         }
 
-        public IEnumerable<IMeasureBlockReader> ReadBlocks(int voice)
+        public IMeasureBlockChainReader ReadBlockChainAt(int voice)
         {
-            return source.ReadBlocks(voice);
+            return source.ReadBlockChainAt(voice);
         }
 
         public IInstrumentMeasureLayout ReadLayout()

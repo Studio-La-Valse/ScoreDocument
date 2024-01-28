@@ -12,7 +12,7 @@ namespace StudioLaValse.ScoreDocument.Layout
 
         private readonly Dictionary<INote, IMeasureElementLayout> measureElementLayoutDictionary = [];
         private readonly Dictionary<IChord, IChordLayout> chordLayoutDictionary = [];
-        private readonly Dictionary<IMeasureBlockReader, INoteGroupLayout> chordGroupReaderDictionary = [];
+        private readonly Dictionary<IMeasureBlock, INoteGroupLayout> chordGroupReaderDictionary = [];
 
         private readonly Dictionary<IInstrumentMeasure, IInstrumentMeasureLayout> instrumentMeasureLayoutDictionary = [];
         private readonly Dictionary<IScoreMeasure, IScoreMeasureLayout> scoreMeasureLayoutDictionary = [];
@@ -80,7 +80,7 @@ namespace StudioLaValse.ScoreDocument.Layout
 
 
         /// <inheritdoc/>
-        public INoteGroupLayout GetOrCreate(IMeasureBlockReader reader)
+        public INoteGroupLayout GetOrCreate(IMeasureBlock reader)
         {
             if (chordGroupReaderDictionary.TryGetValue(reader, out var value))
             {
@@ -92,7 +92,7 @@ namespace StudioLaValse.ScoreDocument.Layout
             return chordGroupReaderDictionary[reader];
         }
         /// <inheritdoc/>
-        public void Assign(IMeasureBlockReader chordGroup, INoteGroupLayout layout)
+        public void Assign(IMeasureBlock chordGroup, INoteGroupLayout layout)
         {
             chordGroupReaderDictionary[chordGroup] = layout;
         }

@@ -15,12 +15,13 @@
         /// </summary>
         int RibbonIndex { get; }
 
+
         /// <summary>
         /// Edit the blocks in the measure.
         /// </summary>
         /// <param name="voice"></param>
         /// <returns></returns>
-        IEnumerable<IMeasureBlockEditor> EditBlocks(int voice);
+        IMeasureBlockChainEditor EditBlockChainAt(int voice);
 
 
         /// <summary>
@@ -31,28 +32,13 @@
         /// Clears the content of one voice in the measure.
         /// </summary>
         /// <param name="voice"></param>
-        void ClearVoice(int voice);
+        void RemoveVoice(int voice);
         /// <summary>
         /// Adds a voice to the measure. Does nothing if the voice already exists.
         /// </summary>
         /// <param name="voice"></param>
         void AddVoice(int voice);
 
-
-        /// <summary>
-        /// Prepend a block to the measure blocks.
-        /// </summary>
-        /// <param name="voice"></param>
-        /// <param name="duration"></param>
-        /// <param name="grace"></param>
-        void PrependBlock(int voice, Duration duration, bool grace);
-        /// <summary>
-        /// Appends a measure block after the blocks.
-        /// </summary>
-        /// <param name="voice"></param>
-        /// <param name="duration"></param>
-        /// <param name="grace"></param>
-        void AppendBlock(int voice, Duration duration, bool grace);
 
 
         /// <summary>

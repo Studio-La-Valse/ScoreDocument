@@ -28,19 +28,19 @@ namespace StudioLaValse.ScoreDocument.Tests
             var simplified = fraction.Simplify();
 
             Assert.AreEqual(simplified.Numinator, 1);
-            Assert.AreEqual(simplified.Denominator, 4);
+            Assert.AreEqual(simplified.Denominator.Value, 4);
 
             fraction = new Duration(3, 8);
             simplified = fraction.Simplify();
 
             Assert.AreEqual(simplified.Numinator, 3);
-            Assert.AreEqual(simplified.Denominator, 8);
+            Assert.AreEqual(simplified.Denominator.Value, 8);
 
             fraction = new Duration(0, 8);
             simplified = fraction.Simplify();
 
             Assert.AreEqual(simplified.Numinator, 0);
-            Assert.AreEqual(simplified.Denominator, 1);
+            Assert.AreEqual(simplified.Denominator.Value, 1);
         }
 
         [TestMethod]
@@ -51,12 +51,12 @@ namespace StudioLaValse.ScoreDocument.Tests
             var added = duration + secondDuration;
 
             Assert.AreEqual(added.Numinator, 1);
-            Assert.AreEqual(added.Denominator, 2);
+            Assert.AreEqual(added.Denominator.Value, 2);
 
             var thirdDuration = new Duration(1, 16);
             added += thirdDuration;
             Assert.AreEqual(added.Numinator, 9);
-            Assert.AreEqual(added.Denominator, 16);
+            Assert.AreEqual(added.Denominator.Value, 16);
         }
 
         [TestMethod]
@@ -99,21 +99,21 @@ namespace StudioLaValse.ScoreDocument.Tests
         {
             var rythmicDuration = new RythmicDuration(8);
             Assert.AreEqual(rythmicDuration.Numinator, 1);
-            Assert.AreEqual(rythmicDuration.Denominator, 8);
+            Assert.AreEqual(rythmicDuration.Denominator.Value, 8);
 
             rythmicDuration = new RythmicDuration(8, 1);
             Assert.AreEqual(rythmicDuration.Numinator, 3);
-            Assert.AreEqual(rythmicDuration.Denominator, 16);
+            Assert.AreEqual(rythmicDuration.Denominator.Value, 16);
 
             rythmicDuration = new RythmicDuration(4, 2);
             Assert.AreEqual(rythmicDuration.Numinator, 7);
-            Assert.AreEqual(rythmicDuration.Denominator, 16);
+            Assert.AreEqual(rythmicDuration.Denominator.Value, 16);
         }
 
         [TestMethod]
         public void TestTuplet()
         {
-            var oneEight = new RythmicDuration(8);
+            var oneEighth = new RythmicDuration(8);
             var threeEights = new RythmicDuration[]
             {
                 new RythmicDuration(8),
@@ -122,7 +122,7 @@ namespace StudioLaValse.ScoreDocument.Tests
             var tuplet = new Tuplet(new Duration(1, 4), threeEights);
 
             //the length of one eights in a tuplet of three eights in the space of one fourth is one twelveth.
-            var adjustedLength = oneEight.ToActualDuration(tuplet);
+            var adjustedLength = tuplet.ToActualDuration(oneEighth);
             Assert.AreEqual(adjustedLength.Numinator, 1);
             Assert.AreEqual(adjustedLength.Denominator, 12);
 
@@ -133,10 +133,71 @@ namespace StudioLaValse.ScoreDocument.Tests
                 thirteenOneSixtheenths[i] = oneSixteenth;
             }
             tuplet = new Tuplet(new Duration(1, 4), thirteenOneSixtheenths);
-            adjustedLength = oneSixteenth.ToActualDuration(tuplet);
+            adjustedLength = tuplet.ToActualDuration(oneSixteenth);
 
             Assert.AreEqual(adjustedLength.Numinator, 1);
             Assert.AreEqual(adjustedLength.Denominator, 52);
+        }
+
+        [TestMethod]
+        public void TestRythmicDurationFromDuration()
+        {
+            var fraction = new Fraction(7, 8);
+            Assert.IsTrue(RythmicDuration.TryConstruct(fraction, out var converted));
+            Assert.AreEqual(converted.Dots, 2);
+            Assert.AreEqual(converted.PowerOfTwo.Value, 2);
+
+            var duration = new Duration(1, 8);
+            var canConvert = RythmicDuration.TryConstruct(duration, out converted);
+            Assert.IsTrue(canConvert);
+            Assert.AreEqual(converted.Dots, 0);
+            Assert.AreEqual(converted.PowerOfTwo.Value, 8);
+
+            duration = new Duration(3, 8);
+            canConvert = RythmicDuration.TryConstruct(duration, out converted);
+            Assert.IsTrue(canConvert);
+            Assert.AreEqual(converted.Dots, 1);
+            Assert.AreEqual(converted.PowerOfTwo.Value, 4);
+
+            duration = new Duration(7, 16);
+            canConvert = RythmicDuration.TryConstruct(duration, out converted);
+            Assert.IsTrue(canConvert);
+            Assert.AreEqual(converted.Dots, 2);
+            Assert.AreEqual(converted.PowerOfTwo.Value, 4);
+
+            duration = new Duration(5, 8);
+            canConvert = RythmicDuration.TryConstruct(duration, out converted);
+            Assert.IsFalse(canConvert);
+            Assert.IsNull(converted);
+
+            //consider 7 / 32 => 3 / 16 => 1 / 8 with two dots
+            //consider 15 / 32 =>  7 / 16 => 3 / 8 => 1 / 4 with 3 dots
+            //consider 63 / 256 => 31 / 128 => 15 / 64 => 7 / 32 => 3 / 16 => 1 / 8 with 5 dots
+            //consider 7 / 64 => 3 / 32 => 1 / 16 with 2 dots
+            
+            duration = new Duration(7, 32);
+            canConvert = RythmicDuration.TryConstruct(duration, out converted);
+            Assert.IsTrue(canConvert);
+            Assert.AreEqual(converted.Dots, 2);
+            Assert.AreEqual(converted.PowerOfTwo.Value, 8);
+
+            duration = new Duration(15, 32);
+            canConvert = RythmicDuration.TryConstruct(duration, out converted);
+            Assert.IsTrue(canConvert);
+            Assert.AreEqual(converted.Dots, 3);
+            Assert.AreEqual(converted.PowerOfTwo.Value, 4);
+
+            duration = new Duration(63, 256);
+            canConvert = RythmicDuration.TryConstruct(duration, out converted);
+            Assert.IsTrue(canConvert);
+            Assert.AreEqual(converted.Dots, 5);
+            Assert.AreEqual(converted.PowerOfTwo.Value, 8);
+
+            duration = new Duration(7, 64);
+            canConvert = RythmicDuration.TryConstruct(duration, out converted);
+            Assert.IsTrue(canConvert);
+            Assert.AreEqual(converted.Dots, 2);
+            Assert.AreEqual(converted.PowerOfTwo.Value, 16);
         }
     }
 }

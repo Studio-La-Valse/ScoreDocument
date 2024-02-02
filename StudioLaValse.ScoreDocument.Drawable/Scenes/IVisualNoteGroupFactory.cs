@@ -12,9 +12,9 @@
         /// <param name="staffGroup"></param>
         /// <param name="canvasTopStaffGroup"></param>
         /// <param name="canvasLeft"></param>
-        /// <param name="spacing"></param>
+        /// <param name="allowedSpace"></param>
         /// <param name="color"></param>
         /// <returns></returns>
-        BaseContentWrapper Build(IMeasureBlockReader noteGroup, IStaffGroupReader staffGroup, double canvasTopStaffGroup, double canvasLeft, double spacing, ColorARGB color);
+        BaseContentWrapper Build(IMeasureBlockReader noteGroup, IStaffGroupReader staffGroup, double canvasTopStaffGroup, double canvasLeft, double allowedSpace, ColorARGB color);
     }
 }

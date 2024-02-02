@@ -56,5 +56,22 @@
             Name = name;
             NumberOfStaves = staves;
         }
+        
+
+        /// <summary>
+        /// Tries to get the instrument with the specified name. If it does not exist, the default instrument is returned.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static Instrument TryGetFromName(string name)
+        {
+            return name.ToLowerInvariant() switch
+            {
+                "violin" => Violin,
+                "piano" => Piano,
+                "organ" => Organ,
+                _ => Default
+            };
+        }
     }
 }

@@ -12,6 +12,6 @@
         /// <summary>
         /// The chord groups in the voice group.
         /// </summary>
-        public required IEnumerable<MeasureBlockMemento> ChordGroups { get; init; }
+        public required IEnumerable<MeasureBlockMemento> MeasureBlocks { get; init; }
     }
 }

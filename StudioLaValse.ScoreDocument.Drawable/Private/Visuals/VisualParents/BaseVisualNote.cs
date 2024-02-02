@@ -1,4 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.DrawableElements;
+using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.Models;
 using StudioLaValse.ScoreDocument.Primitives;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
@@ -19,10 +20,6 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
 
 
 
-        public XY CenterPosition =>
-            new XY(XPosition, HeightOnCanvas);
-        public Fraction ActualDuration =>
-            measureElement.ActualDuration();
         public RythmicDuration DisplayDuration =>
             measureElement.RythmicDuration;
         public ColorARGB DisplayColor =>
@@ -31,8 +28,6 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
         {
             get
             {
-                var dots = new List<DrawableCircle>();
-
                 var heightOnCanvas = HeightOnCanvas;
                 if (MathUtils.UnsignedModulo(Line, 2) == 0)
                 {
@@ -49,12 +44,10 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
                         0.3,
                         defaultColor);
 
-                    dots.Add(circle);
+                    yield return circle;
 
                     startLeft += spacing;
                 }
-
-                return dots;
             }
         }
 
@@ -83,21 +76,16 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
 
         public override IEnumerable<BaseDrawableElement> GetDrawableElements()
         {
-            var elements = new List<BaseDrawableElement>
+            yield return Glyph;
+
+            foreach(var dot in Dots)
             {
-                Glyph,
-            };
-
-            elements.AddRange(Dots);
-
-            return elements;
+                yield return dot;
+            }
         }
         public override IEnumerable<BaseContentWrapper> GetContentWrappers()
         {
-            return new List<BaseContentWrapper>()
-            {
-                new SimpleGhost(this)
-            };
+            yield return new SimpleGhost(this);
         }
         public override bool Respond(XY point)
         {

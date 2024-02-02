@@ -18,8 +18,8 @@
 
             foreach (var voice in ribbonMeasure.EnumerateVoices())
             {
-                var blocks = ribbonMeasure.ReadBlocks(voice);
-                var chords = blocks.SelectMany(b => b.ReadChords());
+                var blocks = ribbonMeasure.ReadBlockChainAt(voice);
+                var chords = blocks.ReadBlocks().SelectMany(b => b.ReadChords());
                 foreach (var chord in chords)
                 {
                     if (chord.PositionEnd().Decimal > noteReader.Position.Decimal)

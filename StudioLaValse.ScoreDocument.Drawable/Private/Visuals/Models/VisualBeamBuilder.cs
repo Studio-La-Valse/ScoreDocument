@@ -1,5 +1,6 @@
 ﻿using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.DrawableElements;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.Models
 {
@@ -17,22 +18,17 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.Models
 
         public IEnumerable<BaseDrawableElement> Build(IEnumerable<VisualStem> stems, Ruler beamDefinition, double scale, ColorARGB color)
         {
-            var groupUp = true;
-
-            if (stems.Any())
-            {
-                groupUp = stems.First().VisuallyUp;
-            }
-
-            var beamThickness = 0.8 * scale;
-            var beamSpacing = 0.2 * scale;
-
-            if (!stems.Any())
+            if (!stems.Any() || stems.First().Beams.Count == 0)
             {
                 return new List<BaseDrawableElement>();
             }
 
-            if (stems.Count() == 1 && stems.First().Beams.Any())
+            var groupUp = stems.First().VisuallyUp;
+
+            var beamThickness = 0.8 * scale;
+            var beamSpacing = 0.2 * scale;
+
+            if (stems.Count() == 1)
             {
                 return new List<BaseDrawableElement>() { AsFlag(stems.First(), scale, color) };
             }
@@ -160,20 +156,22 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.Models
         private static DrawableTrapezoid BetweenTwoStems(VisualStem left, VisualStem right, int beamIndex, Ruler beamDefinition, double beamSpacing, double beamThickness, bool groupUp, ColorARGB color)
         {
             var stemUp = left.VisuallyUp;
-
-            var ruler = left.VisuallyUp ?
+            var ruler = stemUp ?
                 //draw beams downwards
-                beamDefinition.OffsetY(beamIndex * (beamSpacing + beamSpacing)) :
+                beamDefinition.OffsetY(beamIndex * (beamSpacing + beamThickness)) :
                 //draw beams upwards
-                beamDefinition.OffsetY(beamIndex * ((beamSpacing + beamSpacing) * -1));
+                beamDefinition.OffsetY(beamIndex * ((beamSpacing + beamThickness) * -1));
 
             if (stemUp != groupUp)
             {
-                ruler = stemUp ? ruler.OffsetY(beamThickness * -1) : ruler.OffsetY(beamThickness);
+                ruler = stemUp ? 
+                    ruler.OffsetY(beamThickness) :
+                    ruler.OffsetY(beamThickness * -1);
             }
 
             var thickness = stemUp ?
-                beamThickness : beamThickness * -1;
+                beamThickness : 
+                beamThickness * -1;
 
             var startPoint = ruler.IntersectVerticalRay(left.End);
 
@@ -188,17 +186,20 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.Models
 
             var ruler = stemUp ?
                 //draw beams downwards
-                beamDefinition.OffsetY(beamIndex * (beamSpacing + beamSpacing)) :
+                beamDefinition.OffsetY(beamIndex * (beamSpacing + beamThickness)) :
                 //draw beams upwards
-                beamDefinition.OffsetY(beamIndex * ((beamSpacing + beamSpacing) * -1));
+                beamDefinition.OffsetY(beamIndex * ((beamSpacing + beamThickness) * -1));
 
             if (stemUp != GroupUp)
             {
-                ruler = stemUp ? ruler.OffsetY(beamThickness * -1) : ruler.OffsetY(beamThickness);
+                ruler = stemUp ? 
+                    ruler.OffsetY(beamThickness) :
+                    ruler.OffsetY(beamThickness * -1);
             }
 
             var thickness = stemUp ?
-                beamThickness : beamThickness * -1;
+                beamThickness : 
+                beamThickness * -1;
 
             var endPoint = ruler.IntersectVerticalRay(stem.End);
 
@@ -213,17 +214,20 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.Models
 
             var ruler = stemUp ?
                 //draw beams downwards
-                beamDefinition.OffsetY(beamIndex * (beamSpacing + beamSpacing)) :
+                beamDefinition.OffsetY(beamIndex * (beamSpacing + beamThickness)) :
                 //draw beams upwards
-                beamDefinition.OffsetY(beamIndex * ((beamSpacing + beamSpacing) * -1));
+                beamDefinition.OffsetY(beamIndex * ((beamSpacing + beamThickness) * -1));
 
             if (stemUp != groupUp)
             {
-                ruler = stemUp ? ruler.OffsetY(beamThickness * -1) : ruler.OffsetY(beamThickness);
+                ruler = stemUp ? 
+                    ruler.OffsetY(beamThickness) : 
+                    ruler.OffsetY(beamThickness * -1);
             }
 
             var thickness = stemUp ?
-                beamThickness : beamThickness * -1;
+                beamThickness : 
+                beamThickness * -1;
 
             var startPoint = ruler.IntersectVerticalRay(stem.End);
 

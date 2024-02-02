@@ -2,7 +2,7 @@
 
 namespace StudioLaValse.ScoreDocument.Private
 {
-    internal sealed class MeasureElementContainer : ScoreElement, IChordEditor, IChordReader
+    internal sealed class MeasureElementContainer : ScoreElement, IChordEditor, IChordReader, IPositionElement
     {
         private readonly List<Note> measureElements;
         private readonly MeasureBlock hostBlock;
@@ -36,8 +36,6 @@ namespace StudioLaValse.ScoreDocument.Private
                 return position;
             }
         }
-        public int Voice =>
-            hostBlock.Voice;
         public bool Grace =>
             hostBlock.Grace;
         public int IndexInBlock =>
@@ -69,6 +67,11 @@ namespace StudioLaValse.ScoreDocument.Private
         {
             foreach (var pitch in pitches)
             {
+                if(measureElements.Any(e => e.Pitch == pitch))
+                {
+                    continue;
+                }
+
                 var noteInMeasure = new Note(pitch, this, keyGenerator);
                 measureElements.Add(noteInMeasure);
             }
@@ -94,18 +97,6 @@ namespace StudioLaValse.ScoreDocument.Private
         {
             return measureElements;
         }
-
-
-
-        public IChordReader? ReadPrevious()
-        {
-            return hostBlock.ContainerLeft(this);
-        }
-        public IChordReader? ReadNext()
-        {
-            return hostBlock.ContainerRight(this);
-        }
-
 
 
 

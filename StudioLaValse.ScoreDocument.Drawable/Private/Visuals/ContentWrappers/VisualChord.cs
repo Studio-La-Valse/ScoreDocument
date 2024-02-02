@@ -10,14 +10,13 @@
         private readonly IVisualNoteFactory noteFactory;
         private readonly IVisualRestFactory restFactory;
         private readonly ColorARGB color;
-        private readonly double lineSpacing;
 
 
 
 
 
 
-        public VisualChord(IChordReader chord, double canvasLeft, double canvasTopStaffGroup, IStaffGroupReader staffGroup, IVisualNoteFactory noteFactory, IVisualRestFactory restFactory, ColorARGB color, double lineSpacing = 1.2)
+        public VisualChord(IChordReader chord, double canvasLeft, double canvasTopStaffGroup, IStaffGroupReader staffGroup, IVisualNoteFactory noteFactory, IVisualRestFactory restFactory, ColorARGB color)
         {
             this.chord = chord;
             scale = chord.Grace ? 0.5 : 1;
@@ -27,7 +26,6 @@
             this.noteFactory = noteFactory;
             this.restFactory = restFactory;
             this.color = color;
-            this.lineSpacing = lineSpacing;
         }
 
 
@@ -50,11 +48,10 @@
         }
         public IEnumerable<DrawableLineHorizontal> GetOverflowLines()
         {
-            var lines = new List<DrawableLineHorizontal>();
             var notes = chord.ReadNotes();
             if (!notes.Any())
             {
-                return lines;
+                yield break;
             }
 
             var canvasTopStaff = canvasTopStaffGroup;
@@ -80,23 +77,17 @@
                                 continue;
                             }
 
-                            linesFromChord.Add(line);
+                            yield return line;
                         }
                     }
                 }
 
-                canvasTopStaff += 4 * lineSpacing;
+                canvasTopStaff += staff.CalculateHeight();
                 canvasTopStaff += staff.ReadLayout().DistanceToNext;
             }
-
-            lines.AddRange(linesFromChord);
-
-            return lines;
         }
-        public List<DrawableLineHorizontal> OverflowLinesFromNote(INoteReader note, double width, double canvasTopStaff, IStaffReader staff)
+        public IEnumerable<DrawableLineHorizontal> OverflowLinesFromNote(INoteReader note, double width, double canvasTopStaff, IStaffReader staff)
         {
-            var lines = new List<DrawableLineHorizontal>();
-
             DrawableLineHorizontal fromHeight(double height)
             {
                 return new DrawableLineHorizontal(height, canvasLeft - width / 2, width, 0.1, color);
@@ -116,7 +107,7 @@
                     }
 
                     var height = staff.HeightFromLineIndex(canvasTopStaff, i);
-                    lines.Add(fromHeight(height));
+                    yield return (fromHeight(height));
                 }
             }
 
@@ -130,11 +121,9 @@
                     }
 
                     var height = staff.HeightFromLineIndex(canvasTopStaff, i);
-                    lines.Add(fromHeight(height));
+                    yield return (fromHeight(height));
                 }
             }
-
-            return lines;
         }
 
 

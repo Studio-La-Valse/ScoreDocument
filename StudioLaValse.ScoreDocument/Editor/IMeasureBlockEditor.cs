@@ -3,7 +3,8 @@
     /// <summary>
     /// Represents a measure block editor.
     /// </summary>
-    public interface IMeasureBlockEditor : IMeasureBlock
+    public interface IMeasureBlockEditor
+        : IMeasureBlock
     {
         /// <summary>
         /// Edit the chords in the measure block.

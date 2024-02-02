@@ -40,16 +40,12 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.ContentWrappers
 
         public IEnumerable<DrawableLineHorizontal> ConstructStaffLines()
         {
-            var lines = new List<DrawableLineHorizontal>();
-
             for (int i = 0; i < 5; i++)
             {
                 double heightOnPage = canvasTop + i * staff.ReadLayout().LineSpacing;
 
-                lines.Add(new DrawableLineHorizontal(heightOnPage, canvasLeft, length, 0.1, color));
+                yield return (new DrawableLineHorizontal(heightOnPage, canvasLeft, length, 0.1, color));
             }
-
-            return lines;
         }
         public DrawableScoreGlyph ConstructOpeningClef()
         {
@@ -70,11 +66,9 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.ContentWrappers
         }
         public IEnumerable<DrawableScoreGlyph> ConstructOpeningKeySignature()
         {
-            var glyphs = new List<DrawableScoreGlyph>();
-
             if (openingKeySignature.IndexInCircleOfFifths == 0)
             {
-                return glyphs;
+                yield break;
             }
 
             var xPosition = canvasLeft + 3.5;
@@ -101,36 +95,28 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.ContentWrappers
                     _glyph,
                     color);
 
-                glyphs.Add(glyph);
+                yield return glyph;
             }
-
-            return glyphs;
         }
 
 
         public override IEnumerable<BaseDrawableElement> GetDrawableElements()
         {
-            var list = new List<BaseDrawableElement>();
-
             foreach (var item in ConstructStaffLines())
             {
-                list.Add(item);
+                yield return (item);
             }
 
             foreach (var glyph in ConstructOpeningKeySignature())
             {
-                list.Add(glyph);
+                yield return glyph;
             }
 
-            list.Add(ConstructOpeningClef());
-
-            return list;
+            yield return ConstructOpeningClef();
         }
         public override IEnumerable<BaseContentWrapper> GetContentWrappers()
         {
-            var elements = new List<BaseContentWrapper>();
-
-            return elements;
+            yield break;
         }
     }
 }

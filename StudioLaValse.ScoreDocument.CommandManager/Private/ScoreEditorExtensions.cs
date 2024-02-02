@@ -22,6 +22,11 @@
             return new RibbonMeasureEditorWithCommandManager(measureEditor, commandManager);
         }
 
+        public static IMeasureBlockChainEditor UseTransaction(this IMeasureBlockChainEditor measureEditor, ICommandManager commandManager)
+        {
+            return new MeasureBlockChainWithCommandManager(measureEditor, commandManager);
+        }
+
         public static IMeasureBlockEditor UseTransaction(this IMeasureBlockEditor chordGroup, ICommandManager commandManager)
         {
             return new ChordGroupEditorWithCommandManager(chordGroup, commandManager);

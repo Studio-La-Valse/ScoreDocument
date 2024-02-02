@@ -1,5 +1,7 @@
 ﻿
 
+using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.Models;
+
 namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
 {
     internal sealed class VisualStaffSystem : BaseSelectableParent<IUniqueScoreElement>
@@ -20,7 +22,6 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
             get
             {
                 var isLast = staffSystem.ReadMeasures().Last().IsLastInScore;
-
                 var x = isLast ? canvasLeft + length - 1 : canvasLeft + length;
 
                 return new DrawableLineVertical(x, canvasTop, staffSystem.CalculateHeight(), 0.1, color: baseColor);
@@ -31,9 +32,10 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
             get
             {
                 var isLast = staffSystem.ReadMeasures().Last().IsLastInScore;
-
                 if (!isLast)
+                {
                     return null;
+                }
 
                 var thickness = isLast ? 0.5 : 0.1;
 
@@ -45,7 +47,9 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
             get
             {
                 if (staffSystem.ReadMeasures().First().IndexInScore == 0)
+                {
                     return null;
+                }
 
                 var index = staffSystem.ReadMeasures().First().IndexInScore + 1;
 
@@ -126,6 +130,9 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
         }
         public override IEnumerable<BaseDrawableElement> GetDrawableElements()
         {
+            yield return OpeningLine;
+            yield return ClosingLine;
+
             var elements = new List<BaseDrawableElement>
             {
                 OpeningLine,
@@ -134,33 +141,27 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
 
             if (MeasureCounter is DrawableText text)
             {
-                elements.Add(text);
+                yield return (text);
             }
 
             if (EndOfPiece is DrawableLineVertical line)
             {
-                elements.Add(line);
+                yield return (line);
             }
-
-            return elements;
         }
         public override IEnumerable<BaseContentWrapper> GetContentWrappers()
         {
-            var elements = new List<BaseContentWrapper>();
-
             foreach (var group in ConstructStaffGroups())
             {
-                elements.Add(group);
+                yield return(group);
             }
 
             foreach (var systemMeasure in ConstructSystemMeasures())
             {
-                elements.Add(systemMeasure);
+                yield return (systemMeasure);
             }
 
-            elements.Add(new SimpleGhost(this));
-
-            return elements;
+            yield return (new SimpleGhost(this));
         }
     }
 }

@@ -38,6 +38,72 @@
         }
 
         /// <summary>
+        /// Subtracts a duration from the specified position.
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="step"></param>
+        /// <returns></returns>
+        public static Position operator -(Position position, Fraction step)
+        {
+            if (position.Denominator == step.Denominator)
+            {
+                return new Position(position.Numinator - step.Numinator, position.Denominator);
+            }
+
+            var nominator =
+                position.Numinator * step.Denominator -
+                position.Denominator * step.Numinator;
+
+            var denominator = position.Denominator * step.Denominator;
+
+            return new Position(nominator, denominator).Simplify().ToPosition();
+        }
+
+        /// <summary>
+        /// Adds a duration to the specified position.
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="step"></param>
+        /// <returns></returns>
+        public static Position operator +(Position position, Duration step)
+        {
+            if (position.Denominator == step.Denominator)
+            {
+                return new Position(position.Numinator + step.Numinator, position.Denominator);
+            }
+
+            var nominator =
+                position.Numinator * step.Denominator +
+                position.Denominator * step.Numinator;
+
+            var denominator = position.Denominator * step.Denominator;
+
+            return new Position(nominator, denominator).Simplify().ToPosition();
+        }
+
+        /// <summary>
+        /// Subtracts a duration from the specified position.
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="step"></param>
+        /// <returns></returns>
+        public static Position operator -(Position position, Duration step)
+        {
+            if (position.Denominator == step.Denominator)
+            {
+                return new Position(position.Numinator - step.Numinator, position.Denominator);
+            }
+
+            var nominator =
+                position.Numinator * step.Denominator -
+                position.Denominator * step.Numinator;
+
+            var denominator = position.Denominator * step.Denominator;
+
+            return new Position(nominator, denominator).Simplify().ToPosition();
+        }
+
+        /// <summary>
         /// Specifies whether the right position is greater than the left position.
         /// </summary>
         /// <param name="right"></param>

@@ -97,7 +97,11 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
                 notesFromVisualHighToLow.Last() :
                 notesFromVisualHighToLow.First();
 
+            var staff = staffGroup.ReadStaves().ElementAt(anchorNote.ReadLayout().StaffIndex);
             var heightOriginOnCanvas = anchorNote.HeightOnCanvas(staffGroup, staffGroupCanvasTop);
+            heightOriginOnCanvas += stemUp ?
+                -0.2 : 0.2;
+
             var horizontalPositionStart = chordCanvasLeft;
             return new XY(horizontalPositionStart, heightOriginOnCanvas);
         }

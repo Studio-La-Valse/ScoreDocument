@@ -1,6 +1,7 @@
 ﻿using StudioLaValse.ScoreDocument.Editor;
 using static System.Reflection.Metadata.BlobBuilder;
 using System.Text.RegularExpressions;
+using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.Models;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
 {
@@ -114,10 +115,10 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
 
         public IEnumerable<VisualStaffMeasure> ConstructStaffMeasures()
         {
-            var list = new List<VisualStaffMeasure>();
             var _canvasTop = canvasTop;
             foreach (var staff in staffGroup.ReadStaves())
             {
+                var stafflayout = staff.ReadLayout();
                 var measureClef = source.OpeningClefAtOrDefault(staff.IndexInStaffGroup);
                 var lastClefChange = source.ReadLayout().ClefChanges.LastOrDefault(c => c.StaffIndex == staff.IndexInStaffGroup)?.Clef ?? measureClef;
 
@@ -142,22 +143,18 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
                     paddingLeft,
                     DrawableWidth,
                     _canvasTop,
-                    1.2);
+                    stafflayout.LineSpacing);
 
-                list.Add(el);
+                yield return el;
 
-                _canvasTop += 4 * 1.2 + staff.ReadLayout().DistanceToNext;
+                _canvasTop += 4 * stafflayout.LineSpacing + stafflayout.DistanceToNext;
             }
-
-            return list;
         }
 
 
 
         public double XPositionFromParameter(double parameter) =>
             canvasLeft + paddingLeft + DrawableWidth * parameter;
-        public double HeightFromLineIndex(int line) =>
-            canvasTop + line * (1.2 / 2);
 
 
 

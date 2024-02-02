@@ -51,8 +51,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.ContentWrappers
                 }
 
                 var heightOfGroup = staffGroup.CalculateHeight();
-                var heightOfOneStaff = 4 * 1.2;
-                var scale = heightOfGroup / heightOfOneStaff;
+                var knownHeightOfTheBrace = 4.8;
+                var scale = heightOfGroup / knownHeightOfTheBrace;
 
                 var glyph = GlyphLibrary.Brace;
                 glyph.Scale = scale;
@@ -94,7 +94,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.ContentWrappers
 
                 yield return newStaff;
 
-                _canvasTop += 4 * 1.2;
+                _canvasTop += staff.CalculateHeight();
                 _canvasTop += staff.ReadLayout().DistanceToNext;
             }
         }
@@ -104,23 +104,19 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.ContentWrappers
 
         public override IEnumerable<BaseDrawableElement> GetDrawableElements()
         {
-            var elements = new List<BaseDrawableElement>();
-
             if (staffGroup.ReadContext().ReadLayout().Collapsed)
             {
-                elements.Add(new DrawableLineHorizontal(canvasTop, canvasLeft, length, 0.1, color));
+                yield return new DrawableLineHorizontal(canvasTop, canvasLeft, length, 0.1, color);
             }
             else
             {
                 if (Brace != null)
                 {
-                    elements.Add(Brace);
+                    yield return Brace;
                 }
 
-                elements.Add(ID);
+                yield return ID;
             }
-
-            return elements;
         }
         public override IEnumerable<BaseContentWrapper> GetContentWrappers()
         {

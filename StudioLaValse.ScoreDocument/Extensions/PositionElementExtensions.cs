@@ -46,8 +46,8 @@
         public static bool ContainsPosition(this IPositionElement positionElement, Position position)
         {
             return 
-                positionElement.Position.Decimal >= position.Decimal &&
-                (positionElement.Position + positionElement.RythmicDuration).Decimal < position.Decimal;
+                positionElement.Position.Decimal <= position.Decimal &&
+                (positionElement.Position + positionElement.RythmicDuration).Decimal > position.Decimal;
         }
     }
 }

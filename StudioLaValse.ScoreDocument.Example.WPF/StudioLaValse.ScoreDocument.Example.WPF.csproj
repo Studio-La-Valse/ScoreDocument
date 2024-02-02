@@ -9,15 +9,25 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="StudioLaValse.Drawable" Version="1.0.0" />
+      <None Remove="Resources\Bravura.otf" />
+      <None Remove="Resources\BravuraText.otf" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="StudioLaValse.Drawable" Version="1.0.1" />
         <PackageReference Include="StudioLaValse.Drawable.Interaction" Version="1.0.0" />
-        <PackageReference Include="StudioLaValse.Drawable.WPF" Version="1.0.0" />
+        <PackageReference Include="StudioLaValse.Drawable.WPF" Version="1.0.1" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\StudioLaValse.ScoreDocument.Drawable\StudioLaValse.ScoreDocument.Drawable.csproj" />
         <ProjectReference Include="..\StudioLaValse.ScoreDocument.MusicXml\StudioLaValse.ScoreDocument.MusicXml.csproj" />
         <ProjectReference Include="..\StudioLaValse.ScoreDocument\StudioLaValse.ScoreDocument.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Resource Include="Resources\Bravura.otf" />
+      <Resource Include="Resources\BravuraText.otf" />
     </ItemGroup>
 
     <ItemGroup>

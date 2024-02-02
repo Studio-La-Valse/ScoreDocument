@@ -1,6 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents;
-
-namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.Models
+﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.Models
 {
     internal sealed class Ruler
     {

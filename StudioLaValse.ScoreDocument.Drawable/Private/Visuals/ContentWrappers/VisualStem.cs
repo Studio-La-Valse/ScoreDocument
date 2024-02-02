@@ -32,16 +32,11 @@
 
         public override IEnumerable<BaseDrawableElement> GetDrawableElements()
         {
-            var list = new List<BaseDrawableElement>()
-            {
-                new DrawableLine(Origin, End, color: color, thickness: thickness),
-            };
-
-            return list;
+            yield return new DrawableLine(Origin, End, color: color, thickness: thickness);
         }
         public override IEnumerable<BaseContentWrapper> GetContentWrappers()
         {
-            return new List<BaseContentWrapper>();
+            yield break;
         }
     }
 }

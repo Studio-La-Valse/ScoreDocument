@@ -14,9 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="StudioLaValse.Drawable" Version="1.0.1" />
-        <PackageReference Include="StudioLaValse.Drawable.Interaction" Version="1.0.0" />
-        <PackageReference Include="StudioLaValse.Drawable.WPF" Version="1.0.1" />
+      <PackageReference Include="StudioLaValse.Drawable.WPF" Version="1.0.1" />
     </ItemGroup>
 
     <ItemGroup>

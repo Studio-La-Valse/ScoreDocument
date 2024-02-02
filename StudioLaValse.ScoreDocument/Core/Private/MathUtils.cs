@@ -150,5 +150,15 @@
         {
             return Math.Abs(a - b) < epsilon;
         }
+
+        public static int GCD(this int[] numbers)
+        {
+            return numbers.Aggregate(GCD);
+        }
+
+        public static int GCD(this int a, int b)
+        {
+            return (a == 0 || b == 0) ? a | b : GCD(Math.Min(a, b), Math.Max(a, b) % Math.Min(a, b));
+        }
     }
 }

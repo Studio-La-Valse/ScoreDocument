@@ -1,4 +1,6 @@
-﻿namespace StudioLaValse.ScoreDocument.Core
+﻿using StudioLaValse.ScoreDocument.Core.Private;
+
+namespace StudioLaValse.ScoreDocument.Core
 {
     /// <summary>
     /// Represents a fraction of two non negative integers.
@@ -35,27 +37,12 @@
         /// <exception cref="Exception"></exception>
         public Fraction(int numinator, int denominator)
         {
-            if (numinator < 0)
-                throw new IndexOutOfRangeException("Cannot create a musical fractoin with a numinator smaller than 0");
-
-            if (denominator <= 0)
-                throw new Exception("A musical fraction cannot have a denominator of 0 or smaller.");
+            ArgumentOutOfRangeException.ThrowIfNegative(numinator);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(denominator);
 
             Numinator = numinator;
 
             Denominator = denominator;
-        }
-
-
-        private static int GreatestCommonDivisor(int a, int b)
-        {
-            while (a != 0 && b != 0)
-                if (a > b)
-                    a %= b;
-                else
-                    b %= a;
-
-            return a | b;
         }
 
         /// <summary>
@@ -64,7 +51,7 @@
         /// <returns></returns>
         public virtual Fraction Simplify()
         {
-            var greatestCommonDivisor = GreatestCommonDivisor(Numinator, Denominator);
+            var greatestCommonDivisor = Numinator.GCD(Denominator);
 
             var minPosition = Numinator / greatestCommonDivisor;
 

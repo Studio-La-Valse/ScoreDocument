@@ -24,9 +24,9 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
             this.visualBeamBuilder = new VisualBeamBuilder();
         }
         /// <inheritdoc/>
-        public BaseContentWrapper Build(IMeasureBlockReader noteGroup, IStaffGroupReader staffGroup, double canvasTopStaffGroup, double canvasLeft, double spacing, ColorARGB colorARGB)
+        public BaseContentWrapper Build(IMeasureBlockReader noteGroup, IStaffGroupReader staffGroup, double canvasTopStaffGroup, double canvasLeft, double allowedSpace, ColorARGB colorARGB)
         {
-            return new VisualNoteGroup(noteGroup, staffGroup, canvasTopStaffGroup, canvasLeft, spacing, noteFactory, restFactory, visualBeamBuilder, colorARGB);
+            return new VisualNoteGroup(noteGroup, staffGroup, canvasTopStaffGroup, canvasLeft, allowedSpace, noteFactory, restFactory, visualBeamBuilder, colorARGB);
         }
     }
 }

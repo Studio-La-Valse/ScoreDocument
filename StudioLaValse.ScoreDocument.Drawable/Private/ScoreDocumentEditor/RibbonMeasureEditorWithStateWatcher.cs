@@ -1,7 +1,6 @@
 ﻿using StudioLaValse.Drawable;
 using StudioLaValse.ScoreDocument.Editor;
 using StudioLaValse.ScoreDocument.Layout;
-using StudioLaValse.ScoreDocument.Primitives;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.ScoreDocumentEditor
 {
@@ -32,12 +31,6 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ScoreDocumentEditor
             notifyEntityChanged.Invalidate(source);
         }
 
-        public void AppendBlock(int voice, Duration duration, bool grace)
-        {
-            source.AppendBlock(voice, duration, grace);
-            notifyEntityChanged.Invalidate(source);
-        }
-
         public void ApplyLayout(IInstrumentMeasureLayout layout)
         {
             source.ApplyLayout(layout);
@@ -50,20 +43,10 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ScoreDocumentEditor
             notifyEntityChanged.Invalidate(source);
         }
 
-        public void ClearVoice(int voice)
+        public void RemoveVoice(int voice)
         {
-            source.ClearVoice(voice);
+            source.RemoveVoice(voice);
             notifyEntityChanged.Invalidate(source);
-        }
-
-        public IEnumerable<IMeasureBlockEditor> EditBlocks(int voice)
-        {
-            return source.EditBlocks(voice).Select(e => e.UseStateWatcher(source, notifyEntityChanged));
-        }
-
-        public IEnumerable<IMeasureBlock> EnumerateBlocks(int voice)
-        {
-            return source.EnumerateBlocks(voice);
         }
 
         public IEnumerable<int> EnumerateVoices()
@@ -76,15 +59,19 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ScoreDocumentEditor
             return source.Equals(other);
         }
 
-        public void PrependBlock(int voice, Duration duration, bool grace)
-        {
-            source.PrependBlock(voice, duration, grace);
-            notifyEntityChanged.Invalidate(source);
-        }
-
         public IInstrumentMeasureLayout ReadLayout()
         {
             return source.ReadLayout();
+        }
+
+        public IMeasureBlockChainEditor EditBlockChainAt(int voice)
+        {
+            return source.EditBlockChainAt(voice).UseStateWatcher(source, notifyEntityChanged);
+        }
+
+        public IMeasureBlockChain BlockChainAt(int voice)
+        {
+            return source.BlockChainAt(voice);
         }
     }
 }

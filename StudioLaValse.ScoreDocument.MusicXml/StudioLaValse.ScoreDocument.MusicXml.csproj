@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+	<PropertyGroup>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<IncludeSymbols>true</IncludeSymbols>
+		<Version>0.230716.0</Version>
+		<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+		<Deterministic>False</Deterministic>
+	</PropertyGroup>
+	
+  <ItemGroup>
+    <ProjectReference Include="..\StudioLaValse.ScoreDocument\StudioLaValse.ScoreDocument.csproj" />
+  </ItemGroup>
+
+	<Target Name="CopyPackage" AfterTargets="Pack">
+		<Copy SourceFiles="$(OutputPath)..\$(PackageId).$(PackageVersion).nupkg" DestinationFolder="$(SolutionDir)..\nuget\" />
+	</Target>
+
+	
+</Project>

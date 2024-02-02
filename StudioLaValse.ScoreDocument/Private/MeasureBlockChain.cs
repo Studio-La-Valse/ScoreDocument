@@ -1,6 +1,11 @@
-﻿namespace StudioLaValse.ScoreDocument.Private
+﻿using StudioLaValse.ScoreDocument.Core;
+using StudioLaValse.ScoreDocument.Core.Private;
+using System.Diagnostics;
+using System.Linq;
+
+namespace StudioLaValse.ScoreDocument.Private
 {
-    internal class MeasureBlockChain
+    internal class MeasureBlockChain : IMeasureBlockChainReader, IMeasureBlockChainEditor
     {
         private readonly List<MeasureBlock> blocks;
         private readonly IKeyGenerator<int> keyGenerator;
@@ -29,6 +34,8 @@
         }
 
 
+
+
         public MeasureBlock? BlockRight(MeasureBlock block)
         {
             var index = IndexOfOrThrow(block);
@@ -53,30 +60,138 @@
         }
 
 
-
-        public IMeasureBlockEditor Prepend(Duration duration, bool grace)
+        public void Divide(params int[] steps)
         {
-            var newLength = blocks.Select(e => e.Duration).Sum() + duration;
-            if (newLength > RibbonMeasure.TimeSignature)
+            if(steps.Length == 0)
             {
-                throw new Exception("New measure block cannot fit in this measure.");
+                throw new InvalidOperationException("Please provide at least one value");
+            }
+
+            if (blocks.Any(b => b.Containers.Any()))
+            {
+                throw new InvalidOperationException("Cannot divide this measure block chain because it already contains blocks that have content.");
+            }
+
+            foreach(var step in steps)
+            {
+                if(step <= 0)
+                {
+                    throw new InvalidOperationException("Please only provide steps greater than 0.");
+                }
+            }
+
+            var timeSignature = RibbonMeasure.TimeSignature;
+            var multiplier = timeSignature.Numinator;
+            for (int i = 0; i < steps.Length; i++)
+            {
+                steps[i] *= multiplier;
+            }
+
+            var sum = steps.Sum();
+            var denomMultiplier = sum / multiplier;
+            var stepDenom = denomMultiplier * timeSignature.Denominator;
+
+            var stepsAsRythmicDurations = steps.Select(step =>
+            {
+                var gcd = step.GCD(stepDenom);
+                step /= gcd;
+
+                var denom = stepDenom / gcd;
+                var fraction = new Fraction(step, denom);
+                if (!RythmicDuration.TryConstruct(fraction, out var rythmicDuration))
+                {
+                    throw new InvalidOperationException("Not all of the specified steps can be resolved to valid rythmic durations.");
+                }
+
+                return rythmicDuration;
+            });
+
+            if(stepsAsRythmicDurations.Sum().Decimal != timeSignature.Decimal)
+            {
+                throw new InvalidOperationException("The specified set of steps does not resolve to the same duration as the timesignature of the measure.");
+            }
+
+            blocks.Clear();
+            foreach (var rythmicDuration in stepsAsRythmicDurations)
+            {
+                Append(rythmicDuration, false);
+            }
+        }
+        public void DivideEqual(int number)
+        {
+            var steps = Enumerable.Range(0, number).Select(i => 1).ToArray();
+            Divide(steps);
+        }
+        public void Prepend(RythmicDuration duration, bool grace)
+        {
+            if (!grace)
+            {
+                var newLength = blocks.Select(e => e.RythmicDuration).Sum() + duration;
+                if (newLength > RibbonMeasure.TimeSignature)
+                {
+                    throw new Exception("New measure block cannot fit in this measure.");
+                }
             }
 
             var newBlock = new MeasureBlock(duration, this, grace, keyGenerator);
             blocks.Insert(0, newBlock);
-            return newBlock;
         }
-        public IMeasureBlockEditor Append(Duration duration, bool grace)
+        public void Append(RythmicDuration duration, bool grace)
         {
-            var newLength = blocks.Select(e => e.Duration).Sum() + duration;
-            if (newLength > RibbonMeasure.TimeSignature)
+            if (!grace)
             {
-                throw new Exception("New measure block cannot fit in this measure.");
+                var newLength = blocks.Select(e => e.RythmicDuration).Sum() + duration;
+                if (newLength > RibbonMeasure.TimeSignature)
+                {
+                    throw new Exception("New measure block cannot fit in this measure.");
+                }
             }
+            
 
             var newBlock = new MeasureBlock(duration, this, grace, keyGenerator);
             blocks.Add(newBlock);
-            return newBlock;
+        }
+        public void Insert(Position position, RythmicDuration duration, bool grace)
+        {
+            if (!grace)
+            {
+                var newLength = blocks.Select(e => e.RythmicDuration).Sum() + duration;
+                if (newLength > RibbonMeasure.TimeSignature)
+                {
+                    throw new Exception("New measure block cannot fit in this measure.");
+                }
+            }
+
+            for (int i = 0; i < blocks.Count; i++)
+            {
+                var block = blocks[i];
+                if(block.Position == position)
+                {
+                    var newBlock = new MeasureBlock(duration, this, grace, keyGenerator);
+                    blocks.Insert(i, newBlock);
+                    return;
+                }
+            }
+
+            throw new Exception($"No existing block found that starts at position {position}");
+        }
+        public void Clear()
+        {
+            blocks.Clear();
+        }
+
+
+        public IEnumerable<IMeasureBlockReader> ReadBlocks()
+        {
+            return blocks;
+        }
+        public IEnumerable<IMeasureBlock> EnumerateBlocks()
+        {
+            return blocks;
+        }
+        public IEnumerable<IMeasureBlockEditor> EditBlocks()
+        {
+            return blocks;
         }
     }
 }

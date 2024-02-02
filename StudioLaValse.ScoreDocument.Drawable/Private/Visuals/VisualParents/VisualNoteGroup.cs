@@ -1,4 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.Models;
+﻿using StudioLaValse.ScoreDocument.Core;
+using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.Models;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
 {
@@ -8,48 +9,47 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
         private readonly IStaffGroupReader staffGroup;
         private readonly double canvasTopStaffGroup;
         private readonly double canvasLeft;
-        private readonly double spacing;
+        private readonly double allowedSpace;
         private readonly IVisualNoteFactory noteFactory;
         private readonly IVisualRestFactory restFactory;
         private readonly IVisualBeamBuilder visualBeamBuilder;
         private readonly ColorARGB colorARGB;
 
-        public VisualNoteGroup(IMeasureBlockReader noteGroup, IStaffGroupReader staffGroup, double canvasTopStaffGroup, double canvasLeft, double spacing, IVisualNoteFactory noteFactory, IVisualRestFactory restFactory, IVisualBeamBuilder visualBeamBuilder, ColorARGB colorARGB)
+        public VisualNoteGroup(IMeasureBlockReader noteGroup, IStaffGroupReader staffGroup, double canvasTopStaffGroup, double canvasLeft, double allowedSpace, IVisualNoteFactory noteFactory, IVisualRestFactory restFactory, IVisualBeamBuilder visualBeamBuilder, ColorARGB colorARGB)
         {
             this.noteGroup = noteGroup;
             this.staffGroup = staffGroup;
             this.canvasTopStaffGroup = canvasTopStaffGroup;
             this.canvasLeft = canvasLeft;
-            this.spacing = spacing;
+            this.allowedSpace = allowedSpace;
             this.noteFactory = noteFactory;
             this.restFactory = restFactory;
             this.visualBeamBuilder = visualBeamBuilder;
             this.colorARGB = colorARGB;
         }
 
-        public IEnumerable<BaseContentWrapper> Create(IMeasureBlockReader noteGroup, IStaffGroupReader staffGroup, double canvasTopStaffGroup, double canvasLeft, double spacing)
+        public IEnumerable<BaseContentWrapper> Create(IMeasureBlockReader noteGroup, IStaffGroupReader staffGroup, double canvasTopStaffGroup, double canvasLeft, double allowedSpace)
         {
-            var contentWrappers = new List<BaseContentWrapper>();
             if (!noteGroup.ReadChords().Any())
             {
-                return contentWrappers;
+                yield break;
             }
 
             var note = GlyphLibrary.NoteHeadBlack;
             note.Scale = 1;
+
             var noteWidth = note.Width;
             var firstChord = noteGroup.ReadChords().First();
             var firstStemUp = noteGroup.ReadLayout().StemLength > 0;
             var firstStemOrigin = ConstructStemOrigin(firstChord, staffGroup, canvasTopStaffGroup, canvasLeft, firstStemUp, noteWidth);
             var firstStemTip = new XY(firstStemOrigin.X, firstStemOrigin.Y + noteGroup.ReadLayout().StemLength);
             var beamDefinition = new Ruler(firstStemTip, 0);
-
             var stems = new List<VisualStem>();
+            var groupLength = noteGroup.EnumerateChords().Select(c => c.RythmicDuration).Sum().Decimal;
 
             foreach (var chord in noteGroup.ReadChords())
             {
-                var visualChord = new VisualChord(chord, canvasLeft, canvasTopStaffGroup, staffGroup, noteFactory, restFactory, colorARGB);
-                contentWrappers.Add(visualChord);
+                yield return new VisualChord(chord, canvasLeft, canvasTopStaffGroup, staffGroup, noteFactory, restFactory, colorARGB);
 
                 if (chord.ReadNotes().Any(note => note.RythmicDuration.Decimal <= 0.5M))
                 {
@@ -63,13 +63,10 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
                     stems.Add(visualStem);
                 }
 
-                canvasLeft += spacing;
+                canvasLeft += MathUtils.Map((double)chord.RythmicDuration.Decimal, 0d, (double)groupLength, 0, allowedSpace);
             }
 
-            var beamGroup = new VisualBeamGroup(stems, beamDefinition, noteGroup.Grace ? 0.5 : 1, colorARGB, visualBeamBuilder);
-            contentWrappers.Add(beamGroup);
-
-            return contentWrappers;
+            yield return new VisualBeamGroup(stems, beamDefinition, noteGroup.Grace ? 0.5 : 1, colorARGB, visualBeamBuilder);
         }
 
         public static XY ConstructStemOrigin(IChordReader chord, IStaffGroupReader staffGroup, double staffGroupCanvasTop, double chordCanvasLeft, bool stemUp, double noteWidth)
@@ -100,7 +97,11 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
                 notesFromVisualHighToLow.Last() :
                 notesFromVisualHighToLow.First();
 
+            var staff = staffGroup.ReadStaves().ElementAt(anchorNote.ReadLayout().StaffIndex);
             var heightOriginOnCanvas = anchorNote.HeightOnCanvas(staffGroup, staffGroupCanvasTop);
+            heightOriginOnCanvas += stemUp ?
+                -0.2 : 0.2;
+
             var horizontalPositionStart = chordCanvasLeft;
             return new XY(horizontalPositionStart, heightOriginOnCanvas);
         }
@@ -111,7 +112,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
         }
         public override IEnumerable<BaseContentWrapper> GetContentWrappers()
         {
-            return Create(noteGroup, staffGroup, canvasTopStaffGroup, canvasLeft, spacing);
+            return Create(noteGroup, staffGroup, canvasTopStaffGroup, canvasLeft, allowedSpace);
         }
     }
 }

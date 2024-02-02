@@ -16,7 +16,7 @@
         /// <summary>
         /// The duration of the measure block.
         /// </summary>
-        public required Duration Duration { get; init; }
+        public required RythmicDuration Duration { get; init; }
         /// <summary>
         /// Whether the measure block is a grace or not.
         /// </summary>

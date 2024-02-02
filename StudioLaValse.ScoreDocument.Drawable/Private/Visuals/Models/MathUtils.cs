@@ -1,4 +1,4 @@
-﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
+﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.Models
 {
     internal static class MathUtils
     {

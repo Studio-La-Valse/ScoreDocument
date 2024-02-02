@@ -1,4 +1,9 @@
-﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
+﻿using StudioLaValse.ScoreDocument.Editor;
+using static System.Reflection.Metadata.BlobBuilder;
+using System.Text.RegularExpressions;
+using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.Models;
+
+namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
 {
     internal sealed class VisualStaffGroupMeasure : BaseSelectableParent<IUniqueScoreElement>
     {
@@ -69,62 +74,51 @@
 
         public IEnumerable<BaseContentWrapper> ConstructNoteGroups()
         {
-            var groups = new List<BaseContentWrapper>();
             foreach (var voice in source.EnumerateVoices())
             {
-                var chordGroups = source.ReadBlocks(voice).OrderBy(c => c.ReadChords().First().Position.Decimal).ToList();
-                for (int i = 0; i < chordGroups.Count; i++)
+                var chain = source.ReadBlockChainAt(voice);
+                foreach(var element in ConstructNoteGroups(chain))
                 {
-                    var chordGroup = chordGroups[i];
-
-                    var elements = chordGroup.ReadChords().SelectMany(c => c.ReadNotes());
-                    var anyOnStaff = elements
-                        .Any(ele => ele.ReadLayout().StaffIndex < staffGroup.ReadLayout().NumberOfStaves);
-                    if (!anyOnStaff)
-                    {
-                        continue;
-                    }
-
-                    var firstChord = chordGroup.ReadChords().First();
-                    var xParameter = MathUtils.Map((double)firstChord.Position.Decimal, 0, (double)source.TimeSignature.Decimal, 0, 1);
-
-                    var spacing = 0.01;
-
-                    if (chordGroup.Grace)
-                    {
-                        var numberOfGracesBeforeTarget = 1;
-                        var positionOfNextGroupNotGrace = TimeSignature.ToPosition();
-                        for (int j = i + 1; j < chordGroups.Count; j++)
-                        {
-                            numberOfGracesBeforeTarget++;
-                            var followingChordGroup = chordGroups[j];
-                            if (followingChordGroup.Grace)
-                            {
-                                continue;
-                            }
-
-                            positionOfNextGroupNotGrace = followingChordGroup.ReadChords().First().Position;
-                            break;
-                        }
-
-                        var parameterAtLastChord = MathUtils.Map((double)positionOfNextGroupNotGrace.Decimal, 0, (double)TimeSignature.Decimal, 0, 1) - spacing;
-                        xParameter = parameterAtLastChord - (double)(spacing * numberOfGracesBeforeTarget);
-                    }
-
-                    var canvasLeft = XPositionFromParameter(xParameter + firstChord.ReadLayout().XOffset);
-                    var visualNoteGroup = visualNoteGroupFactory.Build(chordGroup, staffGroup, canvasTop, canvasLeft, spacing, color);
-                    groups.Add(visualNoteGroup);
-                }
+                    yield return element;
+                }   
             }
-
-            return groups;
         }
+
+        public IEnumerable<BaseContentWrapper> ConstructNoteGroups(IMeasureBlockChainReader blockChain)
+        {
+            var blocks = blockChain.ReadBlocks();
+            foreach(var chordGroup in blocks)
+            {
+                var elements = chordGroup.ReadChords().SelectMany(c => c.ReadNotes());
+                var anyOnStaff = elements.Any(ele => ele.ReadLayout().StaffIndex < staffGroup.ReadLayout().NumberOfStaves);
+                if (!anyOnStaff)
+                {
+                    continue;
+                }
+
+                var firstChord = chordGroup.ReadChords().First();
+                var xParameter = MathUtils.Map((double)firstChord.Position.Decimal, 0, (double)source.TimeSignature.Decimal, 0, 1);
+                var canvasLeft = XPositionFromParameter(xParameter + firstChord.ReadLayout().XOffset);
+                var allowedSpace = MathUtils.Map((double)chordGroup.RythmicDuration.Decimal, 0, (double)source.TimeSignature.Decimal, 0, DrawableWidth);
+
+                if (chordGroup.Grace)
+                {
+                    var graceSpacing = 0.1;
+                    allowedSpace = chordGroup.ReadChords().Count() * graceSpacing;
+                    canvasLeft -= allowedSpace;
+                }
+
+                var visualNoteGroup = visualNoteGroupFactory.Build(chordGroup, staffGroup, canvasTop, canvasLeft, allowedSpace, color);
+                yield return visualNoteGroup;
+            }
+        }
+
         public IEnumerable<VisualStaffMeasure> ConstructStaffMeasures()
         {
-            var list = new List<VisualStaffMeasure>();
             var _canvasTop = canvasTop;
             foreach (var staff in staffGroup.ReadStaves())
             {
+                var stafflayout = staff.ReadLayout();
                 var measureClef = source.OpeningClefAtOrDefault(staff.IndexInStaffGroup);
                 var lastClefChange = source.ReadLayout().ClefChanges.LastOrDefault(c => c.StaffIndex == staff.IndexInStaffGroup)?.Clef ?? measureClef;
 
@@ -149,22 +143,18 @@
                     paddingLeft,
                     DrawableWidth,
                     _canvasTop,
-                    1.2);
+                    stafflayout.LineSpacing);
 
-                list.Add(el);
+                yield return el;
 
-                _canvasTop += 4 * 1.2 + staff.ReadLayout().DistanceToNext;
+                _canvasTop += 4 * stafflayout.LineSpacing + stafflayout.DistanceToNext;
             }
-
-            return list;
         }
 
 
 
         public double XPositionFromParameter(double parameter) =>
             canvasLeft + paddingLeft + DrawableWidth * parameter;
-        public double HeightFromLineIndex(int line) =>
-            canvasTop + line * (1.2 / 2);
 
 
 

@@ -20,9 +20,13 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ScoreDocumentEditor
 
         public bool Grace => source.Grace;
 
-        public Duration Duration => source.Duration;
+        public RythmicDuration RythmicDuration => source.RythmicDuration;
 
         public int Id => source.Id;
+
+        public Position Position => source.Position;
+
+        public Tuplet Tuplet => source.Tuplet;
 
         public void AppendChord(RythmicDuration rythmicDuration)
         {

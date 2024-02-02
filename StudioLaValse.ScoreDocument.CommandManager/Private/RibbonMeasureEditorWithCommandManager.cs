@@ -1,4 +1,8 @@
-﻿namespace StudioLaValse.ScoreDocument.CommandManager.Private
+﻿using StudioLaValse.ScoreDocument.Core;
+using System.Diagnostics;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
+namespace StudioLaValse.ScoreDocument.CommandManager.Private
 {
     internal class RibbonMeasureEditorWithCommandManager : IInstrumentMeasureEditor
     {
@@ -25,11 +29,11 @@
         {
             var transaction = commandManager.ThrowIfNoTransactionOpen();
 
-            RibbonMeasureVoiceMemento? memento = null;
+            InstrumentMeasureMemento? memento = null;
             transaction.Enqueue(new SimpleCommand(
                 () =>
                 {
-                    memento = source.GetMemento(voice);
+                    memento = source.GetMemento();
                     source.AddVoice(voice);
                 },
                 () =>
@@ -39,21 +43,20 @@
                         throw new Exception("Memento not recorded.");
                     }
 
-                    source.ClearVoice(voice);
                     source.ApplyMemento(memento);
                 }));
         }
 
-        public void AppendBlock(int voice, Duration duration, bool grace)
+        public void RemoveVoice(int voice)
         {
             var transaction = commandManager.ThrowIfNoTransactionOpen();
 
-            RibbonMeasureVoiceMemento? memento = null;
+            InstrumentMeasureMemento? memento = null;
             transaction.Enqueue(new SimpleCommand(
                 () =>
                 {
-                    memento = source.GetMemento(voice);
-                    source.AppendBlock(voice, duration, grace);
+                    memento = source.GetMemento();
+                    source.RemoveVoice(voice);
                 },
                 () =>
                 {
@@ -62,65 +65,8 @@
                         throw new Exception("Memento not recorded.");
                     }
 
-                    source.ClearVoice(voice);
                     source.ApplyMemento(memento);
                 }));
-        }
-
-        public void PrependBlock(int voice, Duration duration, bool grace)
-        {
-            var transaction = commandManager.ThrowIfNoTransactionOpen();
-
-            RibbonMeasureVoiceMemento? memento = null;
-            transaction.Enqueue(new SimpleCommand(
-                () =>
-                {
-                    memento = source.GetMemento(voice);
-                    source.PrependBlock(voice, duration, grace);
-                },
-                () =>
-                {
-                    if (memento is null)
-                    {
-                        throw new Exception("Memento not recorded.");
-                    }
-
-                    source.ClearVoice(voice);
-                    source.ApplyMemento(memento);
-                }));
-        }
-
-        public void ClearVoice(int voice)
-        {
-            var transaction = commandManager.ThrowIfNoTransactionOpen();
-
-            RibbonMeasureVoiceMemento? memento = null;
-            transaction.Enqueue(new SimpleCommand(
-                () =>
-                {
-                    memento = source.GetMemento(voice);
-                    source.ClearVoice(voice);
-                },
-                () =>
-                {
-                    if (memento is null)
-                    {
-                        throw new Exception("Memento not recorded.");
-                    }
-
-                    source.ClearVoice(voice);
-                    source.ApplyMemento(memento);
-                }));
-        }
-
-        public IEnumerable<IMeasureBlockEditor> EditBlocks(int voice)
-        {
-            return source.EditBlocks(voice).Select(e => e.UseTransaction(commandManager));
-        }
-
-        public IEnumerable<IMeasureBlock> EnumerateBlocks(int voice)
-        {
-            return source.EnumerateBlocks(voice);
         }
 
         public IEnumerable<int> EnumerateVoices()
@@ -180,6 +126,16 @@
 
                     source.ApplyMemento(memento);
                 }));
+        }
+
+        public IMeasureBlockChainEditor EditBlockChainAt(int voice)
+        {
+            return source.EditBlockChainAt(voice).UseTransaction(commandManager);
+        }
+
+        public IMeasureBlockChain BlockChainAt(int voice)
+        {
+            return source.BlockChainAt(voice);
         }
     }
 }

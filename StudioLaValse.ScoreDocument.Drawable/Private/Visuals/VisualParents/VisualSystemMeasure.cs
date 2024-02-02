@@ -99,20 +99,17 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
 
         private IEnumerable<BaseContentWrapper> ConstructStaffGroupMeasures()
         {
-            var measures = new List<BaseContentWrapper>();
             var _canvasTop = canvasTop;
 
             foreach (var staffGroup in staffSystem.ReadStaffGroups())
             {
                 var ribbonMesaure = scoreMeasure.ReadMeasure(staffGroup.ReadContext().IndexInScore);
                 var wrapper = visualInstrumentMeasureFactory.CreateContent(ribbonMesaure, staffGroup, _canvasTop, canvasLeft, width, PaddingLeft, PaddingRight, color);
-                measures.Add(wrapper);
+                yield return wrapper;
 
                 _canvasTop += staffGroup.CalculateHeight();
                 _canvasTop += staffGroup.ReadLayout().DistanceToNext;
             }
-
-            return measures;
         }
 
 

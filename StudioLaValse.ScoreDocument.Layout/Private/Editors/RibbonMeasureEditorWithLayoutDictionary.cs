@@ -1,6 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Core;
 using StudioLaValse.ScoreDocument.Editor;
-using StudioLaValse.ScoreDocument.Primitives;
 
 namespace StudioLaValse.ScoreDocument.Layout.Private.Editors
 {
@@ -30,24 +29,9 @@ namespace StudioLaValse.ScoreDocument.Layout.Private.Editors
             ribbonMeasureEditor.AddVoice(voice);
         }
 
-        public void AppendBlock(int voice, Duration duration, bool grace)
+        public void RemoveVoice(int voice)
         {
-            ribbonMeasureEditor.AppendBlock(voice, duration, grace);
-        }
-
-        public void ClearVoice(int voice)
-        {
-            ribbonMeasureEditor.ClearVoice(voice);
-        }
-
-        public IEnumerable<IMeasureBlockEditor> EditBlocks(int voice)
-        {
-            return ribbonMeasureEditor.EditBlocks(voice);
-        }
-
-        public void PrependBlock(int voice, Duration duration, bool grace)
-        {
-            ribbonMeasureEditor.PrependBlock(voice, duration, grace);
+            ribbonMeasureEditor.RemoveVoice(voice);
         }
 
         public IInstrumentMeasureLayout ReadLayout()
@@ -70,14 +54,19 @@ namespace StudioLaValse.ScoreDocument.Layout.Private.Editors
             return ribbonMeasureEditor.EnumerateVoices();
         }
 
-        public IEnumerable<IMeasureBlock> EnumerateBlocks(int voice)
-        {
-            return ribbonMeasureEditor.EnumerateBlocks(voice);
-        }
-
         public void Clear()
         {
             ribbonMeasureEditor.Clear();
+        }
+
+        public IMeasureBlockChainEditor EditBlockChainAt(int voice)
+        {
+            return ribbonMeasureEditor.EditBlockChainAt(voice).UseLayout(layoutDictionary);
+        }
+
+        public IMeasureBlockChain BlockChainAt(int voice)
+        {
+            return ribbonMeasureEditor.BlockChainAt(voice);
         }
     }
 }

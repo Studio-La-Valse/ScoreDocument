@@ -23,6 +23,6 @@
         /// </summary>
         /// <param name="voice"></param>
         /// <returns></returns>
-        IEnumerable<IMeasureBlock> EnumerateBlocks(int voice);
+        IMeasureBlockChain BlockChainAt(int voice);
     }
 }

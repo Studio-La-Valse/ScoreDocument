@@ -6,6 +6,9 @@
     /// </summary>
     public class Duration : Fraction
     {
+        /// <inheritdoc/>
+        public new PowerOfTwo Denominator { get; }
+
         /// <summary>
         /// Construct a duration for an integer value representing number of beats, and a power of two representing the length of one beat.
         /// </summary>
@@ -13,7 +16,7 @@
         /// <param name="nths"></param>
         public Duration(int numberOf, PowerOfTwo nths) : base(numberOf, nths)
         {
-
+            Denominator = nths;
         }
 
 

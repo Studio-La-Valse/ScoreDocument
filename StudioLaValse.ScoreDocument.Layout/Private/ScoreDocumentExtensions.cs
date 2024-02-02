@@ -22,6 +22,16 @@ namespace StudioLaValse.ScoreDocument.Layout.Private
             return new InstrumentRibbonEditorWithLayoutDictionary(instrumentRibbon, dictionary);
         }
 
+        public static IMeasureBlockChainEditor UseLayout(this IMeasureBlockChainEditor instrumentRibbon, IScoreLayoutDictionary dictionary)
+        {
+            return new MeasureBlockChainWithLayoutDictionary(instrumentRibbon, dictionary);
+        }
+
+        public static IMeasureBlockEditor UseLayout(this IMeasureBlockEditor measureBlock, IScoreLayoutDictionary dictionary)
+        {
+            return new MeasureBlockWithLayoutDictionary(measureBlock, dictionary);
+        }
+
         public static INoteEditor UseLayout(this INoteEditor noteEditor, IScoreLayoutDictionary dictionary)
         {
             return new NoteEditorWithLayoutDictionary(noteEditor, dictionary);
@@ -52,6 +62,10 @@ namespace StudioLaValse.ScoreDocument.Layout.Private
             return new StaffSystemEditorWithLayoutDictionary(staffSystem, dictionary);
         }
 
+
+
+
+
         public static IScoreDocumentReader UseLayout(this IScoreDocumentReader scoreDocumentReader, IScoreLayoutDictionary dictionary)
         {
             return new ScoreDocumentReaderWithLayoutDictionary(scoreDocumentReader, dictionary);
@@ -65,6 +79,11 @@ namespace StudioLaValse.ScoreDocument.Layout.Private
         public static IMeasureBlockReader UseLayout(this IMeasureBlockReader chordGroupReader, IScoreLayoutDictionary dictionary)
         {
             return new ChordGroupReaderWithLayoutDictionary(chordGroupReader, dictionary);
+        }
+
+        public static IMeasureBlockChainReader UseLayout(this IMeasureBlockChainReader chordGroupReader, IScoreLayoutDictionary dictionary)
+        {
+            return new MeasureBlockChainReaderWithLayoutDictionary(chordGroupReader, dictionary);
         }
 
         public static IInstrumentRibbonReader UseLayout(this IInstrumentRibbonReader instrumentRibbon, IScoreLayoutDictionary dictionary)

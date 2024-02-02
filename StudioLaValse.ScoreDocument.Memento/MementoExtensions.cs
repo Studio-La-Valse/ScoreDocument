@@ -165,14 +165,7 @@
                 RibbonIndex = ribbonMeasure.RibbonIndex,
                 VoiceGroups = ribbonMeasure
                     .EnumerateVoices()
-                    .Select(v =>
-                    {
-                        return new RibbonMeasureVoiceMemento
-                        {
-                            Voice = v,
-                            ChordGroups = ribbonMeasure.ReadBlocks(v).Select(b => b.GetMemento()).ToList()
-                        };
-                    })
+                    .Select(v => ribbonMeasure.ReadBlockChainAt(v).GetMemento())
                     .ToList()
             };
         }
@@ -190,14 +183,7 @@
                 RibbonIndex = ribbonMeasure.RibbonIndex,
                 VoiceGroups = ribbonMeasure
                     .EnumerateVoices()
-                    .Select(v =>
-                    {
-                        return new RibbonMeasureVoiceMemento
-                        {
-                            Voice = v,
-                            ChordGroups = ribbonMeasure.EditBlocks(v).Select(b => b.GetMemento()).ToList()
-                        };
-                    })
+                    .Select(v => ribbonMeasure.EditBlockChainAt(v).GetMemento())
                     .ToList()
             };
         }
@@ -212,7 +198,8 @@
             ribbonMeasure.ApplyLayout(memento.Layout);
             foreach (var voiceGroup in memento.VoiceGroups)
             {
-                ribbonMeasure.ApplyMemento(voiceGroup);
+                var blockChain = ribbonMeasure.EditBlockChainAt(voiceGroup.Voice);
+                blockChain.ApplyMemento(voiceGroup);
             }
         }
 
@@ -220,48 +207,47 @@
         /// <summary>
         /// Get the memento for the specified element.
         /// </summary>
-        /// <param name="ribbonMeasure"></param>
-        /// <param name="voice"></param>
+        /// <param name="blockChain"></param>
         /// <returns></returns>
-        public static RibbonMeasureVoiceMemento GetMemento(this IInstrumentMeasureReader ribbonMeasure, int voice)
+        public static RibbonMeasureVoiceMemento GetMemento(this IMeasureBlockChainEditor blockChain)
         {
             return new RibbonMeasureVoiceMemento
             {
-                Voice = voice,
-                ChordGroups = ribbonMeasure.ReadBlocks(voice).Select(e => e.GetMemento()).ToList()
+                Voice = blockChain.Voice,
+                MeasureBlocks = blockChain.EditBlocks().Select(b => b.GetMemento()).ToList()
             };
         }
         /// <summary>
         /// Get the memento for the specified element.
         /// </summary>
-        /// <param name="ribbonMeasure"></param>
-        /// <param name="voice"></param>
+        /// <param name="blockChain"></param>
         /// <returns></returns>
-        public static RibbonMeasureVoiceMemento GetMemento(this IInstrumentMeasureEditor ribbonMeasure, int voice)
+        public static RibbonMeasureVoiceMemento GetMemento(this IMeasureBlockChainReader blockChain)
         {
             return new RibbonMeasureVoiceMemento
             {
-                Voice = voice,
-                ChordGroups = ribbonMeasure.EditBlocks(voice).Select(e => e.GetMemento()).ToList()
+                Voice = blockChain.Voice,
+                MeasureBlocks = blockChain.ReadBlocks().Select(b => b.GetMemento()).ToList()
             };
         }
         /// <summary>
         /// Apply the memento to the specified element.
         /// </summary>
-        /// <param name="ribbonMeasure"></param>
+        /// <param name="editor"></param>
         /// <param name="memento"></param>
-        public static void ApplyMemento(this IInstrumentMeasureEditor ribbonMeasure, RibbonMeasureVoiceMemento memento)
+        public static void ApplyMemento(this IMeasureBlockChainEditor editor, RibbonMeasureVoiceMemento memento)
         {
-            ribbonMeasure.ClearVoice(memento.Voice);
-            ribbonMeasure.AddVoice(memento.Voice);
-            foreach (var chordGroupMemento in memento.ChordGroups)
+            editor.Clear();
+            foreach (var block in memento.MeasureBlocks)
             {
-                ribbonMeasure.AppendBlock(memento.Voice, chordGroupMemento.Duration, chordGroupMemento.Grace);
-                var measureBlock = ribbonMeasure.EditBlocks(memento.Voice).Last();
-                measureBlock.ApplyMemento(chordGroupMemento);
-                measureBlock.Rebeam();
+                var duration = block.Duration;
+                editor.Append(duration, block.Grace);
+
+                var chord = editor.EditBlocks().Last();
+                chord.ApplyMemento(block);
             }
         }
+
 
 
         /// <summary>
@@ -275,7 +261,7 @@
             {
                 Chords = chordGroup.ReadChords().Select(c => c.GetMemento()).ToList(),
                 Layout = chordGroup.ReadLayout(),
-                Duration = chordGroup.Duration,
+                Duration = chordGroup.RythmicDuration,
                 Grace = chordGroup.Grace
             };
         }
@@ -290,7 +276,7 @@
             {
                 Chords = chordGroup.EditChords().Select(c => c.GetMemento()).ToList(),
                 Layout = chordGroup.ReadLayout(),
-                Duration = chordGroup.Duration,
+                Duration = chordGroup.RythmicDuration,
                 Grace = chordGroup.Grace
             };
         }

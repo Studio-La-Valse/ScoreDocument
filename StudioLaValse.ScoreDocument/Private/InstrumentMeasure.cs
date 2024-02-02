@@ -35,11 +35,11 @@ namespace StudioLaValse.ScoreDocument.Private
 
 
 
-        public void PrependBlock(int voice, Duration duration, bool grace)
+        public void PrependBlock(int voice, RythmicDuration duration, bool grace)
         {
             blockChains[voice].Prepend(duration, grace);
         }
-        public void AppendBlock(int voice, Duration duration, bool grace)
+        public void AppendBlock(int voice, RythmicDuration duration, bool grace)
         {
             blockChains[voice].Append(duration, grace);
         }
@@ -50,12 +50,12 @@ namespace StudioLaValse.ScoreDocument.Private
         public IScoreMeasureReader ReadMeasureContext() =>
             scoreMeasure;
 
+
         public void Clear()
         {
             blockChains.Clear();
         }
-
-        public void ClearVoice(int voice)
+        public void RemoveVoice(int voice)
         {
             blockChains.Remove(voice);
         }
@@ -65,28 +65,28 @@ namespace StudioLaValse.ScoreDocument.Private
         }
 
 
-        public IEnumerable<IMeasureBlock> EnumerateBlocks(int voice)
+        public IMeasureBlockChain BlockChainAt(int voice)
         {
             if (blockChains.TryGetValue(voice, out var chain))
             {
-                return chain.Blocks;
+                return chain;
             }
-            return new List<IMeasureBlockReader>();
+            throw new Exception($"No voice {voice} found.");
         }
-        public IEnumerable<IMeasureBlockReader> ReadBlocks(int voice)
+        public IMeasureBlockChainReader ReadBlockChainAt(int voice)
         {
             if (blockChains.TryGetValue(voice, out var chain))
             {
-                return chain.Blocks;
+                return chain;
             }
-            return new List<IMeasureBlockReader>();
-        }
+            throw new Exception($"No voice {voice} found.");
 
-        public IEnumerable<IMeasureBlockEditor> EditBlocks(int voice)
+        }
+        public IMeasureBlockChainEditor EditBlockChainAt(int voice)
         {
             if (blockChains.TryGetValue(voice, out var editor))
             {
-                return editor.Blocks;
+                return editor;
             }
             throw new Exception($"No voice {voice} found.");
         }
@@ -133,7 +133,5 @@ namespace StudioLaValse.ScoreDocument.Private
             }
             return false;
         }
-
-
     }
 }

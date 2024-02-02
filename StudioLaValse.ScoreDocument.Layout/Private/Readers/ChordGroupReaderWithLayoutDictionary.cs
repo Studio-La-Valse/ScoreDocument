@@ -18,9 +18,13 @@ namespace StudioLaValse.ScoreDocument.Layout.Private.Readers
 
         public bool Grace => source.Grace;
 
-        public Duration Duration => source.Duration;
-
         public int Id => source.Id;
+
+        public Position Position => source.Position;
+
+        public RythmicDuration RythmicDuration => source.RythmicDuration;
+
+        public Tuplet Tuplet => source.Tuplet;
 
         public IEnumerable<IChordReader> ReadChords()
         {

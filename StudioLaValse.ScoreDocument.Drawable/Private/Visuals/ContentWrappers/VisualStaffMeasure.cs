@@ -93,11 +93,9 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.ContentWrappers
         {
             get
             {
-                var list = new List<DrawableScoreGlyph>();
-
                 if (timeSignature is null)
                 {
-                    return list;
+                    yield break;
                 }
 
                 var flats = keySignature.DefaultFlats;
@@ -122,7 +120,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.ContentWrappers
                     _ => throw new NotSupportedException()
                 };
 
-                var bottomGlyph = timeSignature.Denominator switch
+                var bottomGlyph = timeSignature.Denominator.Value switch
                 {
                     2 => GlyphLibrary.NumberTwo,
                     4 => GlyphLibrary.NumberFour,
@@ -130,11 +128,9 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.ContentWrappers
                     _ => throw new NotSupportedException()
                 };
 
-                list.Add(new DrawableScoreGlyph(left, HeightFromLineIndex(-6), topGlyph, ForegroundColor));
+                yield return new DrawableScoreGlyph(left, HeightFromLineIndex(-6), topGlyph, ForegroundColor);
 
-                list.Add(new DrawableScoreGlyph(left, HeightFromLineIndex(-2), bottomGlyph, ForegroundColor));
-
-                return list;
+                yield return new DrawableScoreGlyph(left, HeightFromLineIndex(-2), bottomGlyph, ForegroundColor);
             }
         }
         public IEnumerable<DrawableScoreGlyph> VisualClefChanges
@@ -246,21 +242,25 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.ContentWrappers
         }
         public override IEnumerable<BaseDrawableElement> GetDrawableElements()
         {
-            var elements = new List<BaseDrawableElement>();
-
             foreach (var glyph in OpeningTimeSignature)
             {
-                elements.Add(glyph);
+                yield return glyph;
             }
 
             if (InvalidatingNextClef != null)
             {
-                elements.Add(InvalidatingNextClef);
+                yield return InvalidatingNextClef;
             }
 
-            elements.AddRange(InvalidingNextKeySignature);
-            elements.AddRange(VisualClefChanges);
-            return elements;
+            foreach(var element in InvalidingNextKeySignature)
+            {
+                yield return element;
+            }
+
+            foreach(var element in VisualClefChanges)
+            {
+                yield return element;
+            }
         }
     }
 }

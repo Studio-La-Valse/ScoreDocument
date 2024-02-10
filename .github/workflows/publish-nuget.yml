@@ -52,6 +52,7 @@ jobs:
         dotnet pack StudioLaValse.ScoreDocument.Layout --configuration Release --output ${{ env.NuGetDirectory }}
         dotnet pack StudioLaValse.ScoreDocument.Memento --configuration Release --output ${{ env.NuGetDirectory }}
         dotnet pack StudioLaValse.ScoreDocument.Drawable --configuration Release --output ${{ env.NuGetDirectory }}
+        dotnet pack StudioLaValse.ScoreDocument.MusicXml --configuration Release --output ${{ env.NuGetDirectory }}
         
     # Publish the NuGet package as an artifact, so they can be used in the following jobs
     - uses: actions/upload-artifact@v3

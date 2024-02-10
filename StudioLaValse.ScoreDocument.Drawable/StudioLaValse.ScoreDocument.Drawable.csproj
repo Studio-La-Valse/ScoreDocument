@@ -37,7 +37,7 @@
 	<!--meta data-->
 	<PropertyGroup>
 		<Authors>Studio La Valse</Authors>
-		<Description>Provides extensions to the score document editor, so that it may be drawn to a canvas.</Description>
+		<Description>Provides extensions to the score document editor, so that it may be created from a music xml file.</Description>
 		<PackageProjectUrl>github.com/Studio-La-Valse/scoredocument</PackageProjectUrl>
 		<PackageTags>score, sheet music, editor, builder</PackageTags>
 	</PropertyGroup>

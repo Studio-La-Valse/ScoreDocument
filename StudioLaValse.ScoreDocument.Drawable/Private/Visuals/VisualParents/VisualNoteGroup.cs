@@ -49,7 +49,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
 
             foreach (var chord in noteGroup.ReadChords())
             {
-                yield return new VisualChord(chord, canvasLeft, canvasTopStaffGroup, staffGroup, noteFactory, restFactory, colorARGB);
+                var xOffset = chord.ReadLayout().XOffset;   
+                yield return new VisualChord(chord, canvasLeft + xOffset, canvasTopStaffGroup, staffGroup, noteFactory, restFactory, colorARGB);
 
                 if (chord.ReadNotes().Any(note => note.RythmicDuration.Decimal <= 0.5M))
                 {

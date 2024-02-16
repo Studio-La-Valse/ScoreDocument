@@ -43,7 +43,7 @@
             foreach (var note in notes)
             {
                 var canvasTop = note.HeightOnCanvas(staffGroup, canvasTopStaffGroup);
-                yield return noteFactory.Build(note, canvasLeft, canvasTop, scale, color);
+                yield return noteFactory.Build(note, canvasLeft + note.ReadLayout().XOffset, canvasTop, scale, color);
             }
         }
         public IEnumerable<DrawableLineHorizontal> GetOverflowLines()

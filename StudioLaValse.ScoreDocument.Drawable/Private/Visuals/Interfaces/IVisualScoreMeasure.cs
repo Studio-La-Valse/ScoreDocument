@@ -1,4 +1,6 @@
-﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.Interfaces
+﻿using StudioLaValse.ScoreDocument.Core.Primitives;
+
+namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.Interfaces
 {
     internal interface IVisualScoreMeasure
     {

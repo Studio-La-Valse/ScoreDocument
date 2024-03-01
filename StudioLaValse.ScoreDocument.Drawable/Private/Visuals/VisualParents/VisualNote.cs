@@ -1,5 +1,7 @@
-﻿using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.DrawableElements;
+﻿using StudioLaValse.ScoreDocument.Core.Primitives;
+using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.DrawableElements;
 using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.Models;
+using StudioLaValse.ScoreDocument.Layout;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
 {
@@ -7,25 +9,25 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
     {
         private readonly INoteReader note;
         private readonly ColorARGB color;
-        private readonly double canvasLeft;
         private readonly double canvasTop;
+        private readonly bool offsetDots;
+        private readonly Accidental? accidental;
+        private readonly IScoreLayoutDictionary scoreLayoutDictionary;
 
 
-        public override int Line =>
-            Clef.LineIndexAtPitch(Pitch);
+        public NoteLayout NoteLayout => scoreLayoutDictionary.GetOrDefault(note);
         public override DrawableScoreGlyph Glyph
         {
             get
             {
                 var glyph = GlyphPrototype;
-                return new DrawableScoreGlyph(canvasLeft, canvasTop, glyph, HorizontalTextOrigin.Center, VerticalTextOrigin.Center, color);
+                return new DrawableScoreGlyph(XPosition, canvasTop, glyph, HorizontalTextOrigin.Center, VerticalTextOrigin.Center, color);
             }
         }
         public DrawableScoreGlyph? AccidentalGlyph
         {
             get
             {
-                var accidental = note.GetAccidental();
                 var glyph = accidental switch
                 {
                     Accidental.DoubleFlat => GlyphLibrary.DoubleFlat,
@@ -41,7 +43,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
                 {
                     glyph.Scale = Scale;
                     return new DrawableScoreGlyph(
-                        XPosition - glyph.Width * 2,
+                        base.XPosition - glyph.Width * 2,
                         canvasTop,
                         glyph,
                         HorizontalTextOrigin.Center,
@@ -51,10 +53,6 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
                 return null;
             }
         }
-        public Clef Clef =>
-            note.GetClef();
-        public Pitch Pitch =>
-            note.Pitch;
         public Glyph GlyphPrototype
         {
             get
@@ -72,16 +70,20 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
             }
         }
 
+        public override bool OffsetDots => offsetDots;
+        public override double XOffset => NoteLayout.XOffset;
 
-
-        public VisualNote(INoteReader note, ColorARGB color, double canvasLeft, double canvasTop, double scale, ISelection<IUniqueScoreElement> selection) :
+        public VisualNote(INoteReader note, ColorARGB color, double canvasLeft, double canvasTop, double scale, bool offsetDots, Accidental? accidental, ISelection<IUniqueScoreElement> selection, IScoreLayoutDictionary scoreLayoutDictionary) :
             base(note, canvasLeft, canvasTop, scale, color, selection)
         {
             this.note = note;
             this.color = color;
-            this.canvasLeft = canvasLeft;
             this.canvasTop = canvasTop;
+            this.offsetDots = offsetDots;
+            this.accidental = accidental;
+            this.scoreLayoutDictionary = scoreLayoutDictionary;
         }
+
 
 
         public override IEnumerable<BaseDrawableElement> GetDrawableElements()

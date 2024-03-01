@@ -1,30 +1,36 @@
-﻿using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.Interfaces;
+﻿using StudioLaValse.ScoreDocument.Core.Primitives;
+using StudioLaValse.ScoreDocument.Drawable.Extensions;
+using StudioLaValse.ScoreDocument.Layout;
+using StudioLaValse.ScoreDocument.Layout.ScoreElements;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
 {
-    internal sealed class VisualSystemMeasure : BaseSelectableParent<IUniqueScoreElement>, IVisualScoreMeasure
+    internal sealed class VisualSystemMeasure : BaseSelectableParent<IUniqueScoreElement>
     {
         private readonly IScoreMeasureReader scoreMeasure;
         private readonly IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory;
-        private readonly IStaffSystemReader staffSystem;
+        private readonly IScoreLayoutDictionary scoreLayoutDictionary;
+        private readonly IStaffSystem staffSystem;
         private readonly double width;
+        private readonly bool firstMeasure;
         private readonly ColorARGB color;
         private readonly double canvasLeft;
         private readonly double canvasTop;
 
 
+        public ScoreMeasureLayout Layout => scoreLayoutDictionary.GetOrDefault(scoreMeasure);
 
         public double PaddingRight =>
-            scoreMeasure.ReadLayout().PaddingRight + NextMeasureKeyPadding;
+            Layout.PaddingRight + NextMeasureKeyPadding;
         public double PaddingLeft
         {
             get
             {
-                var basePadding = scoreMeasure.ReadLayout().PaddingLeft;
+                var basePadding = Layout.PaddingLeft;
 
-                if (scoreMeasure.ReadLayout().IsNewSystem)
+                if (Layout.IsNewSystem)
                 {
-                    var keySignature = scoreMeasure.ReadLayout().KeySignature;
+                    var keySignature = scoreMeasure.KeySignature;
                     var flats = keySignature.DefaultFlats;
                     var numberOfAccidentals = flats ?
                         keySignature.EnumerateFlats().Count() :
@@ -51,7 +57,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
                     return 0;
                 }
 
-                var keySignature = scoreMeasure.ReadLayout().KeySignature;
+                var keySignature = scoreMeasure.KeySignature;
                 var flats = keySignature.DefaultFlats;
                 var numberOfAccidentals = flats ?
                     keySignature.EnumerateFlats().Count() :
@@ -70,8 +76,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
                     return null;
                 }
 
-                var nextKeySignature = nextMeasure.ReadLayout().KeySignature;
-                if (nextKeySignature.Equals(scoreMeasure.ReadLayout().KeySignature))
+                var nextKeySignature = nextMeasure.KeySignature;
+                if (nextKeySignature.Equals(scoreMeasure.KeySignature))
                 {
                     return null;
                 }
@@ -83,13 +89,15 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
 
 
 
-        public VisualSystemMeasure(IScoreMeasureReader scoreMeasure, IStaffSystemReader staffSystem, double canvasLeft, double canvasTop, double width, ColorARGB color, ISelection<IUniqueScoreElement> selection, IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory) : base(scoreMeasure, selection)
+        public VisualSystemMeasure(IScoreMeasureReader scoreMeasure, IStaffSystem staffSystem, double canvasLeft, double canvasTop, double width, bool firstMeasure, ColorARGB color, ISelection<IUniqueScoreElement> selection, IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory, IScoreLayoutDictionary scoreLayoutDictionary) : base(scoreMeasure, selection)
         {
             this.scoreMeasure = scoreMeasure;
             this.visualInstrumentMeasureFactory = visualInstrumentMeasureFactory;
+            this.scoreLayoutDictionary = scoreLayoutDictionary;
             this.canvasTop = canvasTop;
             this.staffSystem = staffSystem;
             this.width = width;
+            this.firstMeasure = firstMeasure;
             this.color = color;
             this.canvasLeft = canvasLeft;
         }
@@ -101,21 +109,22 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
         {
             var _canvasTop = canvasTop;
 
-            foreach (var staffGroup in staffSystem.ReadStaffGroups())
+            foreach (var staffGroup in staffSystem.EnumerateStaffGroups())
             {
-                var ribbonMesaure = scoreMeasure.ReadMeasure(staffGroup.ReadContext().IndexInScore);
-                var wrapper = visualInstrumentMeasureFactory.CreateContent(ribbonMesaure, staffGroup, _canvasTop, canvasLeft, width, PaddingLeft, PaddingRight, color);
+                var ribbonMesaure = scoreMeasure.ReadMeasure(staffGroup.IndexInSystem);
+                var wrapper = visualInstrumentMeasureFactory.CreateContent(ribbonMesaure, staffGroup, _canvasTop, canvasLeft, width, PaddingLeft, PaddingRight, firstMeasure, color);
                 yield return wrapper;
 
-                _canvasTop += staffGroup.CalculateHeight();
-                _canvasTop += staffGroup.ReadLayout().DistanceToNext;
+                var staffGroupLayout = scoreLayoutDictionary.GetOrDefault(staffGroup);
+                _canvasTop += staffGroup.CalculateHeight(scoreLayoutDictionary);
+                _canvasTop += staffGroupLayout.DistanceToNext;
             }
         }
 
 
         public override BoundingBox BoundingBox()
         {
-            return new BoundingBox(canvasLeft + PaddingLeft, canvasLeft + width - PaddingRight, canvasTop, canvasTop + staffSystem.CalculateHeight());
+            return new BoundingBox(canvasLeft + PaddingLeft, canvasLeft + width - PaddingRight, canvasTop, canvasTop + staffSystem.CalculateHeight(scoreLayoutDictionary));
         }
         public override IEnumerable<BaseDrawableElement> GetDrawableElements()
         {

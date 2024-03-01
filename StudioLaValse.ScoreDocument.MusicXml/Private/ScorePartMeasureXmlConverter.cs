@@ -1,7 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.Core;
-using StudioLaValse.ScoreDocument.Editor;
-using StudioLaValse.ScoreDocument.Layout;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
+using IScoreLayoutDictionary = StudioLaValse.ScoreDocument.Builder.IScoreLayoutDictionary;
 
 namespace StudioLaValse.ScoreDocument.MusicXml.Private
 {
@@ -14,36 +12,31 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             this.blockChainXmlConverter = blockChainXmlConverter;
         }
 
-        public void Create(XElement measure, IInstrumentMeasureEditor measureEditor, ref int durationOfOneQuarter)
+        public void Create(XElement measure, IInstrumentMeasureEditor measureEditor, IScoreLayoutDictionary scoreLayoutDictionary, ref int durationOfOneQuarter)
         {
             measureEditor.Clear();
 
             var attributes = measure.Elements().FirstOrDefault(e => e.Name == "attributes");
-            if(attributes is not null)
+            if (attributes is not null)
             {
                 ProcessMeasureAttributes(attributes, ref durationOfOneQuarter, out var clefChanges);
-                var layout = measureEditor.ReadLayout();
-                foreach(var clefChange in  clefChanges)
+                var layout = scoreLayoutDictionary.GetOrDefault(measureEditor);
+                foreach (var clefChange in clefChanges)
                 {
                     layout.AddClefChange(clefChange);
                 }
-                measureEditor.ApplyLayout(layout);
+                scoreLayoutDictionary.Apply(measureEditor, layout);
             }
 
             var voices = measure.ExtractVoices();
-            foreach(var voice in voices)
+            foreach (var voice in voices)
             {
                 measureEditor.AddVoice(voice);
-                var blockChainEditor = measureEditor.EditBlockChainAt(voice);
+                var blockChainEditor = measureEditor.ReadBlockChainAt(voice);
                 blockChainEditor.DivideEqual(measureEditor.TimeSignature.Denominator);
 
                 var elements = measure.ExtractElements(voice);
-                blockChainXmlConverter.ProcessElements(elements, blockChainEditor, durationOfOneQuarter);
-
-                foreach(var block in blockChainEditor.EditBlocks())
-                {
-                    block.Rebeam();
-                }
+                blockChainXmlConverter.ProcessElements(elements, blockChainEditor, scoreLayoutDictionary, durationOfOneQuarter);
             }
         }
 

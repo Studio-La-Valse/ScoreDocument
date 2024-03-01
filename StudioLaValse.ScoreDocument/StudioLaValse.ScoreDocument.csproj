@@ -7,10 +7,6 @@
 		<PackageVersion>1.0.3</PackageVersion>
 	</PropertyGroup>
 
-	<ItemGroup>
-	  <PackageReference Include="StudioLaValse.Key" Version="1.0.1" />
-	</ItemGroup>
-
 	<!--build-->
 	<PropertyGroup>
 		<EnablePackageValidation>true</EnablePackageValidation>
@@ -54,6 +50,10 @@
 
 	<ItemGroup>
 		<None Include="../README.md" Pack="true" PackagePath="" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\StudioLaValse.ScoreDocument.Core\StudioLaValse.ScoreDocument.Core.csproj" />
 	</ItemGroup>
 	
 </Project>

@@ -15,17 +15,17 @@
 
         public XY Origin { get; }
         public XY End { get; }
-        public Dictionary<int, BeamType> Beams { get; }
+        public IChordReader Chord { get; }
 
 
 
 
-        public VisualStem(XY origin, XY end, Dictionary<int, BeamType> beams, ColorARGB color)
+        public VisualStem(XY origin, XY end, IChordReader chord, ColorARGB color)
         {
             this.color = color;
             Origin = origin;
             End = end;
-            Beams = beams;
+            Chord = chord;
         }
 
 

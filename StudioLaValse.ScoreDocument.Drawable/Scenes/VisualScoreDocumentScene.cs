@@ -1,4 +1,6 @@
-﻿namespace StudioLaValse.ScoreDocument.Drawable.Scenes
+﻿using StudioLaValse.ScoreDocument.Core.Primitives;
+
+namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
     /// <summary>
     /// The default scene for visualizing a score document.

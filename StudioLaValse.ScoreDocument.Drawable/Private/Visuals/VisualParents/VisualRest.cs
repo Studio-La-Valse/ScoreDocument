@@ -1,6 +1,6 @@
-﻿using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.DrawableElements;
+﻿using StudioLaValse.ScoreDocument.Core.Primitives;
+using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.DrawableElements;
 using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.Models;
-using StudioLaValse.ScoreDocument.Primitives;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
 {
@@ -53,9 +53,9 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
                     DisplayColor);
             }
         }
-        public override int Line =>
-            4;
 
+        public override bool OffsetDots => false;
+        public override double XOffset => 0;
 
         public VisualRest(IChord note, double canvasLeft, double canvasTop, double scale, ColorARGB color, ISelection<IUniqueScoreElement> selection) :
             base(note, canvasLeft, canvasTop, scale, color, selection)

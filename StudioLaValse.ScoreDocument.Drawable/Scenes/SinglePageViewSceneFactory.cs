@@ -1,4 +1,8 @@
-﻿namespace StudioLaValse.ScoreDocument.Drawable.Scenes
+﻿using StudioLaValse.ScoreDocument.Drawable.Extensions;
+using StudioLaValse.ScoreDocument.Layout;
+using StudioLaValse.ScoreDocument.Layout.ScoreElements;
+
+namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
     /// <summary>
     /// An implementation of the visual score document factory, that visualizes a single page of the score document.
@@ -6,47 +10,50 @@
     public class SinglePageViewSceneFactory : IVisualScoreDocumentContentFactory
     {
         private readonly int pageIndex;
-        private readonly PageSize pageSize;
         private readonly IVisualStaffSystemFactory staffSystemContentFactory;
         private readonly ColorARGB foregroundColor;
         private readonly ColorARGB pagecolor;
+        private readonly IScoreLayoutDictionary scoreLayoutDictionary;
 
         /// <summary>
         /// The default constructor.
         /// </summary>
         /// <param name="pageIndex"></param>
-        /// <param name="pageSize"></param>
         /// <param name="staffSystemContentFactory"></param>
         /// <param name="foregroundColor"></param>
         /// <param name="pageColor"></param>
-        public SinglePageViewSceneFactory(int pageIndex, PageSize pageSize, IVisualStaffSystemFactory staffSystemContentFactory, ColorARGB foregroundColor, ColorARGB pageColor)
+        /// <param name="scoreLayoutDictionary"></param>
+        public SinglePageViewSceneFactory(int pageIndex, IVisualStaffSystemFactory staffSystemContentFactory, ColorARGB foregroundColor, ColorARGB pageColor, IScoreLayoutDictionary scoreLayoutDictionary)
         {
             this.pageIndex = pageIndex;
-            this.pageSize = pageSize;
             this.staffSystemContentFactory = staffSystemContentFactory;
             this.foregroundColor = foregroundColor;
             pagecolor = pageColor;
+            this.scoreLayoutDictionary = scoreLayoutDictionary;
         }
         /// <inheritdoc/>
         public BaseContentWrapper CreateContent(IScoreDocumentReader scoreDocument)
         {
+            var pageSize = scoreLayoutDictionary.GetOrDefault(scoreDocument).PageSize;
+
             var pages = new List<VisualPage>()
             {
-                new VisualPage(pageSize, 0, 0, staffSystemContentFactory, foregroundColor, pagecolor)
+                new VisualPage(pageSize, 0, 0, staffSystemContentFactory, foregroundColor, pagecolor, scoreLayoutDictionary)
             };
 
             var systemBottom = VisualPage.MarginTop;
 
-            foreach (var system in scoreDocument.ReadStaffSystems())
+            foreach (var system in scoreLayoutDictionary.EnumerateStaffSystems(scoreDocument))
             {
-                systemBottom += system.CalculateHeight() + system.ReadLayout().PaddingTop;
+                var systemLayout = scoreLayoutDictionary.GetOrDefault(system);
+                systemBottom += system.CalculateHeight(scoreLayoutDictionary) + systemLayout.PaddingTop;
 
                 if (systemBottom > pageSize.Height - VisualPage.MarginTop)
                 {
-                    var visualPage = new VisualPage(pageSize, 0, 0, staffSystemContentFactory, foregroundColor, pagecolor);
+                    var visualPage = new VisualPage(pageSize, 0, 0, staffSystemContentFactory, foregroundColor, pagecolor, scoreLayoutDictionary);
                     pages.Add(visualPage);
 
-                    systemBottom = VisualPage.MarginTop + system.ReadLayout().PaddingTop + system.CalculateHeight();
+                    systemBottom = VisualPage.MarginTop + systemLayout.PaddingTop + system.CalculateHeight(scoreLayoutDictionary);
                 }
 
                 pages.Last().AddSystem(system);

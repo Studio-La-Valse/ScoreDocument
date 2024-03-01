@@ -252,12 +252,12 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.ContentWrappers
                 yield return InvalidatingNextClef;
             }
 
-            foreach(var element in InvalidingNextKeySignature)
+            foreach (var element in InvalidingNextKeySignature)
             {
                 yield return element;
             }
 
-            foreach(var element in VisualClefChanges)
+            foreach (var element in VisualClefChanges)
             {
                 yield return element;
             }

@@ -15,37 +15,9 @@
 
         public int Id => source.Id;
 
-        public void ApplyLayout(IStaffLayout layout)
-        {
-            var transaction = commandManager.ThrowIfNoTransactionOpen();
-
-            IStaffLayout? oldLayout = null;
-
-            transaction.Enqueue(new SimpleCommand(
-                () =>
-                {
-                    oldLayout = source.ReadLayout().Copy();
-                    source.ApplyLayout(layout);
-                },
-                () =>
-                {
-                    if (oldLayout is null)
-                    {
-                        throw new Exception("Memento not recorded!");
-                    }
-
-                    source.ApplyLayout(oldLayout);
-                }));
-        }
-
         public bool Equals(IUniqueScoreElement? other)
         {
             return source.Equals(other);
-        }
-
-        public IStaffLayout ReadLayout()
-        {
-            return source.ReadLayout();
         }
     }
 }

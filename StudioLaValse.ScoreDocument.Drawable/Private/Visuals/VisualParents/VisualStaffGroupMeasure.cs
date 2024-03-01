@@ -1,36 +1,39 @@
-﻿using StudioLaValse.ScoreDocument.Editor;
-using static System.Reflection.Metadata.BlobBuilder;
-using System.Text.RegularExpressions;
+﻿using StudioLaValse.ScoreDocument.Core.Primitives;
+using StudioLaValse.ScoreDocument.Drawable.Extensions;
 using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.Models;
+using StudioLaValse.ScoreDocument.Layout;
+using StudioLaValse.ScoreDocument.Layout.ScoreElements;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
 {
     internal sealed class VisualStaffGroupMeasure : BaseSelectableParent<IUniqueScoreElement>
     {
-        private readonly IStaffGroupReader staffGroup;
+        private readonly IStaffGroup staffGroup;
         private readonly double canvasTop;
         private readonly double canvasLeft;
         private readonly double width;
         private readonly double paddingLeft;
         private readonly double paddingRight;
+        private readonly bool firstMeasure;
         private readonly ColorARGB color;
         private readonly IVisualNoteGroupFactory visualNoteGroupFactory;
+        private readonly IScoreLayoutDictionary scoreLayoutDictionary;
         private readonly IInstrumentMeasureReader source;
 
 
 
-
+        public StaffGroupLayout Layout => scoreLayoutDictionary.GetOrDefault(staffGroup);
         public TimeSignature TimeSignature =>
             source.TimeSignature;
         public KeySignature KeySignature =>
-            source.ReadMeasureContext().ReadLayout().KeySignature;
+            source.KeySignature;
         public KeySignature? InvalidatesNext
         {
             get
             {
-                if (source.ReadMeasureContext().TryReadNext(out var next))
+                if (source.TryReadNext(out var next))
                 {
-                    var nextKeySignature = next.ReadLayout().KeySignature;
+                    var nextKeySignature = next.KeySignature;
                     if (nextKeySignature != KeySignature)
                     {
                         return nextKeySignature;
@@ -43,21 +46,21 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
         {
             get
             {
-                return new DrawableLineVertical(canvasLeft, canvasTop, staffGroup.CalculateHeight(), 0.1, color);
+                return new DrawableLineVertical(canvasLeft, canvasTop, staffGroup.CalculateHeight(scoreLayoutDictionary), 0.1, color);
             }
         }
         public BaseDrawableElement LineRight
         {
             get
             {
-                return new DrawableLineVertical(canvasLeft + width, canvasTop, staffGroup.CalculateHeight(), 0.1, color);
+                return new DrawableLineVertical(canvasLeft + width, canvasTop, staffGroup.CalculateHeight(scoreLayoutDictionary), 0.1, color);
             }
         }
         public double DrawableWidth =>
             width - paddingLeft - paddingRight;
 
 
-        public VisualStaffGroupMeasure(IInstrumentMeasureReader source, IStaffGroupReader staffGroup, double canvasTop, double canvasLeft, double width, double paddingLeft, double paddingRight, ColorARGB color, IVisualNoteGroupFactory visualNoteGroupFactory, ISelection<IUniqueScoreElement> selection) : base(source, selection)
+        public VisualStaffGroupMeasure(IInstrumentMeasureReader source, IStaffGroup staffGroup, double canvasTop, double canvasLeft, double width, double paddingLeft, double paddingRight, bool firstMeasure, ColorARGB color, IVisualNoteGroupFactory visualNoteGroupFactory, ISelection<IUniqueScoreElement> selection, IScoreLayoutDictionary scoreLayoutDictionary) : base(source, selection)
         {
             this.staffGroup = staffGroup;
             this.canvasTop = canvasTop;
@@ -65,8 +68,10 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
             this.width = width;
             this.paddingLeft = paddingLeft;
             this.paddingRight = paddingRight;
+            this.firstMeasure = firstMeasure;
             this.color = color;
             this.visualNoteGroupFactory = visualNoteGroupFactory;
+            this.scoreLayoutDictionary = scoreLayoutDictionary;
             this.source = source;
         }
 
@@ -74,31 +79,36 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
 
         public IEnumerable<BaseContentWrapper> ConstructNoteGroups()
         {
-            foreach (var voice in source.EnumerateVoices())
+            foreach (var voice in source.ReadVoices())
             {
                 var chain = source.ReadBlockChainAt(voice);
-                foreach(var element in ConstructNoteGroups(chain))
+                foreach (var element in ConstructNoteGroups(chain))
                 {
                     yield return element;
-                }   
+                }
             }
         }
 
         public IEnumerable<BaseContentWrapper> ConstructNoteGroups(IMeasureBlockChainReader blockChain)
         {
             var blocks = blockChain.ReadBlocks();
-            foreach(var chordGroup in blocks)
+            foreach (var chordGroup in blocks)
             {
                 var elements = chordGroup.ReadChords().SelectMany(c => c.ReadNotes());
-                var anyOnStaff = elements.Any(ele => ele.ReadLayout().StaffIndex < staffGroup.ReadLayout().NumberOfStaves);
+                var anyOnStaff = elements.Any(ele =>
+                {
+                    var eleLayout = scoreLayoutDictionary.GetOrDefault(ele);
+                    return eleLayout.StaffIndex < Layout.NumberOfStaves;
+                });
                 if (!anyOnStaff)
                 {
                     continue;
                 }
 
                 var firstChord = chordGroup.ReadChords().First();
+                var firstChordLayout = scoreLayoutDictionary.GetOrDefault(firstChord);
                 var xParameter = MathUtils.Map((double)firstChord.Position.Decimal, 0, (double)source.TimeSignature.Decimal, 0, 1);
-                var canvasLeft = XPositionFromParameter(xParameter + firstChord.ReadLayout().XOffset);
+                var canvasLeft = XPositionFromParameter(xParameter + firstChordLayout.XOffset);
                 var allowedSpace = MathUtils.Map((double)chordGroup.RythmicDuration.Decimal, 0, (double)source.TimeSignature.Decimal, 0, DrawableWidth);
 
                 if (chordGroup.Grace)
@@ -108,22 +118,23 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
                     canvasLeft -= allowedSpace;
                 }
 
-                var visualNoteGroup = visualNoteGroupFactory.Build(chordGroup, staffGroup, canvasTop, canvasLeft, allowedSpace, color);
+                var visualNoteGroup = visualNoteGroupFactory.Build(chordGroup, staffGroup, source, canvasTop, canvasLeft, allowedSpace, color);
                 yield return visualNoteGroup;
             }
         }
 
-        public IEnumerable<VisualStaffMeasure> ConstructStaffMeasures()
+        public IEnumerable<BaseContentWrapper> ConstructStaffMeasures()
         {
             var _canvasTop = canvasTop;
-            foreach (var staff in staffGroup.ReadStaves())
+            foreach (var staff in staffGroup.EnumerateStaves(Layout.NumberOfStaves))
             {
-                var stafflayout = staff.ReadLayout();
-                var measureClef = source.OpeningClefAtOrDefault(staff.IndexInStaffGroup);
-                var lastClefChange = source.ReadLayout().ClefChanges.LastOrDefault(c => c.StaffIndex == staff.IndexInStaffGroup)?.Clef ?? measureClef;
+                var staffLayout = scoreLayoutDictionary.GetOrDefault(staff);
+                var instrumentMeasureLayout = scoreLayoutDictionary.GetOrDefault(source);
+                var measureClef = source.OpeningClefAtOrDefault(staff.IndexInStaffGroup, scoreLayoutDictionary);
+                var lastClefChange = instrumentMeasureLayout.ClefChanges.LastOrDefault(c => c.StaffIndex == staff.IndexInStaffGroup)?.Clef ?? measureClef;
 
                 source.TryReadNext(out var nextMeasure);
-                var nextClefLayout = nextMeasure?.OpeningClefAtOrDefault(staff.IndexInStaffGroup);
+                var nextClefLayout = nextMeasure?.OpeningClefAtOrDefault(staff.IndexInStaffGroup, scoreLayoutDictionary);
                 var invalidatingNextClef = nextClefLayout is null ?
                     null :
                     nextClefLayout.ClefSpecies == lastClefChange.ClefSpecies ?
@@ -136,18 +147,18 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
                     source.MeasureIndex == 0 ? source.TimeSignature : null,
                     InvalidatesNext,
                     invalidatingNextClef,
-                    source.ReadLayout().ClefChanges.Where(c => c.StaffIndex == staff.IndexInStaffGroup),
-                    source.ReadMeasureContext().ReadLayout().IsNewSystem,
+                    instrumentMeasureLayout.ClefChanges.Where(c => c.StaffIndex == staff.IndexInStaffGroup),
+                    firstMeasure,
                     canvasLeft,
                     width,
                     paddingLeft,
                     DrawableWidth,
                     _canvasTop,
-                    stafflayout.LineSpacing);
+                    staffLayout.LineSpacing);
 
                 yield return el;
 
-                _canvasTop += 4 * stafflayout.LineSpacing + stafflayout.DistanceToNext;
+                _canvasTop += staff.CalculateHeight(scoreLayoutDictionary) + staffLayout.DistanceToNext;
             }
         }
 
@@ -160,7 +171,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
 
         public override BoundingBox BoundingBox()
         {
-            return new BoundingBox(canvasLeft + paddingLeft, canvasLeft + width - paddingRight, canvasTop, canvasTop + staffGroup.CalculateHeight());
+            return new BoundingBox(canvasLeft + paddingLeft, canvasLeft + width - paddingRight, canvasTop, canvasTop + staffGroup.CalculateHeight(scoreLayoutDictionary));
         }
         public override IEnumerable<BaseDrawableElement> GetDrawableElements()
         {

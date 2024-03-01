@@ -19,6 +19,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudioLaValse.ScoreDocument
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudioLaValse.ScoreDocument.MusicXml", "StudioLaValse.ScoreDocument.MusicXml\StudioLaValse.ScoreDocument.MusicXml.csproj", "{0C32E1F9-5D93-41EE-BDEF-DD180B410467}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudioLaValse.ScoreDocument.Core", "StudioLaValse.ScoreDocument.Core\StudioLaValse.ScoreDocument.Core.csproj", "{27D153AF-9E06-4F33-8E05-64E47388AC19}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudioLaValse.ScoreDocument.Builder", "StudioLaValse.ScoreDocument.Builder\StudioLaValse.ScoreDocument.Builder.csproj", "{5E820AB8-E001-4FF0-9A87-9C8DED938218}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +61,14 @@ Global
 		{0C32E1F9-5D93-41EE-BDEF-DD180B410467}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C32E1F9-5D93-41EE-BDEF-DD180B410467}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C32E1F9-5D93-41EE-BDEF-DD180B410467}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27D153AF-9E06-4F33-8E05-64E47388AC19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27D153AF-9E06-4F33-8E05-64E47388AC19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27D153AF-9E06-4F33-8E05-64E47388AC19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27D153AF-9E06-4F33-8E05-64E47388AC19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E820AB8-E001-4FF0-9A87-9C8DED938218}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E820AB8-E001-4FF0-9A87-9C8DED938218}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E820AB8-E001-4FF0-9A87-9C8DED938218}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E820AB8-E001-4FF0-9A87-9C8DED938218}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,6 @@
-﻿namespace StudioLaValse.ScoreDocument.Drawable.Scenes
+﻿using StudioLaValse.ScoreDocument.Layout.ScoreElements;
+
+namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
     /// <summary>
     /// A factory interface for creating a visual staff system.
@@ -14,6 +16,6 @@
         /// <param name="length"></param>
         /// <param name="color"></param>
         /// <returns></returns>
-        BaseContentWrapper CreateContent(IStaffSystemReader staffSystem, double canvasLeft, double canvasTop, double length, ColorARGB color);
+        BaseContentWrapper CreateContent(IStaffSystem staffSystem, double canvasLeft, double canvasTop, double length, ColorARGB color);
     }
 }

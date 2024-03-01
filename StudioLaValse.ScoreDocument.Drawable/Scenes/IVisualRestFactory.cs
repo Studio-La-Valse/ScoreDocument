@@ -1,4 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Primitives;
+﻿using StudioLaValse.ScoreDocument.Core.Primitives;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {

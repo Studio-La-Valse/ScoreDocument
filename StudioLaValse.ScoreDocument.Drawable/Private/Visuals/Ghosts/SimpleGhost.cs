@@ -1,4 +1,6 @@
-﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.Ghosts
+﻿using StudioLaValse.ScoreDocument.Core.Primitives;
+
+namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.Ghosts
 {
     internal class SimpleGhost : BaseContentWrapper
     {

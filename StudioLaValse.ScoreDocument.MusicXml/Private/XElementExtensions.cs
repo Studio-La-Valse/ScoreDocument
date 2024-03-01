@@ -1,5 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Core;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 
 namespace StudioLaValse.ScoreDocument.MusicXml.Private
 {
@@ -54,12 +53,12 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                 .Where(IsNoteOrForwardOrBackup)
                 .SkipWhile(e =>
                 {
-                    var _voice = ExtractVoice(e);
+                    var _voice = e.ExtractVoice();
                     return _voice is null || _voice.Value < voice;
                 })
                 .TakeWhile(e =>
                 {
-                    var _voice = ExtractVoice(e);
+                    var _voice = e.ExtractVoice();
                     return _voice == voice || _voice is null;
                 });
         }

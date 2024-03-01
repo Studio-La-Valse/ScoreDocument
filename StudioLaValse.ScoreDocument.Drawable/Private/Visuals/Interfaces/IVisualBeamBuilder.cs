@@ -1,6 +1,6 @@
 ﻿using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.Models;
 
-namespace StudioLaValse.ScoreDocument.Drawable.Scenes
+namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.Interfaces
 {
     internal interface IVisualBeamBuilder
     {

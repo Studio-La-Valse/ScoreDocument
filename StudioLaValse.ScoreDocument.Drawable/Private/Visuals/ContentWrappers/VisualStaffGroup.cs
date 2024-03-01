@@ -1,17 +1,24 @@
-﻿using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.DrawableElements;
+﻿using StudioLaValse.ScoreDocument.Drawable.Extensions;
+using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.DrawableElements;
 using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.Models;
+using StudioLaValse.ScoreDocument.Layout;
+using StudioLaValse.ScoreDocument.Layout.ScoreElements;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.ContentWrappers
 {
     internal sealed class VisualStaffGroup : BaseContentWrapper
     {
-        private readonly IStaffGroupReader staffGroup;
+        private readonly IStaffGroup staffGroup;
         private readonly double canvasLeft;
         private readonly double length;
         private readonly ColorARGB color;
+        private readonly IScoreLayoutDictionary scoreLayoutDictionary;
         private readonly double canvasTop;
 
 
+        public IInstrumentRibbonReader Context => staffGroup.InstrumentRibbon;
+        public InstrumentRibbonLayout ContextLayout => scoreLayoutDictionary.GetOrDefault(Context);
+        public StaffGroupLayout Layout => scoreLayoutDictionary.GetOrDefault(staffGroup);
 
 
         public DrawableText ID
@@ -19,8 +26,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.ContentWrappers
             get
             {
                 var braceLeft = Brace?.TopLeftX ?? canvasLeft;
-                var text = FirstMeasure.MeasureIndex == 0 ? staffGroup.ReadContext().ReadLayout().DisplayName : staffGroup.ReadContext().ReadLayout().AbbreviatedName;
-                var height = staffGroup.CalculateHeight();
+                var text = FirstMeasure.MeasureIndex == 0 ? ContextLayout.DisplayName : ContextLayout.AbbreviatedName;
+                var height = staffGroup.CalculateHeight(scoreLayoutDictionary);
                 var id = new DrawableText(braceLeft - 2, canvasTop + height / 2, text, 2, color, HorizontalTextOrigin.Right, VerticalTextOrigin.Center);
 
                 return id;
@@ -30,27 +37,17 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.ContentWrappers
         {
             get
             {
-                if (staffGroup.ReadStaves().FirstOrDefault() is null)
+                if (Layout.NumberOfStaves <= 1)
                 {
                     return null;
                 }
 
-                if (staffGroup.ReadContext().ReadLayout().Collapsed)
+                if (ContextLayout.Collapsed)
                 {
                     return null;
                 }
 
-                if (staffGroup.CalculateHeight() < 0.1)
-                {
-                    return null;
-                }
-
-                if(staffGroup.EnumerateStaves().Count() == 1)
-                {
-                    return null;
-                }
-
-                var heightOfGroup = staffGroup.CalculateHeight();
+                var heightOfGroup = staffGroup.CalculateHeight(scoreLayoutDictionary);
                 var knownHeightOfTheBrace = 4.8;
                 var scale = heightOfGroup / knownHeightOfTheBrace;
 
@@ -61,16 +58,17 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.ContentWrappers
             }
         }
         public IInstrumentMeasureReader FirstMeasure =>
-            staffGroup.ReadMeasures().First();
+            staffGroup.EnumerateMeasures().First();
 
 
 
-        public VisualStaffGroup(IStaffGroupReader staffGroup, double canvasLeft, double canvasTop, double length, ColorARGB color)
+        public VisualStaffGroup(IStaffGroup staffGroup, double canvasLeft, double canvasTop, double length, ColorARGB color, IScoreLayoutDictionary scoreLayoutDictionary)
         {
             this.staffGroup = staffGroup;
             this.canvasLeft = canvasLeft;
             this.length = length;
             this.color = color;
+            this.scoreLayoutDictionary = scoreLayoutDictionary;
             this.canvasTop = canvasTop;
         }
 
@@ -79,10 +77,11 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.ContentWrappers
         public IEnumerable<VisualStaff> ConstructStaves()
         {
             var _canvasTop = canvasTop;
-            foreach (var staff in staffGroup.ReadStaves())
+            foreach (var staff in staffGroup.EnumerateStaves(Layout.NumberOfStaves))
             {
-                var clef = FirstMeasure.OpeningClefAtOrDefault(staff.IndexInStaffGroup);
-                var keySignature = FirstMeasure.ReadMeasureContext().ReadLayout().KeySignature;
+                var staffLayout = scoreLayoutDictionary.GetOrDefault(staff);
+                var clef = FirstMeasure.OpeningClefAtOrDefault(staff.IndexInStaffGroup, scoreLayoutDictionary);
+                var keySignature = FirstMeasure.KeySignature;
                 var newStaff = new VisualStaff(
                     staff,
                     canvasLeft,
@@ -90,12 +89,13 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.ContentWrappers
                     length,
                     clef,
                     keySignature,
-                    color);
+                    color,
+                    scoreLayoutDictionary);
 
                 yield return newStaff;
 
-                _canvasTop += staff.CalculateHeight();
-                _canvasTop += staff.ReadLayout().DistanceToNext;
+                _canvasTop += staff.CalculateHeight(scoreLayoutDictionary);
+                _canvasTop += staffLayout.DistanceToNext;
             }
         }
 
@@ -104,7 +104,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.ContentWrappers
 
         public override IEnumerable<BaseDrawableElement> GetDrawableElements()
         {
-            if (staffGroup.ReadContext().ReadLayout().Collapsed)
+            if (ContextLayout.Collapsed)
             {
                 yield return new DrawableLineHorizontal(canvasTop, canvasLeft, length, 0.1, color);
             }

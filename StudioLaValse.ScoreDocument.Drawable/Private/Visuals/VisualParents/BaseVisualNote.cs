@@ -1,6 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.DrawableElements;
-using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.Models;
-using StudioLaValse.ScoreDocument.Primitives;
+﻿using StudioLaValse.ScoreDocument.Core.Primitives;
+using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.DrawableElements;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
 {
@@ -11,11 +10,13 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
 
 
         public abstract DrawableScoreGlyph Glyph { get; }
-        public abstract int Line { get; }
+        public abstract bool OffsetDots { get; }
 
 
         public double Scale { get; }
-        public double XPosition { get; }
+        public double XPosition => XOffset + CanvasLeft;
+        public double CanvasLeft { get; }
+        public abstract double XOffset { get; }
         public double HeightOnCanvas { get; }
 
 
@@ -29,7 +30,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
             get
             {
                 var heightOnCanvas = HeightOnCanvas;
-                if (MathUtils.UnsignedModulo(Line, 2) == 0)
+                if (OffsetDots)
                 {
                     heightOnCanvas -= 0.6;
                 }
@@ -59,7 +60,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
             this.measureElement = measureElement;
             this.defaultColor = defaultColor ?? new ColorARGB(255, 0, 0, 0);
 
-            XPosition = canvasLeft;
+            CanvasLeft = canvasLeft;
             HeightOnCanvas = canvasTop;
             Scale = scale;
         }
@@ -68,7 +69,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
             this.measureElement = measureElement;
             this.defaultColor = defaultColor ?? new ColorARGB(255, 0, 0, 0);
 
-            XPosition = canvasLeft;
+            CanvasLeft = canvasLeft;
             HeightOnCanvas = canvasTop;
             Scale = scale;
         }
@@ -78,7 +79,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents
         {
             yield return Glyph;
 
-            foreach(var dot in Dots)
+            foreach (var dot in Dots)
             {
                 yield return dot;
             }

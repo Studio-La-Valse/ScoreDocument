@@ -1,5 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents;
-using StudioLaValse.ScoreDocument.Primitives;
+﻿using StudioLaValse.ScoreDocument.Core.Primitives;
+using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {

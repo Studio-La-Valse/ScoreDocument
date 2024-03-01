@@ -1,4 +1,8 @@
-﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.ContentWrappers
+﻿using StudioLaValse.ScoreDocument.Drawable.Extensions;
+using StudioLaValse.ScoreDocument.Layout;
+using StudioLaValse.ScoreDocument.Layout.ScoreElements;
+
+namespace StudioLaValse.ScoreDocument.Drawable.Private.Visuals.ContentWrappers
 {
     internal sealed class VisualPage : BaseContentWrapper
     {
@@ -8,7 +12,8 @@
         private readonly IVisualStaffSystemFactory staffSystemContentFactory;
         private readonly ColorARGB foregroundColor;
         private readonly ColorARGB pageColor;
-        private readonly List<IStaffSystemReader> content;
+        private readonly IScoreLayoutDictionary scoreLayoutDictionary;
+        private readonly List<IStaffSystem> content;
 
 
         public static double MarginLeft => 20;
@@ -16,7 +21,7 @@
 
 
 
-        public VisualPage(PageSize pageSize, double canvasLeft, double canvasTop, IVisualStaffSystemFactory staffSystemContentFactory, ColorARGB foregroundColor, ColorARGB pageColor)
+        public VisualPage(PageSize pageSize, double canvasLeft, double canvasTop, IVisualStaffSystemFactory staffSystemContentFactory, ColorARGB foregroundColor, ColorARGB pageColor, IScoreLayoutDictionary scoreLayoutDictionary)
         {
             this.pageSize = pageSize;
             this.canvasLeft = canvasLeft;
@@ -24,11 +29,12 @@
             this.staffSystemContentFactory = staffSystemContentFactory;
             this.foregroundColor = foregroundColor;
             this.pageColor = pageColor;
+            this.scoreLayoutDictionary = scoreLayoutDictionary;
             content = [];
         }
 
 
-        public void AddSystem(IStaffSystemReader staffSystem)
+        public void AddSystem(IStaffSystem staffSystem)
         {
             content.Add(staffSystem);
         }
@@ -57,12 +63,13 @@
             var canvasTop = this.canvasTop + MarginTop;
             foreach (var staffSystem in content)
             {
-                canvasTop += staffSystem.ReadLayout().PaddingTop;
+                var staffSystemLayout = scoreLayoutDictionary.GetOrDefault(staffSystem);
+                canvasTop += staffSystemLayout.PaddingTop;
 
                 var visualSystem = staffSystemContentFactory.CreateContent(staffSystem, canvasLeft + MarginLeft, canvasTop, pageSize.Width - MarginLeft * 2, foregroundColor);
                 yield return visualSystem;
 
-                canvasTop += staffSystem.CalculateHeight();
+                canvasTop += staffSystem.CalculateHeight(scoreLayoutDictionary);
             }
         }
     }

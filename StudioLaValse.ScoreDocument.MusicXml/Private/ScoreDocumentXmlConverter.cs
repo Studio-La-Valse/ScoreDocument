@@ -1,7 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.Core;
-using StudioLaValse.ScoreDocument.Editor;
-using StudioLaValse.ScoreDocument.Layout;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
+using IScoreLayoutDictionary = StudioLaValse.ScoreDocument.Builder.IScoreLayoutDictionary;
 
 namespace StudioLaValse.ScoreDocument.MusicXml.Private
 {
@@ -14,7 +12,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             this.scorePartXmlConverter = scorePartXmlConverter;
         }
 
-        public void Create(XDocument xDocument, IScoreDocumentEditor scoreEditor)
+        public void Create(XDocument xDocument, IScoreDocumentEditor scoreEditor, IScoreLayoutDictionary scoreLayoutDictionary)
         {
             scoreEditor.Clear();
 
@@ -22,7 +20,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             {
                 if (element.Name == "score-partwise")
                 {
-                    ProcessScorePartWise(element, scoreEditor);
+                    ProcessScorePartWise(element, scoreEditor, scoreLayoutDictionary);
                     return;
                 }
             }
@@ -30,13 +28,13 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             throw new Exception("No score-partwise found in music xml.");
         }
 
-        private void ProcessScorePartWise(XElement scorePartwise, IScoreDocumentEditor scoreEditor)
+        private void ProcessScorePartWise(XElement scorePartwise, IScoreDocumentEditor scoreEditor, IScoreLayoutDictionary scoreLayoutDictionary)
         {
             foreach (var element in scorePartwise.Elements())
             {
                 if (element.Name == "part-list")
                 {
-                    PrepareParts(element, scoreEditor);
+                    PrepareParts(element, scoreEditor, scoreLayoutDictionary);
                 }
             }
 
@@ -44,7 +42,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             {
                 if (element.Name == "part")
                 {
-                    PrepareMeasures(element, scoreEditor);
+                    PrepareMeasures(element, scoreEditor, scoreLayoutDictionary);
                     break;
                 }
             }
@@ -54,13 +52,13 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                 if (element.Name == "part")
                 {
                     var id = element.Attributes().Single(a => a.Name == "id").Value;
-                    var ribbon = scoreEditor.EditInstrumentRibbons().First(r => r.ReadLayout().AbbreviatedName == id);
-                    scorePartXmlConverter.Create(element, ribbon);
+                    var ribbon = scoreEditor.ReadInstrumentRibbons().First(r => scoreLayoutDictionary.GetOrDefault(r).DisplayName == id);
+                    scorePartXmlConverter.Create(element, ribbon, scoreLayoutDictionary);
                 }
             }
         }
 
-        private void PrepareParts(XElement partList, IScoreDocumentEditor scoreEditor)
+        private void PrepareParts(XElement partList, IScoreDocumentEditor scoreEditor, IScoreLayoutDictionary scoreLayoutDictionary)
         {
             var partNodes = partList.Elements().Where(d => d.Name == "score-part");
 
@@ -70,13 +68,16 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                 var instrument = Instrument.TryGetFromName(name);
                 scoreEditor.AddInstrumentRibbon(instrument);
 
-                var ribbon = scoreEditor.EditInstrumentRibbon(scoreEditor.NumberOfInstruments - 1);
-                var layout = ribbon.ReadLayout();
-                ribbon.ApplyLayout(new InstrumentRibbonLayout(name, partListNode.Attributes().Single(a => a.Name == "id").Value, layout.NumberOfStaves));
+                var ribbon = scoreEditor.ReadInstrumentRibbon(scoreEditor.NumberOfInstruments - 1);
+                var layout = new InstrumentRibbonLayout(ribbon.Instrument)
+                {
+                    DisplayName = partListNode.Attributes().Single(a => a.Name == "id").Value
+                };
+                scoreLayoutDictionary.Apply(ribbon, layout);
             }
         }
 
-        private void PrepareMeasures(XElement part, IScoreDocumentEditor scoreEditor)
+        private void PrepareMeasures(XElement part, IScoreDocumentEditor scoreEditor, IScoreLayoutDictionary scoreLayoutDictionary)
         {
             var lastKeySignature = 0;
             var lastBeats = 4;
@@ -84,7 +85,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
 
             var measures = part.Elements().Where(e => e.Name == "measure");
             var n = 0;
-            foreach(var measure in measures)
+            foreach (var measure in measures)
             {
                 lastKeySignature = part.Descendants().FirstOrDefault(d => d.Name == "fifths")?.Value.ToIntOrNull() ?? lastKeySignature;
                 lastBeats = part.Descendants().FirstOrDefault(d => d.Name == "beats")?.Value.ToIntOrNull() ?? lastBeats;
@@ -95,15 +96,16 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                 var timeSignature = new TimeSignature(lastBeats, lastBeatsType);
                 scoreEditor.AppendScoreMeasure(timeSignature);
 
-                var appendedMeasure = scoreEditor.EditScoreMeasure(scoreEditor.NumberOfMeasures - 1);
+                var appendedMeasure = scoreEditor.ReadScoreMeasure(scoreEditor.NumberOfMeasures - 1);
                 var keySignature = new KeySignature(Step.C.MoveAlongCircleOfFifths(lastKeySignature), MajorOrMinor.Major);
+                appendedMeasure.EditKeySignature(keySignature);
+
                 var width = measure.Attribute("width")?.Value.ToIntOrNull();
-                var layout = new ScoreMeasureLayout(
-                    keySignature: keySignature,
-                    isNewSystem: newSystem || n % 4 == 0,
-                    width: width ?? 100
-                );
-                appendedMeasure.ApplyLayout(layout);
+                var measureLayout = new ScoreMeasureLayout()
+                {
+                    Width = width ?? 100,
+                };
+                scoreLayoutDictionary.Apply(appendedMeasure, measureLayout);
 
                 n++;
             }

@@ -8,6 +8,9 @@
   </PropertyGroup>
 	
   <ItemGroup>
+    <ProjectReference Include="..\StudioLaValse.ScoreDocument.Builder\StudioLaValse.ScoreDocument.Builder.csproj" />
+    <ProjectReference Include="..\StudioLaValse.ScoreDocument.Core\StudioLaValse.ScoreDocument.Core.csproj" />
+    <ProjectReference Include="..\StudioLaValse.ScoreDocument.Layout\StudioLaValse.ScoreDocument.Layout.csproj" />
     <ProjectReference Include="..\StudioLaValse.ScoreDocument\StudioLaValse.ScoreDocument.csproj" />
   </ItemGroup>
 

@@ -13,7 +13,7 @@
 
 	<!--build-->
 	<PropertyGroup>
-		<EnablePackageValidation>true</EnablePackageValidation>
+		<EnablePackageValidation>False</EnablePackageValidation>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -24,8 +24,8 @@
 	</ItemGroup>
 
 	<PropertyGroup>
-		<GenerateDocumentationFile>True</GenerateDocumentationFile>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<GenerateDocumentationFile>False</GenerateDocumentationFile>
+		<TreatWarningsAsErrors>False</TreatWarningsAsErrors>
 	</PropertyGroup>
 
 	<!--meta data-->

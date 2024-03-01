@@ -7,14 +7,16 @@ using StudioLaValse.Drawable.WPF.Painters;
 using StudioLaValse.Drawable.WPF.UserControls;
 using StudioLaValse.Geometry;
 using StudioLaValse.ScoreDocument.Core;
-using StudioLaValse.ScoreDocument.Drawable;
 using StudioLaValse.ScoreDocument.Drawable.Scenes;
+using StudioLaValse.ScoreDocument.Layout;
 using StudioLaValse.ScoreDocument.MusicXml;
 using StudioLaValse.ScoreDocument.Reader;
+using StudioLaValse.ScoreDocument.Layout.Elements;
 using System;
 using System.IO;
 using System.Windows;
 using System.Xml.Linq;
+using System.Linq;
 
 namespace StudioLaValse.ScoreDocument.Example.WPF
 {
@@ -27,7 +29,7 @@ namespace StudioLaValse.ScoreDocument.Example.WPF
         {
             base.OnStartup(e);
 
-            var notifyEntityChanged = SceneManager<IUniqueScoreElement>.CreateObservable();
+            var notifyEntityChanged = SceneManager<IUniqueScoreElement, int>.CreateObservable();
             var selectionManager = SelectionManager<IUniqueScoreElement>.CreateDefault().OnChangedNotify(notifyEntityChanged);
 
             IScoreDocumentReader? score;
@@ -44,15 +46,29 @@ namespace StudioLaValse.ScoreDocument.Example.WPF
             var selectionBorderObserver = selectionBorder.CreateObserver(canvas);
             selectionBorderObservable.Subscribe(selectionBorderObserver);
 
-            var noteFactory = new VisualNoteFactory(selectionManager);
+            var pageSize = PageSize.A4;
+            var scoreDocumentStyle = ScoreDocumentStyle.Create(style =>
+            {
+                style.MeasureBlockStyle = (m) => new ()
+                {
+                    StemLength = 4,
+                    BeamAngle = 0
+                };
+            });
+            var scoreLayoutDictionary = new ScoreLayoutDictionary(scoreDocumentStyle);
+            scoreLayoutDictionary.Apply(score, new ScoreDocumentLayout()
+            {
+                BreakSystem = (m, s) => m.Select((m, n) => scoreLayoutDictionary.GetOrCreate(m).Width).Sum() > s.PageSize.Width
+            });
+            var noteFactory = new VisualNoteFactory(selectionManager, scoreLayoutDictionary);
             var restFactory = new VisualRestFactory(selectionManager);
-            var noteGroupFactory = new VisualNoteGroupFactory(noteFactory, restFactory);
-            var staffMeasusureFactory = new VisualStaffMeasureFactory(selectionManager, noteGroupFactory);
-            var systemMeasureFactory = new VisualSystemMeasureFactory(selectionManager, staffMeasusureFactory);
-            var staffSystemFactory = new VisualStaffSystemFactory(systemMeasureFactory, selectionManager);
-            var sceneFactory = new PageViewSceneFactory(staffSystemFactory, PageSize.A4, 20, 30, ColorARGB.Black, ColorARGB.White);
+            var noteGroupFactory = new VisualNoteGroupFactory(noteFactory, restFactory, scoreLayoutDictionary);
+            var staffMeasusureFactory = new VisualStaffMeasureFactory(selectionManager, noteGroupFactory, scoreLayoutDictionary);
+            var systemMeasureFactory = new VisualSystemMeasureFactory(selectionManager, staffMeasusureFactory, scoreLayoutDictionary);
+            var staffSystemFactory = new VisualStaffSystemFactory(systemMeasureFactory, selectionManager, scoreLayoutDictionary);
+            var sceneFactory = new PageViewSceneFactory(staffSystemFactory, pageSize, 20, 30, ColorARGB.Black, ColorARGB.White, scoreLayoutDictionary);
             var origin = new VisualScoreDocumentScene(sceneFactory, score);
-            var sceneManager = new SceneManager<IUniqueScoreElement>(origin)
+            var sceneManager = new SceneManager<IUniqueScoreElement, int>(origin, e => e.Id)
                 .WithBackground(ColorARGB.White)
                 .WithRerender(canvasPainter);
 

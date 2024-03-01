@@ -8,5 +8,3 @@ global using StudioLaValse.ScoreDocument.Core;
 global using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.ContentWrappers;
 global using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.Ghosts;
 global using StudioLaValse.ScoreDocument.Drawable.Scenes;
-global using StudioLaValse.ScoreDocument.Extensions;
-global using StudioLaValse.ScoreDocument.Reader;

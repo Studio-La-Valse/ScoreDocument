@@ -8,12 +8,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="StudioLaValse.Drawable" Version="1.0.1" />
-		<PackageReference Include="StudioLaValse.Drawable.Interaction" Version="1.0.0" />
+		<PackageReference Include="StudioLaValse.Drawable" Version="2.0.0" />
+		<PackageReference Include="StudioLaValse.Drawable.Interaction" Version="2.0.0" />
 		<PackageReference Include="StudioLaValse.Geometry" Version="1.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\StudioLaValse.ScoreDocument.Layout\StudioLaValse.ScoreDocument.Layout.csproj" />
 		<ProjectReference Include="..\StudioLaValse.ScoreDocument\StudioLaValse.ScoreDocument.csproj" />
 	</ItemGroup>
 

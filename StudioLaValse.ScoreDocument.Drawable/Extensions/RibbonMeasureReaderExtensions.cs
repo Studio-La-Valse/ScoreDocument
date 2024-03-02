@@ -15,7 +15,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Extensions
         /// <param name="staffIndex"></param>
         /// <param name="scoreLayoutDictionary"></param>
         /// <returns></returns>
-        public static Clef OpeningClefAtOrDefault(this IInstrumentMeasureReader ribbonMeasure, int staffIndex, IScoreLayoutDictionary scoreLayoutDictionary)
+        public static Clef OpeningClefAtOrDefault(this IInstrumentMeasureReader ribbonMeasure, int staffIndex, IScoreLayoutProvider scoreLayoutDictionary)
         {
             var layout = scoreLayoutDictionary.InstrumentMeasureLayout(ribbonMeasure);
             foreach (var clefChange in layout.ClefChanges.Where(c => c.Position.Decimal == 0))
@@ -54,7 +54,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Extensions
         /// <param name="position"></param>
         /// <param name="scoreLayoutDictionary"></param>
         /// <returns></returns>
-        public static Clef GetClef(this IInstrumentMeasureReader ribbonMeasure, int staffIndex, Position position, IScoreLayoutDictionary scoreLayoutDictionary)
+        public static Clef GetClef(this IInstrumentMeasureReader ribbonMeasure, int staffIndex, Position position, IScoreLayoutProvider scoreLayoutDictionary)
         {
             var layout = scoreLayoutDictionary.InstrumentMeasureLayout(ribbonMeasure);
             var lastClefChangeInMeasure = layout.ClefChanges
@@ -79,7 +79,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Extensions
         /// <param name="staffIndex"></param>
         /// <param name="scoreLayoutDictionary"></param>
         /// <returns></returns>
-        public static Accidental? GetAccidental(this IInstrumentMeasureReader ribbonMeasure, Pitch Pitch, Position position, int staffIndex, IScoreLayoutDictionary scoreLayoutDictionary)
+        public static Accidental? GetAccidental(this IInstrumentMeasureReader ribbonMeasure, Pitch Pitch, Position position, int staffIndex, IScoreLayoutProvider scoreLayoutDictionary)
         {
             var precedingNotes = ribbonMeasure
                 .ReadPrecedingChordsInMeasure(position)

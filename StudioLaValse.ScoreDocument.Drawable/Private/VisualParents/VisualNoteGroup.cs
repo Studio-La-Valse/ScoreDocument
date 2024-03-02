@@ -18,13 +18,13 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         private readonly IVisualRestFactory restFactory;
         private readonly IVisualBeamBuilder visualBeamBuilder;
         private readonly ColorARGB colorARGB;
-        private readonly IScoreLayoutDictionary scoreLayoutDictionary;
+        private readonly IScoreLayoutProvider scoreLayoutDictionary;
 
         public MeasureBlockLayout Layout => scoreLayoutDictionary.MeasureBlockLayout(measureBlock);
 
 
 
-        public VisualNoteGroup(IMeasureBlockReader measureBlock, IStaffGroupReader staffGroup, IInstrumentMeasureReader instrumentMeasure, double canvasTopStaffGroup, double canvasLeft, double allowedSpace, IVisualNoteFactory noteFactory, IVisualRestFactory restFactory, IVisualBeamBuilder visualBeamBuilder, ColorARGB colorARGB, IScoreLayoutDictionary scoreLayoutDictionary)
+        public VisualNoteGroup(IMeasureBlockReader measureBlock, IStaffGroupReader staffGroup, IInstrumentMeasureReader instrumentMeasure, double canvasTopStaffGroup, double canvasLeft, double allowedSpace, IVisualNoteFactory noteFactory, IVisualRestFactory restFactory, IVisualBeamBuilder visualBeamBuilder, ColorARGB colorARGB, IScoreLayoutProvider scoreLayoutDictionary)
         {
             this.measureBlock = measureBlock;
             this.staffGroup = staffGroup;

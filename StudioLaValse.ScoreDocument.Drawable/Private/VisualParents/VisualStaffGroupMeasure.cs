@@ -11,7 +11,7 @@
         private readonly bool firstMeasure;
         private readonly ColorARGB color;
         private readonly IVisualNoteGroupFactory visualNoteGroupFactory;
-        private readonly IScoreLayoutDictionary scoreLayoutDictionary;
+        private readonly IScoreLayoutProvider scoreLayoutDictionary;
         private readonly IInstrumentMeasureReader source;
 
 
@@ -54,7 +54,7 @@
             width - paddingLeft - paddingRight;
 
 
-        public VisualStaffGroupMeasure(IInstrumentMeasureReader source, IStaffGroupReader staffGroup, double canvasTop, double canvasLeft, double width, double paddingLeft, double paddingRight, bool firstMeasure, ColorARGB color, IVisualNoteGroupFactory visualNoteGroupFactory, ISelection<IUniqueScoreElement> selection, IScoreLayoutDictionary scoreLayoutDictionary) : base(source, selection)
+        public VisualStaffGroupMeasure(IInstrumentMeasureReader source, IStaffGroupReader staffGroup, double canvasTop, double canvasLeft, double width, double paddingLeft, double paddingRight, bool firstMeasure, ColorARGB color, IVisualNoteGroupFactory visualNoteGroupFactory, ISelection<IUniqueScoreElement> selection, IScoreLayoutProvider scoreLayoutDictionary) : base(source, selection)
         {
             this.staffGroup = staffGroup;
             this.canvasTop = canvasTop;

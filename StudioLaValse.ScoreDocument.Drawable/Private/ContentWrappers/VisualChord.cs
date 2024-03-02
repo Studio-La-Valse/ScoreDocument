@@ -14,13 +14,13 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         private readonly IVisualNoteFactory noteFactory;
         private readonly IVisualRestFactory restFactory;
         private readonly ColorARGB color;
-        private readonly IScoreLayoutDictionary scoreLayoutDictionary;
+        private readonly IScoreLayoutProvider scoreLayoutDictionary;
 
         public ChordLayout Layout => scoreLayoutDictionary.ChordLayout(chord);
         public double XOffset => Layout.XOffset;
 
 
-        public VisualChord(IChordReader chord, double canvasLeft, double canvasTopStaffGroup, IStaffGroupReader staffGroup, IInstrumentMeasureReader instrumentMeasureReader, IVisualNoteFactory noteFactory, IVisualRestFactory restFactory, ColorARGB color, IScoreLayoutDictionary scoreLayoutDictionary)
+        public VisualChord(IChordReader chord, double canvasLeft, double canvasTopStaffGroup, IStaffGroupReader staffGroup, IInstrumentMeasureReader instrumentMeasureReader, IVisualNoteFactory noteFactory, IVisualRestFactory restFactory, ColorARGB color, IScoreLayoutProvider scoreLayoutDictionary)
         {
             this.chord = chord;
             scale = chord.Grace ? 0.5 : 1;

@@ -11,7 +11,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         private readonly double canvasLeft;
         private readonly double length;
         private readonly ColorARGB color;
-        private readonly IScoreLayoutDictionary scoreLayoutDictionary;
+        private readonly IScoreLayoutProvider scoreLayoutDictionary;
         private readonly double canvasTop;
 
 
@@ -61,7 +61,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 
 
 
-        public VisualStaffGroup(IStaffGroupReader staffGroup, double canvasLeft, double canvasTop, double length, ColorARGB color, IScoreLayoutDictionary scoreLayoutDictionary)
+        public VisualStaffGroup(IStaffGroupReader staffGroup, double canvasLeft, double canvasTop, double length, ColorARGB color, IScoreLayoutProvider scoreLayoutDictionary)
         {
             this.staffGroup = staffGroup;
             this.canvasLeft = canvasLeft;

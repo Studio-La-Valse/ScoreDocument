@@ -5,7 +5,7 @@ namespace StudioLaValse.ScoreDocument.Layout
     /// <summary>
     /// Represents a source for the layout of a score document.
     /// </summary>
-    public interface IScoreLayoutDictionary
+    public interface IScoreLayoutProvider
     {
         /// <summary>
         /// Get the layout for the specified element.

@@ -35,7 +35,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Extensions
         /// <param name="line"></param>
         /// <param name="scoreLayoutDictionary"></param>
         /// <returns></returns>
-        public static double HeightFromLineIndex(this IStaffReader staff, double staffCanvasTop, int line, IScoreLayoutDictionary scoreLayoutDictionary)
+        public static double HeightFromLineIndex(this IStaffReader staff, double staffCanvasTop, int line, IScoreLayoutProvider scoreLayoutDictionary)
         {
             var staffLayout = scoreLayoutDictionary.StaffLayout(staff);
             return staffCanvasTop + (line * (staffLayout.LineSpacing / 2));
@@ -54,7 +54,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Extensions
         /// <param name="scoreLayoutDictionary"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public static double HeightOnCanvas(this IStaffGroupReader staffGroup, double canvasTopStaffGroup, int staffIndex, int lineIndex, IScoreLayoutDictionary scoreLayoutDictionary)
+        public static double HeightOnCanvas(this IStaffGroupReader staffGroup, double canvasTopStaffGroup, int staffIndex, int lineIndex, IScoreLayoutProvider scoreLayoutDictionary)
         {
             var staffCanvasTop = canvasTopStaffGroup;
             var _staff = staffGroup.EnumerateStaves(1).First();
@@ -77,7 +77,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Extensions
         /// <param name="staff"></param>
         /// <param name="scoreLayoutDictionary"></param>
         /// <returns></returns>
-        public static double CalculateHeight(this IStaffReader staff, IScoreLayoutDictionary scoreLayoutDictionary)
+        public static double CalculateHeight(this IStaffReader staff, IScoreLayoutProvider scoreLayoutDictionary)
         {
             var staffLayout = scoreLayoutDictionary.StaffLayout(staff);
             var staffHeight = 4 * staffLayout.LineSpacing;
@@ -92,7 +92,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Extensions
         /// <param name="staffGroup"></param>
         /// <param name="scoreLayoutDictionary"></param>
         /// <returns></returns>
-        public static double CalculateHeight(this IStaffGroupReader staffGroup, IScoreLayoutDictionary scoreLayoutDictionary)
+        public static double CalculateHeight(this IStaffGroupReader staffGroup, IScoreLayoutProvider scoreLayoutDictionary)
         {
             var height = 0d;
             var groupLayout = scoreLayoutDictionary.StaffGroupLayout(staffGroup);
@@ -126,7 +126,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Extensions
         /// <param name="staffSystem"></param>
         /// <param name="scoreLayoutDictionary"></param>
         /// <returns></returns>
-        public static double CalculateHeight(this IStaffSystemReader staffSystem, IScoreLayoutDictionary scoreLayoutDictionary)
+        public static double CalculateHeight(this IStaffSystemReader staffSystem, IScoreLayoutProvider scoreLayoutDictionary)
         {
             var height = 0d;
             var lastStafGroupSpacing = 0d;

@@ -11,7 +11,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         private readonly double canvasTop;
         private readonly bool offsetDots;
         private readonly Accidental? accidental;
-        private readonly IScoreLayoutDictionary scoreLayoutDictionary;
+        private readonly IScoreLayoutProvider scoreLayoutDictionary;
 
 
         public NoteLayout NoteLayout => scoreLayoutDictionary.NoteLayout(note);
@@ -72,7 +72,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         public override bool OffsetDots => offsetDots;
         public override double XOffset => NoteLayout.XOffset;
 
-        public VisualNote(INoteReader note, ColorARGB color, double canvasLeft, double canvasTop, double scale, bool offsetDots, Accidental? accidental, ISelection<IUniqueScoreElement> selection, IScoreLayoutDictionary scoreLayoutDictionary) :
+        public VisualNote(INoteReader note, ColorARGB color, double canvasLeft, double canvasTop, double scale, bool offsetDots, Accidental? accidental, ISelection<IUniqueScoreElement> selection, IScoreLayoutProvider scoreLayoutDictionary) :
             base(note, canvasLeft, canvasTop, scale, color, selection)
         {
             this.note = note;

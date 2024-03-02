@@ -12,7 +12,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         private readonly double length;
         private readonly double canvasTop;
         private readonly ColorARGB baseColor;
-        private readonly IScoreLayoutDictionary scoreLayoutDictionary;
+        private readonly IScoreLayoutProvider scoreLayoutDictionary;
 
         public StaffSystemLayout Layout => scoreLayoutDictionary.StaffSystemLayout(staffSystem);
         public DrawableLineVertical OpeningLine =>
@@ -60,7 +60,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
 
 
-        public VisualStaffSystem(IStaffSystemReader staffSystem, double canvasLeft, double canvasTop, double length, IVisualSystemMeasureFactory systemMeasureFactory, ColorARGB baseColor, ISelection<IUniqueScoreElement> selection, IScoreLayoutDictionary scoreLayoutDictionary) : base(staffSystem, selection)
+        public VisualStaffSystem(IStaffSystemReader staffSystem, double canvasLeft, double canvasTop, double length, IVisualSystemMeasureFactory systemMeasureFactory, ColorARGB baseColor, ISelection<IUniqueScoreElement> selection, IScoreLayoutProvider scoreLayoutDictionary) : base(staffSystem, selection)
         {
             this.staffSystem = staffSystem;
             this.systemMeasureFactory = systemMeasureFactory;

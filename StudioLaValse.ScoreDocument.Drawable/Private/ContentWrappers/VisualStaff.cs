@@ -14,7 +14,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         private readonly Clef openingClef;
         private readonly KeySignature openingKeySignature;
         private readonly ColorARGB color;
-        private readonly IScoreLayoutDictionary scoreLayoutDictionary;
+        private readonly IScoreLayoutProvider scoreLayoutDictionary;
 
 
         public StaffLayout Layout => scoreLayoutDictionary.StaffLayout(staff);
@@ -29,7 +29,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 
 
 
-        public VisualStaff(IStaffReader staff, double canvasLeft, double canvasTop, double length, Clef openingClef, KeySignature openingKeySignature, ColorARGB color, IScoreLayoutDictionary scoreLayoutDictionary)
+        public VisualStaff(IStaffReader staff, double canvasLeft, double canvasTop, double length, Clef openingClef, KeySignature openingKeySignature, ColorARGB color, IScoreLayoutProvider scoreLayoutDictionary)
         {
             this.staff = staff;
             this.canvasLeft = canvasLeft;

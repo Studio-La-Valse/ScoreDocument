@@ -9,7 +9,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
     {
         private readonly ISelection<IUniqueScoreElement> selection;
         private readonly IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory;
-        private readonly IScoreLayoutDictionary scoreLayoutDictionary;
+        private readonly IScoreLayoutProvider scoreLayoutDictionary;
 
         /// <summary>
         /// The default constructor
@@ -17,7 +17,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// <param name="selection"></param>
         /// <param name="visualInstrumentMeasureFactory"></param>
         /// <param name="scoreLayoutDictionary"></param>
-        public VisualSystemMeasureFactory(ISelection<IUniqueScoreElement> selection, IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory, IScoreLayoutDictionary scoreLayoutDictionary)
+        public VisualSystemMeasureFactory(ISelection<IUniqueScoreElement> selection, IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory, IScoreLayoutProvider scoreLayoutDictionary)
         {
             this.selection = selection;
             this.visualInstrumentMeasureFactory = visualInstrumentMeasureFactory;

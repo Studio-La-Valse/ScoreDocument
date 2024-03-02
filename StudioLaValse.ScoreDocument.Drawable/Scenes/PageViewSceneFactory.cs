@@ -14,7 +14,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         private readonly double largePadding;
         private readonly ColorARGB foregroundColor;
         private readonly ColorARGB pageColor;
-        private readonly IScoreLayoutDictionary scoreLayoutDictionary;
+        private readonly IScoreLayoutProvider scoreLayoutDictionary;
 
         /// <summary>
         /// The default constructor.
@@ -25,7 +25,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// <param name="foregroundColor"></param>
         /// <param name="pageColor"></param>
         /// <param name="scoreLayoutDictionary"></param>
-        public PageViewSceneFactory(IVisualStaffSystemFactory staffSystemContentFactory, double smallPadding, double largePadding, ColorARGB foregroundColor, ColorARGB pageColor, IScoreLayoutDictionary scoreLayoutDictionary)
+        public PageViewSceneFactory(IVisualStaffSystemFactory staffSystemContentFactory, double smallPadding, double largePadding, ColorARGB foregroundColor, ColorARGB pageColor, IScoreLayoutProvider scoreLayoutDictionary)
         {
             this.staffSystemContentFactory = staffSystemContentFactory;
             this.smallPadding = smallPadding;

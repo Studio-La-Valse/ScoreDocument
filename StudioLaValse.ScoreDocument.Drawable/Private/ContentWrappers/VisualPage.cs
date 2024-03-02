@@ -11,7 +11,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         private readonly IVisualStaffSystemFactory staffSystemContentFactory;
         private readonly ColorARGB foregroundColor;
         private readonly ColorARGB pageColor;
-        private readonly IScoreLayoutDictionary scoreLayoutDictionary;
+        private readonly IScoreLayoutProvider scoreLayoutDictionary;
         private readonly List<IStaffSystemReader> content;
 
 
@@ -20,7 +20,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 
 
 
-        public VisualPage(PageSize pageSize, double canvasLeft, double canvasTop, IVisualStaffSystemFactory staffSystemContentFactory, ColorARGB foregroundColor, ColorARGB pageColor, IScoreLayoutDictionary scoreLayoutDictionary)
+        public VisualPage(PageSize pageSize, double canvasLeft, double canvasTop, IVisualStaffSystemFactory staffSystemContentFactory, ColorARGB foregroundColor, ColorARGB pageColor, IScoreLayoutProvider scoreLayoutDictionary)
         {
             this.pageSize = pageSize;
             this.canvasLeft = canvasLeft;

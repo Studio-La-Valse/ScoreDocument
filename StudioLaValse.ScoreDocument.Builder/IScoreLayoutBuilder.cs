@@ -3,7 +3,7 @@
 namespace StudioLaValse.ScoreDocument.Builder
 {
     /// <inheritdoc/>
-    public interface IScoreLayoutBuilder : IScoreLayoutDictionary
+    public interface IScoreLayoutBuilder : IScoreLayoutProvider
     {
         /// <summary>
         /// Apply the layout to the specified element.

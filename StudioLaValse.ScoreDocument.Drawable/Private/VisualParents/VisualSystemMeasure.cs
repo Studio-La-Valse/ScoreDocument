@@ -8,7 +8,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
     {
         private readonly IScoreMeasureReader scoreMeasure;
         private readonly IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory;
-        private readonly IScoreLayoutDictionary scoreLayoutDictionary;
+        private readonly IScoreLayoutProvider scoreLayoutDictionary;
         private readonly IStaffSystemReader staffSystem;
         private readonly double width;
         private readonly bool firstMeasure;
@@ -88,7 +88,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
 
 
-        public VisualSystemMeasure(IScoreMeasureReader scoreMeasure, IStaffSystemReader staffSystem, double canvasLeft, double canvasTop, double width, bool firstMeasure, ColorARGB color, ISelection<IUniqueScoreElement> selection, IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory, IScoreLayoutDictionary scoreLayoutDictionary) : base(scoreMeasure, selection)
+        public VisualSystemMeasure(IScoreMeasureReader scoreMeasure, IStaffSystemReader staffSystem, double canvasLeft, double canvasTop, double width, bool firstMeasure, ColorARGB color, ISelection<IUniqueScoreElement> selection, IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory, IScoreLayoutProvider scoreLayoutDictionary) : base(scoreMeasure, selection)
         {
             this.scoreMeasure = scoreMeasure;
             this.visualInstrumentMeasureFactory = visualInstrumentMeasureFactory;

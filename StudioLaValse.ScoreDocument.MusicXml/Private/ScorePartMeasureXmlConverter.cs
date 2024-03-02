@@ -1,5 +1,4 @@
 ﻿using System.Xml.Linq;
-using IScoreLayoutDictionary = StudioLaValse.ScoreDocument.Builder.IScoreLayoutDictionary;
 
 namespace StudioLaValse.ScoreDocument.MusicXml.Private
 {
@@ -12,7 +11,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             this.blockChainXmlConverter = blockChainXmlConverter;
         }
 
-        public void Create(XElement measure, IInstrumentMeasureEditor measureEditor, IScoreLayoutDictionary scoreLayoutDictionary, ref int durationOfOneQuarter)
+        public void Create(XElement measure, IInstrumentMeasureEditor measureEditor, IScoreLayoutBuilder scoreLayoutBuilder, ref int durationOfOneQuarter)
         {
             measureEditor.Clear();
 
@@ -20,12 +19,12 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             if (attributes is not null)
             {
                 ProcessMeasureAttributes(attributes, ref durationOfOneQuarter, out var clefChanges);
-                var layout = scoreLayoutDictionary.GetOrDefault(measureEditor);
+                var layout = scoreLayoutBuilder.InstrumentMeasureLayout(measureEditor);
                 foreach (var clefChange in clefChanges)
                 {
                     layout.AddClefChange(clefChange);
                 }
-                scoreLayoutDictionary.Apply(measureEditor, layout);
+                scoreLayoutBuilder.Apply(measureEditor, layout);
             }
 
             var voices = measure.ExtractVoices();
@@ -36,7 +35,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                 blockChainEditor.DivideEqual(measureEditor.TimeSignature.Denominator);
 
                 var elements = measure.ExtractElements(voice);
-                blockChainXmlConverter.ProcessElements(elements, blockChainEditor, scoreLayoutDictionary, durationOfOneQuarter);
+                blockChainXmlConverter.ProcessElements(elements, blockChainEditor, scoreLayoutBuilder, durationOfOneQuarter);
             }
         }
 

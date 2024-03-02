@@ -5,7 +5,7 @@ namespace StudioLaValse.ScoreDocument.Layout
     /// <summary>
     /// The layout of a score document.
     /// </summary>
-    public class ScoreDocumentLayout
+    public class ScoreDocumentLayout : ILayoutElement<ScoreDocumentLayout>
     {
         /// <inheritdoc/>
         public string Title { get; set; }
@@ -24,6 +24,7 @@ namespace StudioLaValse.ScoreDocument.Layout
         /// <param name="title"></param>
         /// <param name="subTitle"></param>
         /// <param name="breakSystem"></param>
+        /// <param name="pageSize"></param>
         public ScoreDocumentLayout(string title = "", string subTitle = "", Func<IEnumerable<IScoreMeasure>, bool>? breakSystem = null, PageSize? pageSize = null)
         {
             Title = title;

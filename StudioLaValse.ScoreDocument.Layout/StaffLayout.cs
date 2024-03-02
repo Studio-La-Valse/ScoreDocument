@@ -3,7 +3,7 @@
     /// <summary>
     /// A staff layout.
     /// </summary>
-    public class StaffLayout
+    public class StaffLayout : ILayoutElement<StaffLayout>
     {
 
         /// <inheritdoc/>

@@ -3,7 +3,7 @@
     /// <summary>
     /// The layout of a score measure.
     /// </summary>
-    public class ScoreMeasureLayout
+    public class ScoreMeasureLayout : ILayoutElement<ScoreMeasureLayout>
     {
         /// <inheritdoc/>
         public KeySignature KeySignature { get; set; }

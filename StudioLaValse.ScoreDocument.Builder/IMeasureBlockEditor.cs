@@ -1,11 +1,12 @@
 ﻿using StudioLaValse.ScoreDocument.Core.Primitives;
+using StudioLaValse.ScoreDocument.Layout;
 
 namespace StudioLaValse.ScoreDocument.Builder
 {
     /// <summary>
     /// Represents a measure block editor.
     /// </summary>
-    public interface IMeasureBlockEditor : IMeasureBlock<IChordEditor, IMeasureBlockEditor>
+    public interface IMeasureBlockEditor : IMeasureBlock<IChordEditor, IMeasureBlockEditor>, IScoreElementEditor
     {
         /// <summary>
         /// Clears the content of the measure block.

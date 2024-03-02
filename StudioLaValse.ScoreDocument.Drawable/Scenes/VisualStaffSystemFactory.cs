@@ -1,7 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Core.Primitives;
-using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents;
-using StudioLaValse.ScoreDocument.Layout;
-using StudioLaValse.ScoreDocument.Layout.ScoreElements;
+﻿using StudioLaValse.ScoreDocument.Layout;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
@@ -28,7 +25,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         }
 
         /// <inheritdoc/>
-        public BaseContentWrapper CreateContent(IStaffSystem staffSystem, double canvasLeft, double canvasTop, double length, ColorARGB color)
+        public BaseContentWrapper CreateContent(IStaffSystemReader staffSystem, double canvasLeft, double canvasTop, double length, ColorARGB color)
         {
             return new VisualStaffSystem(staffSystem, canvasLeft, canvasTop, length, systemMeasureFactory, color, selection, scoreLayoutDictionary);
         }

@@ -5,7 +5,7 @@ namespace StudioLaValse.ScoreDocument.Core.Primitives
     /// <summary>
     /// Represents a score measure primitive.
     /// </summary>
-    public interface IScoreMeasure : IUniqueScoreElement
+    public interface IScoreMeasure
     {
         /// <summary>
         /// Specifies the index in the score.
@@ -24,7 +24,7 @@ namespace StudioLaValse.ScoreDocument.Core.Primitives
     /// <inheritdoc/>
     public interface IScoreMeasure<TMeasure> : IScoreMeasure where TMeasure : IInstrumentMeasure
     {
-        
+
         /// <summary>
         /// Enumerates the instrument measures of the score.
         /// </summary>

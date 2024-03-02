@@ -3,7 +3,7 @@
     /// <summary>
     /// The layout of a note.
     /// </summary>
-    public class NoteLayout
+    public class NoteLayout : ILayoutElement<NoteLayout>
     {
         /// <inheritdoc/>
         public AccidentalDisplay ForceAccidental { get; set; }

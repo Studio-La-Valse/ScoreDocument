@@ -1,11 +1,12 @@
 ﻿using StudioLaValse.ScoreDocument.Core.Primitives;
+using StudioLaValse.ScoreDocument.Layout;
 
 namespace StudioLaValse.ScoreDocument.Builder
 {
     /// <summary>
     /// Represents an instrument measure editor.
     /// </summary>
-    public interface IInstrumentMeasureEditor : IInstrumentMeasure<IMeasureBlockChainEditor, IInstrumentMeasureEditor>
+    public interface IInstrumentMeasureEditor : IInstrumentMeasure<IMeasureBlockChainEditor, IInstrumentMeasureEditor>, IScoreElementEditor
     {
         /// <summary>
         /// Clears the content of the instrument measure.

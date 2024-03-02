@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a primitive score document.
     /// </summary>
-    public interface IScoreDocument : IUniqueScoreElement
+    public interface IScoreDocument
     {
         /// <summary>
         /// The number of score measures in the score.
@@ -16,8 +16,9 @@
     }
 
     /// <inheritdoc/>
-    public interface IScoreDocument<TScoreMeasure, TRibbon> : IScoreDocument where TScoreMeasure : IScoreMeasure
-                                                                             where TRibbon : IInstrumentRibbon
+    public interface IScoreDocument<TScoreMeasure, TRibbon, TStaffSystem> : IScoreDocument where TScoreMeasure : IScoreMeasure
+                                                                                           where TRibbon : IInstrumentRibbon
+                                                                                           where TStaffSystem : IStaffSystem
     {
         /// <summary>
         /// Enumerates the score measures in the score.
@@ -43,5 +44,10 @@
         /// <param name="indexInScore"></param>
         /// <returns></returns>
         TRibbon ReadInstrumentRibbon(int indexInScore);
+        /// <summary>
+        /// Enumerates the staff systems.
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<TStaffSystem> EnumerateStaffSystems();
     }
 }

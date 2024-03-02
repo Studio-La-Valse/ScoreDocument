@@ -5,7 +5,7 @@ namespace StudioLaValse.ScoreDocument.Builder
     /// <summary>
     /// The interface for a measure block chain editor.
     /// </summary>
-    public interface IMeasureBlockChainEditor : IMeasureBlockChain<IMeasureBlockEditor>, IUniqueScoreElement
+    public interface IMeasureBlockChainEditor : IMeasureBlockChain<IMeasureBlockEditor>, IScoreElementEditor
     {
         /// <summary>
         /// Clear all content from the block chain.

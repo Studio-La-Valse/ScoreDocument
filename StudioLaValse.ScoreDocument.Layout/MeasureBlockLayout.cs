@@ -3,7 +3,7 @@
     /// <summary>
     /// The layout of a note group.
     /// </summary>
-    public class MeasureBlockLayout
+    public class MeasureBlockLayout : ILayoutElement<MeasureBlockLayout>
     {
         /// <inheritdoc/>
         public double StemLength { get; set; }

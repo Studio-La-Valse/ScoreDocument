@@ -1,6 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Core.Primitives.Extensions;
 using System.Xml.Linq;
-using IScoreLayoutDictionary = StudioLaValse.ScoreDocument.Builder.IScoreLayoutDictionary;
 
 namespace StudioLaValse.ScoreDocument.MusicXml.Private
 {
@@ -10,16 +9,17 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
         {
 
         }
-        public void ProcessElements(IEnumerable<XElement> elements, IMeasureBlockChainEditor editor, IScoreLayoutDictionary scoreLayoutDictionary, int divisionsOfOneQuarter)
+
+        public void ProcessElements(IEnumerable<XElement> elements, IMeasureBlockChainEditor editor, IScoreLayoutBuilder scoreLayoutBuilder, int divisionsOfOneQuarter)
         {
             var position = new Position(0, 4);
             foreach (var element in elements)
             {
-                ProcessMeasureElement(element, editor, scoreLayoutDictionary, divisionsOfOneQuarter, ref position);
+                ProcessMeasureElement(element, editor, scoreLayoutBuilder, divisionsOfOneQuarter, ref position);
             }
         }
 
-        private void ProcessMeasureElement(XElement measureElement, IMeasureBlockChainEditor measureBlockChain, IScoreLayoutDictionary scoreLayoutDictionary, int divisionsOfOneQuarter, ref Position position)
+        private void ProcessMeasureElement(XElement measureElement, IMeasureBlockChainEditor measureBlockChain, IScoreLayoutBuilder scoreLayoutBuilder, int divisionsOfOneQuarter, ref Position position)
         {
             if (!measureElement.IsNoteOrForwardOrBackup())
             {
@@ -71,9 +71,9 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             {
                 chordDocument.Add(pitch);
                 var note = chordDocument.ReadNotes().Single(n => n.Pitch.Equals(pitch));
-                var layout = scoreLayoutDictionary.GetOrDefault(note);
+                var layout = scoreLayoutBuilder.NoteLayout(note);
                 layout.StaffIndex = staff ?? 0;
-                scoreLayoutDictionary.Apply(note, layout);
+                scoreLayoutBuilder.Apply(note, layout);
             }
 
             if (!grace)

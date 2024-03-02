@@ -24,16 +24,16 @@ public static class ScoreEditorExtensions
     public static IScoreBuilder EditFromXml(this IScoreBuilder builder, XDocument document)
     {
         return builder
-            .Edit(e =>
+            .Edit(editor =>
             {
-                e.Clear();
+                editor.Clear();
             })
-            .Edit((e, l) =>
+            .Edit((editor, layout) =>
             {
                 var blockConverter = new BlockChainXmlConverter();
                 var measureConverter = new ScorePartMeasureXmlConverter(blockConverter);
                 var partConverter = new ScorePartXmlConverter(measureConverter);
-                new ScoreDocumentXmlConverter(partConverter).Create(document, e, l);
+                new ScoreDocumentXmlConverter(partConverter).Create(document, editor, layout);
             });
     }
 }

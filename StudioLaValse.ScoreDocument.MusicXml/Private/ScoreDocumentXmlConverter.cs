@@ -1,5 +1,4 @@
 ﻿using System.Xml.Linq;
-using IScoreLayoutDictionary = StudioLaValse.ScoreDocument.Builder.IScoreLayoutDictionary;
 
 namespace StudioLaValse.ScoreDocument.MusicXml.Private
 {
@@ -12,7 +11,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             this.scorePartXmlConverter = scorePartXmlConverter;
         }
 
-        public void Create(XDocument xDocument, IScoreDocumentEditor scoreEditor, IScoreLayoutDictionary scoreLayoutDictionary)
+        public void Create(XDocument xDocument, IScoreDocumentEditor scoreEditor, IScoreLayoutBuilder scoreLayoutBuilder)
         {
             scoreEditor.Clear();
 
@@ -20,7 +19,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             {
                 if (element.Name == "score-partwise")
                 {
-                    ProcessScorePartWise(element, scoreEditor, scoreLayoutDictionary);
+                    ProcessScorePartWise(element, scoreEditor, scoreLayoutBuilder);
                     return;
                 }
             }
@@ -28,13 +27,13 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             throw new Exception("No score-partwise found in music xml.");
         }
 
-        private void ProcessScorePartWise(XElement scorePartwise, IScoreDocumentEditor scoreEditor, IScoreLayoutDictionary scoreLayoutDictionary)
+        private void ProcessScorePartWise(XElement scorePartwise, IScoreDocumentEditor scoreEditor, IScoreLayoutBuilder scoreLayoutBuilder)
         {
             foreach (var element in scorePartwise.Elements())
             {
                 if (element.Name == "part-list")
                 {
-                    PrepareParts(element, scoreEditor, scoreLayoutDictionary);
+                    PrepareParts(element, scoreEditor, scoreLayoutBuilder);
                 }
             }
 
@@ -42,7 +41,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             {
                 if (element.Name == "part")
                 {
-                    PrepareMeasures(element, scoreEditor, scoreLayoutDictionary);
+                    PrepareMeasures(element, scoreEditor, scoreLayoutBuilder);
                     break;
                 }
             }
@@ -52,13 +51,13 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                 if (element.Name == "part")
                 {
                     var id = element.Attributes().Single(a => a.Name == "id").Value;
-                    var ribbon = scoreEditor.ReadInstrumentRibbons().First(r => scoreLayoutDictionary.GetOrDefault(r).DisplayName == id);
-                    scorePartXmlConverter.Create(element, ribbon, scoreLayoutDictionary);
+                    var ribbon = scoreEditor.ReadInstrumentRibbons().First(r => scoreLayoutBuilder.InstrumentRibbonLayout(r).DisplayName == id);
+                    scorePartXmlConverter.Create(element, ribbon, scoreLayoutBuilder);
                 }
             }
         }
 
-        private void PrepareParts(XElement partList, IScoreDocumentEditor scoreEditor, IScoreLayoutDictionary scoreLayoutDictionary)
+        private void PrepareParts(XElement partList, IScoreDocumentEditor scoreEditor, IScoreLayoutBuilder scoreLayoutBuilder)
         {
             var partNodes = partList.Elements().Where(d => d.Name == "score-part");
 
@@ -73,11 +72,11 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                 {
                     DisplayName = partListNode.Attributes().Single(a => a.Name == "id").Value
                 };
-                scoreLayoutDictionary.Apply(ribbon, layout);
+                scoreLayoutBuilder.Apply(ribbon, layout);
             }
         }
 
-        private void PrepareMeasures(XElement part, IScoreDocumentEditor scoreEditor, IScoreLayoutDictionary scoreLayoutDictionary)
+        private void PrepareMeasures(XElement part, IScoreDocumentEditor scoreEditor, IScoreLayoutBuilder scoreLayoutBuilder)
         {
             var lastKeySignature = 0;
             var lastBeats = 4;
@@ -105,7 +104,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                 {
                     Width = width ?? 100,
                 };
-                scoreLayoutDictionary.Apply(appendedMeasure, measureLayout);
+                scoreLayoutBuilder.Apply(appendedMeasure, measureLayout);
 
                 n++;
             }

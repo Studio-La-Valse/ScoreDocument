@@ -1,6 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Layout.ScoreElements;
-
-namespace StudioLaValse.ScoreDocument.Drawable.Scenes
+﻿namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
     /// <summary>
     /// A factory for a visual instrument measure.
@@ -20,6 +18,6 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// <param name="firstMeasure"></param>
         /// <param name="color"></param>
         /// <returns></returns>
-        BaseContentWrapper CreateContent(IInstrumentMeasureReader source, IStaffGroup staffGroup, double canvasTop, double canvasLeft, double width, double paddingLeft, double paddingRight, bool firstMeasure, ColorARGB color);
+        BaseContentWrapper CreateContent(IInstrumentMeasureReader source, IStaffGroupReader staffGroup, double canvasTop, double canvasLeft, double width, double paddingLeft, double paddingRight, bool firstMeasure, ColorARGB color);
     }
 }

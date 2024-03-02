@@ -1,6 +1,4 @@
 ﻿using StudioLaValse.ScoreDocument.Layout;
-using StudioLaValse.ScoreDocument.Layout.ScoreElements;
-using System.Diagnostics;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Extensions
 {
@@ -15,7 +13,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Extensions
         /// <param name="staffGroup"></param>
         /// <param name="numberOfStaves"></param>
         /// <returns></returns>
-        public static IEnumerable<(int, Clef)> EnumerateDefaultInstrumentClefs(this IStaffGroup staffGroup, int numberOfStaves)
+        public static IEnumerable<(int, Clef)> EnumerateDefaultInstrumentClefs(this IStaffGroupReader staffGroup, int numberOfStaves)
         {
             var index = 0;
             foreach (var staff in staffGroup.EnumerateStaves(numberOfStaves))
@@ -37,9 +35,9 @@ namespace StudioLaValse.ScoreDocument.Drawable.Extensions
         /// <param name="line"></param>
         /// <param name="scoreLayoutDictionary"></param>
         /// <returns></returns>
-        public static double HeightFromLineIndex(this IStaff staff, double staffCanvasTop, int line, IScoreLayoutDictionary scoreLayoutDictionary)
+        public static double HeightFromLineIndex(this IStaffReader staff, double staffCanvasTop, int line, IScoreLayoutDictionary scoreLayoutDictionary)
         {
-            var staffLayout = scoreLayoutDictionary.GetOrDefault(staff);
+            var staffLayout = scoreLayoutDictionary.StaffLayout(staff);
             return staffCanvasTop + (line * (staffLayout.LineSpacing / 2));
         }
 
@@ -56,14 +54,14 @@ namespace StudioLaValse.ScoreDocument.Drawable.Extensions
         /// <param name="scoreLayoutDictionary"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public static double HeightOnCanvas(this IStaffGroup staffGroup, double canvasTopStaffGroup, int staffIndex, int lineIndex, IScoreLayoutDictionary scoreLayoutDictionary)
+        public static double HeightOnCanvas(this IStaffGroupReader staffGroup, double canvasTopStaffGroup, int staffIndex, int lineIndex, IScoreLayoutDictionary scoreLayoutDictionary)
         {
             var staffCanvasTop = canvasTopStaffGroup;
             var _staff = staffGroup.EnumerateStaves(1).First();
 
             foreach (var staff in staffGroup.EnumerateStaves(staffIndex))
             {
-                var staffLayout = scoreLayoutDictionary.GetOrDefault(staff);
+                var staffLayout = scoreLayoutDictionary.StaffLayout(staff);
                 canvasTopStaffGroup += 4 * staffLayout.LineSpacing;
                 canvasTopStaffGroup += staffLayout.DistanceToNext;
                 _staff = staff;
@@ -79,9 +77,9 @@ namespace StudioLaValse.ScoreDocument.Drawable.Extensions
         /// <param name="staff"></param>
         /// <param name="scoreLayoutDictionary"></param>
         /// <returns></returns>
-        public static double CalculateHeight(this IStaff staff, IScoreLayoutDictionary scoreLayoutDictionary)
+        public static double CalculateHeight(this IStaffReader staff, IScoreLayoutDictionary scoreLayoutDictionary)
         {
-            var staffLayout = scoreLayoutDictionary.GetOrDefault(staff);
+            var staffLayout = scoreLayoutDictionary.StaffLayout(staff);
             var staffHeight = 4 * staffLayout.LineSpacing;
 
             return staffHeight;
@@ -94,10 +92,10 @@ namespace StudioLaValse.ScoreDocument.Drawable.Extensions
         /// <param name="staffGroup"></param>
         /// <param name="scoreLayoutDictionary"></param>
         /// <returns></returns>
-        public static double CalculateHeight(this IStaffGroup staffGroup, IScoreLayoutDictionary scoreLayoutDictionary)
+        public static double CalculateHeight(this IStaffGroupReader staffGroup, IScoreLayoutDictionary scoreLayoutDictionary)
         {
             var height = 0d;
-            var groupLayout = scoreLayoutDictionary.GetOrDefault(staffGroup);
+            var groupLayout = scoreLayoutDictionary.StaffGroupLayout(staffGroup);
             if (groupLayout.Collapsed)
             {
                 return height;
@@ -128,13 +126,13 @@ namespace StudioLaValse.ScoreDocument.Drawable.Extensions
         /// <param name="staffSystem"></param>
         /// <param name="scoreLayoutDictionary"></param>
         /// <returns></returns>
-        public static double CalculateHeight(this IStaffSystem staffSystem, IScoreLayoutDictionary scoreLayoutDictionary)
+        public static double CalculateHeight(this IStaffSystemReader staffSystem, IScoreLayoutDictionary scoreLayoutDictionary)
         {
             var height = 0d;
             var lastStafGroupSpacing = 0d;
             foreach (var staffGroup in staffSystem.EnumerateStaffGroups())
             {
-                var staffGroupLayout = scoreLayoutDictionary.GetOrDefault(staffGroup);
+                var staffGroupLayout = scoreLayoutDictionary.StaffGroupLayout(staffGroup);
                 var staffGroupHeight = staffGroup.CalculateHeight(scoreLayoutDictionary);
                 height += staffGroupHeight;
 

@@ -1,6 +1,6 @@
 ﻿using StudioLaValse.ScoreDocument.Drawable.Extensions;
+using StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers;
 using StudioLaValse.ScoreDocument.Layout;
-using StudioLaValse.ScoreDocument.Layout.ScoreElements;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
@@ -38,7 +38,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// <inheritdoc/>
         public BaseContentWrapper CreateContent(IScoreDocumentReader scoreDocument)
         {
-            var scoreLayout = scoreLayoutDictionary.GetOrDefault(scoreDocument);
+            var scoreLayout = scoreLayoutDictionary.DocumentLayout(scoreDocument);
 
             var pageSize = scoreLayout.PageSize;
 
@@ -50,9 +50,9 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
             var systemBottom = VisualPage.MarginTop;
             var pageCanvasLeft = 0d;
 
-            foreach (var system in scoreLayoutDictionary.EnumerateStaffSystems(scoreDocument))
+            foreach (var system in scoreDocument.EnumerateStaffSystems())
             {
-                var systemLayout = scoreLayoutDictionary.GetOrDefault(system);
+                var systemLayout = scoreLayoutDictionary.StaffSystemLayout(system);
                 systemBottom += systemLayout.PaddingTop + system.CalculateHeight(scoreLayoutDictionary);
 
                 if (systemBottom > pageSize.Height - VisualPage.MarginTop)

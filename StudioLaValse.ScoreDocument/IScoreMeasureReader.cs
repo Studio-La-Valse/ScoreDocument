@@ -5,7 +5,7 @@ namespace StudioLaValse.ScoreDocument
     /// <summary>
     /// Represents a score measure reader.
     /// </summary>
-    public interface IScoreMeasureReader : IScoreMeasure<IInstrumentMeasureReader, IScoreMeasureReader>, IUniqueScoreElement
+    public interface IScoreMeasureReader : IScoreMeasure<IInstrumentMeasureReader, IScoreMeasureReader>, IScoreElementReader
     {
         /// <summary>
         /// Specifies whether the score measure is the last in the score.

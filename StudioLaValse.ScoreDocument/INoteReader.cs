@@ -5,7 +5,7 @@ namespace StudioLaValse.ScoreDocument
     /// <summary>
     /// Represents a note reader.
     /// </summary>
-    public interface INoteReader : INote
+    public interface INoteReader : INote, IScoreElementReader
     {
 
     }

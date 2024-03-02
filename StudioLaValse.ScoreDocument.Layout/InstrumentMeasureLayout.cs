@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents an instrument measure layout.
     /// </summary>
-    public class InstrumentMeasureLayout
+    public class InstrumentMeasureLayout : ILayoutElement<InstrumentMeasureLayout>
     {
         private readonly HashSet<ClefChange> _changeList = [];
 

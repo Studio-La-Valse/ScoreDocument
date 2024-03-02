@@ -4,7 +4,7 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<PackageVersion>1.0.3</PackageVersion>
+		<PackageVersion>2.0.0</PackageVersion>
 	</PropertyGroup>
 
 	<!--build-->
@@ -28,7 +28,7 @@
 	<!--meta data-->
 	<PropertyGroup>
 		<Authors>Studio La Valse</Authors>
-		<Description>The main project for creating and editing a score document.</Description>
+		<Description>The main set of interfaces for reading a score document.</Description>
 		<PackageProjectUrl>github.com/Studio-La-Valse/scoredocument</PackageProjectUrl>
 		<PackageTags>score, sheet music, editor, builder</PackageTags>
 	</PropertyGroup>
@@ -54,6 +54,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\StudioLaValse.ScoreDocument.Core\StudioLaValse.ScoreDocument.Core.csproj" />
+	  <ProjectReference Include="..\StudioLaValse.ScoreDocument.Layout\StudioLaValse.ScoreDocument.Layout.csproj" />
 	</ItemGroup>
 	
 </Project>

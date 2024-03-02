@@ -1,6 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Layout.ScoreElements;
-
-namespace StudioLaValse.ScoreDocument.Drawable.Scenes
+﻿namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
     /// <summary>
     /// A factory interface for creating a visual score measure.
@@ -18,6 +16,6 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// <param name="firstMeasure"></param>
         /// <param name="color"></param>
         /// <returns></returns>
-        BaseContentWrapper CreateContent(IScoreMeasureReader scoreMeasure, IStaffSystem staffSystem, double canvasLeft, double canvasTop, double width, bool firstMeasure, ColorARGB color);
+        BaseContentWrapper CreateContent(IScoreMeasureReader scoreMeasure, IStaffSystemReader staffSystem, double canvasLeft, double canvasTop, double width, bool firstMeasure, ColorARGB color);
     }
 }

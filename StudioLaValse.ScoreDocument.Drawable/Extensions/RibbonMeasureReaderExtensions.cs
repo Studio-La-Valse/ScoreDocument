@@ -1,7 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.Core.Primitives;
-using StudioLaValse.ScoreDocument.Core.Primitives.Extensions;
+﻿using StudioLaValse.ScoreDocument.Core.Primitives.Extensions;
 using StudioLaValse.ScoreDocument.Layout;
-using System.ComponentModel;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Extensions
 {
@@ -19,7 +17,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Extensions
         /// <returns></returns>
         public static Clef OpeningClefAtOrDefault(this IInstrumentMeasureReader ribbonMeasure, int staffIndex, IScoreLayoutDictionary scoreLayoutDictionary)
         {
-            var layout = scoreLayoutDictionary.GetOrDefault(ribbonMeasure);
+            var layout = scoreLayoutDictionary.InstrumentMeasureLayout(ribbonMeasure);
             foreach (var clefChange in layout.ClefChanges.Where(c => c.Position.Decimal == 0))
             {
                 if (clefChange.StaffIndex == staffIndex)
@@ -31,7 +29,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Extensions
             var previousMeasure = ribbonMeasure;
             while (previousMeasure.TryReadPrevious(out previousMeasure))
             {
-                var previousLayout = scoreLayoutDictionary.GetOrDefault(previousMeasure);
+                var previousLayout = scoreLayoutDictionary.InstrumentMeasureLayout(previousMeasure);
                 foreach (var clefChange in previousLayout.ClefChanges.Reverse())
                 {
                     if (clefChange.StaffIndex == staffIndex)
@@ -58,7 +56,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Extensions
         /// <returns></returns>
         public static Clef GetClef(this IInstrumentMeasureReader ribbonMeasure, int staffIndex, Position position, IScoreLayoutDictionary scoreLayoutDictionary)
         {
-            var layout = scoreLayoutDictionary.GetOrDefault(ribbonMeasure);
+            var layout = scoreLayoutDictionary.InstrumentMeasureLayout(ribbonMeasure);
             var lastClefChangeInMeasure = layout.ClefChanges
                 .Where(c => c.StaffIndex == staffIndex)
                 .Where(c => c.Position <= position)
@@ -88,7 +86,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Extensions
                 .SelectMany(e => e.ReadNotes())
                 .ToArray();
             var precedingNotesWithSamePitch = precedingNotes
-                .Where(n => scoreLayoutDictionary.GetOrDefault(n).StaffIndex == staffIndex)
+                .Where(n => scoreLayoutDictionary.NoteLayout(n).StaffIndex == staffIndex)
                 .Where(n => n.Pitch.Octave == Pitch.Octave)
                 .Where(n => n.Pitch.StepValue == Pitch.StepValue)
                 .Where(n => n.Pitch.Shift == Pitch.Shift)
@@ -102,7 +100,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Extensions
             //example An a natural should have natural if A flat came before
             //first attempt:
             var precedingNotesSameLineDifferentShift = precedingNotes
-                .Where(n => scoreLayoutDictionary.GetOrDefault(n).StaffIndex == staffIndex)
+                .Where(n => scoreLayoutDictionary.NoteLayout(n).StaffIndex == staffIndex)
                 .Where(n => n.Pitch.Shift != 0)
                 .Where(n => n.Pitch.StepValue == Pitch.StepValue)
                 .Where(n => n.Pitch.Octave == Pitch.Octave)

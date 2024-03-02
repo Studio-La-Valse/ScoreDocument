@@ -3,7 +3,7 @@
     /// <summary>
     /// The interface for a measure block chain primitive.
     /// </summary>
-    public interface IMeasureBlockChain : IUniqueScoreElement
+    public interface IMeasureBlockChain
     {
         /// <summary>
         /// The voice of the block chain.
@@ -14,7 +14,7 @@
     /// <inheritdoc/>
     public interface IMeasureBlockChain<TMeasureBlock> : IMeasureBlockChain where TMeasureBlock : IMeasureBlock
     {
-        
+
         /// <summary>
         /// Enumerates the measure blocks.
         /// </summary>

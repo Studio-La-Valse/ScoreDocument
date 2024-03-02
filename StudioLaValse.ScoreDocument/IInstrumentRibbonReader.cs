@@ -5,7 +5,7 @@ namespace StudioLaValse.ScoreDocument
     /// <summary>
     /// Represents an instrument ribbon reader.
     /// </summary>
-    public interface IInstrumentRibbonReader : IInstrumentRibbon<IInstrumentMeasureReader>, IUniqueScoreElement
+    public interface IInstrumentRibbonReader : IInstrumentRibbon<IInstrumentMeasureReader>, IScoreElementReader
     {
 
     }

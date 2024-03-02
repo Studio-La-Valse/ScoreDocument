@@ -3,7 +3,7 @@
     /// <summary>
     /// A staff system layout.
     /// </summary>
-    public class StaffSystemLayout
+    public class StaffSystemLayout : ILayoutElement<StaffSystemLayout>
     {
         /// <inheritdoc/>
         public double PaddingTop { get; set; }

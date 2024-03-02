@@ -5,7 +5,7 @@ namespace StudioLaValse.ScoreDocument.Core.Primitives
     /// <summary>
     /// Represents a primitive instrument measure.
     /// </summary>
-    public interface IInstrumentMeasure : IUniqueScoreElement
+    public interface IInstrumentMeasure
     {
         /// <summary>
         /// The measure index of the host instrument ribbon. 
@@ -33,11 +33,6 @@ namespace StudioLaValse.ScoreDocument.Core.Primitives
         /// </summary>
         /// <returns></returns>
         IEnumerable<int> ReadVoices();
-        /// <summary>
-        /// Enumerate the measure blocks with the specified voice.
-        /// </summary>
-        /// <param name="voice"></param>
-        /// <returns></returns>
     }
 
     /// <inheritdoc/>

@@ -5,13 +5,13 @@ namespace StudioLaValse.ScoreDocument.Core.Primitives
     /// <summary>
     /// Represents a primitive measure block.
     /// </summary>
-    public interface IMeasureBlock : IUniqueScoreElement
+    public interface IMeasureBlock
     {
 
     }
 
     /// <inheritdoc/>
-    public interface IMeasureBlock<TChord> : IMeasureBlock, IPositionElement where TChord : IChord 
+    public interface IMeasureBlock<TChord> : IMeasureBlock, IPositionElement where TChord : IChord
     {
         /// <summary>
         /// Enumerate the chords in the block.
@@ -20,6 +20,7 @@ namespace StudioLaValse.ScoreDocument.Core.Primitives
         IEnumerable<TChord> ReadChords();
     }
 
+    /// <inheritdoc/>
     public interface IMeasureBlock<TChord, TSelf> : IMeasureBlock<TChord>, IPositionElement where TChord : IChord
                                                                                             where TSelf : IMeasureBlock
     {

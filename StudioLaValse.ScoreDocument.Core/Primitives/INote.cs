@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a primitive note.
     /// </summary>
-    public interface INote : IPositionElement, IUniqueScoreElement
+    public interface INote : IPositionElement
     {
         /// <summary>
         /// The pitch of the note.

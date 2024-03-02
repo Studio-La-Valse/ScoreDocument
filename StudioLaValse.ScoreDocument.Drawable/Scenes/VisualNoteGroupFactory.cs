@@ -1,9 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.Core.Primitives;
-using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.Interfaces;
-using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.Models;
-using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents;
+﻿using StudioLaValse.ScoreDocument.Drawable.Private.Interfaces;
 using StudioLaValse.ScoreDocument.Layout;
-using StudioLaValse.ScoreDocument.Layout.ScoreElements;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
@@ -31,7 +27,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
             this.visualBeamBuilder = new VisualBeamBuilder();
         }
         /// <inheritdoc/>
-        public BaseContentWrapper Build(IMeasureBlockReader noteGroup, IStaffGroup staffGroup, IInstrumentMeasureReader instrumentMeasure, double canvasTopStaffGroup, double canvasLeft, double allowedSpace, ColorARGB colorARGB)
+        public BaseContentWrapper Build(IMeasureBlockReader noteGroup, IStaffGroupReader staffGroup, IInstrumentMeasureReader instrumentMeasure, double canvasTopStaffGroup, double canvasLeft, double allowedSpace, ColorARGB colorARGB)
         {
             return new VisualNoteGroup(noteGroup, staffGroup, instrumentMeasure, canvasTopStaffGroup, canvasLeft, allowedSpace, noteFactory, restFactory, visualBeamBuilder, colorARGB, scoreLayoutDictionary);
         }

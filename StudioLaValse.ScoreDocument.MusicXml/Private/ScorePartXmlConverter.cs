@@ -11,7 +11,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             this.measureConverter = measureConverter;
         }
 
-        public void Create(XElement scorePart, IInstrumentRibbonEditor ribbonEditor, Builder.IScoreLayoutDictionary scoreLayoutDictionary)
+        public void Create(XElement scorePart, IInstrumentRibbonEditor ribbonEditor, IScoreLayoutBuilder scoreLayoutBuilder)
         {
             var durationOfOneQuarter = 4;
             foreach (var element in scorePart.Elements())
@@ -20,7 +20,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                 {
                     var measureIndex = element.Attributes().Single(a => a.Name == "number").Value.ToIntOrThrow() - 1;
                     var measureToEdit = ribbonEditor.ReadMeasure(measureIndex);
-                    measureConverter.Create(element, measureToEdit, scoreLayoutDictionary, ref durationOfOneQuarter);
+                    measureConverter.Create(element, measureToEdit, scoreLayoutBuilder, ref durationOfOneQuarter);
                 }
             }
         }

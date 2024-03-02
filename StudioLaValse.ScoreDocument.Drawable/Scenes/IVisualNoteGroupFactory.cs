@@ -1,7 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Core.Primitives;
-using StudioLaValse.ScoreDocument.Layout.ScoreElements;
-
-namespace StudioLaValse.ScoreDocument.Drawable.Scenes
+﻿namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
     /// <summary>
     /// A factory interface for creating a visual note group.
@@ -19,6 +16,6 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// <param name="allowedSpace"></param>
         /// <param name="colorARGB"></param>
         /// <returns></returns>
-        BaseContentWrapper Build(IMeasureBlockReader noteGroup, IStaffGroup staffGroup, IInstrumentMeasureReader instrumentMeasure, double canvasTopStaffGroup, double canvasLeft, double allowedSpace, ColorARGB colorARGB);
+        BaseContentWrapper Build(IMeasureBlockReader noteGroup, IStaffGroupReader staffGroup, IInstrumentMeasureReader instrumentMeasure, double canvasTopStaffGroup, double canvasLeft, double allowedSpace, ColorARGB colorARGB);
     }
 }

@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a primitive instrument ribbon.
     /// </summary>
-    public interface IInstrumentRibbon : IUniqueScoreElement
+    public interface IInstrumentRibbon
     {
         /// <summary>
         /// The index of the isntrument ribbon in the score.

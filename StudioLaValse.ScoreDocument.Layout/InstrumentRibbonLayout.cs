@@ -3,7 +3,7 @@
     /// <summary>
     /// The layout of an instrument ribbon.
     /// </summary>
-    public class InstrumentRibbonLayout
+    public class InstrumentRibbonLayout : ILayoutElement<InstrumentRibbonLayout>
     {
         /// <inheritdoc/>
         public string AbbreviatedName { get; set; }

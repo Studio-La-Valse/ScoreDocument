@@ -5,7 +5,7 @@ namespace StudioLaValse.ScoreDocument
     /// <summary>
     /// Represents a chord reader.
     /// </summary>
-    public interface IChordReader : IChord<INoteReader>, IPositionElement, IUniqueScoreElement
+    public interface IChordReader : IChord<INoteReader>, IPositionElement, IScoreElementReader
     {
         /// <summary>
         /// Reads the contents of the chord.

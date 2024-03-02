@@ -1,14 +1,11 @@
-﻿using StudioLaValse.ScoreDocument.Core;
-using StudioLaValse.ScoreDocument.Core.Primitives;
-using System.Diagnostics.CodeAnalysis;
-using System.Xml.Linq;
+﻿using StudioLaValse.ScoreDocument.Core.Primitives;
 
 namespace StudioLaValse.ScoreDocument
 {
     /// <summary>
     /// Represents an instrument measure reader.
     /// </summary>
-    public interface IInstrumentMeasureReader : IInstrumentMeasure<IMeasureBlockChainReader, IInstrumentMeasureReader>, IUniqueScoreElement
+    public interface IInstrumentMeasureReader : IInstrumentMeasure<IMeasureBlockChainReader, IInstrumentMeasureReader>, IScoreElementReader
     {
 
     }

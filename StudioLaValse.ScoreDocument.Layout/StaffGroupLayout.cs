@@ -3,7 +3,7 @@
     /// <summary>
     /// The layout of a staff group.
     /// </summary>
-    public class StaffGroupLayout
+    public class StaffGroupLayout : ILayoutElement<StaffGroupLayout>
     {
         /// <inheritdoc/>
         public double DistanceToNext { get; set; }

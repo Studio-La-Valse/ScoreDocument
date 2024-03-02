@@ -1,7 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Core.Primitives;
-using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents;
-
-namespace StudioLaValse.ScoreDocument.Drawable.Scenes
+﻿namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
     /// <summary>
     /// The default implementation of the visual rest factory.
@@ -19,7 +16,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
             this.selection = selection;
         }
         /// <inheritdoc/>
-        public BaseContentWrapper Build(IChord note, double canvasLeft, double canvasTop, double scale, ColorARGB color)
+        public BaseContentWrapper Build(IChordReader note, double canvasLeft, double canvasTop, double scale, ColorARGB color)
         {
             return new VisualRest(note, canvasLeft, canvasTop, scale, color, selection);
         }

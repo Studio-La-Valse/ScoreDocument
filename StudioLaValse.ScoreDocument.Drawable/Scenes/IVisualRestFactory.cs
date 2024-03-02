@@ -1,6 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Core.Primitives;
-
-namespace StudioLaValse.ScoreDocument.Drawable.Scenes
+﻿namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
     /// <summary>
     /// A factory interface for creating a visual rest.
@@ -16,6 +14,6 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// <param name="scale"></param>
         /// <param name="color"></param>
         /// <returns></returns>
-        BaseContentWrapper Build(IChord element, double canvasLeft, double canvasTop, double scale, ColorARGB color);
+        BaseContentWrapper Build(IChordReader element, double canvasLeft, double canvasTop, double scale, ColorARGB color);
     }
 }

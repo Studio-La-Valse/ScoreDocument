@@ -1,24 +1,25 @@
-﻿using StudioLaValse.Key;
-using StudioLaValse.ScoreDocument.Core;
-using StudioLaValse.ScoreDocument.Editor;
-using StudioLaValse.ScoreDocument.Extensions;
-using StudioLaValse.ScoreDocument.Layout;
+﻿using StudioLaValse.ScoreDocument.Core.Primitives.Extensions;
 using System.Xml.Linq;
 
 namespace StudioLaValse.ScoreDocument.MusicXml.Private
 {
     internal class BlockChainXmlConverter
     {
-        public void ProcessElements(IEnumerable<XElement> elements, IMeasureBlockChainEditor editor, int divisionsOfOneQuarter)
+        public BlockChainXmlConverter()
+        {
+
+        }
+
+        public void ProcessElements(IEnumerable<XElement> elements, IMeasureBlockChainEditor editor, IScoreLayoutBuilder scoreLayoutBuilder, int divisionsOfOneQuarter)
         {
             var position = new Position(0, 4);
             foreach (var element in elements)
             {
-                ProcessMeasureElement(element, editor, divisionsOfOneQuarter, ref position);
+                ProcessMeasureElement(element, editor, scoreLayoutBuilder, divisionsOfOneQuarter, ref position);
             }
         }
 
-        private void ProcessMeasureElement(XElement measureElement, IMeasureBlockChainEditor measureBlockChain, int divisionsOfOneQuarter, ref Position position)
+        private void ProcessMeasureElement(XElement measureElement, IMeasureBlockChainEditor measureBlockChain, IScoreLayoutBuilder scoreLayoutBuilder, int divisionsOfOneQuarter, ref Position position)
         {
             if (!measureElement.IsNoteOrForwardOrBackup())
             {
@@ -47,10 +48,10 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             }
 
             var _position = new Position(position.Numinator, position.Denominator);
-            var measureBlock = measureBlockChain.EditBlocks().First(b => b.ContainsPosition(_position));
+            var measureBlock = measureBlockChain.ReadBlocks().First(b => b.ContainsPosition(_position));
 
             //create a new chord in the block if the no 'chord' attribute is specified, or if there are no chords in the block.
-            if (!chord || !measureBlock.EditChords().Any())
+            if (!chord || !measureBlock.ReadChords().Any())
             {
                 if (displayDuration is null)
                 {
@@ -64,14 +65,15 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             }
 
             //Always add to the last chord in the block
-            var chordDocument = measureBlock.EditChords().Last();
+            var chordDocument = measureBlock.ReadChords().Last();
 
             if (pitch is not null)
             {
                 chordDocument.Add(pitch);
-                var note = chordDocument.EditNotes().Single(n => n.Pitch.Equals(pitch));
-                var layout = new MeasureElementLayout(staff ?? 0);
-                note.ApplyLayout(layout);
+                var note = chordDocument.ReadNotes().Single(n => n.Pitch.Equals(pitch));
+                var layout = scoreLayoutBuilder.NoteLayout(note);
+                layout.StaffIndex = staff ?? 0;
+                scoreLayoutBuilder.Apply(note, layout);
             }
 
             if (!grace)
@@ -120,7 +122,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                 var dots = measureElement.Descendants().Where(d => d.Name == "dot").Count();
                 displayDuration = new RythmicDuration(type, dots);
                 actualDuration = displayDuration;
-                if(tupletInformation is not null)
+                if (tupletInformation is not null)
                 {
                     actualDuration = tupletInformation.ToActualDuration(displayDuration);
                 }

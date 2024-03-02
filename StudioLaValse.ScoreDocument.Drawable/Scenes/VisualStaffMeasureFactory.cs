@@ -1,4 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents;
+﻿using StudioLaValse.ScoreDocument.Layout;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
@@ -9,21 +9,24 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
     {
         private readonly ISelection<IUniqueScoreElement> selection;
         private readonly IVisualNoteGroupFactory noteGroupFactory;
+        private readonly IScoreLayoutProvider scoreLayoutDictionary;
 
         /// <summary>
         /// The default constructor.
         /// </summary>
         /// <param name="selection"></param>
         /// <param name="noteGroupFactory"></param>
-        public VisualStaffMeasureFactory(ISelection<IUniqueScoreElement> selection, IVisualNoteGroupFactory noteGroupFactory)
+        /// <param name="scoreLayoutDictionary"></param>
+        public VisualStaffMeasureFactory(ISelection<IUniqueScoreElement> selection, IVisualNoteGroupFactory noteGroupFactory, IScoreLayoutProvider scoreLayoutDictionary)
         {
             this.selection = selection;
             this.noteGroupFactory = noteGroupFactory;
+            this.scoreLayoutDictionary = scoreLayoutDictionary;
         }
         /// <inheritdoc/>
-        public BaseContentWrapper CreateContent(IInstrumentMeasureReader source, IStaffGroupReader staffGroup, double canvasTop, double canvasLeft, double width, double paddingLeft, double paddingRight, ColorARGB color)
+        public BaseContentWrapper CreateContent(IInstrumentMeasureReader source, IStaffGroupReader staffGroup, double canvasTop, double canvasLeft, double width, double paddingLeft, double paddingRight, bool firstMeasure, ColorARGB color)
         {
-            return new VisualStaffGroupMeasure(source, staffGroup, canvasTop, canvasLeft, width, paddingLeft, paddingRight, color, noteGroupFactory, selection);
+            return new VisualStaffGroupMeasure(source, staffGroup, canvasTop, canvasLeft, width, paddingLeft, paddingRight, firstMeasure, color, noteGroupFactory, selection, scoreLayoutDictionary);
         }
     }
 }

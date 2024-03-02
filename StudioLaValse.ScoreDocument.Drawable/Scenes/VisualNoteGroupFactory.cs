@@ -1,5 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.Models;
-using StudioLaValse.ScoreDocument.Drawable.Private.Visuals.VisualParents;
+﻿using StudioLaValse.ScoreDocument.Drawable.Private.Interfaces;
+using StudioLaValse.ScoreDocument.Layout;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
@@ -10,6 +10,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
     {
         private readonly IVisualNoteFactory noteFactory;
         private readonly IVisualRestFactory restFactory;
+        private readonly IScoreLayoutProvider scoreLayoutDictionary;
         private readonly IVisualBeamBuilder visualBeamBuilder;
 
         /// <summary>
@@ -17,16 +18,18 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// </summary>
         /// <param name="noteFactory"></param>
         /// <param name="restFactory"></param>
-        public VisualNoteGroupFactory(IVisualNoteFactory noteFactory, IVisualRestFactory restFactory)
+        /// <param name="scoreLayoutDictionary"></param>
+        public VisualNoteGroupFactory(IVisualNoteFactory noteFactory, IVisualRestFactory restFactory, IScoreLayoutProvider scoreLayoutDictionary)
         {
             this.noteFactory = noteFactory;
             this.restFactory = restFactory;
+            this.scoreLayoutDictionary = scoreLayoutDictionary;
             this.visualBeamBuilder = new VisualBeamBuilder();
         }
         /// <inheritdoc/>
-        public BaseContentWrapper Build(IMeasureBlockReader noteGroup, IStaffGroupReader staffGroup, double canvasTopStaffGroup, double canvasLeft, double allowedSpace, ColorARGB colorARGB)
+        public BaseContentWrapper Build(IMeasureBlockReader noteGroup, IStaffGroupReader staffGroup, IInstrumentMeasureReader instrumentMeasure, double canvasTopStaffGroup, double canvasLeft, double allowedSpace, ColorARGB colorARGB)
         {
-            return new VisualNoteGroup(noteGroup, staffGroup, canvasTopStaffGroup, canvasLeft, allowedSpace, noteFactory, restFactory, visualBeamBuilder, colorARGB);
+            return new VisualNoteGroup(noteGroup, staffGroup, instrumentMeasure, canvasTopStaffGroup, canvasLeft, allowedSpace, noteFactory, restFactory, visualBeamBuilder, colorARGB, scoreLayoutDictionary);
         }
     }
 }

@@ -15,8 +15,9 @@
         /// <param name="width"></param>
         /// <param name="paddingLeft"></param>
         /// <param name="paddingRight"></param>
+        /// <param name="firstMeasure"></param>
         /// <param name="color"></param>
         /// <returns></returns>
-        BaseContentWrapper CreateContent(IInstrumentMeasureReader source, IStaffGroupReader staffGroup, double canvasTop, double canvasLeft, double width, double paddingLeft, double paddingRight, ColorARGB color);
+        BaseContentWrapper CreateContent(IInstrumentMeasureReader source, IStaffGroupReader staffGroup, double canvasTop, double canvasLeft, double width, double paddingLeft, double paddingRight, bool firstMeasure, ColorARGB color);
     }
 }

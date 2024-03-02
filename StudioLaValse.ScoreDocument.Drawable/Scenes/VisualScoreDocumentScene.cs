@@ -22,16 +22,13 @@
         /// <inheritdoc/>
         public override IEnumerable<BaseContentWrapper> GetContentWrappers()
         {
-            return new List<BaseContentWrapper>()
-            {
-                sceneFactory.CreateContent(scoreDocumentReader)
-            };
+            yield return sceneFactory.CreateContent(scoreDocumentReader);
         }
 
         /// <inheritdoc/>
         public override IEnumerable<BaseDrawableElement> GetDrawableElements()
         {
-            return new List<BaseDrawableElement>();
+            yield break;
         }
     }
 }

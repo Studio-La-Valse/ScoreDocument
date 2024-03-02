@@ -8,7 +8,6 @@
             "**/*.csproj"
           ],
           "exclude":[
-            "StudioLaValse.ScoreDocument.Example.WPF/*",
             "StudioLaValse.ScoreDocument.Tests/*"
           ]
         }

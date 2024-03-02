@@ -12,8 +12,10 @@
         /// <param name="canvasLeft"></param>
         /// <param name="canvasTop"></param>
         /// <param name="scale"></param>
+        /// <param name="offsetDots"></param>
+        /// <param name="accidental"></param>
         /// <param name="color"></param>
         /// <returns></returns>
-        BaseContentWrapper Build(INoteReader note, double canvasLeft, double canvasTop, double scale, ColorARGB color);
+        BaseContentWrapper Build(INoteReader note, double canvasLeft, double canvasTop, double scale, bool offsetDots, Accidental? accidental, ColorARGB color);
     }
 }

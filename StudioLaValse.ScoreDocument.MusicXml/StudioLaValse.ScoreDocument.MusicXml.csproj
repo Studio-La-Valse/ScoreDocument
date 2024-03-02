@@ -4,10 +4,13 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	  <PackageVersion>1.0.3</PackageVersion>
+	  <PackageVersion>2.0.0</PackageVersion>
   </PropertyGroup>
 	
   <ItemGroup>
+    <ProjectReference Include="..\StudioLaValse.ScoreDocument.Builder\StudioLaValse.ScoreDocument.Builder.csproj" />
+    <ProjectReference Include="..\StudioLaValse.ScoreDocument.Core\StudioLaValse.ScoreDocument.Core.csproj" />
+    <ProjectReference Include="..\StudioLaValse.ScoreDocument.Layout\StudioLaValse.ScoreDocument.Layout.csproj" />
     <ProjectReference Include="..\StudioLaValse.ScoreDocument\StudioLaValse.ScoreDocument.csproj" />
   </ItemGroup>
 
@@ -31,7 +34,7 @@
 	<!--meta data-->
 	<PropertyGroup>
 		<Authors>Studio La Valse</Authors>
-		<Description>Provides extensions to the score document editor, so that it may be drawn to a canvas.</Description>
+		<Description>Provides extensions to the score document editor, so that it may be built from a musicxml file.</Description>
 		<PackageProjectUrl>github.com/Studio-La-Valse/scoredocument</PackageProjectUrl>
 		<PackageTags>score, sheet music, editor, builder</PackageTags>
 	</PropertyGroup>

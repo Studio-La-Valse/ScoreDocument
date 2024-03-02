@@ -4,16 +4,12 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<PackageVersion>1.0.3</PackageVersion>
+		<PackageVersion>2.0.0</PackageVersion>
 	</PropertyGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\StudioLaValse.ScoreDocument\StudioLaValse.ScoreDocument.csproj" />
-	</ItemGroup>
 
 	<!--build-->
 	<PropertyGroup>
-		<EnablePackageValidation>true</EnablePackageValidation>
+		<EnablePackageValidation>False</EnablePackageValidation>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -25,7 +21,7 @@
 
 	<PropertyGroup>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<TreatWarningsAsErrors>True</TreatWarningsAsErrors>
 	</PropertyGroup>
 
 	<!--meta data-->
@@ -53,6 +49,10 @@
 
 	<ItemGroup>
 		<None Include="../README.md" Pack="true" PackagePath="" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\StudioLaValse.ScoreDocument.Core\StudioLaValse.ScoreDocument.Core.csproj" />
 	</ItemGroup>
 
 </Project>

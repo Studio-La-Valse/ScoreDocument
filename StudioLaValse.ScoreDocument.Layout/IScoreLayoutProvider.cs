@@ -21,6 +21,14 @@ namespace StudioLaValse.ScoreDocument.Layout
         /// <typeparam name="TElement"></typeparam>
         /// <param name="element"></param>
         /// <returns></returns>
+        PageLayout PageLayout<TElement>(TElement element) where TElement : IPage, IScoreEntity;
+
+        /// <summary>
+        /// Get the layout for the specified element.
+        /// </summary>
+        /// <typeparam name="TElement"></typeparam>
+        /// <param name="element"></param>
+        /// <returns></returns>
         ChordLayout ChordLayout<TElement>(TElement element) where TElement : IChord, IScoreEntity;
         /// <summary>
         /// Get the layout for the specified element.

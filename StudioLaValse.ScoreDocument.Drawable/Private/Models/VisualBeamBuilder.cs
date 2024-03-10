@@ -1,5 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers;
-using StudioLaValse.ScoreDocument.Drawable.Private.DrawableElements;
+﻿using StudioLaValse.ScoreDocument.Drawable.Private.DrawableElements;
 using StudioLaValse.ScoreDocument.Drawable.Private.Interfaces;
 using System.Diagnostics;
 
@@ -23,25 +22,22 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
         {
             if (!stems.Any() || !stems.First().Chord.ReadBeamTypes().Any())
             {
-                return new List<BaseDrawableElement>();
+                return [];
             }
 
-            var groupUp = stems.First().VisuallyUp;
+            bool groupUp = stems.First().VisuallyUp;
 
-            var beamThickness = 0.8 * scale;
-            var beamSpacing = 0.2 * scale;
+            double beamThickness = 0.8 * scale;
+            double beamSpacing = 0.2 * scale;
 
-            if (stems.Count() == 1)
-            {
-                return new List<BaseDrawableElement>() { AsFlag(stems.First(), scale, color) };
-            }
-
-            return AsGroup(stems, beamDefinition, beamSpacing, beamThickness, groupUp, color);
+            return stems.Count() == 1
+                ? ([AsFlag(stems.First(), scale, color)])
+                : AsGroup(stems, beamDefinition, beamSpacing, beamThickness, groupUp, color);
         }
 
         public DrawableScoreGlyph AsFlag(VisualStem stem, double scale, ColorARGB color)
         {
-            var flags = stem.VisuallyUp ?
+            Glyph[] flags = stem.VisuallyUp ?
                 new[]
                 {
                     GlyphLibrary.FlagEighthUp,
@@ -59,16 +55,16 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
 
             DrawableScoreGlyph flag = null!;
 
-            var flagIndex = -1;
+            int flagIndex = -1;
 
             for (PowerOfTwo i = 8; i <= 64; i = i.Double())
             {
                 flagIndex++;
 
-                var beam = GetLayout(stem).ReadBeamType(i);
-                if (beam is not null && beam == BeamType.Flag)
+                BeamType? beam = GetLayout(stem).ReadBeamType(i);
+                if (beam is not null and BeamType.Flag)
                 {
-                    var glyph = flags[flagIndex];
+                    Glyph glyph = flags[flagIndex];
 
                     glyph.Scale = scale;
 
@@ -80,33 +76,28 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
                 }
             }
 
-            if (flag is null)
-            {
-                throw new UnreachableException("Invalid beaming information.");
-            }
-
-            return flag;
+            return flag is null ? throw new UnreachableException("Invalid beaming information.") : flag;
         }
 
         public IEnumerable<DrawableTrapezoid> AsGroup(IEnumerable<VisualStem> stems, Ruler beamDefinition, double beamSpacing, double beamThickness, bool groupUp, ColorARGB color)
         {
-            var beams = new List<DrawableTrapezoid>();
+            List<DrawableTrapezoid> beams = [];
 
             for (PowerOfTwo i = 8; i <= 128; i = i.Double())
             {
-                if (!PowerOfTwo.TryCreate(i, out var powerOfTwo))
+                if (!PowerOfTwo.TryCreate(i, out PowerOfTwo? powerOfTwo))
                 {
                     throw new UnreachableException();
                 }
 
-                var beamIndex = powerOfTwo.Power - 3;
+                int beamIndex = powerOfTwo.Power - 3;
 
 
                 VisualStem? openingStem = null;
 
-                foreach (var stem in stems)
+                foreach (VisualStem stem in stems)
                 {
-                    var beamType = GetLayout(stem).ReadBeamType(i);
+                    BeamType? beamType = GetLayout(stem).ReadBeamType(i);
                     if (beamType is null)
                     {
                         continue;
@@ -158,8 +149,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
 
         public static DrawableTrapezoid BetweenTwoStems(VisualStem left, VisualStem right, int beamIndex, Ruler beamDefinition, double beamSpacing, double beamThickness, bool groupUp, ColorARGB color)
         {
-            var stemUp = left.VisuallyUp;
-            var ruler = stemUp ?
+            bool stemUp = left.VisuallyUp;
+            Ruler ruler = stemUp ?
                 //draw beams downwards
                 beamDefinition.OffsetY(beamIndex * (beamSpacing + beamThickness)) :
                 //draw beams upwards
@@ -172,22 +163,22 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
                     ruler.OffsetY(beamThickness * -1);
             }
 
-            var thickness = stemUp ?
+            double thickness = stemUp ?
                 beamThickness :
                 beamThickness * -1;
 
-            var startPoint = ruler.IntersectVerticalRay(left.End);
+            XY startPoint = ruler.IntersectVerticalRay(left.End);
 
-            var endPoint = ruler.IntersectVerticalRay(right.End);
+            XY endPoint = ruler.IntersectVerticalRay(right.End);
 
             return new DrawableTrapezoid(startPoint, endPoint, thickness, color);
         }
 
         public static DrawableTrapezoid AsHookEnd(VisualStem stem, double length, int beamIndex, Ruler beamDefinition, double beamSpacing, double beamThickness, bool GroupUp, ColorARGB color)
         {
-            var stemUp = stem.VisuallyUp;
+            bool stemUp = stem.VisuallyUp;
 
-            var ruler = stemUp ?
+            Ruler ruler = stemUp ?
                 //draw beams downwards
                 beamDefinition.OffsetY(beamIndex * (beamSpacing + beamThickness)) :
                 //draw beams upwards
@@ -200,22 +191,22 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
                     ruler.OffsetY(beamThickness * -1);
             }
 
-            var thickness = stemUp ?
+            double thickness = stemUp ?
                 beamThickness :
                 beamThickness * -1;
 
-            var endPoint = ruler.IntersectVerticalRay(stem.End);
+            XY endPoint = ruler.IntersectVerticalRay(stem.End);
 
-            var startPoint = endPoint.Move(length * -1, ruler.Angle);
+            XY startPoint = endPoint.Move(length * -1, ruler.Angle);
 
             return new DrawableTrapezoid(startPoint, endPoint, thickness, color);
         }
 
         public static DrawableTrapezoid AsHookStart(VisualStem stem, double length, int beamIndex, Ruler beamDefinition, double beamSpacing, double beamThickness, bool groupUp, ColorARGB color)
         {
-            var stemUp = stem.VisuallyUp;
+            bool stemUp = stem.VisuallyUp;
 
-            var ruler = stemUp ?
+            Ruler ruler = stemUp ?
                 //draw beams downwards
                 beamDefinition.OffsetY(beamIndex * (beamSpacing + beamThickness)) :
                 //draw beams upwards
@@ -228,13 +219,13 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
                     ruler.OffsetY(beamThickness * -1);
             }
 
-            var thickness = stemUp ?
+            double thickness = stemUp ?
                 beamThickness :
                 beamThickness * -1;
 
-            var startPoint = ruler.IntersectVerticalRay(stem.End);
+            XY startPoint = ruler.IntersectVerticalRay(stem.End);
 
-            var endPoint = startPoint.Move(length, ruler.Angle);
+            XY endPoint = startPoint.Move(length, ruler.Angle);
 
             return new DrawableTrapezoid(startPoint, endPoint, thickness, color);
         }

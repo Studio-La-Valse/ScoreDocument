@@ -19,7 +19,7 @@ namespace StudioLaValse.ScoreDocument.Core
         {
             get
             {
-                var value = 1;
+                int value = 1;
 
                 for (int i = 0; i < Power; i++)
                 {
@@ -58,7 +58,7 @@ namespace StudioLaValse.ScoreDocument.Core
                 return false;
             }
 
-            var _val = 1;
+            int _val = 1;
 
             int power = 0;
 
@@ -113,19 +113,18 @@ namespace StudioLaValse.ScoreDocument.Core
         /// Cast the power of two to an integer value.
         /// </summary>
         /// <param name="p"></param>
-        public static implicit operator int(PowerOfTwo p) => p.Value;
+        public static implicit operator int(PowerOfTwo p)
+        {
+            return p.Value;
+        }
+
         /// <summary>
         /// Cast the integer value to a power of two. Throws <see cref="InvalidCastException"/> if the number cannot be casted.
         /// </summary>
         /// <param name="i"></param>
         public static implicit operator PowerOfTwo(int i)
         {
-            if (TryCreate(i, out var result))
-            {
-                return result;
-            }
-
-            throw new InvalidCastException();
+            return TryCreate(i, out PowerOfTwo? result) ? result : throw new InvalidCastException();
         }
 
         /// <inheritdoc/>
@@ -137,12 +136,7 @@ namespace StudioLaValse.ScoreDocument.Core
         /// <inheritdoc/>
         public bool Equals(PowerOfTwo? other)
         {
-            if (other == null)
-            {
-                return false;
-            }
-
-            return other.Value == this.Value;
+            return other != null && other.Value == Value;
         }
 
         /// <inheritdoc/>
@@ -160,12 +154,7 @@ namespace StudioLaValse.ScoreDocument.Core
         /// <inhertdoc/>
         public bool Equals(PowerOfTwo? x, PowerOfTwo? y)
         {
-            if (x is null)
-            {
-                return false;
-            }
-
-            return x.Equals(y);
+            return x is not null && x.Equals(y);
         }
 
         /// <inhertdoc/>

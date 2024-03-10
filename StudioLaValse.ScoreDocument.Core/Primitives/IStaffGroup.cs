@@ -18,20 +18,27 @@
     /// <summary>
     /// Represents a staff group reader.
     /// </summary>
-    public interface IStaffGroup<TInstrumentRibbon, TInstrumentMeasure, TStaff> : IStaffGroup where TInstrumentRibbon : IInstrumentRibbon<TInstrumentMeasure>
-                                                                                              where TInstrumentMeasure : IInstrumentMeasure
-                                                                                              where TStaff : IStaff
+    public interface IStaffGroup<TStaff> : IStaffGroup where TStaff : IStaff
+    {
+        /// <summary>
+        /// Reads the individual staves in the staffgroup.
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<TStaff> EnumerateStaves(int numberOfStaves);
+    }
+
+    /// <summary>
+    /// Represents a staff group reader.
+    /// </summary>
+    public interface IStaffGroup<TInstrumentRibbon, TInstrumentMeasure, TStaff> : IStaffGroup<TStaff> where TInstrumentRibbon : IInstrumentRibbon<TInstrumentMeasure>
+                                                                                                      where TInstrumentMeasure : IInstrumentMeasure
+                                                                                                      where TStaff : IStaff
     {
         /// <summary>
         /// Reads the host instrument ribbon.
         /// </summary>
         /// <returns></returns>
         TInstrumentRibbon InstrumentRibbon { get; }
-        /// <summary>
-        /// Reads the individual staves in the staffgroup.
-        /// </summary>
-        /// <returns></returns>
-        IEnumerable<TStaff> EnumerateStaves(int numberOfStaves);
         /// <summary>
         /// Reads the instrument measures in the staff group.
         /// </summary>

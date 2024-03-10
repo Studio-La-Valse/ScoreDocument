@@ -1,4 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Core.Primitives;
+using StudioLaValse.ScoreDocument.Layout.Templates;
 
 namespace StudioLaValse.ScoreDocument.Layout
 {
@@ -7,30 +8,12 @@ namespace StudioLaValse.ScoreDocument.Layout
     /// </summary>
     public class ScoreDocumentLayout : ILayoutElement<ScoreDocumentLayout>
     {
-        /// <inheritdoc/>
-        public string Title { get; set; }
-        /// <inheritdoc/>
-        public string SubTitle { get; set; }
-        /// <inheritdoc/>
-        public Func<IEnumerable<IScoreMeasure>, bool> BreakSystem { get; set; }
-        /// <inheritdoc/>
-        public PageSize PageSize { get; set; }
+        private readonly ScoreDocumentStyleTemplate styleTemplate;
 
 
-
-        /// <summary>
-        /// Create a new layout.
-        /// </summary>
-        /// <param name="title"></param>
-        /// <param name="subTitle"></param>
-        /// <param name="breakSystem"></param>
-        /// <param name="pageSize"></param>
-        public ScoreDocumentLayout(string title = "", string subTitle = "", Func<IEnumerable<IScoreMeasure>, bool>? breakSystem = null, PageSize? pageSize = null)
+        public ScoreDocumentLayout(ScoreDocumentStyleTemplate styleTemplate)
         {
-            Title = title;
-            SubTitle = subTitle;
-            BreakSystem = breakSystem ??= e => false;
-            PageSize = pageSize ?? PageSize.A4;
+            this.styleTemplate = styleTemplate;
         }
 
 
@@ -38,7 +21,8 @@ namespace StudioLaValse.ScoreDocument.Layout
         /// <inheritdoc/>
         public ScoreDocumentLayout Copy()
         {
-            return new ScoreDocumentLayout(Title, SubTitle, BreakSystem);
+            var copy = new ScoreDocumentLayout(styleTemplate);
+            return copy;
         }
     }
 }

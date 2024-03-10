@@ -16,9 +16,9 @@
     }
 
     /// <inheritdoc/>
-    public interface IScoreDocument<TScoreMeasure, TRibbon, TStaffSystem> : IScoreDocument where TScoreMeasure : IScoreMeasure
-                                                                                           where TRibbon : IInstrumentRibbon
-                                                                                           where TStaffSystem : IStaffSystem
+    public interface IScoreDocument<TScoreMeasure, TRibbon, TPage> : IScoreDocument where TScoreMeasure : IScoreMeasure
+                                                                                    where TRibbon : IInstrumentRibbon
+                                                                                    where TPage : IPage
     {
         /// <summary>
         /// Enumerates the score measures in the score.
@@ -45,9 +45,9 @@
         /// <returns></returns>
         TRibbon ReadInstrumentRibbon(int indexInScore);
         /// <summary>
-        /// Enumerates the staff systems.
+        /// Enumerate the pages of the document.
         /// </summary>
         /// <returns></returns>
-        IEnumerable<TStaffSystem> EnumerateStaffSystems();
+        IEnumerable<TPage> EnumeratePages();
     }
 }

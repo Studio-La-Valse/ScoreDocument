@@ -1,8 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Drawable.Extensions;
-using StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers;
-using StudioLaValse.ScoreDocument.Drawable.Private.Interfaces;
-using StudioLaValse.ScoreDocument.Drawable.Private.Models;
-using StudioLaValse.ScoreDocument.Layout;
+﻿using StudioLaValse.ScoreDocument.Drawable.Private.Interfaces;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
@@ -41,37 +37,37 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
         public IEnumerable<BaseContentWrapper> Create()
         {
-            var chords = measureBlock.ReadChords().ToArray();
+            IChordReader[] chords = measureBlock.ReadChords().ToArray();
             if (chords.Length == 0)
             {
                 yield break;
             }
 
-            var note = GlyphLibrary.NoteHeadBlack;
+            Glyph note = GlyphLibrary.NoteHeadBlack;
             note.Scale = 1;
 
-            var canvasLeft = this.canvasLeft;
-            var noteWidth = note.Width;
-            var firstChord = chords.First();
-            var firstStemUp = Layout.StemLength > 0;
-            var firstStemOrigin = ConstructStemOrigin(firstChord, staffGroup, canvasTopStaffGroup, canvasLeft, firstStemUp, noteWidth);
-            var firstStemTip = new XY(firstStemOrigin.X, firstStemOrigin.Y + Layout.StemLength);
-            var beamDefinition = new Ruler(firstStemTip, 0);
-            var stems = new List<VisualStem>();
-            var groupLength = chords.Select(c => c.RythmicDuration).Sum().Decimal;
-            foreach (var chord in chords)
+            double canvasLeft = this.canvasLeft;
+            double noteWidth = note.Width;
+            IChordReader firstChord = chords.First();
+            bool firstStemUp = Layout.StemLength.Value > 0;
+            XY firstStemOrigin = ConstructStemOrigin(firstChord, staffGroup, canvasTopStaffGroup, canvasLeft, firstStemUp, noteWidth);
+            XY firstStemTip = new(firstStemOrigin.X, firstStemOrigin.Y + Layout.StemLength.Value);
+            Ruler beamDefinition = new(firstStemTip, Layout.BeamAngle.Value);
+            List<VisualStem> stems = [];
+            decimal groupLength = chords.Select(c => c.RythmicDuration).Sum().Decimal;
+            foreach (IChordReader? chord in chords)
             {
                 yield return new VisualChord(chord, canvasLeft, canvasTopStaffGroup, staffGroup, instrumentMeasure, noteFactory, restFactory, colorARGB, scoreLayoutDictionary);
 
                 if (chord.ReadNotes().Any(note => note.RythmicDuration.Decimal <= 0.5M))
                 {
-                    var chordOrigin = ConstructChordOrigin(chord, staffGroup, canvasTopStaffGroup, canvasLeft, true);
-                    var stemIntersection = beamDefinition.IntersectVerticalRay(chordOrigin);
-                    var stemUp = stemIntersection.Y < chordOrigin.Y;
-                    var stemOrigin = ConstructStemOrigin(chord, staffGroup, canvasTopStaffGroup, canvasLeft, stemUp, noteWidth);
+                    XY chordOrigin = ConstructChordOrigin(chord, staffGroup, canvasTopStaffGroup, canvasLeft, true);
+                    XY stemIntersection = beamDefinition.IntersectVerticalRay(chordOrigin);
+                    bool stemUp = stemIntersection.Y < chordOrigin.Y;
+                    XY stemOrigin = ConstructStemOrigin(chord, staffGroup, canvasTopStaffGroup, canvasLeft, stemUp, noteWidth);
                     stemIntersection = beamDefinition.IntersectVerticalRay(stemOrigin);
 
-                    var visualStem = new VisualStem(stemOrigin, stemIntersection, chord, ColorARGB.Black);
+                    VisualStem visualStem = new(stemOrigin, stemIntersection, chord, ColorARGB.Black);
                     stems.Add(visualStem);
                 }
 
@@ -83,8 +79,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
         public XY ConstructStemOrigin(IChordReader chord, IStaffGroupReader staffGroup, double staffGroupCanvasTop, double chordCanvasLeft, bool stemUp, double noteWidth)
         {
-            var chordOrigin = ConstructChordOrigin(chord, staffGroup, staffGroupCanvasTop, chordCanvasLeft, stemUp);
-            var offset = stemUp ?
+            XY chordOrigin = ConstructChordOrigin(chord, staffGroup, staffGroupCanvasTop, chordCanvasLeft, stemUp);
+            double offset = stemUp ?
                 noteWidth / 2 :
                 -noteWidth / 2;
 
@@ -93,32 +89,34 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
         public XY ConstructChordOrigin(IChordReader chord, IStaffGroupReader staffGroup, double staffGroupCanvasTop, double chordCanvasLeft, bool stemUp)
         {
-            var staffGroupLayout = scoreLayoutDictionary.StaffGroupLayout(staffGroup);
+            StaffGroupLayout staffGroupLayout = scoreLayoutDictionary.StaffGroupLayout(staffGroup);
 
             if (!chord.ReadNotes().Any())
             {
-                var line = 4;
-                var heightOnCanvas = staffGroup.EnumerateStaves(staffGroupLayout.NumberOfStaves).First().HeightFromLineIndex(staffGroupCanvasTop, line, scoreLayoutDictionary);
+                int line = 4;
+                var lineSpacing = scoreLayoutDictionary.StaffGroupLayout(staffGroup).LineSpacing.Value;
+                double heightOnCanvas = staffGroup.EnumerateStaves(1).First().HeightFromLineIndex(staffGroupCanvasTop, line, lineSpacing);
                 return new XY(chordCanvasLeft, heightOnCanvas);
             }
 
-            var notesFromVisualHighToLow = chord
+            IOrderedEnumerable<INoteReader> notesFromVisualHighToLow = chord
                 .ReadNotes()
                 .OrderBy(note => scoreLayoutDictionary.NoteLayout(note).StaffIndex)
                 .ThenByDescending(n => n.Pitch.IndexOnKlavier);
 
-            var anchorNote = stemUp ?
+            INoteReader anchorNote = stemUp ?
                 notesFromVisualHighToLow.Last() :
                 notesFromVisualHighToLow.First();
 
-            var noteLayout = scoreLayoutDictionary.NoteLayout(anchorNote);
-            var clef = instrumentMeasure.GetClef(noteLayout.StaffIndex, anchorNote.Position, scoreLayoutDictionary);
-            var staff = staffGroup.EnumerateStaves(staffGroupLayout.NumberOfStaves).ElementAt(scoreLayoutDictionary.NoteLayout(anchorNote).StaffIndex);
-            var heightOriginOnCanvas = staffGroup.HeightOnCanvas(staffGroupCanvasTop, noteLayout.StaffIndex, clef.LineIndexAtPitch(anchorNote.Pitch), scoreLayoutDictionary);
+            NoteLayout noteLayout = scoreLayoutDictionary.NoteLayout(anchorNote);
+            Clef clef = instrumentMeasure.GetClef(noteLayout.StaffIndex, anchorNote.Position, scoreLayoutDictionary);
+            int noteStaffIndex = scoreLayoutDictionary.NoteLayout(anchorNote).StaffIndex;
+            IStaffReader staff = staffGroup.EnumerateStaves(noteStaffIndex + 1).ElementAt(noteStaffIndex);
+            double heightOriginOnCanvas = staffGroup.HeightOnCanvas(staffGroupCanvasTop, noteLayout.StaffIndex, clef.LineIndexAtPitch(anchorNote.Pitch), scoreLayoutDictionary);
             heightOriginOnCanvas += stemUp ?
                 -0.2 : 0.2;
 
-            var horizontalPositionStart = chordCanvasLeft;
+            double horizontalPositionStart = chordCanvasLeft;
             return new XY(horizontalPositionStart, heightOriginOnCanvas);
         }
 

@@ -6,7 +6,7 @@ namespace StudioLaValse.ScoreDocument.Builder
     /// <summary>
     /// Represents a score measure editor.
     /// </summary>
-    public interface IScoreMeasureEditor : IScoreMeasure<IInstrumentMeasureEditor, IScoreMeasureEditor>, IScoreElementEditor
+    public interface IScoreMeasureEditor : IScoreMeasure<IInstrumentMeasureEditor, IScoreMeasureEditor>, ILayoutEditor<ScoreMeasureLayout>, IScoreElementEditor
     {
         /// <summary>
         /// Assign the specified key signature to the score measure.

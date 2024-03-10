@@ -10,25 +10,25 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
 
         }
 
-        public void ProcessElements(IEnumerable<XElement> elements, IMeasureBlockChainEditor editor, IScoreLayoutBuilder scoreLayoutBuilder, int divisionsOfOneQuarter)
+        public void ProcessElements(IEnumerable<XElement> elements, IMeasureBlockChainEditor editor, int divisionsOfOneQuarter)
         {
-            var position = new Position(0, 4);
-            foreach (var element in elements)
+            Position position = new(0, 4);
+            foreach (XElement element in elements)
             {
-                ProcessMeasureElement(element, editor, scoreLayoutBuilder, divisionsOfOneQuarter, ref position);
+                ProcessMeasureElement(element, editor, divisionsOfOneQuarter, ref position);
             }
         }
 
-        private void ProcessMeasureElement(XElement measureElement, IMeasureBlockChainEditor measureBlockChain, IScoreLayoutBuilder scoreLayoutBuilder, int divisionsOfOneQuarter, ref Position position)
+        private void ProcessMeasureElement(XElement measureElement, IMeasureBlockChainEditor measureBlockChain, int divisionsOfOneQuarter, ref Position position)
         {
             if (!measureElement.IsNoteOrForwardOrBackup())
             {
                 return;
             }
 
-            GetRythmicInformationFromNode(measureElement, divisionsOfOneQuarter, out var actualDuration, out var displayDuration, out var grace);
+            GetRythmicInformationFromNode(measureElement, divisionsOfOneQuarter, out Fraction? actualDuration, out RythmicDuration? displayDuration, out bool grace);
 
-            GetInformationFromMeasureElement(measureElement, out var chord, out var rest, out var staff, out var forward, out var backup, out var pitch, out var stemUp);
+            GetInformationFromMeasureElement(measureElement, out bool chord, out bool rest, out int? staff, out bool forward, out bool backup, out Pitch? pitch, out bool stemUp);
 
             if (backup)
             {
@@ -47,8 +47,8 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                 position -= actualDuration;
             }
 
-            var _position = new Position(position.Numinator, position.Denominator);
-            var measureBlock = measureBlockChain.ReadBlocks().First(b => b.ContainsPosition(_position));
+            Position _position = new(position.Numerator, position.Denominator);
+            IMeasureBlockEditor measureBlock = measureBlockChain.ReadBlocks().First(b => b.ContainsPosition(_position));
 
             //create a new chord in the block if the no 'chord' attribute is specified, or if there are no chords in the block.
             if (!chord || !measureBlock.ReadChords().Any())
@@ -65,15 +65,15 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             }
 
             //Always add to the last chord in the block
-            var chordDocument = measureBlock.ReadChords().Last();
+            IChordEditor chordDocument = measureBlock.ReadChords().Last();
 
-            if (pitch is not null)
+            if (pitch.HasValue)
             {
-                chordDocument.Add(pitch);
-                var note = chordDocument.ReadNotes().Single(n => n.Pitch.Equals(pitch));
-                var layout = scoreLayoutBuilder.NoteLayout(note);
+                chordDocument.Add(pitch.Value);
+                INoteEditor note = chordDocument.ReadNotes().Single(n => n.Pitch.Equals(pitch));
+                NoteLayout layout = note.ReadLayout();
                 layout.StaffIndex = staff ?? 0;
-                scoreLayoutBuilder.Apply(note, layout);
+                note.ApplyLayout(layout);
             }
 
             if (!grace)
@@ -89,22 +89,22 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             displayDuration = null;
             grace = measureElement.Descendants().Any(d => d.Name == "grace");
 
-            var typeString = measureElement.Descendants().SingleOrDefault(d => d.Name == "type")?.Value;
+            string? typeString = measureElement.Descendants().SingleOrDefault(d => d.Name == "type")?.Value;
             Tuplet? tupletInformation = null;
             if (measureElement.Descendants().SingleOrDefault(d => d.Name == "time-modification") is XElement timeModificationElement)
             {
                 //bijvoorbeeld 3, van 3 achtsten in de plaats van 1 kwart = 2 achtsten
-                var actualNumberValue = timeModificationElement.Descendants().Single(d => d.Name == "actual-notes").Value;
+                string actualNumberValue = timeModificationElement.Descendants().Single(d => d.Name == "actual-notes").Value;
                 // bijvoorbeeld 2, van 3 achtsten in de plaats van 1 kwart = 2 achtsten
-                var normalNumberValue = timeModificationElement.Descendants().Single(d => d.Name == "normal-notes").Value;
+                string normalNumberValue = timeModificationElement.Descendants().Single(d => d.Name == "normal-notes").Value;
                 // bijvoorbeel 8, van 3 achtsten in de plaats van 1 kwart = 2 achtsten
-                var normalTypeValue = timeModificationElement.Descendants().SingleOrDefault(d => d.Name == "normal-type")?.Value;
+                string? normalTypeValue = timeModificationElement.Descendants().SingleOrDefault(d => d.Name == "normal-type")?.Value;
 
-                var normalRythmicType = normalTypeValue ?? typeString ?? throw new Exception("Cannot handle tuplet information if the type xml node does not exist.");
-                var normalRythmicDuration = normalRythmicType.FromTypeString();
-                var normalRythmicDots = timeModificationElement.Descendants().Where(d => d.Name == "normal-dot").Count();
-                var normalDuration = new RythmicDuration(normalRythmicDuration, normalRythmicDots);
-                var tupletContent = Enumerable.Range(0, actualNumberValue.ToIntOrThrow())
+                string normalRythmicType = normalTypeValue ?? typeString ?? throw new Exception("Cannot handle tuplet information if the type xml node does not exist.");
+                PowerOfTwo normalRythmicDuration = normalRythmicType.FromTypeString();
+                int normalRythmicDots = timeModificationElement.Descendants().Where(d => d.Name == "normal-dot").Count();
+                RythmicDuration normalDuration = new(normalRythmicDuration, normalRythmicDots);
+                RythmicDuration[] tupletContent = Enumerable.Range(0, actualNumberValue.ToIntOrThrow())
                     .Select(e => normalDuration)
                     .ToArray();
                 tupletInformation = new Tuplet(normalDuration, tupletContent);
@@ -112,14 +112,14 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
 
             if (typeString is null)
             {
-                var _duration = measureElement.Descendants().FirstOrDefault(d => d.Name == "duration");
-                var noteDuration = _duration?.Value.ToIntOrNull() ?? 0;
+                XElement? _duration = measureElement.Descendants().FirstOrDefault(d => d.Name == "duration");
+                int noteDuration = _duration?.Value.ToIntOrNull() ?? 0;
                 actualDuration = new Duration(noteDuration, durationOfOneQuarter * 4).Simplify();
             }
             else
             {
-                var type = typeString.FromTypeString();
-                var dots = measureElement.Descendants().Where(d => d.Name == "dot").Count();
+                PowerOfTwo type = typeString.FromTypeString();
+                int dots = measureElement.Descendants().Where(d => d.Name == "dot").Count();
                 displayDuration = new RythmicDuration(type, dots);
                 actualDuration = displayDuration;
                 if (tupletInformation is not null)

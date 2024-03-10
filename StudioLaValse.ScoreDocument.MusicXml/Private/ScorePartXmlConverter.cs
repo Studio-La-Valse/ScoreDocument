@@ -11,16 +11,16 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             this.measureConverter = measureConverter;
         }
 
-        public void Create(XElement scorePart, IInstrumentRibbonEditor ribbonEditor, IScoreLayoutBuilder scoreLayoutBuilder)
+        public void Create(XElement scorePart, IInstrumentRibbonEditor ribbonEditor)
         {
-            var durationOfOneQuarter = 4;
-            foreach (var element in scorePart.Elements())
+            int durationOfOneQuarter = 4;
+            foreach (XElement element in scorePart.Elements())
             {
                 if (element.Name == "measure")
                 {
-                    var measureIndex = element.Attributes().Single(a => a.Name == "number").Value.ToIntOrThrow() - 1;
-                    var measureToEdit = ribbonEditor.ReadMeasure(measureIndex);
-                    measureConverter.Create(element, measureToEdit, scoreLayoutBuilder, ref durationOfOneQuarter);
+                    int measureIndex = element.Attributes().Single(a => a.Name == "number").Value.ToIntOrThrow() - 1;
+                    IInstrumentMeasureEditor measureToEdit = ribbonEditor.ReadMeasure(measureIndex);
+                    measureConverter.Create(element, measureToEdit, ref durationOfOneQuarter);
                 }
             }
         }

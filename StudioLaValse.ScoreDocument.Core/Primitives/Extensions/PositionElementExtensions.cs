@@ -12,17 +12,11 @@
         /// <returns></returns>
         public static Fraction ActualDuration(this IPositionElement positionElement)
         {
-            if (positionElement.Grace)
-            {
-                return new Duration(0, 1);
-            }
-
-            if (positionElement.Tuplet.IsRedundant)
-            {
-                return positionElement.RythmicDuration;
-            }
-
-            return positionElement.Tuplet.ToActualDuration(positionElement.RythmicDuration);
+            return positionElement.Grace
+                ? new Duration(0, 1)
+                : positionElement.Tuplet.IsRedundant
+                ? positionElement.RythmicDuration
+                : positionElement.Tuplet.ToActualDuration(positionElement.RythmicDuration);
         }
 
         /// <summary>

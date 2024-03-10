@@ -1,6 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Layout;
-
-namespace StudioLaValse.ScoreDocument.Drawable.Scenes
+﻿namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
     /// <summary>
     /// The default implementation of the visual instrument measure factory.

@@ -16,7 +16,7 @@ namespace StudioLaValse.ScoreDocument.Core
         /// <summary>
         /// The numinator of the fraction.
         /// </summary>
-        public int Numinator { get; }
+        public int Numerator { get; }
         /// <summary>
         /// The denominator of the fraction.
         /// </summary>
@@ -25,7 +25,7 @@ namespace StudioLaValse.ScoreDocument.Core
         /// Casts the fraction to a decimal.
         /// </summary>
         public decimal Decimal =>
-            Numinator / (decimal)Denominator;
+            Numerator / (decimal)Denominator;
 
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace StudioLaValse.ScoreDocument.Core
             ArgumentOutOfRangeException.ThrowIfNegative(numinator);
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(denominator);
 
-            Numinator = numinator;
+            Numerator = numinator;
 
             Denominator = denominator;
         }
@@ -51,11 +51,11 @@ namespace StudioLaValse.ScoreDocument.Core
         /// <returns></returns>
         public virtual Fraction Simplify()
         {
-            var greatestCommonDivisor = Numinator.GCD(Denominator);
+            int greatestCommonDivisor = Numerator.GCD(Denominator);
 
-            var minPosition = Numinator / greatestCommonDivisor;
+            int minPosition = Numerator / greatestCommonDivisor;
 
-            var minSteps = Denominator / greatestCommonDivisor;
+            int minSteps = Denominator / greatestCommonDivisor;
 
             return new Fraction(minPosition, minSteps);
         }
@@ -63,7 +63,7 @@ namespace StudioLaValse.ScoreDocument.Core
         /// <inheritdoc/>
         public override string ToString()
         {
-            return $"{Numinator} / {Denominator}";
+            return $"{Numerator} / {Denominator}";
         }
     }
 }

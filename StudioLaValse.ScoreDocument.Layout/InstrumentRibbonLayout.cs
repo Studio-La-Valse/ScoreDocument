@@ -1,62 +1,41 @@
-﻿namespace StudioLaValse.ScoreDocument.Layout
+﻿using StudioLaValse.ScoreDocument.Core.Primitives;
+using StudioLaValse.ScoreDocument.Layout.Templates;
+
+namespace StudioLaValse.ScoreDocument.Layout
 {
     /// <summary>
     /// The layout of an instrument ribbon.
     /// </summary>
     public class InstrumentRibbonLayout : ILayoutElement<InstrumentRibbonLayout>
     {
-        /// <inheritdoc/>
-        public string AbbreviatedName { get; set; }
-        /// <inheritdoc/>
+        private readonly InstrumentRibbonStyleTemplate styleTemplate;
+        private readonly IInstrumentRibbon instrumentRibbon;
+
+
+        public NullableTemplateProperty<string> AbbreviatedName { get; }
+        public NullableTemplateProperty<string> DisplayName { get; set; }
+        public TemplateProperty<int> NumberOfStaves { get; set; }
+
+
         public bool Collapsed { get; set; }
-        /// <inheritdoc/>
-        public string DisplayName { get; set; }
-        /// <inheritdoc/>
-        public int NumberOfStaves { get; set; }
+
+
 
 
         /// <summary>
         /// Create a new instrument ribbon layout.
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="abbreviatedname"></param>
-        /// <param name="numberOfStaves"></param>
-        /// <param name="collapsed"></param>
-        public InstrumentRibbonLayout(string name, string abbreviatedname, int numberOfStaves, bool collapsed = false)
+        /// <param name="styleTemplate"></param>
+        /// <param name="instrumentRibbon"></param>
+        public InstrumentRibbonLayout(InstrumentRibbonStyleTemplate styleTemplate, IInstrumentRibbon instrumentRibbon)
         {
-            DisplayName = name;
-            AbbreviatedName = abbreviatedname;
-            NumberOfStaves = numberOfStaves;
-            Collapsed = collapsed;
-        }
-        /// <summary>
-        /// Create a new instrument ribbon layout.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="numberOfStaves"></param>
-        /// <param name="collapsed"></param>
-        public InstrumentRibbonLayout(string name, int numberOfStaves, bool collapsed = false) : this(name, CreateDefaultNickName(name), numberOfStaves, collapsed)
-        {
+            this.styleTemplate = styleTemplate;
+            this.instrumentRibbon = instrumentRibbon;
 
-        }
-        /// <summary>
-        /// Create a new instrument ribbon layout.
-        /// </summary>
-        /// <param name="instrument"></param>
-        /// <param name="collapsed"></param>
-        public InstrumentRibbonLayout(Instrument instrument, bool collapsed = false) : this(instrument.Name, instrument.NumberOfStaves, collapsed)
-        {
-
-        }
-        /// <summary>
-        /// Create a new instrument ribbon layout.
-        /// </summary>
-        /// <param name="instrument"></param>
-        /// <param name="nickname"></param>
-        /// <param name="collapsed"></param>
-        public InstrumentRibbonLayout(Instrument instrument, string nickname, bool collapsed = false) : this(instrument.Name, nickname, instrument.NumberOfStaves, collapsed)
-        {
-
+            DisplayName = new NullableTemplateProperty<string>(() => this.instrumentRibbon.Instrument.Name);
+            AbbreviatedName = new NullableTemplateProperty<string>(() => CreateDefaultNickName(this.DisplayName.Value));
+            NumberOfStaves = new TemplateProperty<int>(() => instrumentRibbon.Instrument.NumberOfStaves);
+            Collapsed = false;
         }
 
         /// <summary>
@@ -66,24 +45,20 @@
         /// <returns></returns>
         public static string CreateDefaultNickName(string name)
         {
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                return "";
-            }
-            else if (name.Length == 1)
-            {
-                return string.Concat(name.AsSpan(0, 1), ".");
-            }
-            else
-            {
-                return string.Concat(name.AsSpan(0, 2), ".");
-            }
+            return string.IsNullOrWhiteSpace(name)
+                ? ""
+                : name.Length == 1 ? string.Concat(name.AsSpan(0, 1), ".") : string.Concat(name.AsSpan(0, 2), ".");
         }
 
         /// <inheritdoc/>
         public InstrumentRibbonLayout Copy()
         {
-            return new InstrumentRibbonLayout(DisplayName, AbbreviatedName, NumberOfStaves, Collapsed);
+            var copy = new InstrumentRibbonLayout(styleTemplate, instrumentRibbon);
+            copy.AbbreviatedName.Field = AbbreviatedName.Field;
+            copy.DisplayName.Field = DisplayName.Field;
+            copy.NumberOfStaves.Field = NumberOfStaves.Field;
+            copy.Collapsed = Collapsed;
+            return copy;
         }
     }
 }

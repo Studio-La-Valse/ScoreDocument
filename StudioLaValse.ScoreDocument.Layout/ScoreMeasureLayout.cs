@@ -1,42 +1,42 @@
-﻿namespace StudioLaValse.ScoreDocument.Layout
+﻿using StudioLaValse.ScoreDocument.Core.Primitives;
+using StudioLaValse.ScoreDocument.Layout.Templates;
+
+namespace StudioLaValse.ScoreDocument.Layout
 {
     /// <summary>
     /// The layout of a score measure.
     /// </summary>
     public class ScoreMeasureLayout : ILayoutElement<ScoreMeasureLayout>
     {
-        /// <inheritdoc/>
-        public KeySignature KeySignature { get; set; }
-        /// <inheritdoc/>
-        public double PaddingLeft { get; set; }
-        /// <inheritdoc/>
-        public double PaddingRight { get; set; }
-        /// <inheritdoc/>
-        public double Width { get; set; }
-        /// <inheritdoc/>
-        public bool IsNewSystem { get; set; }
+        private readonly ScoreMeasureStyleTemplate scoreMeasureStyleTemplate;
+        private readonly IScoreMeasure scoreMeasure;
 
-        /// <summary>
-        /// The default constructor.
-        /// </summary>
-        /// <param name="keySignature"></param>
-        /// <param name="paddingleft"></param>
-        /// <param name="paddingright"></param>
-        /// <param name="width"></param>
-        /// <param name="isNewSystem"></param>
-        public ScoreMeasureLayout(KeySignature? keySignature = null, double paddingleft = 10, double paddingright = 5, double width = 100, bool isNewSystem = false)
+        public TemplateProperty<KeySignature> KeySignature { get; }
+        public TemplateProperty<double> PaddingLeft { get; }
+        public TemplateProperty<double> PaddingRight { get; }
+        public TemplateProperty<double> Width { get; }
+
+
+        public ScoreMeasureLayout(ScoreMeasureStyleTemplate scoreMeasureStyleTemplate, IScoreMeasure scoreMeasure)
         {
-            KeySignature = keySignature ?? new KeySignature(Step.C, MajorOrMinor.Major);
-            PaddingLeft = paddingleft;
-            PaddingRight = paddingright;
-            Width = width;
-            IsNewSystem = isNewSystem;
+            this.scoreMeasureStyleTemplate = scoreMeasureStyleTemplate;
+            this.scoreMeasure = scoreMeasure;
+            
+            KeySignature = new TemplateProperty<KeySignature>(() => scoreMeasure.KeySignature);
+            Width = new TemplateProperty<double>(() => scoreMeasureStyleTemplate.Width);
+            PaddingLeft = new TemplateProperty<double>(() => scoreMeasureStyleTemplate.PaddingLeft);
+            PaddingRight = new TemplateProperty<double>(() => scoreMeasureStyleTemplate.PaddingRight);
         }
 
         /// <inheritdoc/>
         public ScoreMeasureLayout Copy()
         {
-            return new ScoreMeasureLayout(KeySignature, PaddingLeft, PaddingRight, Width, IsNewSystem);
+            var copy = new ScoreMeasureLayout(scoreMeasureStyleTemplate, scoreMeasure);
+            copy.Width.Field = Width.Field;
+            copy.PaddingLeft.Field = PaddingLeft.Field;
+            copy.PaddingRight.Field = PaddingRight.Field;
+            copy.KeySignature.Field = KeySignature.Field;
+            return copy;
         }
     }
 }

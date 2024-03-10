@@ -1,7 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Drawable.Extensions;
-using StudioLaValse.ScoreDocument.Layout;
-
-namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
+﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
     internal sealed class VisualChord : BaseContentWrapper
     {
@@ -38,22 +35,28 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 
         public IEnumerable<BaseContentWrapper> GetNotes()
         {
-            var notes = chord.ReadNotes();
+            IEnumerable<INoteReader> notes = chord.ReadNotes();
             if (!notes.Any())
             {
-                var canvasTop = staffGroup.EnumerateStaves(1).First().HeightFromLineIndex(canvasTopStaffGroup, 4, scoreLayoutDictionary);
+                var lineSpacing = scoreLayoutDictionary.StaffGroupLayout(staffGroup).LineSpacing.Value;
+                var canvasTop = staffGroup.EnumerateStaves(1).First().HeightFromLineIndex(canvasTopStaffGroup, 4, lineSpacing);
                 yield return restFactory.Build(chord, canvasLeft, canvasTop, scale, color);
                 yield break;
             }
 
-            foreach (var note in notes)
+            foreach (INoteReader note in notes)
             {
-                var staffIndex = scoreLayoutDictionary.NoteLayout(note).StaffIndex;
+                int staffIndex = scoreLayoutDictionary.NoteLayout(note).StaffIndex;
+                if(staffIndex >= scoreLayoutDictionary.StaffGroupLayout(staffGroup).NumberOfStaves.Value)
+                {
+                    continue;
+                }
+
                 var clef = instrumentMeasureReader.GetClef(staffIndex, chord.Position, scoreLayoutDictionary);
                 var lineIndex = clef.LineIndexAtPitch(note.Pitch);
                 var offsetDots = lineIndex % 2 == 0;
                 var canvasTop = staffGroup.HeightOnCanvas(canvasTopStaffGroup, staffIndex, lineIndex, scoreLayoutDictionary);
-                var accidental = GetAccidental(note);
+                Accidental? accidental = GetAccidental(note);
                 yield return noteFactory.Build(note, canvasLeft + XOffset, canvasTop, scale, offsetDots, accidental, color);
             }
         }
@@ -61,52 +64,56 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 
         public Accidental? GetAccidental(INoteReader note)
         {
-            var noteLayout = scoreLayoutDictionary.NoteLayout(note);
-            var forceAccidental = noteLayout.ForceAccidental;
-            if (forceAccidental != AccidentalDisplay.Default)
+            NoteLayout noteLayout = scoreLayoutDictionary.NoteLayout(note);
+            AccidentalDisplay forceAccidental = noteLayout.ForceAccidental.Value;
+
+            if(forceAccidental == AccidentalDisplay.ForceOff)
             {
-                if (forceAccidental == AccidentalDisplay.ForceOn)
-                {
-                    return (Accidental)note.Pitch.Shift;
-                }
-                else
-                {
-                    return null;
-                }
+                return null;
             }
 
-            var accidental = instrumentMeasureReader.GetAccidental(note.Pitch, note.Position, noteLayout.StaffIndex, scoreLayoutDictionary);
-            return accidental;
+            if(forceAccidental == AccidentalDisplay.Default)
+            {
+                return instrumentMeasureReader.GetAccidental(note.Pitch, note.Position, noteLayout.StaffIndex, scoreLayoutDictionary);
+            }
+
+            if (forceAccidental == AccidentalDisplay.ForceAccidental)
+            {
+                return note.Pitch.Shift == 0 ? null : (Accidental)note.Pitch.Shift;
+            }
+
+            return (Accidental)note.Pitch.Shift;
         }
 
 
         public IEnumerable<DrawableLineHorizontal> GetOverflowLines()
         {
-            var notes = chord.ReadNotes();
+            IEnumerable<INoteReader> notes = chord.ReadNotes();
             if (!notes.Any())
             {
                 yield break;
             }
 
-            var canvasTopStaff = canvasTopStaffGroup;
-            var linesFromChord = new List<DrawableLineHorizontal>();
-            var staffIndex = 0;
-            var staffGroupLayout = scoreLayoutDictionary.StaffGroupLayout(staffGroup);
-            foreach (var staff in staffGroup.EnumerateStaves(staffGroupLayout.NumberOfStaves))
+            var lineSpacing = scoreLayoutDictionary.StaffGroupLayout(staffGroup).LineSpacing.Value;
+            double canvasTopStaff = canvasTopStaffGroup;
+            List<DrawableLineHorizontal> linesFromChord = [];
+            StaffGroupLayout staffGroupLayout = scoreLayoutDictionary.StaffGroupLayout(staffGroup);
+            foreach (IStaffReader staff in staffGroup.EnumerateStaves(staffGroupLayout.NumberOfStaves.Value))
             {
-                var staffLayout = scoreLayoutDictionary.StaffLayout(staff);
-                var notesOnStaff = notes
-                    .Where(c => scoreLayoutDictionary.NoteLayout(c).StaffIndex == staffIndex)
+                StaffLayout staffLayout = scoreLayoutDictionary.StaffLayout(staff);
+                IOrderedEnumerable<INoteReader> notesOnStaff = notes
+                    .Where(c => scoreLayoutDictionary.NoteLayout(c).StaffIndex == staff.IndexInStaffGroup)
                     .OrderBy(c => c.Pitch.IndexOnKlavier);
+
                 if (notesOnStaff.Any())
                 {
-                    var lowestNote = notesOnStaff.First();
-                    var highestNote = notesOnStaff.Last();
-                    foreach (var note in new[] { highestNote, lowestNote })
+                    INoteReader lowestNote = notesOnStaff.First();
+                    INoteReader highestNote = notesOnStaff.Last();
+                    foreach (INoteReader? note in new[] { highestNote, lowestNote })
                     {
-                        var overflowLines = OverflowLinesFromNote(note, 2, canvasTopStaff, staff);
+                        IEnumerable<DrawableLineHorizontal> overflowLines = OverflowLinesFromNote(note, 2, canvasTopStaff, staff);
 
-                        foreach (var line in overflowLines)
+                        foreach (DrawableLineHorizontal line in overflowLines)
                         {
                             if (linesFromChord.Any(l => l.Y1.AlmostEqualTo(line.Y1)))
                             {
@@ -118,45 +125,46 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                     }
                 }
 
-                canvasTopStaff += staff.CalculateHeight(scoreLayoutDictionary);
-                canvasTopStaff += staffLayout.DistanceToNext;
+                canvasTopStaff += staff.CalculateHeight(lineSpacing);
+                canvasTopStaff += staffLayout.DistanceToNext.Value;
             }
         }
         public IEnumerable<DrawableLineHorizontal> OverflowLinesFromNote(INoteReader note, double width, double canvasTopStaff, IStaffReader staff)
         {
             DrawableLineHorizontal fromHeight(double height)
             {
-                return new DrawableLineHorizontal(height, canvasLeft - width / 2, width, 0.1, color);
+                return new DrawableLineHorizontal(height, canvasLeft - (width / 2), width, 0.1, color);
             }
 
-            var lineIndex = instrumentMeasureReader.GetClef(staff.IndexInStaffGroup, note.Position, scoreLayoutDictionary).LineIndexAtPitch(note.Pitch);
-            var overflowTop = lineIndex < -1;
-            var overflowBottom = lineIndex > 9;
+            var lineSpacing = scoreLayoutDictionary.StaffGroupLayout(staffGroup).LineSpacing.Value;
+            int lineIndex = instrumentMeasureReader.GetClef(staff.IndexInStaffGroup, note.Position, scoreLayoutDictionary).LineIndexAtPitch(note.Pitch);
+            bool overflowTop = lineIndex < -1;
+            bool overflowBottom = lineIndex > 9;
 
             if (overflowTop)
             {
-                foreach (var i in Enumerable.Range(lineIndex, Math.Abs(lineIndex)))
+                foreach (int i in Enumerable.Range(lineIndex, Math.Abs(lineIndex)))
                 {
                     if (Math.Abs(i) % 2 != 0)
                     {
                         continue;
                     }
 
-                    var height = staff.HeightFromLineIndex(canvasTopStaff, i, scoreLayoutDictionary);
+                    double height = staff.HeightFromLineIndex(canvasTopStaff, i, lineSpacing);
                     yield return fromHeight(height);
                 }
             }
 
             if (overflowBottom)
             {
-                foreach (var i in Enumerable.Range(10, lineIndex - 9))
+                foreach (int i in Enumerable.Range(10, lineIndex - 9))
                 {
                     if (i % 2 != 0)
                     {
                         continue;
                     }
 
-                    var height = staff.HeightFromLineIndex(canvasTopStaff, i, scoreLayoutDictionary);
+                    double height = staff.HeightFromLineIndex(canvasTopStaff, i, lineSpacing);
                     yield return fromHeight(height);
                 }
             }

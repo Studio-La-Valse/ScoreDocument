@@ -1,8 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Drawable.Extensions;
-using StudioLaValse.ScoreDocument.Drawable.Private.Models;
-using StudioLaValse.ScoreDocument.Layout;
-
-namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
+﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
     internal sealed class VisualStaffSystem : BaseSelectableParent<IUniqueScoreElement>
     {
@@ -16,13 +12,13 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
         public StaffSystemLayout Layout => scoreLayoutDictionary.StaffSystemLayout(staffSystem);
         public DrawableLineVertical OpeningLine =>
-            new DrawableLineVertical(canvasLeft, canvasTop, staffSystem.CalculateHeight(scoreLayoutDictionary), 0.1, color: baseColor);
+            new(canvasLeft, canvasTop, staffSystem.CalculateHeight(scoreLayoutDictionary), 0.1, color: baseColor);
         public DrawableLineVertical ClosingLine
         {
             get
             {
-                var isLast = staffSystem.EnumerateMeasures().Last().IsLastInScore;
-                var x = isLast ? canvasLeft + length - 1 : canvasLeft + length;
+                bool isLast = staffSystem.EnumerateMeasures().Last().IsLastInScore;
+                double x = isLast ? canvasLeft + length - 1 : canvasLeft + length;
 
                 return new DrawableLineVertical(x, canvasTop, staffSystem.CalculateHeight(scoreLayoutDictionary), 0.1, color: baseColor);
             }
@@ -31,13 +27,13 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         {
             get
             {
-                var isLast = staffSystem.EnumerateMeasures().Last().IsLastInScore;
+                bool isLast = staffSystem.EnumerateMeasures().Last().IsLastInScore;
                 if (!isLast)
                 {
                     return null;
                 }
 
-                var thickness = isLast ? 0.5 : 0.1;
+                double thickness = isLast ? 0.5 : 0.1;
 
                 return new DrawableLineVertical(canvasLeft + length, canvasTop - 0.05, staffSystem.CalculateHeight(scoreLayoutDictionary) + 0.1, thickness: thickness, color: baseColor);
             }
@@ -51,7 +47,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                     return null;
                 }
 
-                var index = staffSystem.EnumerateMeasures().First().IndexInScore + 1;
+                int index = staffSystem.EnumerateMeasures().First().IndexInScore + 1;
 
                 return new DrawableText(canvasLeft, canvasTop - 1, index.ToString(), 2, verticalAlignment: VerticalTextOrigin.Bottom, color: baseColor);
             }
@@ -76,24 +72,18 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
         public IEnumerable<BaseContentWrapper> ConstructSystemMeasures()
         {
-            var _canvasLeft = canvasLeft;
+            double _canvasLeft = canvasLeft;
 
-            //todo: calculate first measure left padding (key signature, time signature, clef)
-            var firstMeasurePaddingLeft = 30;
-            var lengthWithoutAdjustment = staffSystem.EnumerateMeasures().Select(m => scoreLayoutDictionary.ScoreMeasureLayout(m).Width).Sum() + firstMeasurePaddingLeft;
-            var firstMeasure = true;
-            foreach (var measure in staffSystem.EnumerateMeasures())
+            double lengthWithoutAdjustment = staffSystem.EnumerateMeasures().Select(m => scoreLayoutDictionary.ScoreMeasureLayout(m).Width.Value).Sum();
+            bool firstMeasure = true;
+            foreach (IScoreMeasureReader measure in staffSystem.EnumerateMeasures())
             {
-                var measureLayout = scoreLayoutDictionary.ScoreMeasureLayout(measure);
-                var measureWidth = measureLayout.Width;
+                ScoreMeasureLayout measureLayout = scoreLayoutDictionary.ScoreMeasureLayout(measure);
+                double measureWidth = measureLayout.Width.Value;
 
-                if (firstMeasure)
-                {
-                    measureWidth += firstMeasurePaddingLeft;
-                }
                 measureWidth = MathUtils.Map(measureWidth, 0, lengthWithoutAdjustment, 0, length);
 
-                var systemMeasure = systemMeasureFactory.CreateContent(measure, staffSystem, _canvasLeft, canvasTop, measureWidth, firstMeasure, baseColor);
+                BaseContentWrapper systemMeasure = systemMeasureFactory.CreateContent(measure, staffSystem, _canvasLeft, canvasTop, measureWidth, firstMeasure, baseColor);
                 yield return systemMeasure;
 
                 _canvasLeft += measureWidth;
@@ -102,11 +92,11 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         }
         public IEnumerable<BaseContentWrapper> ConstructStaffGroups()
         {
-            var heightOnCanvas = canvasTop;
+            double heightOnCanvas = canvasTop;
 
-            foreach (var staffGroup in staffSystem.EnumerateStaffGroups())
+            foreach (IStaffGroupReader staffGroup in staffSystem.EnumerateStaffGroups())
             {
-                var _staffGroup = new VisualStaffGroup(
+                VisualStaffGroup _staffGroup = new(
                     staffGroup,
                     canvasLeft,
                     heightOnCanvas,
@@ -116,7 +106,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                 yield return _staffGroup;
 
                 heightOnCanvas += staffGroup.CalculateHeight(scoreLayoutDictionary);
-                heightOnCanvas += scoreLayoutDictionary.StaffGroupLayout(staffGroup).DistanceToNext;
+                heightOnCanvas += scoreLayoutDictionary.StaffGroupLayout(staffGroup).DistanceToNext.Value;
             }
         }
 
@@ -143,12 +133,12 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         }
         public override IEnumerable<BaseContentWrapper> GetContentWrappers()
         {
-            foreach (var group in ConstructStaffGroups())
+            foreach (BaseContentWrapper group in ConstructStaffGroups())
             {
                 yield return group;
             }
 
-            foreach (var systemMeasure in ConstructSystemMeasures())
+            foreach (BaseContentWrapper systemMeasure in ConstructSystemMeasures())
             {
                 yield return systemMeasure;
             }

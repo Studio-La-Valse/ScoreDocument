@@ -26,7 +26,7 @@
         /// <returns></returns>
         public IEnumerable<Step> EnumerateSteps()
         {
-            var number = scaleStructure.Length + 1;
+            int number = scaleStructure.Length + 1;
             return EnumerateSteps(number);
         }
 
@@ -42,12 +42,12 @@
                 yield break;
             }
 
-            var step = origin;
+            Step step = origin;
             yield return new Step(step.StepsFromC, step.Shifts);
 
             for (int i = 0; i < number - 1; i++)
             {
-                var interval = scaleStructure.Intervals.ElementAt(i % scaleStructure.Length);
+                Interval interval = scaleStructure.Intervals.ElementAt(i % scaleStructure.Length);
                 step = IncrementInterval(step, interval);
                 yield return step;
             }
@@ -61,11 +61,11 @@
         /// <returns></returns>
         private static Step IncrementInterval(Step step, Interval interval)
         {
-            var newStep = step.StepsFromC % 7;
-            var newShifts = step.Shifts;
+            int newStep = step.StepsFromC % 7;
+            int newShifts = step.Shifts;
             for (int _ = 0; _ < interval.Steps; _++)
             {
-                var newStepIsBorE = newStep == 2 || newStep == 6;
+                bool newStepIsBorE = newStep is 2 or 6;
                 if (newStepIsBorE)
                 {
                     newShifts++;

@@ -1,34 +1,43 @@
-﻿namespace StudioLaValse.ScoreDocument.Layout
+﻿using StudioLaValse.ScoreDocument.Layout.Templates;
+
+namespace StudioLaValse.ScoreDocument.Layout
 {
     /// <summary>
     /// The layout of a note.
     /// </summary>
     public class NoteLayout : ILayoutElement<NoteLayout>
     {
-        /// <inheritdoc/>
-        public AccidentalDisplay ForceAccidental { get; set; }
-        /// <inheritdoc/>
+        private readonly NoteStyleTemplate styleTemplate;
+        private readonly bool grace;
+
         public int StaffIndex { get; set; }
-        /// <inheritdoc/>
         public double XOffset { get; set; }
 
-        /// <summary>
-        /// The default constructor.
-        /// </summary>
-        /// <param name="staffIndex"></param>
-        /// <param name="xOffset"></param>
-        /// <param name="forceAccidental"></param>
-        public NoteLayout(int staffIndex = 0, double xOffset = 0, AccidentalDisplay forceAccidental = AccidentalDisplay.Default)
+        public TemplateProperty<AccidentalDisplay> ForceAccidental { get; set; }
+        public TemplateProperty<double> Scale { get; set; }
+
+
+        public NoteLayout(NoteStyleTemplate styleTemplate, bool grace)
         {
-            StaffIndex = staffIndex;
-            XOffset = xOffset;
-            ForceAccidental = forceAccidental;
+            this.styleTemplate = styleTemplate;
+            this.grace = grace;
+            StaffIndex = 0;
+            XOffset = 0;
+            ForceAccidental = new TemplateProperty<AccidentalDisplay>(() => this.styleTemplate.AccidentalDisplay);
+            Scale = new TemplateProperty<double>(() => this.styleTemplate.Scale * (grace ? 0.5 : 1));
         }
 
         /// <inheritdoc/>
         public NoteLayout Copy()
         {
-            return new NoteLayout(StaffIndex, XOffset, ForceAccidental);
+            var copy = new NoteLayout(styleTemplate, grace)
+            {
+                StaffIndex = StaffIndex,
+                XOffset = XOffset,
+            };
+            copy.ForceAccidental.Field = ForceAccidental.Field;
+            copy.Scale.Field = Scale.Field;
+            return copy;
         }
     }
 }

@@ -9,7 +9,7 @@
         /// Represents a major scale.
         /// </summary>
         public static ScaleStructure Major =>
-            new ScaleStructure(         //f##
+            new(         //f##
                 Interval.Second,        //->g##
                 Interval.Second,        //->a##
                 Interval.MinorSecond,   //->b#
@@ -21,7 +21,7 @@
         /// Represents a minor scale.
         /// </summary>
         public static ScaleStructure Minor =>
-            new ScaleStructure(         //f##
+            new(         //f##
                 Interval.Second,        //->g##
                 Interval.MinorSecond,   //->a#
                 Interval.Second,        //->b#
@@ -33,7 +33,7 @@
         /// Represents a chromatic scale.
         /// </summary>
         public static ScaleStructure Chromatic =>
-            new ScaleStructure(             //c
+            new(             //c
                 Interval.AugmentedUnison,   //c#
                 Interval.MinorSecond,       //d
                 Interval.MinorSecond,       //eb

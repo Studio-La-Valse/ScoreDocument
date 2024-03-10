@@ -14,8 +14,12 @@
         /// </summary>
         Default = 0,
         /// <summary>
-        /// Always display.
+        /// Always display accidentals.
         /// </summary>
-        ForceOn = 1
+        ForceAccidental = 1,
+        /// <summary>
+        /// Always display accidentals and naturals.
+        /// </summary>
+        ForceNatural = 2
     }
 }

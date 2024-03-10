@@ -6,7 +6,7 @@ namespace StudioLaValse.ScoreDocument.Builder
     /// <summary>
     /// Represents a chord editor interface.
     /// </summary>
-    public interface IChordEditor : IChord<INoteEditor>, IScoreElementEditor
+    public interface IChordEditor : IChord<INoteEditor>, ILayoutEditor<ChordLayout>, IScoreElementEditor
     {
         /// <summary>
         /// Clear the content of the chord.

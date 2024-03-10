@@ -1,45 +1,46 @@
-﻿namespace StudioLaValse.ScoreDocument.Layout
+﻿using StudioLaValse.ScoreDocument.Layout.Templates;
+
+namespace StudioLaValse.ScoreDocument.Layout
 {
     /// <summary>
     /// The layout of a staff group.
     /// </summary>
     public class StaffGroupLayout : ILayoutElement<StaffGroupLayout>
     {
-        /// <inheritdoc/>
-        public double DistanceToNext { get; set; }
-        /// <inheritdoc/>
-        public int NumberOfStaves { get; set; }
-        /// <inheritdoc/>
+        private readonly StaffGroupStyleTemplate styleTemplate;
+        private readonly Instrument instrument;
+
         public bool Collapsed { get; set; }
 
-        /// <summary>
-        /// Create a new staff group layout.
-        /// </summary>
-        /// <param name="instrument"></param>
-        /// <param name="distanceToNext"></param>
-        /// <param name="collapsed"></param>
-        public StaffGroupLayout(Instrument instrument, double distanceToNext = 22, bool collapsed = false) : this(instrument.NumberOfStaves, distanceToNext, collapsed)
-        {
 
+        public TemplateProperty<int> NumberOfStaves { get; }
+        public TemplateProperty<double> DistanceToNext { get; }
+        public TemplateProperty<double> LineSpacing { get; }
+
+
+        public StaffGroupLayout(StaffGroupStyleTemplate styleTemplate, Instrument instrument)
+        {
+            this.styleTemplate = styleTemplate;
+            this.instrument = instrument;
+
+            NumberOfStaves = new TemplateProperty<int>(() => instrument.NumberOfStaves);
+            DistanceToNext = new TemplateProperty<double>(() => styleTemplate.LineSpacing);
+            LineSpacing = new TemplateProperty<double>(() => styleTemplate.LineSpacing);
+            Collapsed = false;
         }
 
-        /// <summary>
-        /// Create a new staff group layout.
-        /// </summary>
-        /// <param name="numberOfStaves"></param>
-        /// <param name="distanceToNext"></param>
-        /// <param name="collapsed"></param>
-        public StaffGroupLayout(int numberOfStaves, double distanceToNext = 22, bool collapsed = false)
-        {
-            NumberOfStaves = numberOfStaves;
-            DistanceToNext = distanceToNext;
-            Collapsed = collapsed;
-        }
 
         /// <inheritdoc/>
         public StaffGroupLayout Copy()
         {
-            return new StaffGroupLayout(NumberOfStaves, DistanceToNext, Collapsed);
+            var copy = new StaffGroupLayout(styleTemplate, instrument)
+            {
+                Collapsed = Collapsed
+            };
+            copy.NumberOfStaves.Field = NumberOfStaves.Field;
+            copy.DistanceToNext.Field = DistanceToNext.Field;
+            copy.LineSpacing.Field = LineSpacing.Field;
+            return copy;
         }
     }
 }

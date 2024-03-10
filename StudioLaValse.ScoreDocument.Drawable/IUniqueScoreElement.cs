@@ -3,7 +3,7 @@
 //    /// <summary>
 //    /// 
 //    /// </summary>
-//    public interface IUniqueScoreElement
+//    public interface IUniqueScoreElement : IScoreElement
 //    {
 //        /// <summary>
 //        /// The element id of the element. Note that this value is constant throughout the lifecycle of this element. Use this value to compare two different instances of the same element. 

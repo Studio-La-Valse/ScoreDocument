@@ -1,29 +1,34 @@
-﻿namespace StudioLaValse.ScoreDocument.Layout
+﻿using StudioLaValse.ScoreDocument.Layout.Templates;
+
+namespace StudioLaValse.ScoreDocument.Layout
 {
     /// <summary>
     /// The layout of a note group.
     /// </summary>
     public class MeasureBlockLayout : ILayoutElement<MeasureBlockLayout>
     {
-        /// <inheritdoc/>
-        public double StemLength { get; set; }
-        /// <inheritdoc/>
-        public double BeamAngle { get; set; }
+        private readonly MeasureBlockStyleTemplate styleTemplate;
+
+        public TemplateProperty<double> StemLength { get; set; }
+        public TemplateProperty<double> BeamAngle { get; set; }
 
         /// <summary>
         /// Create the default layout.
         /// </summary>
-        public MeasureBlockLayout(double stemLength = 4, double beamAngle = 0)
+        public MeasureBlockLayout(MeasureBlockStyleTemplate styleTemplate)
         {
-            StemLength = stemLength;
-            BeamAngle = beamAngle;
+            this.styleTemplate = styleTemplate;
+            StemLength = new TemplateProperty<double>(() => styleTemplate.StemLength);
+            BeamAngle = new TemplateProperty<double>(() => styleTemplate.BracketAngle);
         }
-
 
         /// <inheritdoc/>
         public MeasureBlockLayout Copy()
         {
-            return new MeasureBlockLayout(StemLength, BeamAngle);
+            var copy = new MeasureBlockLayout(styleTemplate);
+            copy.StemLength.Field = StemLength.Field;
+            copy.BeamAngle.Field = BeamAngle.Field;
+            return copy;
         }
     }
 }

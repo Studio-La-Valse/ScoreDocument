@@ -11,15 +11,15 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             this.scorePartXmlConverter = scorePartXmlConverter;
         }
 
-        public void Create(XDocument xDocument, IScoreDocumentEditor scoreEditor, IScoreLayoutBuilder scoreLayoutBuilder)
+        public void Create(XDocument xDocument, IScoreDocumentEditor scoreEditor)
         {
             scoreEditor.Clear();
 
-            foreach (var element in xDocument.Elements())
+            foreach (XElement element in xDocument.Elements())
             {
                 if (element.Name == "score-partwise")
                 {
-                    ProcessScorePartWise(element, scoreEditor, scoreLayoutBuilder);
+                    ProcessScorePartWise(element, scoreEditor);
                     return;
                 }
             }
@@ -27,86 +27,77 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             throw new Exception("No score-partwise found in music xml.");
         }
 
-        private void ProcessScorePartWise(XElement scorePartwise, IScoreDocumentEditor scoreEditor, IScoreLayoutBuilder scoreLayoutBuilder)
+        private void ProcessScorePartWise(XElement scorePartwise, IScoreDocumentEditor scoreEditor)
         {
-            foreach (var element in scorePartwise.Elements())
+            foreach (XElement element in scorePartwise.Elements())
             {
                 if (element.Name == "part-list")
                 {
-                    PrepareParts(element, scoreEditor, scoreLayoutBuilder);
+                    PrepareParts(element, scoreEditor);
                 }
             }
 
-            foreach (var element in scorePartwise.Elements())
+            foreach (XElement element in scorePartwise.Elements())
             {
                 if (element.Name == "part")
                 {
-                    PrepareMeasures(element, scoreEditor, scoreLayoutBuilder);
+                    PrepareMeasures(element, scoreEditor);
                     break;
                 }
             }
 
-            foreach (var element in scorePartwise.Elements())
+            foreach (XElement element in scorePartwise.Elements())
             {
                 if (element.Name == "part")
                 {
-                    var id = element.Attributes().Single(a => a.Name == "id").Value;
-                    var ribbon = scoreEditor.ReadInstrumentRibbons().First(r => scoreLayoutBuilder.InstrumentRibbonLayout(r).DisplayName == id);
-                    scorePartXmlConverter.Create(element, ribbon, scoreLayoutBuilder);
+                    string id = element.Attributes().Single(a => a.Name == "id").Value;
+                    IInstrumentRibbonEditor ribbon = scoreEditor.ReadInstrumentRibbons().First(r => r.ReadLayout().DisplayName.Value == id);
+                    scorePartXmlConverter.Create(element, ribbon);
                 }
             }
         }
 
-        private void PrepareParts(XElement partList, IScoreDocumentEditor scoreEditor, IScoreLayoutBuilder scoreLayoutBuilder)
+        private void PrepareParts(XElement partList, IScoreDocumentEditor scoreEditor)
         {
-            var partNodes = partList.Elements().Where(d => d.Name == "score-part");
+            IEnumerable<XElement> partNodes = partList.Elements().Where(d => d.Name == "score-part");
 
-            foreach (var partListNode in partNodes)
+            foreach (XElement? partListNode in partNodes)
             {
-                var name = partListNode.Elements().Single(d => d.Name == "part-name").Value;
-                var instrument = Instrument.TryGetFromName(name);
+                string name = partListNode.Elements().Single(d => d.Name == "part-name").Value;
+                if(!Instrument.TryGetFromName(name, out Instrument? instrument))
+                {
+                    instrument = Instrument.Piano;
+                }
                 scoreEditor.AddInstrumentRibbon(instrument);
 
-                var ribbon = scoreEditor.ReadInstrumentRibbon(scoreEditor.NumberOfInstruments - 1);
-                var layout = new InstrumentRibbonLayout(ribbon.Instrument)
-                {
-                    DisplayName = partListNode.Attributes().Single(a => a.Name == "id").Value
-                };
-                scoreLayoutBuilder.Apply(ribbon, layout);
+                IInstrumentRibbonEditor ribbon = scoreEditor.ReadInstrumentRibbon(scoreEditor.NumberOfInstruments - 1);
+                var layout = ribbon.ReadLayout();
+                layout.DisplayName.Value = partListNode.Attributes().Single(a => a.Name == "id").Value;
+                ribbon.ApplyLayout(layout);
             }
         }
 
-        private void PrepareMeasures(XElement part, IScoreDocumentEditor scoreEditor, IScoreLayoutBuilder scoreLayoutBuilder)
+        private void PrepareMeasures(XElement part, IScoreDocumentEditor scoreEditor)
         {
-            var lastKeySignature = 0;
-            var lastBeats = 4;
-            var lastBeatsType = 4;
+            int lastKeySignature = 0;
+            int lastBeats = 4;
+            int lastBeatsType = 4;
 
-            var measures = part.Elements().Where(e => e.Name == "measure");
-            var n = 0;
-            foreach (var measure in measures)
+            IEnumerable<XElement> measures = part.Elements().Where(e => e.Name == "measure");
+            foreach (XElement? measure in measures)
             {
                 lastKeySignature = part.Descendants().FirstOrDefault(d => d.Name == "fifths")?.Value.ToIntOrNull() ?? lastKeySignature;
                 lastBeats = part.Descendants().FirstOrDefault(d => d.Name == "beats")?.Value.ToIntOrNull() ?? lastBeats;
                 lastBeatsType = part.Descendants().FirstOrDefault(d => d.Name == "beat-type")?.Value.ToIntOrNull() ?? lastBeatsType;
 
-                var newSystem = part.Descendants().FirstOrDefault(d => d.Name == "print")?.Attribute("new-system")?.Value.Equals("yes") ?? false;
-                var newPage = part.Descendants().FirstOrDefault(d => d.Name == "print")?.Attribute("new-page")?.Value.Equals("yes") ?? false;
-                var timeSignature = new TimeSignature(lastBeats, lastBeatsType);
+                bool newSystem = part.Descendants().FirstOrDefault(d => d.Name == "print")?.Attribute("new-system")?.Value.Equals("yes") ?? false;
+                bool newPage = part.Descendants().FirstOrDefault(d => d.Name == "print")?.Attribute("new-page")?.Value.Equals("yes") ?? false;
+                TimeSignature timeSignature = new(lastBeats, lastBeatsType);
                 scoreEditor.AppendScoreMeasure(timeSignature);
 
-                var appendedMeasure = scoreEditor.ReadScoreMeasure(scoreEditor.NumberOfMeasures - 1);
-                var keySignature = new KeySignature(Step.C.MoveAlongCircleOfFifths(lastKeySignature), MajorOrMinor.Major);
+                IScoreMeasureEditor appendedMeasure = scoreEditor.ReadScoreMeasure(scoreEditor.NumberOfMeasures - 1);
+                KeySignature keySignature = new(Step.C.MoveAlongCircleOfFifths(lastKeySignature), MajorOrMinor.Major);
                 appendedMeasure.EditKeySignature(keySignature);
-
-                var width = measure.Attribute("width")?.Value.ToIntOrNull();
-                var measureLayout = new ScoreMeasureLayout()
-                {
-                    Width = width ?? 100,
-                };
-                scoreLayoutBuilder.Apply(appendedMeasure, measureLayout);
-
-                n++;
             }
         }
     }

@@ -4,7 +4,7 @@ using StudioLaValse.ScoreDocument.Layout;
 namespace StudioLaValse.ScoreDocument.Builder
 {
     /// <inheritdoc/>
-    public interface IStaffEditor : IStaff, IScoreElementEditor
+    public interface IStaffEditor : IStaff, ILayoutEditor<StaffLayout>, IScoreElementEditor
     {
 
     }

@@ -1,6 +1,4 @@
 ﻿using StudioLaValse.ScoreDocument.Drawable.Private.DrawableElements;
-using StudioLaValse.ScoreDocument.Drawable.Private.Models;
-using StudioLaValse.ScoreDocument.Layout;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
@@ -19,7 +17,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         {
             get
             {
-                var glyph = GlyphPrototype;
+                Glyph glyph = GlyphPrototype;
                 return new DrawableScoreGlyph(XPosition, canvasTop, glyph, HorizontalTextOrigin.Center, VerticalTextOrigin.Center, color);
             }
         }
@@ -27,7 +25,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         {
             get
             {
-                var glyph = accidental switch
+                Glyph? glyph = accidental switch
                 {
                     Accidental.DoubleFlat => GlyphLibrary.DoubleFlat,
                     Accidental.Flat => GlyphLibrary.Flat,
@@ -42,7 +40,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                 {
                     glyph.Scale = Scale;
                     return new DrawableScoreGlyph(
-                        XPosition - glyph.Width * 2,
+                        XPosition - (glyph.Width * 2),
                         canvasTop,
                         glyph,
                         HorizontalTextOrigin.Center,
@@ -56,7 +54,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         {
             get
             {
-                var glyph = DisplayDuration.Decimal switch
+                Glyph glyph = DisplayDuration.Decimal switch
                 {
                     1M => GlyphLibrary.NoteHeadWhole,
                     0.5M => GlyphLibrary.NoteHeadWhite,
@@ -87,12 +85,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
         public override IEnumerable<BaseDrawableElement> GetDrawableElements()
         {
-            if (AccidentalGlyph == null)
-            {
-                return base.GetDrawableElements();
-            }
-
-            return base.GetDrawableElements().Append(AccidentalGlyph);
+            return AccidentalGlyph == null ? base.GetDrawableElements() : base.GetDrawableElements().Append(AccidentalGlyph);
         }
     }
 }

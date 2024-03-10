@@ -28,12 +28,12 @@ public static class ScoreEditorExtensions
             {
                 editor.Clear();
             })
-            .Edit((editor, layout) =>
+            .Edit(editor =>
             {
-                var blockConverter = new BlockChainXmlConverter();
-                var measureConverter = new ScorePartMeasureXmlConverter(blockConverter);
-                var partConverter = new ScorePartXmlConverter(measureConverter);
-                new ScoreDocumentXmlConverter(partConverter).Create(document, editor, layout);
+                BlockChainXmlConverter blockConverter = new();
+                ScorePartMeasureXmlConverter measureConverter = new(blockConverter);
+                ScorePartXmlConverter partConverter = new(measureConverter);
+                new ScoreDocumentXmlConverter(partConverter).Create(document, editor);
             });
     }
 }

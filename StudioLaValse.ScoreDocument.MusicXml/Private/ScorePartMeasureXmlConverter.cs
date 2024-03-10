@@ -11,51 +11,51 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             this.blockChainXmlConverter = blockChainXmlConverter;
         }
 
-        public void Create(XElement measure, IInstrumentMeasureEditor measureEditor, IScoreLayoutBuilder scoreLayoutBuilder, ref int durationOfOneQuarter)
+        public void Create(XElement measure, IInstrumentMeasureEditor measureEditor, ref int durationOfOneQuarter)
         {
             measureEditor.Clear();
 
-            var attributes = measure.Elements().FirstOrDefault(e => e.Name == "attributes");
+            XElement? attributes = measure.Elements().FirstOrDefault(e => e.Name == "attributes");
             if (attributes is not null)
             {
-                ProcessMeasureAttributes(attributes, ref durationOfOneQuarter, out var clefChanges);
-                var layout = scoreLayoutBuilder.InstrumentMeasureLayout(measureEditor);
-                foreach (var clefChange in clefChanges)
+                ProcessMeasureAttributes(attributes, ref durationOfOneQuarter, out IEnumerable<ClefChange>? clefChanges);
+                InstrumentMeasureLayout layout = measureEditor.ReadLayout();
+                foreach (ClefChange clefChange in clefChanges)
                 {
                     layout.AddClefChange(clefChange);
                 }
-                scoreLayoutBuilder.Apply(measureEditor, layout);
+                measureEditor.ApplyLayout(layout);
             }
 
-            var voices = measure.ExtractVoices();
-            foreach (var voice in voices)
+            IEnumerable<int> voices = measure.ExtractVoices();
+            foreach (int voice in voices)
             {
                 measureEditor.AddVoice(voice);
-                var blockChainEditor = measureEditor.ReadBlockChainAt(voice);
+                IMeasureBlockChainEditor blockChainEditor = measureEditor.ReadBlockChainAt(voice);
                 blockChainEditor.DivideEqual(measureEditor.TimeSignature.Denominator);
 
-                var elements = measure.ExtractElements(voice);
-                blockChainXmlConverter.ProcessElements(elements, blockChainEditor, scoreLayoutBuilder, durationOfOneQuarter);
+                IEnumerable<XElement> elements = measure.ExtractElements(voice);
+                blockChainXmlConverter.ProcessElements(elements, blockChainEditor, durationOfOneQuarter);
             }
         }
 
         private void ProcessMeasureAttributes(XElement measureAttributes, ref int divisions, out IEnumerable<ClefChange> clefChanges)
         {
-            var _clefChanges = new List<ClefChange>();
+            List<ClefChange> _clefChanges = [];
 
-            foreach (var element in measureAttributes.Elements())
+            foreach (XElement element in measureAttributes.Elements())
             {
                 if (element.Name == "clef")
                 {
-                    var sign = element.Descendants().Single(d => d.Name == "sign").Value.ToLower();
-                    var clef = sign switch
+                    string sign = element.Descendants().Single(d => d.Name == "sign").Value.ToLower();
+                    Clef clef = sign switch
                     {
                         "g" => Clef.Treble,
                         "f" => Clef.Bass,
                         _ => throw new NotSupportedException("Unknown clef species found in XML document: " + sign)
                     };
-                    var staff = element.Attributes().Single(a => a.Name == "number").Value.ToIntOrThrow() - 1;
-                    var clefChange = new ClefChange(clef, staff, new Position(0, 4));
+                    int staff = element.Attributes().Single(a => a.Name == "number").Value.ToIntOrThrow() - 1;
+                    ClefChange clefChange = new(clef, staff, new Position(0, 4));
                     _clefChanges.Add(clefChange);
                 }
 

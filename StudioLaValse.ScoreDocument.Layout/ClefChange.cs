@@ -5,9 +5,6 @@
     /// </summary>
     public class ClefChange
     {
-        private readonly Clef clef;
-        private readonly int staffIndex;
-        private readonly Position position;
 
         /// <summary>
         /// Create a default clef change.
@@ -17,24 +14,24 @@
         /// <param name="position"></param>
         public ClefChange(Clef clef, int staffIndex, Position position)
         {
-            this.clef = clef;
-            this.staffIndex = staffIndex;
-            this.position = position;
+            Clef = clef;
+            StaffIndex = staffIndex;
+            Position = position;
         }
 
         /// <summary>
         /// The new clef.
         /// </summary>
-        public Clef Clef => clef;
+        public Clef Clef { get; }
 
         /// <summary>
         /// The staff index of the new clef.
         /// </summary>
-        public int StaffIndex => staffIndex;
+        public int StaffIndex { get; }
 
         /// <summary>
         /// The position of the new clef.
         /// </summary>
-        public Position Position => position;
+        public Position Position { get; }
     }
 }

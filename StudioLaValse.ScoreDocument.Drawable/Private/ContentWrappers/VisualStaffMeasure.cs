@@ -1,6 +1,4 @@
 ﻿using StudioLaValse.ScoreDocument.Drawable.Private.DrawableElements;
-using StudioLaValse.ScoreDocument.Drawable.Private.Models;
-using StudioLaValse.ScoreDocument.Layout;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
@@ -9,12 +7,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         private readonly Clef openingClef;
         private readonly KeySignature keySignature;
         private readonly TimeSignature? timeSignature;
-        private readonly KeySignature? prepareNext;
         private readonly Clef? invalidatingNextClef;
-        private readonly IEnumerable<ClefChange> clefChanges;
         private readonly bool openingMeasure;
-        private readonly double canvasLeft;
-        private readonly double width;
         private readonly double paddingLeft;
         private readonly double drawableWidth;
         private readonly double canvasTop;
@@ -22,16 +16,12 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 
 
 
-        public double CanvasLeft =>
-            canvasLeft;
-        public double Width =>
-            width;
+        public double CanvasLeft { get; }
+        public double Width { get; }
         public ColorARGB ForegroundColor =>
             ColorARGB.Black;
-        public KeySignature? NextMeasureKeySignature =>
-            prepareNext;
-        public IEnumerable<ClefChange> ClefChanges =>
-            clefChanges;
+        public KeySignature? NextMeasureKeySignature { get; }
+        public IEnumerable<ClefChange> ClefChanges { get; }
         public IEnumerable<DrawableScoreGlyph> InvalidingNextKeySignature
         {
             get
@@ -41,30 +31,30 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                     yield break;
                 }
 
-                var _glyph = NextMeasureKeySignature.IndexInCircleOfFifths > 0 ?
+                Glyph _glyph = NextMeasureKeySignature.Value.IndexInCircleOfFifths > 0 ?
                     GlyphLibrary.Sharp :
                     GlyphLibrary.Flat;
 
-                var glyphWidth = _glyph.Width;
+                double glyphWidth = _glyph.Width;
 
-                var newLines = NextMeasureKeySignature.DefaultFlats ?
-                    NextMeasureKeySignature.EnumerateFlatLines(openingClef) :
-                    NextMeasureKeySignature.EnumerateSharpLines(openingClef);
+                IEnumerable<int> newLines = NextMeasureKeySignature.Value.DefaultFlats ?
+                    NextMeasureKeySignature.Value.EnumerateFlatLines(openingClef) :
+                    NextMeasureKeySignature.Value.EnumerateSharpLines(openingClef);
 
-                var naturalLines = newLines
+                IEnumerable<int> naturalLines = newLines
                     .Where(line => !newLines.Contains(line));
 
-                var numberOfAccidentals = newLines.Count() + naturalLines.Count();
+                int numberOfAccidentals = newLines.Count() + naturalLines.Count();
 
-                var xPosition = CanvasLeft + Width - (numberOfAccidentals + 1) * glyphWidth;
+                double xPosition = CanvasLeft + Width - ((numberOfAccidentals + 1) * glyphWidth);
 
-                foreach (var line in naturalLines)
+                foreach (int line in naturalLines)
                 {
                     xPosition += glyphWidth * VisualStaff.KeySignatureGlyphSpacing;
 
-                    var yPosition = HeightFromLineIndex(line - 4);
+                    double yPosition = HeightFromLineIndex(line - 4);
 
-                    var glyph = new DrawableScoreGlyph(
+                    DrawableScoreGlyph glyph = new(
                         xPosition,
                         yPosition,
                         GlyphLibrary.Natural,
@@ -73,13 +63,13 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                     yield return glyph;
                 }
 
-                foreach (var line in newLines)
+                foreach (int line in newLines)
                 {
                     xPosition += glyphWidth * VisualStaff.KeySignatureGlyphSpacing;
 
-                    var yPosition = HeightFromLineIndex(line - 4);
+                    double yPosition = HeightFromLineIndex(line - 4);
 
-                    var glyph = new DrawableScoreGlyph(
+                    DrawableScoreGlyph glyph = new(
                         xPosition,
                         yPosition,
                         _glyph,
@@ -98,15 +88,15 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                     yield break;
                 }
 
-                var flats = keySignature.DefaultFlats;
-                var numberOfAccidentals = flats ?
+                bool flats = keySignature.DefaultFlats;
+                int numberOfAccidentals = flats ?
                     keySignature.EnumerateFlats().Count() :
                     keySignature.EnumerateSharps().Count();
-                var left = openingMeasure ?
-                    CanvasLeft + numberOfAccidentals * VisualStaff.KeySignatureGlyphSpacing + VisualStaff.ClefSpacing :
+                double left = openingMeasure ?
+                    CanvasLeft + (numberOfAccidentals * VisualStaff.KeySignatureGlyphSpacing) + VisualStaff.ClefSpacing :
                     CanvasLeft + 0.1;
 
-                var topGlyph = timeSignature.Numinator switch
+                Glyph topGlyph = timeSignature.Numerator switch
                 {
                     1 => GlyphLibrary.NumberOne,
                     2 => GlyphLibrary.NumberTwo,
@@ -120,7 +110,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                     _ => throw new NotSupportedException()
                 };
 
-                var bottomGlyph = timeSignature.Denominator.Value switch
+                Glyph bottomGlyph = timeSignature.Denominator.Value switch
                 {
                     2 => GlyphLibrary.NumberTwo,
                     4 => GlyphLibrary.NumberFour,
@@ -137,14 +127,14 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         {
             get
             {
-                foreach (var clefchange in ClefChanges)
+                foreach (ClefChange clefchange in ClefChanges)
                 {
                     if (clefchange.Position.Decimal == 0)
                     {
                         continue;
                     }
 
-                    var glyph = clefchange.Clef.ClefSpecies switch
+                    Glyph glyph = clefchange.Clef.ClefSpecies switch
                     {
                         ClefSpecies.C => GlyphLibrary.ClefC,
                         ClefSpecies.F => GlyphLibrary.ClefF,
@@ -152,7 +142,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                         _ => throw new NotSupportedException()
                     };
 
-                    var posX = XPositionFromParameter((double)clefchange.Position.Decimal) - GlyphLibrary.NoteHeadBlack.Width / 2 - 0.1;
+                    double posX = XPositionFromParameter((double)clefchange.Position.Decimal) - (GlyphLibrary.NoteHeadBlack.Width / 2) - 0.1;
 
                     glyph.Scale = 0.8;
 
@@ -175,7 +165,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                     return null;
                 }
 
-                var glyph = invalidatingNextClef.ClefSpecies switch
+                Glyph glyph = invalidatingNextClef.ClefSpecies switch
                 {
                     ClefSpecies.C => GlyphLibrary.ClefC,
                     ClefSpecies.F => GlyphLibrary.ClefF,
@@ -183,7 +173,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                     _ => throw new NotSupportedException()
                 };
 
-                var posX = CanvasLeft + Width - 0.05 - glyph.Width;
+                double posX = CanvasLeft + Width - 0.05 - glyph.Width;
 
                 glyph.Scale = 0.8;
 
@@ -215,12 +205,12 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
             this.keySignature = keySignature;
             this.openingClef = openingClef;
             this.timeSignature = timeSignature;
-            this.prepareNext = prepareNext;
+            NextMeasureKeySignature = prepareNext;
             this.invalidatingNextClef = invalidatingNextClef;
-            this.clefChanges = clefChanges;
+            ClefChanges = clefChanges;
             this.openingMeasure = openingMeasure;
-            this.canvasLeft = canvasLeft;
-            this.width = width;
+            CanvasLeft = canvasLeft;
+            Width = width;
             this.paddingLeft = paddingLeft;
             this.drawableWidth = drawableWidth;
             this.canvasTop = canvasTop;
@@ -230,19 +220,25 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 
 
 
-        public double XPositionFromParameter(double parameter) =>
-            canvasLeft + paddingLeft + drawableWidth * parameter;
-        public double HeightFromLineIndex(int line) =>
-            canvasTop + line * (lineSpacing / 2);
+        public double XPositionFromParameter(double parameter)
+        {
+            return CanvasLeft + paddingLeft + (drawableWidth * parameter);
+        }
+
+        public double HeightFromLineIndex(int line)
+        {
+            return canvasTop + (line * (lineSpacing / 2));
+        }
+
         public override IEnumerable<BaseContentWrapper> GetContentWrappers()
         {
-            var content = new List<BaseContentWrapper>();
+            List<BaseContentWrapper> content = [];
 
             return content;
         }
         public override IEnumerable<BaseDrawableElement> GetDrawableElements()
         {
-            foreach (var glyph in OpeningTimeSignature)
+            foreach (DrawableScoreGlyph glyph in OpeningTimeSignature)
             {
                 yield return glyph;
             }
@@ -252,12 +248,12 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                 yield return InvalidatingNextClef;
             }
 
-            foreach (var element in InvalidingNextKeySignature)
+            foreach (DrawableScoreGlyph element in InvalidingNextKeySignature)
             {
                 yield return element;
             }
 
-            foreach (var element in VisualClefChanges)
+            foreach (DrawableScoreGlyph element in VisualClefChanges)
             {
                 yield return element;
             }

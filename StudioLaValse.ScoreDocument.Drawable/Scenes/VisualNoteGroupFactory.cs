@@ -1,5 +1,4 @@
 ﻿using StudioLaValse.ScoreDocument.Drawable.Private.Interfaces;
-using StudioLaValse.ScoreDocument.Layout;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
@@ -24,7 +23,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
             this.noteFactory = noteFactory;
             this.restFactory = restFactory;
             this.scoreLayoutDictionary = scoreLayoutDictionary;
-            this.visualBeamBuilder = new VisualBeamBuilder();
+            visualBeamBuilder = new VisualBeamBuilder();
         }
         /// <inheritdoc/>
         public BaseContentWrapper Build(IMeasureBlockReader noteGroup, IStaffGroupReader staffGroup, IInstrumentMeasureReader instrumentMeasure, double canvasTopStaffGroup, double canvasLeft, double allowedSpace, ColorARGB colorARGB)

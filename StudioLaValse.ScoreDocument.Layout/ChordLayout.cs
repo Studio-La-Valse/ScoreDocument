@@ -1,10 +1,14 @@
-﻿namespace StudioLaValse.ScoreDocument.Layout
+﻿using StudioLaValse.ScoreDocument.Layout.Templates;
+
+namespace StudioLaValse.ScoreDocument.Layout
 {
     /// <summary>
     /// Represents a layout element for a chord.
     /// </summary>
     public class ChordLayout : ILayoutElement<ChordLayout>
     {
+        private readonly ChordStyleTemplate styleTemplate;
+
         /// <summary>
         /// The total x offset for the chord.
         /// </summary>
@@ -14,10 +18,12 @@
         /// <summary>
         /// The default constructor.
         /// </summary>
-        /// <param name="xOffset"></param>
-        public ChordLayout(double xOffset = 0)
+        /// <param name="styleTemplate"></param>
+        public ChordLayout(ChordStyleTemplate styleTemplate)
         {
-            XOffset = xOffset;
+            this.styleTemplate = styleTemplate;
+
+            XOffset = 0;
         }
 
 
@@ -25,7 +31,11 @@
         /// <inheritdoc/>
         public ChordLayout Copy()
         {
-            return new ChordLayout(XOffset);
+            var copy = new ChordLayout(styleTemplate)
+            {
+                XOffset = XOffset
+            };
+            return copy;
         }
     }
 }

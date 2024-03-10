@@ -5,7 +5,7 @@ namespace StudioLaValse.ScoreDocument
     /// <summary>
     /// Represents a score document reader.
     /// </summary>
-    public interface IScoreDocumentReader : IScoreDocument<IScoreMeasureReader, IInstrumentRibbonReader, IStaffSystemReader>, IScoreElementReader
+    public interface IScoreDocumentReader : IScoreDocument<IScoreMeasureReader, IInstrumentRibbonReader, IPageReader>, IScoreElementReader
     {
 
     }

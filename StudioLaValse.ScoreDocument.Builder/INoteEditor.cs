@@ -6,7 +6,7 @@ namespace StudioLaValse.ScoreDocument.Builder
     /// <summary>
     /// Represents a note editor.
     /// </summary>
-    public interface INoteEditor : INote, IScoreElementEditor
+    public interface INoteEditor : INote, ILayoutEditor<NoteLayout>, IScoreElementEditor
     {
 
     }

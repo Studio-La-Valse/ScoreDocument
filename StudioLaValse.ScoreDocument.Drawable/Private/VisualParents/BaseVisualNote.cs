@@ -5,8 +5,6 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
     internal abstract class BaseVisualNote : BaseSelectableParent<IUniqueScoreElement>
     {
         protected readonly IPositionElement measureElement;
-        private readonly ColorARGB defaultColor;
-
 
         public abstract DrawableScoreGlyph Glyph { get; }
         public abstract bool OffsetDots { get; }
@@ -22,27 +20,26 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
         public RythmicDuration DisplayDuration =>
             measureElement.RythmicDuration;
-        public ColorARGB DisplayColor =>
-            defaultColor;
+        public ColorARGB DisplayColor { get; }
         public IEnumerable<DrawableCircle> Dots
         {
             get
             {
-                var heightOnCanvas = HeightOnCanvas;
+                double heightOnCanvas = HeightOnCanvas;
                 if (OffsetDots)
                 {
                     heightOnCanvas -= 0.6;
                 }
 
-                var spacing = 1.3;
-                var startLeft = XPosition + spacing;
+                double spacing = 1.3;
+                double startLeft = XPosition + spacing;
 
                 for (int i = 0; i < measureElement.RythmicDuration.Dots; i++)
                 {
-                    var circle = new DrawableCircle(
+                    DrawableCircle circle = new(
                         new XY(startLeft, heightOnCanvas),
                         0.3,
-                        defaultColor);
+                        DisplayColor);
 
                     yield return circle;
 
@@ -57,7 +54,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         public BaseVisualNote(INoteReader measureElement, double canvasLeft, double canvasTop, double scale, ColorARGB defaultColor, ISelection<IUniqueScoreElement> selection) : base(measureElement, selection)
         {
             this.measureElement = measureElement;
-            this.defaultColor = defaultColor ?? new ColorARGB(255, 0, 0, 0);
+            DisplayColor = defaultColor ?? new ColorARGB(255, 0, 0, 0);
 
             CanvasLeft = canvasLeft;
             HeightOnCanvas = canvasTop;
@@ -66,7 +63,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         public BaseVisualNote(IChordReader measureElement, double canvasLeft, double canvasTop, double scale, ColorARGB defaultColor, ISelection<IUniqueScoreElement> selection) : base(measureElement, selection)
         {
             this.measureElement = measureElement;
-            this.defaultColor = defaultColor ?? new ColorARGB(255, 0, 0, 0);
+            DisplayColor = defaultColor ?? new ColorARGB(255, 0, 0, 0);
 
             CanvasLeft = canvasLeft;
             HeightOnCanvas = canvasTop;
@@ -78,7 +75,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         {
             yield return Glyph;
 
-            foreach (var dot in Dots)
+            foreach (DrawableCircle dot in Dots)
             {
                 yield return dot;
             }

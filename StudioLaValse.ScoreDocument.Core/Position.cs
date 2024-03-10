@@ -25,14 +25,14 @@
         {
             if (position.Denominator == step.Denominator)
             {
-                return new Position(position.Numinator + step.Numinator, position.Denominator);
+                return new Position(position.Numerator + step.Numerator, position.Denominator);
             }
 
-            var nominator =
-                position.Numinator * step.Denominator +
-                position.Denominator * step.Numinator;
+            int nominator =
+                (position.Numerator * step.Denominator) +
+                (position.Denominator * step.Numerator);
 
-            var denominator = position.Denominator * step.Denominator;
+            int denominator = position.Denominator * step.Denominator;
 
             return new Position(nominator, denominator).Simplify().ToPosition();
         }
@@ -47,14 +47,14 @@
         {
             if (position.Denominator == step.Denominator)
             {
-                return new Position(position.Numinator - step.Numinator, position.Denominator);
+                return new Position(position.Numerator - step.Numerator, position.Denominator);
             }
 
-            var nominator =
-                position.Numinator * step.Denominator -
-                position.Denominator * step.Numinator;
+            int nominator =
+                (position.Numerator * step.Denominator) -
+                (position.Denominator * step.Numerator);
 
-            var denominator = position.Denominator * step.Denominator;
+            int denominator = position.Denominator * step.Denominator;
 
             return new Position(nominator, denominator).Simplify().ToPosition();
         }
@@ -69,14 +69,14 @@
         {
             if (position.Denominator == step.Denominator)
             {
-                return new Position(position.Numinator + step.Numinator, position.Denominator);
+                return new Position(position.Numerator + step.Numerator, position.Denominator);
             }
 
-            var nominator =
-                position.Numinator * step.Denominator +
-                position.Denominator * step.Numinator;
+            int nominator =
+                (position.Numerator * step.Denominator) +
+                (position.Denominator * step.Numerator);
 
-            var denominator = position.Denominator * step.Denominator;
+            int denominator = position.Denominator * step.Denominator;
 
             return new Position(nominator, denominator).Simplify().ToPosition();
         }
@@ -91,14 +91,14 @@
         {
             if (position.Denominator == step.Denominator)
             {
-                return new Position(position.Numinator - step.Numinator, position.Denominator);
+                return new Position(position.Numerator - step.Numerator, position.Denominator);
             }
 
-            var nominator =
-                position.Numinator * step.Denominator -
-                position.Denominator * step.Numinator;
+            int nominator =
+                (position.Numerator * step.Denominator) -
+                (position.Denominator * step.Numerator);
 
-            var denominator = position.Denominator * step.Denominator;
+            int denominator = position.Denominator * step.Denominator;
 
             return new Position(nominator, denominator).Simplify().ToPosition();
         }

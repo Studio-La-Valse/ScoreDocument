@@ -6,35 +6,15 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
     {
         public static double ToDoubleOrThrow(this string s)
         {
-            if (!double.TryParse(s, out var result))
-            {
-                throw new Exception();
-            }
-
-            return result;
+            return !double.TryParse(s, out double result) ? throw new Exception() : result;
         }
         public static int ToIntOrThrow(this string s)
         {
-            if (!int.TryParse(s, out var result))
-            {
-                throw new Exception();
-            }
-
-            return result;
+            return !int.TryParse(s, out int result) ? throw new Exception() : result;
         }
         public static int? ToIntOrNull(this string s)
         {
-            if (s is null)
-            {
-                return null;
-            }
-
-            if (!int.TryParse(s, out var result))
-            {
-                throw new Exception();
-            }
-
-            return result;
+            return s is null ? null : !int.TryParse(s, out int result) ? throw new Exception() : result;
         }
 
         public static IEnumerable<int> ExtractVoices(this XElement measure)
@@ -53,12 +33,12 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                 .Where(IsNoteOrForwardOrBackup)
                 .SkipWhile(e =>
                 {
-                    var _voice = e.ExtractVoice();
+                    int? _voice = e.ExtractVoice();
                     return _voice is null || _voice.Value < voice;
                 })
                 .TakeWhile(e =>
                 {
-                    var _voice = e.ExtractVoice();
+                    int? _voice = e.ExtractVoice();
                     return _voice == voice || _voice is null;
                 });
         }
@@ -98,13 +78,13 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
 
         public static Pitch ParsePitch(this XElement measureElement)
         {
-            var step = measureElement.Descendants().Single(d => d.Name == "step").Value;
-            var octave = measureElement.Descendants().Single(d => d.Name == "octave").Value;
-            var alter = measureElement.Descendants().SingleOrDefault(d => d.Name == "alter")?.Value;
+            string step = measureElement.Descendants().Single(d => d.Name == "step").Value;
+            string octave = measureElement.Descendants().Single(d => d.Name == "octave").Value;
+            string? alter = measureElement.Descendants().SingleOrDefault(d => d.Name == "alter")?.Value;
 
-            var octaveInt = octave.ToIntOrThrow();
+            int octaveInt = octave.ToIntOrThrow();
 
-            var _step = step.ToLower() switch
+            Step _step = step.ToLower() switch
             {
                 "c" => Step.C,
                 "d" => Step.D,
@@ -116,9 +96,9 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                 _ => throw new NotSupportedException()
             };
 
-            var alterInt = alter is null ? 0 : alter.ToIntOrThrow();
+            int alterInt = alter is null ? 0 : alter.ToIntOrThrow();
 
-            var stepAlter = new Step(_step.StepsFromC, alterInt);
+            Step stepAlter = new(_step.StepsFromC, alterInt);
 
             return new Pitch(stepAlter, octaveInt);
         }

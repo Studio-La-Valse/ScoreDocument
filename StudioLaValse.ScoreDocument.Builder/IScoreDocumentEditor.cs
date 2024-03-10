@@ -6,7 +6,7 @@ namespace StudioLaValse.ScoreDocument.Builder
     /// <summary>
     /// Represents the score document editor.
     /// </summary>
-    public interface IScoreDocumentEditor : IScoreDocument<IScoreMeasureEditor, IInstrumentRibbonEditor, IStaffSystemEditor>, IScoreElementEditor
+    public interface IScoreDocumentEditor : IScoreDocument<IScoreMeasureEditor, IInstrumentRibbonEditor, IPageEditor>, ILayoutEditor<ScoreDocumentLayout>, IScoreElementEditor
     {
         /// <summary>
         /// Clears all content of the score.
@@ -44,5 +44,13 @@ namespace StudioLaValse.ScoreDocument.Builder
         /// </summary>
         /// <param name="indexInScore"></param>
         void RemoveScoreMeasure(int indexInScore);
+    }
+
+    /// <summary>
+    /// The default interface for editing pages.
+    /// </summary>
+    public interface IPageEditor : IPage, ILayoutEditor<PageLayout>, IScoreElementEditor
+    {
+
     }
 }

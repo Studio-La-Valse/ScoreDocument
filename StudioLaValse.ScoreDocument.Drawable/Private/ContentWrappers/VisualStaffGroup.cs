@@ -1,7 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Drawable.Extensions;
-using StudioLaValse.ScoreDocument.Drawable.Private.DrawableElements;
-using StudioLaValse.ScoreDocument.Drawable.Private.Models;
-using StudioLaValse.ScoreDocument.Layout;
+﻿using StudioLaValse.ScoreDocument.Drawable.Private.DrawableElements;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
@@ -24,10 +21,10 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         {
             get
             {
-                var braceLeft = Brace?.TopLeftX ?? canvasLeft;
-                var text = FirstMeasure.MeasureIndex == 0 ? ContextLayout.DisplayName : ContextLayout.AbbreviatedName;
-                var height = staffGroup.CalculateHeight(scoreLayoutDictionary);
-                var id = new DrawableText(braceLeft - 2, canvasTop + height / 2, text, 2, color, HorizontalTextOrigin.Right, VerticalTextOrigin.Center);
+                double braceLeft = Brace?.TopLeftX ?? canvasLeft;
+                string text = FirstMeasure.MeasureIndex == 0 ? ContextLayout.DisplayName.Value : ContextLayout.AbbreviatedName.Value;
+                double height = staffGroup.CalculateHeight(scoreLayoutDictionary);
+                DrawableText id = new(braceLeft - 2, canvasTop + (height / 2), text, 2, color, HorizontalTextOrigin.Right, VerticalTextOrigin.Center);
 
                 return id;
             }
@@ -36,7 +33,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         {
             get
             {
-                if (Layout.NumberOfStaves <= 1)
+                if (Layout.NumberOfStaves.Value <= 1)
                 {
                     return null;
                 }
@@ -46,11 +43,11 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                     return null;
                 }
 
-                var heightOfGroup = staffGroup.CalculateHeight(scoreLayoutDictionary);
-                var knownHeightOfTheBrace = 4.8;
-                var scale = heightOfGroup / knownHeightOfTheBrace;
+                double heightOfGroup = staffGroup.CalculateHeight(scoreLayoutDictionary);
+                double knownHeightOfTheBrace = 4.8;
+                double scale = heightOfGroup / knownHeightOfTheBrace;
 
-                var glyph = GlyphLibrary.Brace;
+                Glyph glyph = GlyphLibrary.Brace;
                 glyph.Scale = scale;
 
                 return new DrawableScoreGlyph(canvasLeft - glyph.Width - 0.1, canvasTop, glyph, color);
@@ -75,17 +72,19 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 
         public IEnumerable<VisualStaff> ConstructStaves()
         {
-            var _canvasTop = canvasTop;
-            foreach (var staff in staffGroup.EnumerateStaves(Layout.NumberOfStaves))
+            double _canvasTop = canvasTop;
+            var lineSpacing = Layout.LineSpacing.Value;
+            foreach (IStaffReader staff in staffGroup.EnumerateStaves(Layout.NumberOfStaves.Value))
             {
-                var staffLayout = scoreLayoutDictionary.StaffLayout(staff);
-                var clef = FirstMeasure.OpeningClefAtOrDefault(staff.IndexInStaffGroup, scoreLayoutDictionary);
-                var keySignature = FirstMeasure.KeySignature;
-                var newStaff = new VisualStaff(
+                StaffLayout staffLayout = scoreLayoutDictionary.StaffLayout(staff);
+                Clef clef = FirstMeasure.OpeningClefAtOrDefault(staff.IndexInStaffGroup, scoreLayoutDictionary);
+                KeySignature keySignature = FirstMeasure.KeySignature;
+                VisualStaff newStaff = new(
                     staff,
                     canvasLeft,
                     _canvasTop,
                     length,
+                    lineSpacing,
                     clef,
                     keySignature,
                     color,
@@ -93,8 +92,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 
                 yield return newStaff;
 
-                _canvasTop += staff.CalculateHeight(scoreLayoutDictionary);
-                _canvasTop += staffLayout.DistanceToNext;
+                _canvasTop += staff.CalculateHeight(lineSpacing);
+                _canvasTop += staffLayout.DistanceToNext.Value;
             }
         }
 

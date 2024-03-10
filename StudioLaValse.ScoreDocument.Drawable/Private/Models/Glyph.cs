@@ -30,6 +30,9 @@
             AsString = asString;
         }
 
-        public override string ToString() => AsString;
+        public override string ToString()
+        {
+            return AsString;
+        }
     }
 }

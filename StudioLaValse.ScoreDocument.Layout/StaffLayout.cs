@@ -1,26 +1,24 @@
-﻿namespace StudioLaValse.ScoreDocument.Layout
+﻿using StudioLaValse.ScoreDocument.Layout.Templates;
+
+namespace StudioLaValse.ScoreDocument.Layout
 {
     /// <summary>
     /// A staff layout.
     /// </summary>
     public class StaffLayout : ILayoutElement<StaffLayout>
     {
-
-        /// <inheritdoc/>
-        public double DistanceToNext { get; set; }
-        /// <inheritdoc/>
-        public double LineSpacing { get; set; }
+        private readonly StaffStyleTemplate styleTemplate;
 
 
-        /// <summary>
-        /// Create a default staff layout.
-        /// </summary>
-        /// <param name="distanceToNext"></param>
-        /// <param name="lineSpacing"></param>
-        public StaffLayout(double distanceToNext = 13, double lineSpacing = 1.2)
+
+        public TemplateProperty<double> DistanceToNext { get; }
+
+
+
+        public StaffLayout(StaffStyleTemplate styleTemplate)
         {
-            DistanceToNext = distanceToNext;
-            LineSpacing = lineSpacing;
+            this.styleTemplate = styleTemplate;
+            DistanceToNext = new TemplateProperty<double>(() =>  styleTemplate.DistanceToNext);
         }
 
 
@@ -29,7 +27,9 @@
         /// <inheritdoc/>
         public StaffLayout Copy()
         {
-            return new StaffLayout(DistanceToNext, LineSpacing);
+            var copy = new StaffLayout(styleTemplate);
+            copy.DistanceToNext.Field = DistanceToNext.Field;
+            return copy;
         }
     }
 }

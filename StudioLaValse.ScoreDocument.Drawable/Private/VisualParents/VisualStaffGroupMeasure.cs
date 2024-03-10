@@ -25,9 +25,9 @@
         {
             get
             {
-                if (source.TryReadNext(out var next))
+                if (source.TryReadNext(out IInstrumentMeasureReader? next))
                 {
-                    var nextKeySignature = next.KeySignature;
+                    KeySignature nextKeySignature = next.KeySignature;
                     if (nextKeySignature != KeySignature)
                     {
                         return nextKeySignature;
@@ -36,20 +36,8 @@
                 return null;
             }
         }
-        public BaseDrawableElement LineLeft
-        {
-            get
-            {
-                return new DrawableLineVertical(canvasLeft, canvasTop, staffGroup.CalculateHeight(scoreLayoutDictionary), 0.1, color);
-            }
-        }
-        public BaseDrawableElement LineRight
-        {
-            get
-            {
-                return new DrawableLineVertical(canvasLeft + width, canvasTop, staffGroup.CalculateHeight(scoreLayoutDictionary), 0.1, color);
-            }
-        }
+        public BaseDrawableElement LineLeft => new DrawableLineVertical(canvasLeft, canvasTop, staffGroup.CalculateHeight(scoreLayoutDictionary), 0.1, color);
+        public BaseDrawableElement LineRight => new DrawableLineVertical(canvasLeft + width, canvasTop, staffGroup.CalculateHeight(scoreLayoutDictionary), 0.1, color);
         public double DrawableWidth =>
             width - paddingLeft - paddingRight;
 
@@ -73,10 +61,10 @@
 
         public IEnumerable<BaseContentWrapper> ConstructNoteGroups()
         {
-            foreach (var voice in source.ReadVoices())
+            foreach (int voice in source.ReadVoices())
             {
-                var chain = source.ReadBlockChainAt(voice);
-                foreach (var element in ConstructNoteGroups(chain))
+                IMeasureBlockChainReader chain = source.ReadBlockChainAt(voice);
+                foreach (BaseContentWrapper element in ConstructNoteGroups(chain))
                 {
                     yield return element;
                 }
@@ -85,57 +73,58 @@
 
         public IEnumerable<BaseContentWrapper> ConstructNoteGroups(IMeasureBlockChainReader blockChain)
         {
-            var blocks = blockChain.ReadBlocks();
-            foreach (var chordGroup in blocks)
+            IEnumerable<IMeasureBlockReader> blocks = blockChain.ReadBlocks();
+            foreach (IMeasureBlockReader chordGroup in blocks)
             {
-                var elements = chordGroup.ReadChords().SelectMany(c => c.ReadNotes());
-                var anyOnStaff = elements.Any(ele =>
+                IEnumerable<INoteReader> elements = chordGroup.ReadChords().SelectMany(c => c.ReadNotes());
+                bool anyOnStaff = elements.Any(ele =>
                 {
-                    var eleLayout = scoreLayoutDictionary.NoteLayout(ele);
-                    return eleLayout.StaffIndex < Layout.NumberOfStaves;
+                    NoteLayout eleLayout = scoreLayoutDictionary.NoteLayout(ele);
+                    return eleLayout.StaffIndex < Layout.NumberOfStaves.Value;
                 });
                 if (!anyOnStaff)
                 {
                     continue;
                 }
 
-                var firstChord = chordGroup.ReadChords().First();
-                var firstChordLayout = scoreLayoutDictionary.ChordLayout(firstChord);
-                var xParameter = MathUtils.Map((double)firstChord.Position.Decimal, 0, (double)source.TimeSignature.Decimal, 0, 1);
-                var canvasLeft = XPositionFromParameter(xParameter + firstChordLayout.XOffset);
-                var allowedSpace = MathUtils.Map((double)chordGroup.RythmicDuration.Decimal, 0, (double)source.TimeSignature.Decimal, 0, DrawableWidth);
+                IChordReader firstChord = chordGroup.ReadChords().First();
+                ChordLayout firstChordLayout = scoreLayoutDictionary.ChordLayout(firstChord);
+                double xParameter = MathUtils.Map((double)firstChord.Position.Decimal, 0, (double)source.TimeSignature.Decimal, 0, 1);
+                double canvasLeft = XPositionFromParameter(xParameter + firstChordLayout.XOffset);
+                double allowedSpace = MathUtils.Map((double)chordGroup.RythmicDuration.Decimal, 0, (double)source.TimeSignature.Decimal, 0, DrawableWidth);
 
                 if (chordGroup.Grace)
                 {
-                    var graceSpacing = 0.1;
+                    double graceSpacing = 0.1;
                     allowedSpace = chordGroup.ReadChords().Count() * graceSpacing;
                     canvasLeft -= allowedSpace;
                 }
 
-                var visualNoteGroup = visualNoteGroupFactory.Build(chordGroup, staffGroup, source, canvasTop, canvasLeft, allowedSpace, color);
+                BaseContentWrapper visualNoteGroup = visualNoteGroupFactory.Build(chordGroup, staffGroup, source, canvasTop, canvasLeft, allowedSpace, color);
                 yield return visualNoteGroup;
             }
         }
 
         public IEnumerable<BaseContentWrapper> ConstructStaffMeasures()
         {
-            var _canvasTop = canvasTop;
-            foreach (var staff in staffGroup.EnumerateStaves(Layout.NumberOfStaves))
+            double _canvasTop = canvasTop;
+            var lineSpacing = Layout.LineSpacing.Value;
+            foreach (IStaffReader staff in staffGroup.EnumerateStaves(Layout.NumberOfStaves.Value))
             {
-                var staffLayout = scoreLayoutDictionary.StaffLayout(staff);
-                var instrumentMeasureLayout = scoreLayoutDictionary.InstrumentMeasureLayout(source);
-                var measureClef = source.OpeningClefAtOrDefault(staff.IndexInStaffGroup, scoreLayoutDictionary);
-                var lastClefChange = instrumentMeasureLayout.ClefChanges.LastOrDefault(c => c.StaffIndex == staff.IndexInStaffGroup)?.Clef ?? measureClef;
+                StaffLayout staffLayout = scoreLayoutDictionary.StaffLayout(staff);
+                InstrumentMeasureLayout instrumentMeasureLayout = scoreLayoutDictionary.InstrumentMeasureLayout(source);
+                Clef measureClef = source.OpeningClefAtOrDefault(staff.IndexInStaffGroup, scoreLayoutDictionary);
+                Clef lastClefChange = instrumentMeasureLayout.ClefChanges.LastOrDefault(c => c.StaffIndex == staff.IndexInStaffGroup)?.Clef ?? measureClef;
 
-                source.TryReadNext(out var nextMeasure);
-                var nextClefLayout = nextMeasure?.OpeningClefAtOrDefault(staff.IndexInStaffGroup, scoreLayoutDictionary);
-                var invalidatingNextClef = nextClefLayout is null ?
+                _ = source.TryReadNext(out IInstrumentMeasureReader? nextMeasure);
+                Clef? nextClefLayout = nextMeasure?.OpeningClefAtOrDefault(staff.IndexInStaffGroup, scoreLayoutDictionary);
+                Clef? invalidatingNextClef = nextClefLayout is null ?
                     null :
                     nextClefLayout.ClefSpecies == lastClefChange.ClefSpecies ?
                         null :
                         nextClefLayout;
 
-                var el = new VisualStaffMeasure(
+                VisualStaffMeasure el = new(
                     measureClef,
                     KeySignature,
                     source.MeasureIndex == 0 ? source.TimeSignature : null,
@@ -148,20 +137,20 @@
                     paddingLeft,
                     DrawableWidth,
                     _canvasTop,
-                    staffLayout.LineSpacing);
+                    lineSpacing);
 
                 yield return el;
 
-                _canvasTop += staff.CalculateHeight(scoreLayoutDictionary) + staffLayout.DistanceToNext;
+                _canvasTop += staff.CalculateHeight(lineSpacing) + staffLayout.DistanceToNext.Value;
             }
         }
 
 
 
-        public double XPositionFromParameter(double parameter) =>
-            canvasLeft + paddingLeft + DrawableWidth * parameter;
-
-
+        public double XPositionFromParameter(double parameter)
+        {
+            return canvasLeft + paddingLeft + (DrawableWidth * parameter);
+        }
 
         public override BoundingBox BoundingBox()
         {
@@ -169,27 +158,24 @@
         }
         public override IEnumerable<BaseDrawableElement> GetDrawableElements()
         {
-            return new List<BaseDrawableElement>()
-            {
+            return
+            [
                 LineLeft,
                 LineRight
-            };
+            ];
         }
         public override IEnumerable<BaseContentWrapper> GetContentWrappers()
         {
-            var wrappers = new List<BaseContentWrapper>()
-            {
-                new SimpleGhost(this)
-            };
-
-            wrappers.AddRange(ConstructNoteGroups());
-            wrappers.AddRange(ConstructStaffMeasures());
+            List<BaseContentWrapper> wrappers =
+            [
+                new SimpleGhost(this), .. ConstructNoteGroups(), .. ConstructStaffMeasures()
+            ];
 
             return wrappers;
         }
         public override bool OnMouseMove(XY mousePosition)
         {
-            var previousMouseOver = IsMouseOver;
+            bool previousMouseOver = IsMouseOver;
             IsMouseOver = BoundingBox().Contains(mousePosition);
             return previousMouseOver != IsMouseOver;
         }

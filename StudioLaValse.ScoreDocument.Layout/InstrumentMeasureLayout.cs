@@ -1,4 +1,6 @@
-﻿namespace StudioLaValse.ScoreDocument.Layout
+﻿using StudioLaValse.ScoreDocument.Layout.Templates;
+
+namespace StudioLaValse.ScoreDocument.Layout
 {
     /// <summary>
     /// Represents an instrument measure layout.
@@ -6,6 +8,7 @@
     public class InstrumentMeasureLayout : ILayoutElement<InstrumentMeasureLayout>
     {
         private readonly HashSet<ClefChange> _changeList = [];
+        private readonly InstrumentMeasureStyleTemplate styleTemplate;
 
         /// <inheritdoc/>
         public IEnumerable<ClefChange> ClefChanges => _changeList;
@@ -13,28 +16,28 @@
         /// <summary>
         /// Create a new Instrument measure layout.
         /// </summary>
-        public InstrumentMeasureLayout()
+        public InstrumentMeasureLayout(InstrumentMeasureStyleTemplate styleTemplate)
         {
-
+            this.styleTemplate = styleTemplate;
         }
 
         /// <inheritdoc/>
         public void AddClefChange(ClefChange clefChange)
         {
-            _changeList.Add(clefChange);
+            _ = _changeList.Add(clefChange);
         }
 
         /// <inheritdoc/>
         public void RemoveClefChange(ClefChange clefChange)
         {
-            _changeList.Remove(clefChange);
+            _ = _changeList.Remove(clefChange);
         }
 
         /// <inheritdoc/>
         public InstrumentMeasureLayout Copy()
         {
-            var layout = new InstrumentMeasureLayout();
-            foreach (var change in _changeList)
+            InstrumentMeasureLayout layout = new(styleTemplate);
+            foreach (ClefChange change in _changeList)
             {
                 layout.AddClefChange(change);
             }

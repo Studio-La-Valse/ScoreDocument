@@ -1,5 +1,4 @@
 ﻿using StudioLaValse.ScoreDocument.Drawable.Private.DrawableElements;
-using StudioLaValse.ScoreDocument.Drawable.Private.Models;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
@@ -9,9 +8,9 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         {
             get
             {
-                var duration = 1M;
+                decimal duration = 1M;
 
-                var glyphs = new[]
+                Glyph[] glyphs = new[]
                 {
                     GlyphLibrary.RestWhole,
                     GlyphLibrary.RestHalf,
@@ -24,7 +23,9 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                 for (int i = 0; i < 6; i++)
                 {
                     if (DisplayDuration.Decimal >= duration)
+                    {
                         return glyphs[i];
+                    }
 
                     duration /= 2;
                 }
@@ -36,7 +37,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         {
             get
             {
-                var glyph = GlyphPrototype;
+                Glyph glyph = GlyphPrototype;
 
                 if (measureElement.Grace)
                 {

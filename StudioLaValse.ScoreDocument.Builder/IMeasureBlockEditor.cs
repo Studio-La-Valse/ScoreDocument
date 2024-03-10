@@ -6,7 +6,7 @@ namespace StudioLaValse.ScoreDocument.Builder
     /// <summary>
     /// Represents a measure block editor.
     /// </summary>
-    public interface IMeasureBlockEditor : IMeasureBlock<IChordEditor, IMeasureBlockEditor>, IScoreElementEditor
+    public interface IMeasureBlockEditor : IMeasureBlock<IChordEditor, IMeasureBlockEditor>, ILayoutEditor<MeasureBlockLayout>, IScoreElementEditor
     {
         /// <summary>
         /// Clears the content of the measure block.

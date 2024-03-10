@@ -12,4 +12,13 @@ namespace StudioLaValse.ScoreDocument.Layout
         /// </summary>
         Guid Guid { get; }
     }
+
+    /// <summary>
+    /// Defines a score entity that has an attached layout element.
+    /// </summary>
+    /// <typeparam name="TLayout"></typeparam>
+    public interface ILayoutReader<TLayout> : IScoreEntity where TLayout : ILayoutElement<TLayout>
+    {
+
+    }
 }

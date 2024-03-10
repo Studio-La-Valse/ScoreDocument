@@ -14,9 +14,9 @@ namespace StudioLaValse.ScoreDocument.Core
         /// <returns></returns>
         public static Duration Sum(this IEnumerable<Duration> durations)
         {
-            var sum = new Duration(0, 4);
+            Duration sum = new(0, 4);
 
-            foreach (var duration in durations)
+            foreach (Duration duration in durations)
             {
                 sum += duration;
             }
@@ -31,7 +31,7 @@ namespace StudioLaValse.ScoreDocument.Core
         /// <returns></returns>
         public static Position ToPosition(this Fraction fraction)
         {
-            return new Position(fraction.Numinator, fraction.Denominator);
+            return new Position(fraction.Numerator, fraction.Denominator);
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace StudioLaValse.ScoreDocument.Core
                 throw new InvalidOperationException("Please provide at least one value");
             }
 
-            foreach (var step in steps)
+            foreach (int step in steps)
             {
                 if (step <= 0)
                 {
@@ -58,29 +58,26 @@ namespace StudioLaValse.ScoreDocument.Core
                 }
             }
 
-            var multiplier = timeSignature.Numinator;
+            int multiplier = timeSignature.Numerator;
             for (int i = 0; i < steps.Length; i++)
             {
                 steps[i] *= multiplier;
             }
 
-            var sum = steps.Sum();
-            var denomMultiplier = sum / multiplier;
-            var stepDenom = denomMultiplier * timeSignature.Denominator;
+            int sum = steps.Sum();
+            int denomMultiplier = sum / multiplier;
+            int stepDenom = denomMultiplier * timeSignature.Denominator;
 
-            var stepsAsRythmicDurations = steps.Select(step =>
+            IEnumerable<RythmicDuration> stepsAsRythmicDurations = steps.Select(step =>
             {
-                var gcd = step.GCD(stepDenom);
+                int gcd = step.GCD(stepDenom);
                 step /= gcd;
 
-                var denom = stepDenom / gcd;
-                var fraction = new Fraction(step, denom);
-                if (!RythmicDuration.TryConstruct(fraction, out var rythmicDuration))
-                {
-                    throw new InvalidOperationException("Not all of the specified steps can be resolved to valid rythmic durations.");
-                }
-
-                return rythmicDuration;
+                int denom = stepDenom / gcd;
+                Fraction fraction = new(step, denom);
+                return !RythmicDuration.TryConstruct(fraction, out RythmicDuration? rythmicDuration)
+                    ? throw new InvalidOperationException("Not all of the specified steps can be resolved to valid rythmic durations.")
+                    : rythmicDuration;
             });
 
             if (stepsAsRythmicDurations.Sum().Decimal != timeSignature.Decimal)
@@ -88,7 +85,7 @@ namespace StudioLaValse.ScoreDocument.Core
                 throw new InvalidOperationException("The specified set of steps does not resolve to the same duration as the timesignature of the measure.");
             }
 
-            foreach (var rythmicDuration in stepsAsRythmicDurations)
+            foreach (RythmicDuration? rythmicDuration in stepsAsRythmicDurations)
             {
                 yield return rythmicDuration;
             }
@@ -103,7 +100,7 @@ namespace StudioLaValse.ScoreDocument.Core
         /// <returns></returns>
         public static IEnumerable<RythmicDuration> DivideEqual(this Duration duration, int number)
         {
-            var steps = Enumerable.Range(0, number).Select(i => 1).ToArray();
+            int[] steps = Enumerable.Range(0, number).Select(i => 1).ToArray();
             return duration.Divide(steps);
         }
     }

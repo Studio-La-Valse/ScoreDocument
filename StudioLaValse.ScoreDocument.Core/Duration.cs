@@ -27,15 +27,15 @@
         /// <returns></returns>
         public override Duration Simplify()
         {
-            if (Numinator == 0)
+            if (Numerator == 0)
             {
                 return new Duration(0, 1);
             }
 
-            var denom = Denominator;
-            var num = Numinator;
-            var halfDenom = denom / 2M;
-            var halfNum = num / 2M;
+            PowerOfTwo denom = Denominator;
+            int num = Numerator;
+            decimal halfDenom = denom / 2M;
+            decimal halfNum = num / 2M;
 
             while (halfDenom % 1 == 0 && halfNum % 1 == 0)
             {
@@ -61,14 +61,14 @@
         {
             if (first.Denominator == second.Denominator)
             {
-                return new Duration(first.Numinator + second.Numinator, first.Denominator);
+                return new Duration(first.Numerator + second.Numerator, first.Denominator);
             }
 
-            var nominator =
-                first.Numinator * second.Denominator +
-                first.Denominator * second.Numinator;
+            int nominator =
+                (first.Numerator * second.Denominator) +
+                (first.Denominator * second.Numerator);
 
-            var denominator = first.Denominator * second.Denominator;
+            int denominator = first.Denominator * second.Denominator;
 
             return new Duration(nominator, denominator).Simplify();
         }

@@ -5,13 +5,7 @@
         private static readonly double thickness = 0.08;
         private readonly ColorARGB color;
 
-        public bool VisuallyUp
-        {
-            get
-            {
-                return End.Y < Origin.Y;
-            }
-        }
+        public bool VisuallyUp => End.Y < Origin.Y;
 
         public XY Origin { get; }
         public XY End { get; }

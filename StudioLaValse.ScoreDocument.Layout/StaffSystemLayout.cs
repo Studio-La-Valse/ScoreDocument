@@ -1,27 +1,31 @@
-﻿namespace StudioLaValse.ScoreDocument.Layout
+﻿using StudioLaValse.ScoreDocument.Layout.Templates;
+
+namespace StudioLaValse.ScoreDocument.Layout
 {
     /// <summary>
     /// A staff system layout.
     /// </summary>
     public class StaffSystemLayout : ILayoutElement<StaffSystemLayout>
     {
-        /// <inheritdoc/>
-        public double PaddingTop { get; set; }
+        private readonly StaffSystemStyleTemplate styleTemplate;
 
-        /// <summary>
-        /// Create a new staff system layout.
-        /// </summary>
-        /// <param name="paddingTop"></param>
-        public StaffSystemLayout(double paddingTop = 30)
+        public TemplateProperty<double> PaddingBottom { get; }
+
+
+        public StaffSystemLayout(StaffSystemStyleTemplate styleTemplate)
         {
-            PaddingTop = paddingTop;
+            this.styleTemplate = styleTemplate;
+
+            PaddingBottom = new TemplateProperty<double>(() => styleTemplate.PaddingBottom);
         }
 
 
         /// <inheritdoc/>
         public StaffSystemLayout Copy()
         {
-            return new StaffSystemLayout(PaddingTop);
+            var copy = new StaffSystemLayout(styleTemplate);
+            copy.PaddingBottom.Field = PaddingBottom.Field;
+            return copy;
         }
     }
 }

@@ -1,4 +1,7 @@
-﻿using StudioLaValse.ScoreDocument.Drawable.Private.Interfaces;
+﻿using StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers;
+using StudioLaValse.ScoreDocument.Drawable.Private.Interfaces;
+using StudioLaValse.ScoreDocument.Drawable.Private.Models;
+using StudioLaValse.ScoreDocument.Drawable.Scenes;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
@@ -14,13 +17,13 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         private readonly IVisualRestFactory restFactory;
         private readonly IVisualBeamBuilder visualBeamBuilder;
         private readonly ColorARGB colorARGB;
-        private readonly IScoreLayoutProvider scoreLayoutDictionary;
+        private readonly IScoreDocumentLayout scoreLayoutDictionary;
 
         public MeasureBlockLayout Layout => scoreLayoutDictionary.MeasureBlockLayout(measureBlock);
 
 
 
-        public VisualNoteGroup(IMeasureBlockReader measureBlock, IStaffGroupReader staffGroup, IInstrumentMeasureReader instrumentMeasure, double canvasTopStaffGroup, double canvasLeft, double allowedSpace, IVisualNoteFactory noteFactory, IVisualRestFactory restFactory, IVisualBeamBuilder visualBeamBuilder, ColorARGB colorARGB, IScoreLayoutProvider scoreLayoutDictionary)
+        public VisualNoteGroup(IMeasureBlockReader measureBlock, IStaffGroupReader staffGroup, IInstrumentMeasureReader instrumentMeasure, double canvasTopStaffGroup, double canvasLeft, double allowedSpace, IVisualNoteFactory noteFactory, IVisualRestFactory restFactory, IVisualBeamBuilder visualBeamBuilder, ColorARGB colorARGB, IScoreDocumentLayout scoreLayoutDictionary)
         {
             this.measureBlock = measureBlock;
             this.staffGroup = staffGroup;
@@ -49,10 +52,10 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             double canvasLeft = this.canvasLeft;
             double noteWidth = note.Width;
             IChordReader firstChord = chords.First();
-            bool firstStemUp = Layout.StemLength.Value > 0;
+            bool firstStemUp = Layout.StemLength > 0;
             XY firstStemOrigin = ConstructStemOrigin(firstChord, staffGroup, canvasTopStaffGroup, canvasLeft, firstStemUp, noteWidth);
-            XY firstStemTip = new(firstStemOrigin.X, firstStemOrigin.Y + Layout.StemLength.Value);
-            Ruler beamDefinition = new(firstStemTip, Layout.BeamAngle.Value);
+            XY firstStemTip = new(firstStemOrigin.X, firstStemOrigin.Y + Layout.StemLength);
+            Ruler beamDefinition = new(firstStemTip, Layout.BeamAngle);
             List<VisualStem> stems = [];
             decimal groupLength = chords.Select(c => c.RythmicDuration).Sum().Decimal;
             foreach (IChordReader? chord in chords)
@@ -94,7 +97,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             if (!chord.ReadNotes().Any())
             {
                 int line = 4;
-                var lineSpacing = scoreLayoutDictionary.StaffGroupLayout(staffGroup).LineSpacing.Value;
+                var lineSpacing = scoreLayoutDictionary.StaffGroupLayout(staffGroup).LineSpacing;
                 double heightOnCanvas = staffGroup.EnumerateStaves(1).First().HeightFromLineIndex(staffGroupCanvasTop, line, lineSpacing);
                 return new XY(chordCanvasLeft, heightOnCanvas);
             }
@@ -122,7 +125,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
         public override IEnumerable<BaseDrawableElement> GetDrawableElements()
         {
-            return [];
+            yield break;
         }
         public override IEnumerable<BaseContentWrapper> GetContentWrappers()
         {

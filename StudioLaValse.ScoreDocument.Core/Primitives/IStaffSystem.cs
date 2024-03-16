@@ -1,32 +1,28 @@
 ﻿namespace StudioLaValse.ScoreDocument.Core.Primitives
 {
     /// <summary>
-    /// Represents a staff system reader.
+    /// The base interface for a staff system.
     /// </summary>
-    public interface IStaffSystem
+    public interface IStaffSystem : IScoreElement
     {
 
     }
 
     /// <summary>
-    /// Represents a staff system reader.
+    /// The base interface for a staff system.
     /// </summary>
-    public interface IStaffSystem<TStaffGroup> : IStaffSystem where TStaffGroup : IStaffGroup
+    /// <typeparam name="TStaffGroup"></typeparam>
+    /// <typeparam name="TScoreMeasure"></typeparam>
+    public interface IStaffSystem<TStaffGroup, TScoreMeasure> : IStaffSystem where TStaffGroup : IStaffGroup
+                                                                             where TScoreMeasure : IScoreMeasure
     {
         /// <summary>
-        /// Reads the staffgroups in this staff system.
+        /// Enumerate the staff groups.
         /// </summary>
         /// <returns></returns>
         IEnumerable<TStaffGroup> EnumerateStaffGroups();
-    }
-
-    /// <summary>
-    /// Represents a staff system reader.
-    /// </summary>
-    public interface IStaffSystem<TScoreMeasure, TStaffGroup> : IStaffSystem<TStaffGroup> where TStaffGroup : IStaffGroup where TScoreMeasure : IScoreMeasure
-    {
         /// <summary>
-        /// Reads the score measures contained by this staff.
+        /// Enumerate the measures.
         /// </summary>
         /// <returns></returns>
         IEnumerable<TScoreMeasure> EnumerateMeasures();

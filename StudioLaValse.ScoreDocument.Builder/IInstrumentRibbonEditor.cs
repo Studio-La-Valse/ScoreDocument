@@ -6,7 +6,7 @@ namespace StudioLaValse.ScoreDocument.Builder
     /// <summary>
     /// Represents an instrument ribbon editor.
     /// </summary>
-    public interface IInstrumentRibbonEditor : IInstrumentRibbon<IInstrumentMeasureEditor>, ILayoutEditor<InstrumentRibbonLayout>, IScoreElementEditor
+    public interface IInstrumentRibbonEditor : IInstrumentRibbon<IInstrumentMeasureEditor>, IScoreElementEditor, ILayoutEditor<InstrumentRibbonLayout>
     {
 
     }

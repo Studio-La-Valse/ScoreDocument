@@ -1,4 +1,6 @@
-﻿namespace StudioLaValse.ScoreDocument.Layout
+﻿using StudioLaValse.ScoreDocument.Core;
+
+namespace StudioLaValse.ScoreDocument.Layout
 {
     /// <summary>
     /// Represents a clef change.

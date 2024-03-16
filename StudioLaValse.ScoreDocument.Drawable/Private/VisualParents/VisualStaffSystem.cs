@@ -1,4 +1,6 @@
-﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
+﻿
+
+namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
     internal sealed class VisualStaffSystem : BaseSelectableParent<IUniqueScoreElement>
     {
@@ -8,7 +10,7 @@
         private readonly double length;
         private readonly double canvasTop;
         private readonly ColorARGB baseColor;
-        private readonly IScoreLayoutProvider scoreLayoutDictionary;
+        private readonly IScoreDocumentLayout scoreLayoutDictionary;
 
         public StaffSystemLayout Layout => scoreLayoutDictionary.StaffSystemLayout(staffSystem);
         public DrawableLineVertical OpeningLine =>
@@ -56,7 +58,7 @@
 
 
 
-        public VisualStaffSystem(IStaffSystemReader staffSystem, double canvasLeft, double canvasTop, double length, IVisualSystemMeasureFactory systemMeasureFactory, ColorARGB baseColor, ISelection<IUniqueScoreElement> selection, IScoreLayoutProvider scoreLayoutDictionary) : base(staffSystem, selection)
+        public VisualStaffSystem(IStaffSystemReader staffSystem, double canvasLeft, double canvasTop, double length, IVisualSystemMeasureFactory systemMeasureFactory, ColorARGB baseColor, ISelection<IUniqueScoreElement> selection, IScoreDocumentLayout scoreLayoutDictionary) : base(staffSystem, selection)
         {
             this.staffSystem = staffSystem;
             this.systemMeasureFactory = systemMeasureFactory;
@@ -74,12 +76,12 @@
         {
             double _canvasLeft = canvasLeft;
 
-            double lengthWithoutAdjustment = staffSystem.EnumerateMeasures().Select(m => scoreLayoutDictionary.ScoreMeasureLayout(m).Width.Value).Sum();
+            double lengthWithoutAdjustment = staffSystem.EnumerateMeasures().Select(m => scoreLayoutDictionary.ScoreMeasureLayout(m).Width).Sum();
             bool firstMeasure = true;
             foreach (IScoreMeasureReader measure in staffSystem.EnumerateMeasures())
             {
                 ScoreMeasureLayout measureLayout = scoreLayoutDictionary.ScoreMeasureLayout(measure);
-                double measureWidth = measureLayout.Width.Value;
+                double measureWidth = measureLayout.Width;
 
                 measureWidth = MathUtils.Map(measureWidth, 0, lengthWithoutAdjustment, 0, length);
 
@@ -106,7 +108,7 @@
                 yield return _staffGroup;
 
                 heightOnCanvas += staffGroup.CalculateHeight(scoreLayoutDictionary);
-                heightOnCanvas += scoreLayoutDictionary.StaffGroupLayout(staffGroup).DistanceToNext.Value;
+                heightOnCanvas += scoreLayoutDictionary.StaffGroupLayout(staffGroup).DistanceToNext;
             }
         }
 

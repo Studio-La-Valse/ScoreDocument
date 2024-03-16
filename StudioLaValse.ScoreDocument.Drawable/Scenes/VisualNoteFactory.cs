@@ -6,14 +6,14 @@
     public class VisualNoteFactory : IVisualNoteFactory
     {
         private readonly ISelection<IUniqueScoreElement> selection;
-        private readonly IScoreLayoutProvider scoreLayoutDictionary;
+        private readonly IScoreDocumentLayout scoreLayoutDictionary;
 
         /// <summary>
         /// The default constructor.
         /// </summary>
         /// <param name="selection"></param>
         /// <param name="scoreLayoutDictionary"></param>
-        public VisualNoteFactory(ISelection<IUniqueScoreElement> selection, IScoreLayoutProvider scoreLayoutDictionary)
+        public VisualNoteFactory(ISelection<IUniqueScoreElement> selection, IScoreDocumentLayout scoreLayoutDictionary)
         {
             this.selection = selection;
             this.scoreLayoutDictionary = scoreLayoutDictionary;

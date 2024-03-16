@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a musical interval.
     /// </summary>
-    public struct Interval
+    public readonly struct Interval
     {
         /// <summary>
         /// A diminished unison.

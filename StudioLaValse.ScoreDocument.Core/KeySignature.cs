@@ -176,8 +176,8 @@
         {
             return other.MajorOrMinor == MajorOrMinor
                 ? other.Origin.Equals(Origin)
-                : MajorOrMinor == MajorOrMinor.Minor 
-                    ? other.Origin.RelativeMinor.Equals(Origin) 
+                : MajorOrMinor == MajorOrMinor.Minor
+                    ? other.Origin.RelativeMinor.Equals(Origin)
                     : other.Origin.RelativeMajor.Equals(Origin);
         }
 

@@ -3,9 +3,9 @@
 namespace StudioLaValse.ScoreDocument
 {
     /// <summary>
-    /// 
+    /// A staff group reader.
     /// </summary>
-    public interface IStaffGroupReader : IStaffGroup<IInstrumentRibbonReader, IInstrumentMeasureReader, IStaffReader>, IScoreElementReader
+    public interface IStaffGroupReader : IStaffGroup<IStaffReader, IInstrumentRibbonReader, IInstrumentMeasureReader>, IScoreElementReader
     {
 
     }

@@ -1,4 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Drawable.Private.DrawableElements;
+using StudioLaValse.ScoreDocument.Drawable.Private.Models;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
@@ -12,7 +13,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         private readonly Clef openingClef;
         private readonly KeySignature openingKeySignature;
         private readonly ColorARGB color;
-        private readonly IScoreLayoutProvider scoreLayoutDictionary;
+        private readonly IScoreDocumentLayout scoreLayoutDictionary;
 
 
         public StaffLayout Layout => scoreLayoutDictionary.StaffLayout(staff);
@@ -27,7 +28,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 
 
 
-        public VisualStaff(IStaffReader staff, double canvasLeft, double canvasTop, double length, double lineSpacing, Clef openingClef, KeySignature openingKeySignature, ColorARGB color, IScoreLayoutProvider scoreLayoutDictionary)
+        public VisualStaff(IStaffReader staff, double canvasLeft, double canvasTop, double length, double lineSpacing, Clef openingClef, KeySignature openingKeySignature, ColorARGB color, IScoreDocumentLayout scoreLayoutDictionary)
         {
             this.staff = staff;
             this.canvasLeft = canvasLeft;
@@ -45,7 +46,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         {
             for (int i = 0; i < 5; i++)
             {
-                double heightOnPage = canvasTop + (i * lineSpacing);
+                double heightOnPage = canvasTop + i * lineSpacing;
 
                 yield return new DrawableLineHorizontal(heightOnPage, canvasLeft, length, 0.1, color);
             }

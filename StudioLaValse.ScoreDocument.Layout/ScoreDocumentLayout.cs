@@ -1,5 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Core.Primitives;
-using StudioLaValse.ScoreDocument.Layout.Templates;
+﻿using StudioLaValse.ScoreDocument.Layout.Templates;
 
 namespace StudioLaValse.ScoreDocument.Layout
 {

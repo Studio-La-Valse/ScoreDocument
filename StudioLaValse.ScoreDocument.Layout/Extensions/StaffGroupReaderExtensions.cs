@@ -1,4 +1,6 @@
-﻿namespace StudioLaValse.ScoreDocument.Drawable.Extensions
+﻿using StudioLaValse.ScoreDocument.Core;
+
+namespace StudioLaValse.ScoreDocument.Layout.Extensions
 {
     /// <summary>
     /// Extensions to staff (-group and -system) readers.
@@ -35,7 +37,7 @@
         /// <returns></returns>
         public static double HeightFromLineIndex(this IStaffReader staff, double staffCanvasTop, int line, double lineSpacing)
         {
-            return staffCanvasTop + (line * (lineSpacing / 2));
+            return staffCanvasTop + line * (lineSpacing / 2);
         }
 
 
@@ -51,16 +53,16 @@
         /// <param name="scoreLayoutDictionary"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public static double HeightOnCanvas(this IStaffGroupReader staffGroup, double canvasTopStaffGroup, int staffIndex, int lineIndex, IScoreLayoutProvider scoreLayoutDictionary)
+        public static double HeightOnCanvas(this IStaffGroupReader staffGroup, double canvasTopStaffGroup, int staffIndex, int lineIndex, IScoreDocumentLayout scoreLayoutDictionary)
         {
             ArgumentOutOfRangeException.ThrowIfNegative(staffIndex, nameof(staffIndex));
 
-            var lineSpacing = scoreLayoutDictionary.StaffGroupLayout(staffGroup).LineSpacing.Value;
+            var lineSpacing = scoreLayoutDictionary.StaffGroupLayout(staffGroup).LineSpacing;
             foreach (IStaffReader staff in staffGroup.EnumerateStaves(staffIndex))
             {
                 StaffLayout staffLayout = scoreLayoutDictionary.StaffLayout(staff);
                 canvasTopStaffGroup += staff.CalculateHeight(lineSpacing);
-                canvasTopStaffGroup += staffLayout.DistanceToNext.Value;
+                canvasTopStaffGroup += staffLayout.DistanceToNext;
             }
 
             var _staff = staffGroup.EnumerateStaves(staffIndex + 1).ElementAt(staffIndex);
@@ -88,21 +90,21 @@
         /// <param name="staffGroup"></param>
         /// <param name="scoreLayoutDictionary"></param>
         /// <returns></returns>
-        public static double CalculateHeight(this IStaffGroupReader staffGroup, IScoreLayoutProvider scoreLayoutDictionary)
+        public static double CalculateHeight(this IStaffGroupReader staffGroup, IScoreDocumentLayout scoreLayoutDictionary)
         {
             double height = 0d;
             StaffGroupLayout groupLayout = scoreLayoutDictionary.StaffGroupLayout(staffGroup);
-            var lineSpacing = groupLayout.LineSpacing.Value;
+            var lineSpacing = groupLayout.LineSpacing;
             if (groupLayout.Collapsed)
             {
-                return height + groupLayout.DistanceToNext.Value;
+                return height + groupLayout.DistanceToNext;
             }
 
             double lastStaffSpacing = 0d;
-            foreach (IStaffReader staff in staffGroup.EnumerateStaves(groupLayout.NumberOfStaves.Value))
+            foreach (IStaffReader staff in staffGroup.EnumerateStaves(groupLayout.NumberOfStaves))
             {
                 double staffHeight = staff.CalculateHeight(lineSpacing);
-                double staffSpacing = scoreLayoutDictionary.StaffLayout(staff).DistanceToNext.Value;
+                double staffSpacing = scoreLayoutDictionary.StaffLayout(staff).DistanceToNext;
                 height += staffHeight;
                 height += staffSpacing;
                 lastStaffSpacing = staffSpacing;
@@ -119,7 +121,7 @@
         /// <param name="staffSystem"></param>
         /// <param name="scoreLayoutDictionary"></param>
         /// <returns></returns>
-        public static double CalculateHeight(this IStaffSystemReader staffSystem, IScoreLayoutProvider scoreLayoutDictionary)
+        public static double CalculateHeight(this IStaffSystemReader staffSystem, IScoreDocumentLayout scoreLayoutDictionary)
         {
             double height = 0d;
             double lastStafGroupSpacing = 0d;
@@ -129,7 +131,7 @@
                 double staffGroupHeight = staffGroup.CalculateHeight(scoreLayoutDictionary);
                 height += staffGroupHeight;
 
-                lastStafGroupSpacing = staffGroupLayout.DistanceToNext.Value;
+                lastStafGroupSpacing = staffGroupLayout.DistanceToNext;
                 height += lastStafGroupSpacing;
             }
             height -= lastStafGroupSpacing;

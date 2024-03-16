@@ -1,4 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.Core.Primitives;
+﻿using StudioLaValse.ScoreDocument.Core;
+using StudioLaValse.ScoreDocument.Core.Primitives;
 using StudioLaValse.ScoreDocument.Layout.Templates;
 
 namespace StudioLaValse.ScoreDocument.Layout
@@ -10,32 +11,77 @@ namespace StudioLaValse.ScoreDocument.Layout
     {
         private readonly ScoreMeasureStyleTemplate scoreMeasureStyleTemplate;
         private readonly IScoreMeasure scoreMeasure;
+        private readonly TemplateProperty<double> width;
+        private readonly TemplateProperty<KeySignature> keySignature;
+        private readonly TemplateProperty<double> paddingLeft;
+        private readonly TemplateProperty<double> paddingRight;
 
-        public TemplateProperty<KeySignature> KeySignature { get; }
-        public TemplateProperty<double> PaddingLeft { get; }
-        public TemplateProperty<double> PaddingRight { get; }
-        public TemplateProperty<double> Width { get; }
+        public KeySignature KeySignature
+        {
+            get
+            {
+                return keySignature.Value;
+            }
+            set
+            {
+                keySignature.Value = value;
+            }
+        }
+        public double PaddingLeft
+        {
+            get
+            {
+                return paddingLeft.Value;
+            }
+            set
+            {
+                paddingLeft.Value = value;
+            }
+        }
+        public double PaddingRight
+        {
+            get
+            {
+                return paddingRight.Value;
+            }
+            set
+            {
+                paddingRight.Value = value;
+            }
+        }
+        public double Width
+        {
+            get
+            {
+                return width.Value;
+            }
+            set
+            {
+                width.Value = value;
+            }
+        }
 
 
         public ScoreMeasureLayout(ScoreMeasureStyleTemplate scoreMeasureStyleTemplate, IScoreMeasure scoreMeasure)
         {
             this.scoreMeasureStyleTemplate = scoreMeasureStyleTemplate;
             this.scoreMeasure = scoreMeasure;
-            
-            KeySignature = new TemplateProperty<KeySignature>(() => scoreMeasure.KeySignature);
-            Width = new TemplateProperty<double>(() => scoreMeasureStyleTemplate.Width);
-            PaddingLeft = new TemplateProperty<double>(() => scoreMeasureStyleTemplate.PaddingLeft);
-            PaddingRight = new TemplateProperty<double>(() => scoreMeasureStyleTemplate.PaddingRight);
+
+            keySignature = new TemplateProperty<KeySignature>(() => scoreMeasure.KeySignature);
+            width = new TemplateProperty<double>(() => scoreMeasureStyleTemplate.Width);
+            paddingLeft = new TemplateProperty<double>(() => scoreMeasureStyleTemplate.PaddingLeft);
+            paddingRight = new TemplateProperty<double>(() => scoreMeasureStyleTemplate.PaddingRight);
         }
+
 
         /// <inheritdoc/>
         public ScoreMeasureLayout Copy()
         {
             var copy = new ScoreMeasureLayout(scoreMeasureStyleTemplate, scoreMeasure);
-            copy.Width.Field = Width.Field;
-            copy.PaddingLeft.Field = PaddingLeft.Field;
-            copy.PaddingRight.Field = PaddingRight.Field;
-            copy.KeySignature.Field = KeySignature.Field;
+            copy.width.Field = width.Field;
+            copy.paddingLeft.Field = paddingLeft.Field;
+            copy.paddingRight.Field = paddingRight.Field;
+            copy.keySignature.Field = keySignature.Field;
             return copy;
         }
     }

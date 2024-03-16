@@ -1,4 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Drawable.Private.Interfaces;
+using StudioLaValse.ScoreDocument.Drawable.Private.Models;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {

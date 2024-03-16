@@ -83,12 +83,9 @@ namespace StudioLaValse.ScoreDocument.Core
         /// <exception cref="InvalidOperationException"></exception>
         public static Instrument CreateCustom(params Clef[] clefs)
         {
-            if(clefs.Length == 0)
-            {
-                throw new InvalidOperationException("Please provide at least one clef.");
-            }
-
-            return new Instrument("Custom", clefs);
+            return clefs.Length == 0
+                ? throw new InvalidOperationException("Please provide at least one clef.")
+                : new Instrument("Custom", clefs);
         }
     }
 }

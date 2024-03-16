@@ -1,6 +1,6 @@
-﻿using StudioLaValse.ScoreDocument.Drawable.Private.DrawableElements;
+﻿using StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers;
+using StudioLaValse.ScoreDocument.Drawable.Private.DrawableElements;
 using StudioLaValse.ScoreDocument.Drawable.Private.Interfaces;
-using System.Diagnostics;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
 {

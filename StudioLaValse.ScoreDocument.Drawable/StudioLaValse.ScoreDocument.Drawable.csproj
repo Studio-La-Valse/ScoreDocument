@@ -13,11 +13,6 @@
 		<PackageReference Include="StudioLaValse.Geometry" Version="1.0.0" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\StudioLaValse.ScoreDocument.Layout\StudioLaValse.ScoreDocument.Layout.csproj" />
-		<ProjectReference Include="..\StudioLaValse.ScoreDocument\StudioLaValse.ScoreDocument.csproj" />
-	</ItemGroup>
-
 	<!--build-->
 	<PropertyGroup>
 		<EnablePackageValidation>true</EnablePackageValidation>
@@ -60,6 +55,12 @@
 
 	<ItemGroup>
 		<None Include="../README.md" Pack="true" PackagePath="" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\StudioLaValse.ScoreDocument.Core\StudioLaValse.ScoreDocument.Core.csproj" />
+	  <ProjectReference Include="..\StudioLaValse.ScoreDocument.Layout\StudioLaValse.ScoreDocument.Layout.csproj" />
+	  <ProjectReference Include="..\StudioLaValse.ScoreDocument\StudioLaValse.ScoreDocument.csproj" />
 	</ItemGroup>
 
 </Project>

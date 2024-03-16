@@ -3,8 +3,10 @@ using StudioLaValse.ScoreDocument.Layout;
 
 namespace StudioLaValse.ScoreDocument.Builder
 {
-    /// <inheritdoc/>
-    public interface IStaffEditor : IStaff, ILayoutEditor<StaffLayout>, IScoreElementEditor
+    /// <summary>
+    /// 
+    /// </summary>
+    public interface IStaffEditor : IStaff, IScoreElementEditor, ILayoutEditor<StaffLayout>
     {
 
     }

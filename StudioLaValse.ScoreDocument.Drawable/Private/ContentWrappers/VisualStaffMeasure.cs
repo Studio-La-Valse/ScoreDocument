@@ -1,4 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Drawable.Private.DrawableElements;
+using StudioLaValse.ScoreDocument.Drawable.Private.Models;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
@@ -46,7 +47,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 
                 int numberOfAccidentals = newLines.Count() + naturalLines.Count();
 
-                double xPosition = CanvasLeft + Width - ((numberOfAccidentals + 1) * glyphWidth);
+                double xPosition = CanvasLeft + Width - (numberOfAccidentals + 1) * glyphWidth;
 
                 foreach (int line in naturalLines)
                 {
@@ -93,7 +94,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                     keySignature.EnumerateFlats().Count() :
                     keySignature.EnumerateSharps().Count();
                 double left = openingMeasure ?
-                    CanvasLeft + (numberOfAccidentals * VisualStaff.KeySignatureGlyphSpacing) + VisualStaff.ClefSpacing :
+                    CanvasLeft + numberOfAccidentals * VisualStaff.KeySignatureGlyphSpacing + VisualStaff.ClefSpacing :
                     CanvasLeft + 0.1;
 
                 Glyph topGlyph = timeSignature.Numerator switch
@@ -142,7 +143,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                         _ => throw new NotSupportedException()
                     };
 
-                    double posX = XPositionFromParameter((double)clefchange.Position.Decimal) - (GlyphLibrary.NoteHeadBlack.Width / 2) - 0.1;
+                    double posX = XPositionFromParameter((double)clefchange.Position.Decimal) - GlyphLibrary.NoteHeadBlack.Width / 2 - 0.1;
 
                     glyph.Scale = 0.8;
 
@@ -222,12 +223,12 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 
         public double XPositionFromParameter(double parameter)
         {
-            return CanvasLeft + paddingLeft + (drawableWidth * parameter);
+            return CanvasLeft + paddingLeft + drawableWidth * parameter;
         }
 
         public double HeightFromLineIndex(int line)
         {
-            return canvasTop + (line * (lineSpacing / 2));
+            return canvasTop + line * (lineSpacing / 2);
         }
 
         public override IEnumerable<BaseContentWrapper> GetContentWrappers()

@@ -11,7 +11,7 @@
         private readonly bool firstMeasure;
         private readonly ColorARGB color;
         private readonly IVisualNoteGroupFactory visualNoteGroupFactory;
-        private readonly IScoreLayoutProvider scoreLayoutDictionary;
+        private readonly IScoreDocumentLayout scoreLayoutDictionary;
         private readonly IInstrumentMeasureReader source;
 
 
@@ -42,7 +42,7 @@
             width - paddingLeft - paddingRight;
 
 
-        public VisualStaffGroupMeasure(IInstrumentMeasureReader source, IStaffGroupReader staffGroup, double canvasTop, double canvasLeft, double width, double paddingLeft, double paddingRight, bool firstMeasure, ColorARGB color, IVisualNoteGroupFactory visualNoteGroupFactory, ISelection<IUniqueScoreElement> selection, IScoreLayoutProvider scoreLayoutDictionary) : base(source, selection)
+        public VisualStaffGroupMeasure(IInstrumentMeasureReader source, IStaffGroupReader staffGroup, double canvasTop, double canvasLeft, double width, double paddingLeft, double paddingRight, bool firstMeasure, ColorARGB color, IVisualNoteGroupFactory visualNoteGroupFactory, ISelection<IUniqueScoreElement> selection, IScoreDocumentLayout scoreLayoutDictionary) : base(source, selection)
         {
             this.staffGroup = staffGroup;
             this.canvasTop = canvasTop;
@@ -80,7 +80,7 @@
                 bool anyOnStaff = elements.Any(ele =>
                 {
                     NoteLayout eleLayout = scoreLayoutDictionary.NoteLayout(ele);
-                    return eleLayout.StaffIndex < Layout.NumberOfStaves.Value;
+                    return eleLayout.StaffIndex < Layout.NumberOfStaves;
                 });
                 if (!anyOnStaff)
                 {
@@ -108,8 +108,8 @@
         public IEnumerable<BaseContentWrapper> ConstructStaffMeasures()
         {
             double _canvasTop = canvasTop;
-            var lineSpacing = Layout.LineSpacing.Value;
-            foreach (IStaffReader staff in staffGroup.EnumerateStaves(Layout.NumberOfStaves.Value))
+            var lineSpacing = Layout.LineSpacing;
+            foreach (IStaffReader staff in staffGroup.EnumerateStaves(Layout.NumberOfStaves))
             {
                 StaffLayout staffLayout = scoreLayoutDictionary.StaffLayout(staff);
                 InstrumentMeasureLayout instrumentMeasureLayout = scoreLayoutDictionary.InstrumentMeasureLayout(source);
@@ -141,7 +141,7 @@
 
                 yield return el;
 
-                _canvasTop += staff.CalculateHeight(lineSpacing) + staffLayout.DistanceToNext.Value;
+                _canvasTop += staff.CalculateHeight(lineSpacing) + staffLayout.DistanceToNext;
             }
         }
 
@@ -149,7 +149,7 @@
 
         public double XPositionFromParameter(double parameter)
         {
-            return canvasLeft + paddingLeft + (DrawableWidth * parameter);
+            return canvasLeft + paddingLeft + DrawableWidth * parameter;
         }
 
         public override BoundingBox BoundingBox()

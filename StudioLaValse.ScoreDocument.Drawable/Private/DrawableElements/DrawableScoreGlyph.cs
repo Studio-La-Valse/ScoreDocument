@@ -1,4 +1,6 @@
-﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.DrawableElements
+﻿using StudioLaValse.ScoreDocument.Drawable.Private.Models;
+
+namespace StudioLaValse.ScoreDocument.Drawable.Private.DrawableElements
 {
     internal sealed class DrawableScoreGlyph : DrawableText
     {

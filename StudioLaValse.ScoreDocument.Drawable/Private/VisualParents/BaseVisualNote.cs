@@ -1,6 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Drawable.Private.DrawableElements;
-
-namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
+﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
     internal abstract class BaseVisualNote : BaseSelectableParent<IUniqueScoreElement>
     {

@@ -9,7 +9,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
     {
         private readonly IVisualNoteFactory noteFactory;
         private readonly IVisualRestFactory restFactory;
-        private readonly IScoreLayoutProvider scoreLayoutDictionary;
+        private readonly IScoreDocumentLayout scoreLayoutDictionary;
         private readonly IVisualBeamBuilder visualBeamBuilder;
 
         /// <summary>
@@ -18,7 +18,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// <param name="noteFactory"></param>
         /// <param name="restFactory"></param>
         /// <param name="scoreLayoutDictionary"></param>
-        public VisualNoteGroupFactory(IVisualNoteFactory noteFactory, IVisualRestFactory restFactory, IScoreLayoutProvider scoreLayoutDictionary)
+        public VisualNoteGroupFactory(IVisualNoteFactory noteFactory, IVisualRestFactory restFactory, IScoreDocumentLayout scoreLayoutDictionary)
         {
             this.noteFactory = noteFactory;
             this.restFactory = restFactory;

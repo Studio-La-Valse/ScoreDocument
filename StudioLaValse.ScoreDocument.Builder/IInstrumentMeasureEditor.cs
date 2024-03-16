@@ -6,7 +6,7 @@ namespace StudioLaValse.ScoreDocument.Builder
     /// <summary>
     /// Represents an instrument measure editor.
     /// </summary>
-    public interface IInstrumentMeasureEditor : IInstrumentMeasure<IMeasureBlockChainEditor, IInstrumentMeasureEditor>, ILayoutEditor<InstrumentMeasureLayout>, IScoreElementEditor
+    public interface IInstrumentMeasureEditor : IInstrumentMeasure<IMeasureBlockChainEditor, IInstrumentMeasureEditor>, IScoreElementEditor, ILayoutEditor<InstrumentMeasureLayout>
     {
         /// <summary>
         /// Clears the content of the instrument measure.

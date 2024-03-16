@@ -8,15 +8,16 @@ namespace StudioLaValse.ScoreDocument.Layout
     public class StaffSystemLayout : ILayoutElement<StaffSystemLayout>
     {
         private readonly StaffSystemStyleTemplate styleTemplate;
+        private TemplateProperty<double> paddingBottom;
 
-        public TemplateProperty<double> PaddingBottom { get; }
+        public double PaddingBottom { get => paddingBottom.Value; set => paddingBottom.Value = value; }
 
 
         public StaffSystemLayout(StaffSystemStyleTemplate styleTemplate)
         {
             this.styleTemplate = styleTemplate;
 
-            PaddingBottom = new TemplateProperty<double>(() => styleTemplate.PaddingBottom);
+            paddingBottom = new TemplateProperty<double>(() => styleTemplate.PaddingBottom);
         }
 
 
@@ -24,7 +25,7 @@ namespace StudioLaValse.ScoreDocument.Layout
         public StaffSystemLayout Copy()
         {
             var copy = new StaffSystemLayout(styleTemplate);
-            copy.PaddingBottom.Field = PaddingBottom.Field;
+            copy.paddingBottom.Field = paddingBottom.Field;
             return copy;
         }
     }

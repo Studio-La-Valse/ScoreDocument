@@ -5,38 +5,44 @@ namespace StudioLaValse.ScoreDocument.Layout
     public class PageLayout : ILayoutElement<PageLayout>
     {
         private readonly PageStyleTemplate pageStyleTemplate;
+        private TemplateProperty<int> pageWidth;
+        private TemplateProperty<int> pageHeight;
+        private TemplateProperty<double> marginLeft;
+        private TemplateProperty<double> marginTop;
+        private TemplateProperty<double> marginRight;
+        private TemplateProperty<double> marginBottom;
 
-        public TemplateProperty<int> PageWidth { get; }
-        public TemplateProperty<int> PageHeight { get; }
+        public int PageWidth { get => pageWidth.Value; set => pageWidth.Value = value; }
+        public int PageHeight { get => pageHeight.Value; set => pageHeight.Value = value; }
 
-        public TemplateProperty<double> MarginLeft { get; }
-        public TemplateProperty<double> MarginTop { get; }
-        public TemplateProperty<double> MarginRight { get; }
-        public TemplateProperty<double> MarginBottom { get; }
+        public double MarginLeft { get => marginLeft.Value; set => marginLeft.Value = value; }
+        public double MarginTop { get => marginTop.Value; set => marginTop.Value = value; }
+        public double MarginRight { get => marginRight.Value; set => marginRight.Value = value; }
+        public double MarginBottom { get => marginBottom.Value; set => marginBottom.Value = value; }
 
 
         public PageLayout(PageStyleTemplate pageStyleTemplate)
         {
             this.pageStyleTemplate = pageStyleTemplate;
 
-            PageWidth = new TemplateProperty<int>(() => this.pageStyleTemplate.PageWidth);
-            PageHeight = new TemplateProperty<int>(() => this.pageStyleTemplate.PageHeight);
+            pageWidth = new TemplateProperty<int>(() => this.pageStyleTemplate.PageWidth);
+            pageHeight = new TemplateProperty<int>(() => this.pageStyleTemplate.PageHeight);
 
-            MarginLeft = new TemplateProperty<double>(() => this.pageStyleTemplate.MarginLeft);
-            MarginTop = new TemplateProperty<double>(() => this.pageStyleTemplate.MarginTop);
-            MarginRight = new TemplateProperty<double>(() => this.pageStyleTemplate.MarginRight);
-            MarginBottom = new TemplateProperty<double>(() => this.pageStyleTemplate.MarginBottom);
+            marginLeft = new TemplateProperty<double>(() => this.pageStyleTemplate.MarginLeft);
+            marginTop = new TemplateProperty<double>(() => this.pageStyleTemplate.MarginTop);
+            marginRight = new TemplateProperty<double>(() => this.pageStyleTemplate.MarginRight);
+            marginBottom = new TemplateProperty<double>(() => this.pageStyleTemplate.MarginBottom);
         }
 
         public PageLayout Copy()
         {
             var copy = new PageLayout(pageStyleTemplate);
-            copy.PageWidth.Field = this.PageWidth.Field;
-            copy.PageHeight.Field = this.PageHeight.Field;
-            copy.MarginTop.Field = this.MarginTop.Field;
-            copy.MarginRight.Field = this.MarginRight.Field;
-            copy.MarginBottom.Field = this.MarginBottom.Field;
-            copy.MarginLeft.Field = this.MarginLeft.Field;
+            copy.pageWidth.Field = pageWidth.Field;
+            copy.pageHeight.Field = pageHeight.Field;
+            copy.marginTop.Field = marginTop.Field;
+            copy.marginRight.Field = marginRight.Field;
+            copy.marginBottom.Field = marginBottom.Field;
+            copy.marginLeft.Field = marginLeft.Field;
             return copy;
         }
     }

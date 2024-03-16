@@ -1,48 +1,43 @@
 ﻿namespace StudioLaValse.ScoreDocument.Core.Primitives
 {
     /// <summary>
-    /// Represents a staff group reader.
+    /// The base interface for staff groups.
     /// </summary>
-    public interface IStaffGroup
+    public interface IStaffGroup : IScoreElement
     {
         /// <summary>
-        /// The instrument of the staffgroup.
+        /// The instrument of the staff group.
         /// </summary>
         Instrument Instrument { get; }
         /// <summary>
-        /// The index of the staffgroup in the system.
+        /// The index in the system.
         /// </summary>
         int IndexInSystem { get; }
     }
 
     /// <summary>
-    /// Represents a staff group reader.
+    /// The base interface for staff groups.
     /// </summary>
-    public interface IStaffGroup<TStaff> : IStaffGroup where TStaff : IStaff
+    public interface IStaffGroup<TRibbon> : IStaffGroup where TRibbon : IInstrumentRibbon
     {
         /// <summary>
-        /// Reads the individual staves in the staffgroup.
+        /// The associated instrument ribbon.
         /// </summary>
-        /// <returns></returns>
-        IEnumerable<TStaff> EnumerateStaves(int numberOfStaves);
+        TRibbon InstrumentRibbon { get; }
     }
 
     /// <summary>
-    /// Represents a staff group reader.
+    /// The base interface for staff groups.
     /// </summary>
-    public interface IStaffGroup<TInstrumentRibbon, TInstrumentMeasure, TStaff> : IStaffGroup<TStaff> where TInstrumentRibbon : IInstrumentRibbon<TInstrumentMeasure>
-                                                                                                      where TInstrumentMeasure : IInstrumentMeasure
-                                                                                                      where TStaff : IStaff
+    public interface IStaffGroup<TStaff, TRibbon, TInstrumentMeasure> : IStaffGroup<TRibbon> where TStaff : IStaff where TRibbon : IInstrumentRibbon<TInstrumentMeasure> where TInstrumentMeasure : IInstrumentMeasure
     {
         /// <summary>
-        /// Reads the host instrument ribbon.
+        /// Enumerate the staves.
         /// </summary>
-        /// <returns></returns>
-        TInstrumentRibbon InstrumentRibbon { get; }
+        IEnumerable<TStaff> EnumerateStaves(int numberOfStaves);
         /// <summary>
-        /// Reads the instrument measures in the staff group.
+        /// Enuemrate the measures.
         /// </summary>
-        /// <returns></returns>
         IEnumerable<TInstrumentMeasure> EnumerateMeasures();
     }
 }

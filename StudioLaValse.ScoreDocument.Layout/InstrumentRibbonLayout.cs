@@ -10,11 +10,13 @@ namespace StudioLaValse.ScoreDocument.Layout
     {
         private readonly InstrumentRibbonStyleTemplate styleTemplate;
         private readonly IInstrumentRibbon instrumentRibbon;
+        private readonly NullableTemplateProperty<string> abbreviatedName;
+        private NullableTemplateProperty<string> displayName;
+        private TemplateProperty<int> numberOfStaves;
 
-
-        public NullableTemplateProperty<string> AbbreviatedName { get; }
-        public NullableTemplateProperty<string> DisplayName { get; set; }
-        public TemplateProperty<int> NumberOfStaves { get; set; }
+        public string AbbreviatedName { get => abbreviatedName.Value; set => abbreviatedName.Value = value; }
+        public string DisplayName { get => displayName.Value; set => displayName.Value = value; }
+        public int NumberOfStaves { get => numberOfStaves.Value; set => numberOfStaves.Value = value; }
 
 
         public bool Collapsed { get; set; }
@@ -32,9 +34,9 @@ namespace StudioLaValse.ScoreDocument.Layout
             this.styleTemplate = styleTemplate;
             this.instrumentRibbon = instrumentRibbon;
 
-            DisplayName = new NullableTemplateProperty<string>(() => this.instrumentRibbon.Instrument.Name);
-            AbbreviatedName = new NullableTemplateProperty<string>(() => CreateDefaultNickName(this.DisplayName.Value));
-            NumberOfStaves = new TemplateProperty<int>(() => instrumentRibbon.Instrument.NumberOfStaves);
+            displayName = new NullableTemplateProperty<string>(() => this.instrumentRibbon.Instrument.Name);
+            abbreviatedName = new NullableTemplateProperty<string>(() => CreateDefaultNickName(displayName.Value));
+            numberOfStaves = new TemplateProperty<int>(() => instrumentRibbon.Instrument.NumberOfStaves);
             Collapsed = false;
         }
 
@@ -54,9 +56,9 @@ namespace StudioLaValse.ScoreDocument.Layout
         public InstrumentRibbonLayout Copy()
         {
             var copy = new InstrumentRibbonLayout(styleTemplate, instrumentRibbon);
-            copy.AbbreviatedName.Field = AbbreviatedName.Field;
-            copy.DisplayName.Field = DisplayName.Field;
-            copy.NumberOfStaves.Field = NumberOfStaves.Field;
+            copy.abbreviatedName.Field = abbreviatedName.Field;
+            copy.displayName.Field = displayName.Field;
+            copy.numberOfStaves.Field = numberOfStaves.Field;
             copy.Collapsed = Collapsed;
             return copy;
         }

@@ -7,7 +7,7 @@
     {
         private readonly IVisualSystemMeasureFactory systemMeasureFactory;
         private readonly ISelection<IUniqueScoreElement> selection;
-        private readonly IScoreLayoutProvider scoreLayoutDictionary;
+        private readonly IScoreDocumentLayout scoreLayoutDictionary;
 
         /// <summary>
         /// The default constructor.
@@ -15,7 +15,7 @@
         /// <param name="systemMeasureFactory"></param>
         /// <param name="selection"></param>
         /// <param name="scoreLayoutDictionary"></param>
-        public VisualStaffSystemFactory(IVisualSystemMeasureFactory systemMeasureFactory, ISelection<IUniqueScoreElement> selection, IScoreLayoutProvider scoreLayoutDictionary)
+        public VisualStaffSystemFactory(IVisualSystemMeasureFactory systemMeasureFactory, ISelection<IUniqueScoreElement> selection, IScoreDocumentLayout scoreLayoutDictionary)
         {
             this.systemMeasureFactory = systemMeasureFactory;
             this.selection = selection;

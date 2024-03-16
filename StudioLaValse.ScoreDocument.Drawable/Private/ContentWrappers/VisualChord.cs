@@ -1,4 +1,6 @@
-﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
+﻿using StudioLaValse.ScoreDocument.Drawable.Scenes;
+
+namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
     internal sealed class VisualChord : BaseContentWrapper
     {
@@ -11,13 +13,13 @@
         private readonly IVisualNoteFactory noteFactory;
         private readonly IVisualRestFactory restFactory;
         private readonly ColorARGB color;
-        private readonly IScoreLayoutProvider scoreLayoutDictionary;
+        private readonly IScoreDocumentLayout scoreLayoutDictionary;
 
         public ChordLayout Layout => scoreLayoutDictionary.ChordLayout(chord);
         public double XOffset => Layout.XOffset;
 
 
-        public VisualChord(IChordReader chord, double canvasLeft, double canvasTopStaffGroup, IStaffGroupReader staffGroup, IInstrumentMeasureReader instrumentMeasureReader, IVisualNoteFactory noteFactory, IVisualRestFactory restFactory, ColorARGB color, IScoreLayoutProvider scoreLayoutDictionary)
+        public VisualChord(IChordReader chord, double canvasLeft, double canvasTopStaffGroup, IStaffGroupReader staffGroup, IInstrumentMeasureReader instrumentMeasureReader, IVisualNoteFactory noteFactory, IVisualRestFactory restFactory, ColorARGB color, IScoreDocumentLayout scoreLayoutDictionary)
         {
             this.chord = chord;
             scale = chord.Grace ? 0.5 : 1;
@@ -38,7 +40,7 @@
             IEnumerable<INoteReader> notes = chord.ReadNotes();
             if (!notes.Any())
             {
-                var lineSpacing = scoreLayoutDictionary.StaffGroupLayout(staffGroup).LineSpacing.Value;
+                var lineSpacing = scoreLayoutDictionary.StaffGroupLayout(staffGroup).LineSpacing;
                 var canvasTop = staffGroup.EnumerateStaves(1).First().HeightFromLineIndex(canvasTopStaffGroup, 4, lineSpacing);
                 yield return restFactory.Build(chord, canvasLeft, canvasTop, scale, color);
                 yield break;
@@ -47,7 +49,7 @@
             foreach (INoteReader note in notes)
             {
                 int staffIndex = scoreLayoutDictionary.NoteLayout(note).StaffIndex;
-                if(staffIndex >= scoreLayoutDictionary.StaffGroupLayout(staffGroup).NumberOfStaves.Value)
+                if (staffIndex >= scoreLayoutDictionary.StaffGroupLayout(staffGroup).NumberOfStaves)
                 {
                     continue;
                 }
@@ -65,14 +67,14 @@
         public Accidental? GetAccidental(INoteReader note)
         {
             NoteLayout noteLayout = scoreLayoutDictionary.NoteLayout(note);
-            AccidentalDisplay forceAccidental = noteLayout.ForceAccidental.Value;
+            AccidentalDisplay forceAccidental = noteLayout.ForceAccidental;
 
-            if(forceAccidental == AccidentalDisplay.ForceOff)
+            if (forceAccidental == AccidentalDisplay.ForceOff)
             {
                 return null;
             }
 
-            if(forceAccidental == AccidentalDisplay.Default)
+            if (forceAccidental == AccidentalDisplay.Default)
             {
                 return instrumentMeasureReader.GetAccidental(note.Pitch, note.Position, noteLayout.StaffIndex, scoreLayoutDictionary);
             }
@@ -94,11 +96,11 @@
                 yield break;
             }
 
-            var lineSpacing = scoreLayoutDictionary.StaffGroupLayout(staffGroup).LineSpacing.Value;
+            var lineSpacing = scoreLayoutDictionary.StaffGroupLayout(staffGroup).LineSpacing;
             double canvasTopStaff = canvasTopStaffGroup;
             List<DrawableLineHorizontal> linesFromChord = [];
             StaffGroupLayout staffGroupLayout = scoreLayoutDictionary.StaffGroupLayout(staffGroup);
-            foreach (IStaffReader staff in staffGroup.EnumerateStaves(staffGroupLayout.NumberOfStaves.Value))
+            foreach (IStaffReader staff in staffGroup.EnumerateStaves(staffGroupLayout.NumberOfStaves))
             {
                 StaffLayout staffLayout = scoreLayoutDictionary.StaffLayout(staff);
                 IOrderedEnumerable<INoteReader> notesOnStaff = notes
@@ -126,17 +128,17 @@
                 }
 
                 canvasTopStaff += staff.CalculateHeight(lineSpacing);
-                canvasTopStaff += staffLayout.DistanceToNext.Value;
+                canvasTopStaff += staffLayout.DistanceToNext;
             }
         }
         public IEnumerable<DrawableLineHorizontal> OverflowLinesFromNote(INoteReader note, double width, double canvasTopStaff, IStaffReader staff)
         {
             DrawableLineHorizontal fromHeight(double height)
             {
-                return new DrawableLineHorizontal(height, canvasLeft - (width / 2), width, 0.1, color);
+                return new DrawableLineHorizontal(height, canvasLeft - width / 2, width, 0.1, color);
             }
 
-            var lineSpacing = scoreLayoutDictionary.StaffGroupLayout(staffGroup).LineSpacing.Value;
+            var lineSpacing = scoreLayoutDictionary.StaffGroupLayout(staffGroup).LineSpacing;
             int lineIndex = instrumentMeasureReader.GetClef(staff.IndexInStaffGroup, note.Position, scoreLayoutDictionary).LineIndexAtPitch(note.Pitch);
             bool overflowTop = lineIndex < -1;
             bool overflowBottom = lineIndex > 9;

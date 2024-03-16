@@ -9,7 +9,7 @@
         private readonly IVisualStaffSystemFactory staffSystemContentFactory;
         private readonly ColorARGB foregroundColor;
         private readonly ColorARGB pageColor;
-        private readonly IScoreLayoutProvider scoreLayoutDictionary;
+        private readonly IScoreDocumentLayout scoreLayoutDictionary;
 
         /// <summary>
         /// The default constructor.
@@ -19,7 +19,7 @@
         /// <param name="foregroundColor"></param>
         /// <param name="pageColor"></param>
         /// <param name="scoreLayoutDictionary"></param>
-        public SinglePageViewSceneFactory(int pageIndex, IVisualStaffSystemFactory staffSystemContentFactory, ColorARGB foregroundColor, ColorARGB pageColor, IScoreLayoutProvider scoreLayoutDictionary)
+        public SinglePageViewSceneFactory(int pageIndex, IVisualStaffSystemFactory staffSystemContentFactory, ColorARGB foregroundColor, ColorARGB pageColor, IScoreDocumentLayout scoreLayoutDictionary)
         {
             this.pageIndex = pageIndex;
             this.staffSystemContentFactory = staffSystemContentFactory;
@@ -30,7 +30,7 @@
         /// <inheritdoc/>
         public BaseContentWrapper CreateContent(IScoreDocumentReader scoreDocument)
         {
-            var page = scoreDocument.EnumeratePages().ElementAt(pageIndex);
+            var page = scoreDocument.GeneratePages().ElementAt(pageIndex);
             var visualPage = new VisualPage(page, 0, 0, staffSystemContentFactory, foregroundColor, pageColor, scoreLayoutDictionary);
             return visualPage;
         }

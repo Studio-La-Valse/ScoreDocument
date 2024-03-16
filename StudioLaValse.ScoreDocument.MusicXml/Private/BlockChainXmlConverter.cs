@@ -1,4 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Core.Primitives.Extensions;
+using StudioLaValse.ScoreDocument.Layout;
 using System.Xml.Linq;
 
 namespace StudioLaValse.ScoreDocument.MusicXml.Private
@@ -10,16 +11,16 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
 
         }
 
-        public void ProcessElements(IEnumerable<XElement> elements, IMeasureBlockChainEditor editor, int divisionsOfOneQuarter)
+        public void ProcessElements(IEnumerable<XElement> elements, IMeasureBlockChainEditor editor, int divisionsOfOneQuarter, IScoreDocumentLayout pageViewLayout)
         {
             Position position = new(0, 4);
             foreach (XElement element in elements)
             {
-                ProcessMeasureElement(element, editor, divisionsOfOneQuarter, ref position);
+                ProcessMeasureElement(element, editor, divisionsOfOneQuarter, pageViewLayout, ref position);
             }
         }
 
-        private void ProcessMeasureElement(XElement measureElement, IMeasureBlockChainEditor measureBlockChain, int divisionsOfOneQuarter, ref Position position)
+        private void ProcessMeasureElement(XElement measureElement, IMeasureBlockChainEditor measureBlockChain, int divisionsOfOneQuarter, IScoreDocumentLayout pageViewLayout, ref Position position)
         {
             if (!measureElement.IsNoteOrForwardOrBackup())
             {
@@ -71,9 +72,9 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             {
                 chordDocument.Add(pitch.Value);
                 INoteEditor note = chordDocument.ReadNotes().Single(n => n.Pitch.Equals(pitch));
-                NoteLayout layout = note.ReadLayout();
+                NoteLayout layout = pageViewLayout.NoteLayout(note);
                 layout.StaffIndex = staff ?? 0;
-                note.ApplyLayout(layout);
+                note.Apply(layout);
             }
 
             if (!grace)

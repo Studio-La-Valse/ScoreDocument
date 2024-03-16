@@ -4,9 +4,9 @@ using StudioLaValse.ScoreDocument.Layout;
 namespace StudioLaValse.ScoreDocument.Builder
 {
     /// <summary>
-    /// Represents a note editor.
+    /// A page in a score doccument.
     /// </summary>
-    public interface INoteEditor : INote, IScoreElementEditor, ILayoutEditor<NoteLayout>
+    public interface IPageEditor : IPage<IStaffSystemEditor>, IScoreElementEditor, ILayoutEditor<PageLayout>
     {
 
     }

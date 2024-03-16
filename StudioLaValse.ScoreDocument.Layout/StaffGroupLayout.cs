@@ -1,4 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.Layout.Templates;
+﻿using StudioLaValse.ScoreDocument.Core;
+using StudioLaValse.ScoreDocument.Layout.Templates;
 
 namespace StudioLaValse.ScoreDocument.Layout
 {
@@ -9,13 +10,16 @@ namespace StudioLaValse.ScoreDocument.Layout
     {
         private readonly StaffGroupStyleTemplate styleTemplate;
         private readonly Instrument instrument;
+        private TemplateProperty<int> numberOfStaves;
+        private TemplateProperty<double> distanceToNext;
+        private TemplateProperty<double> lineSpacing;
 
         public bool Collapsed { get; set; }
 
 
-        public TemplateProperty<int> NumberOfStaves { get; }
-        public TemplateProperty<double> DistanceToNext { get; }
-        public TemplateProperty<double> LineSpacing { get; }
+        public int NumberOfStaves { get => numberOfStaves.Value; set => numberOfStaves.Value = value; }
+        public double DistanceToNext { get => distanceToNext.Value; set => distanceToNext.Value = value; }
+        public double LineSpacing { get => lineSpacing.Value; set => lineSpacing.Value = value; }
 
 
         public StaffGroupLayout(StaffGroupStyleTemplate styleTemplate, Instrument instrument)
@@ -23,9 +27,9 @@ namespace StudioLaValse.ScoreDocument.Layout
             this.styleTemplate = styleTemplate;
             this.instrument = instrument;
 
-            NumberOfStaves = new TemplateProperty<int>(() => instrument.NumberOfStaves);
-            DistanceToNext = new TemplateProperty<double>(() => styleTemplate.LineSpacing);
-            LineSpacing = new TemplateProperty<double>(() => styleTemplate.LineSpacing);
+            numberOfStaves = new TemplateProperty<int>(() => instrument.NumberOfStaves);
+            distanceToNext = new TemplateProperty<double>(() => styleTemplate.LineSpacing);
+            lineSpacing = new TemplateProperty<double>(() => styleTemplate.LineSpacing);
             Collapsed = false;
         }
 
@@ -37,9 +41,9 @@ namespace StudioLaValse.ScoreDocument.Layout
             {
                 Collapsed = Collapsed
             };
-            copy.NumberOfStaves.Field = NumberOfStaves.Field;
-            copy.DistanceToNext.Field = DistanceToNext.Field;
-            copy.LineSpacing.Field = LineSpacing.Field;
+            copy.numberOfStaves.Field = numberOfStaves.Field;
+            copy.distanceToNext.Field = distanceToNext.Field;
+            copy.lineSpacing.Field = lineSpacing.Field;
             return copy;
         }
     }

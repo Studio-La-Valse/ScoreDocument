@@ -7,7 +7,7 @@
     {
         private readonly ISelection<IUniqueScoreElement> selection;
         private readonly IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory;
-        private readonly IScoreLayoutProvider scoreLayoutDictionary;
+        private readonly IScoreDocumentLayout scoreLayoutDictionary;
 
         /// <summary>
         /// The default constructor
@@ -15,7 +15,7 @@
         /// <param name="selection"></param>
         /// <param name="visualInstrumentMeasureFactory"></param>
         /// <param name="scoreLayoutDictionary"></param>
-        public VisualSystemMeasureFactory(ISelection<IUniqueScoreElement> selection, IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory, IScoreLayoutProvider scoreLayoutDictionary)
+        public VisualSystemMeasureFactory(ISelection<IUniqueScoreElement> selection, IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory, IScoreDocumentLayout scoreLayoutDictionary)
         {
             this.selection = selection;
             this.visualInstrumentMeasureFactory = visualInstrumentMeasureFactory;

@@ -96,13 +96,13 @@
         {
             double fraction = maxStart - minStart;
 
-            return fraction == 0 ? throw new ArgumentOutOfRangeException() : minEnd + ((maxEnd - minEnd) * ((value - minStart) / fraction));
+            return fraction == 0 ? throw new ArgumentOutOfRangeException() : minEnd + (maxEnd - minEnd) * ((value - minStart) / fraction);
         }
         public static decimal Map(decimal value, decimal minStart, decimal maxStart, decimal minEnd, decimal maxEnd)
         {
             decimal fraction = maxStart - minStart;
 
-            return fraction == 0 ? throw new ArgumentOutOfRangeException() : minEnd + ((maxEnd - minEnd) * ((value - minStart) / fraction));
+            return fraction == 0 ? throw new ArgumentOutOfRangeException() : minEnd + (maxEnd - minEnd) * ((value - minStart) / fraction);
         }
         public static double Clamp(double value, double minValue, double maxValue)
         {

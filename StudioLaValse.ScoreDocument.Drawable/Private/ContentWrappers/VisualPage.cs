@@ -1,4 +1,6 @@
-﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
+﻿using StudioLaValse.ScoreDocument.Drawable.Scenes;
+
+namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
     internal sealed class VisualPage : BaseContentWrapper
     {
@@ -8,18 +10,18 @@
         private readonly IVisualStaffSystemFactory staffSystemContentFactory;
         private readonly ColorARGB foregroundColor;
         private readonly ColorARGB pageColor;
-        private readonly IScoreLayoutProvider scoreLayoutDictionary;
+        private readonly IScoreDocumentLayout scoreLayoutDictionary;
 
 
         public PageLayout Layout => scoreLayoutDictionary.PageLayout(page);
-        public double MarginLeft => Layout.MarginLeft.Value;
-        public double MarginRight => Layout.MarginRight.Value;
-        public double MarginTop => Layout.MarginTop.Value;
-        public double PageWidth => Layout.PageWidth.Value;
-        public double PageHeight => Layout.PageHeight.Value;
+        public double MarginLeft => Layout.MarginLeft;
+        public double MarginRight => Layout.MarginRight;
+        public double MarginTop => Layout.MarginTop;
+        public double PageWidth => Layout.PageWidth;
+        public double PageHeight => Layout.PageHeight;
 
 
-        public VisualPage(IPageReader page, double canvasLeft, double canvasTop, IVisualStaffSystemFactory staffSystemContentFactory, ColorARGB foregroundColor, ColorARGB pageColor, IScoreLayoutProvider scoreLayoutDictionary)
+        public VisualPage(IPageReader page, double canvasLeft, double canvasTop, IVisualStaffSystemFactory staffSystemContentFactory, ColorARGB foregroundColor, ColorARGB pageColor, IScoreDocumentLayout scoreLayoutDictionary)
         {
             this.page = page;
             this.canvasLeft = canvasLeft;
@@ -60,7 +62,7 @@
                 yield return visualSystem;
 
                 canvasTop += staffSystem.CalculateHeight(scoreLayoutDictionary);
-                canvasTop += staffSystemLayout.PaddingBottom.Value;
+                canvasTop += staffSystemLayout.PaddingBottom;
             }
         }
     }

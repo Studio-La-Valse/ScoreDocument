@@ -1,4 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Drawable.Private.DrawableElements;
+using StudioLaValse.ScoreDocument.Drawable.Private.Models;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
@@ -9,7 +10,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         private readonly double canvasTop;
         private readonly bool offsetDots;
         private readonly Accidental? accidental;
-        private readonly IScoreLayoutProvider scoreLayoutDictionary;
+        private readonly IScoreDocumentLayout scoreLayoutDictionary;
 
 
         public NoteLayout NoteLayout => scoreLayoutDictionary.NoteLayout(note);
@@ -40,7 +41,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                 {
                     glyph.Scale = Scale;
                     return new DrawableScoreGlyph(
-                        XPosition - (glyph.Width * 2),
+                        XPosition - glyph.Width * 2,
                         canvasTop,
                         glyph,
                         HorizontalTextOrigin.Center,
@@ -70,7 +71,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         public override bool OffsetDots => offsetDots;
         public override double XOffset => NoteLayout.XOffset;
 
-        public VisualNote(INoteReader note, ColorARGB color, double canvasLeft, double canvasTop, double scale, bool offsetDots, Accidental? accidental, ISelection<IUniqueScoreElement> selection, IScoreLayoutProvider scoreLayoutDictionary) :
+        public VisualNote(INoteReader note, ColorARGB color, double canvasLeft, double canvasTop, double scale, bool offsetDots, Accidental? accidental, ISelection<IUniqueScoreElement> selection, IScoreDocumentLayout scoreLayoutDictionary) :
             base(note, canvasLeft, canvasTop, scale, color, selection)
         {
             this.note = note;

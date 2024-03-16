@@ -1,12 +1,12 @@
 ﻿namespace StudioLaValse.ScoreDocument.Core.Primitives
 {
     /// <summary>
-    /// Represents a staff reader.
+    /// The base interface for staves.
     /// </summary>
-    public interface IStaff
+    public interface IStaff : IScoreElement
     {
         /// <summary>
-        /// The index of the staff in the parent staffgroup.
+        /// The index in the staff group.
         /// </summary>
         int IndexInStaffGroup { get; }
     }

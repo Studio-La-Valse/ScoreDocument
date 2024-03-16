@@ -7,7 +7,7 @@
     {
         private readonly ISelection<IUniqueScoreElement> selection;
         private readonly IVisualNoteGroupFactory noteGroupFactory;
-        private readonly IScoreLayoutProvider scoreLayoutDictionary;
+        private readonly IScoreDocumentLayout scoreLayoutDictionary;
 
         /// <summary>
         /// The default constructor.
@@ -15,7 +15,7 @@
         /// <param name="selection"></param>
         /// <param name="noteGroupFactory"></param>
         /// <param name="scoreLayoutDictionary"></param>
-        public VisualStaffMeasureFactory(ISelection<IUniqueScoreElement> selection, IVisualNoteGroupFactory noteGroupFactory, IScoreLayoutProvider scoreLayoutDictionary)
+        public VisualStaffMeasureFactory(ISelection<IUniqueScoreElement> selection, IVisualNoteGroupFactory noteGroupFactory, IScoreDocumentLayout scoreLayoutDictionary)
         {
             this.selection = selection;
             this.noteGroupFactory = noteGroupFactory;

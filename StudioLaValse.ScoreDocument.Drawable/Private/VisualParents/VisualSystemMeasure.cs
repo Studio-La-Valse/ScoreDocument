@@ -4,7 +4,7 @@
     {
         private readonly IScoreMeasureReader scoreMeasure;
         private readonly IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory;
-        private readonly IScoreLayoutProvider scoreLayoutDictionary;
+        private readonly IScoreDocumentLayout scoreLayoutDictionary;
         private readonly IStaffSystemReader staffSystem;
         private readonly double width;
         private readonly bool firstMeasure;
@@ -16,12 +16,12 @@
         public ScoreMeasureLayout Layout => scoreLayoutDictionary.ScoreMeasureLayout(scoreMeasure);
 
         public double PaddingRight =>
-            Layout.PaddingRight.Value + NextMeasureKeyPadding;
+            Layout.PaddingRight + NextMeasureKeyPadding;
         public double PaddingLeft
         {
             get
             {
-                double basePadding = Layout.PaddingLeft.Value;
+                double basePadding = Layout.PaddingLeft;
 
                 if (firstMeasure)
                 {
@@ -79,7 +79,7 @@
 
 
 
-        public VisualSystemMeasure(IScoreMeasureReader scoreMeasure, IStaffSystemReader staffSystem, double canvasLeft, double canvasTop, double width, bool firstMeasure, ColorARGB color, ISelection<IUniqueScoreElement> selection, IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory, IScoreLayoutProvider scoreLayoutDictionary) : base(scoreMeasure, selection)
+        public VisualSystemMeasure(IScoreMeasureReader scoreMeasure, IStaffSystemReader staffSystem, double canvasLeft, double canvasTop, double width, bool firstMeasure, ColorARGB color, ISelection<IUniqueScoreElement> selection, IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory, IScoreDocumentLayout scoreLayoutDictionary) : base(scoreMeasure, selection)
         {
             this.scoreMeasure = scoreMeasure;
             this.visualInstrumentMeasureFactory = visualInstrumentMeasureFactory;
@@ -107,7 +107,7 @@
 
                 StaffGroupLayout staffGroupLayout = scoreLayoutDictionary.StaffGroupLayout(staffGroup);
                 _canvasTop += staffGroup.CalculateHeight(scoreLayoutDictionary);
-                _canvasTop += staffGroupLayout.DistanceToNext.Value;
+                _canvasTop += staffGroupLayout.DistanceToNext;
             }
         }
 

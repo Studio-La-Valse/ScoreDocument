@@ -12,9 +12,9 @@
 
         public ChordStyleTemplate ChordStyleTemplate { get; init; } = new();
 
-        public NoteStyleTemplate NoteStyleTemplate { get; init; } = new ();
+        public NoteStyleTemplate NoteStyleTemplate { get; init; } = new();
 
-        public MeasureBlockStyleTemplate MeasureBlockStyleTemplate { get; init; } = new();   
+        public MeasureBlockStyleTemplate MeasureBlockStyleTemplate { get; init; } = new();
 
         public StaffStyleTemplate StaffStyleTemplate { get; init; } = new();
 
@@ -24,7 +24,7 @@
 
         public ScoreDocumentStyleTemplate()
         {
-            
+
         }
 
         public void Apply(ScoreDocumentStyleTemplate styleTemplate)
@@ -49,6 +49,7 @@
             StaffStyleTemplate.DistanceToNext = styleTemplate.StaffStyleTemplate.DistanceToNext;
 
             StaffGroupStyleTemplate.LineSpacing = styleTemplate.StaffGroupStyleTemplate.LineSpacing;
+            StaffGroupStyleTemplate.DistanceToNext = styleTemplate.StaffGroupStyleTemplate.DistanceToNext;
 
             StaffSystemStyleTemplate.PaddingBottom = styleTemplate.StaffSystemStyleTemplate.PaddingBottom;
         }

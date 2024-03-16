@@ -11,13 +11,13 @@ namespace StudioLaValse.ScoreDocument.Tests
             var fraction = new Fraction(4, 8);
             var simplified = fraction.Simplify();
 
-            Assert.AreEqual(simplified.Numinator, 1);
+            Assert.AreEqual(simplified.Numerator, 1);
             Assert.AreEqual(simplified.Denominator, 2);
 
             fraction = new Fraction(3, 8);
             simplified = fraction.Simplify();
 
-            Assert.AreEqual(simplified.Numinator, 3);
+            Assert.AreEqual(simplified.Numerator, 3);
             Assert.AreEqual(simplified.Denominator, 8);
         }
 
@@ -27,19 +27,19 @@ namespace StudioLaValse.ScoreDocument.Tests
             var fraction = new Duration(4, 16);
             var simplified = fraction.Simplify();
 
-            Assert.AreEqual(simplified.Numinator, 1);
+            Assert.AreEqual(simplified.Numerator, 1);
             Assert.AreEqual(simplified.Denominator.Value, 4);
 
             fraction = new Duration(3, 8);
             simplified = fraction.Simplify();
 
-            Assert.AreEqual(simplified.Numinator, 3);
+            Assert.AreEqual(simplified.Numerator, 3);
             Assert.AreEqual(simplified.Denominator.Value, 8);
 
             fraction = new Duration(0, 8);
             simplified = fraction.Simplify();
 
-            Assert.AreEqual(simplified.Numinator, 0);
+            Assert.AreEqual(simplified.Numerator, 0);
             Assert.AreEqual(simplified.Denominator.Value, 1);
         }
 
@@ -50,12 +50,12 @@ namespace StudioLaValse.ScoreDocument.Tests
             var secondDuration = new Duration(8, 64);
             var added = duration + secondDuration;
 
-            Assert.AreEqual(added.Numinator, 1);
+            Assert.AreEqual(added.Numerator, 1);
             Assert.AreEqual(added.Denominator.Value, 2);
 
             var thirdDuration = new Duration(1, 16);
             added += thirdDuration;
-            Assert.AreEqual(added.Numinator, 9);
+            Assert.AreEqual(added.Numerator, 9);
             Assert.AreEqual(added.Denominator.Value, 16);
         }
 
@@ -98,15 +98,15 @@ namespace StudioLaValse.ScoreDocument.Tests
         public void TestRythmicDuration()
         {
             var rythmicDuration = new RythmicDuration(8);
-            Assert.AreEqual(rythmicDuration.Numinator, 1);
+            Assert.AreEqual(rythmicDuration.Numerator, 1);
             Assert.AreEqual(rythmicDuration.Denominator.Value, 8);
 
             rythmicDuration = new RythmicDuration(8, 1);
-            Assert.AreEqual(rythmicDuration.Numinator, 3);
+            Assert.AreEqual(rythmicDuration.Numerator, 3);
             Assert.AreEqual(rythmicDuration.Denominator.Value, 16);
 
             rythmicDuration = new RythmicDuration(4, 2);
-            Assert.AreEqual(rythmicDuration.Numinator, 7);
+            Assert.AreEqual(rythmicDuration.Numerator, 7);
             Assert.AreEqual(rythmicDuration.Denominator.Value, 16);
         }
 
@@ -123,7 +123,7 @@ namespace StudioLaValse.ScoreDocument.Tests
 
             //the length of one eights in a tuplet of three eights in the space of one fourth is one twelveth.
             var adjustedLength = tuplet.ToActualDuration(oneEighth);
-            Assert.AreEqual(adjustedLength.Numinator, 1);
+            Assert.AreEqual(adjustedLength.Numerator, 1);
             Assert.AreEqual(adjustedLength.Denominator, 12);
 
             var oneSixteenth = new RythmicDuration(16);
@@ -135,7 +135,7 @@ namespace StudioLaValse.ScoreDocument.Tests
             tuplet = new Tuplet(new Duration(1, 4), thirteenOneSixtheenths);
             adjustedLength = tuplet.ToActualDuration(oneSixteenth);
 
-            Assert.AreEqual(adjustedLength.Numinator, 1);
+            Assert.AreEqual(adjustedLength.Numerator, 1);
             Assert.AreEqual(adjustedLength.Denominator, 52);
         }
 
@@ -174,7 +174,7 @@ namespace StudioLaValse.ScoreDocument.Tests
             //consider 15 / 32 =>  7 / 16 => 3 / 8 => 1 / 4 with 3 dots
             //consider 63 / 256 => 31 / 128 => 15 / 64 => 7 / 32 => 3 / 16 => 1 / 8 with 5 dots
             //consider 7 / 64 => 3 / 32 => 1 / 16 with 2 dots
-            
+
             duration = new Duration(7, 32);
             canConvert = RythmicDuration.TryConstruct(duration, out converted);
             Assert.IsTrue(canConvert);

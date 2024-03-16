@@ -8,17 +8,16 @@ namespace StudioLaValse.ScoreDocument.Layout
     public class StaffLayout : ILayoutElement<StaffLayout>
     {
         private readonly StaffStyleTemplate styleTemplate;
+        private TemplateProperty<double> distanceToNext;
 
-
-
-        public TemplateProperty<double> DistanceToNext { get; }
+        public double DistanceToNext { get => distanceToNext.Value; set => distanceToNext.Value = value; }
 
 
 
         public StaffLayout(StaffStyleTemplate styleTemplate)
         {
             this.styleTemplate = styleTemplate;
-            DistanceToNext = new TemplateProperty<double>(() =>  styleTemplate.DistanceToNext);
+            distanceToNext = new TemplateProperty<double>(() => styleTemplate.DistanceToNext);
         }
 
 
@@ -28,7 +27,7 @@ namespace StudioLaValse.ScoreDocument.Layout
         public StaffLayout Copy()
         {
             var copy = new StaffLayout(styleTemplate);
-            copy.DistanceToNext.Field = DistanceToNext.Field;
+            copy.distanceToNext.Field = distanceToNext.Field;
             return copy;
         }
     }

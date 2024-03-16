@@ -1,4 +1,6 @@
-﻿namespace StudioLaValse.ScoreDocument.Drawable.Scenes
+﻿using StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers;
+
+namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
     /// <summary>
     /// The default implementation of the visual score document factory.
@@ -10,7 +12,7 @@
         private readonly double largePadding;
         private readonly ColorARGB foregroundColor;
         private readonly ColorARGB pageColor;
-        private readonly IScoreLayoutProvider scoreLayoutDictionary;
+        private readonly IScoreDocumentLayout scoreLayoutDictionary;
 
         /// <summary>
         /// The default constructor.
@@ -21,7 +23,7 @@
         /// <param name="foregroundColor"></param>
         /// <param name="pageColor"></param>
         /// <param name="scoreLayoutDictionary"></param>
-        public PageViewSceneFactory(IVisualStaffSystemFactory staffSystemContentFactory, double smallPadding, double largePadding, ColorARGB foregroundColor, ColorARGB pageColor, IScoreLayoutProvider scoreLayoutDictionary)
+        public PageViewSceneFactory(IVisualStaffSystemFactory staffSystemContentFactory, double smallPadding, double largePadding, ColorARGB foregroundColor, ColorARGB pageColor, IScoreDocumentLayout scoreLayoutDictionary)
         {
             this.staffSystemContentFactory = staffSystemContentFactory;
             this.smallPadding = smallPadding;
@@ -37,12 +39,12 @@
             IList<VisualPage> pages = [];
 
             var pageCanvasLeft = 0d;
-            foreach (var page in scoreDocument.EnumeratePages())
+            foreach (var page in scoreDocument.GeneratePages())
             {
                 var pageLayout = scoreLayoutDictionary.PageLayout(page);
                 var visualPage = new VisualPage(page, pageCanvasLeft, 0, staffSystemContentFactory, foregroundColor, pageColor, scoreLayoutDictionary);
                 pages.Add(visualPage);
-                pageCanvasLeft += pageLayout.PageWidth.Value;
+                pageCanvasLeft += pageLayout.PageWidth;
                 pageCanvasLeft += pages.Count % 2 == 0 ? largePadding : smallPadding;
             }
 

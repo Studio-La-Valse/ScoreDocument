@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using StudioLaValse.ScoreDocument.Layout;
+using System.Xml.Linq;
 
 namespace StudioLaValse.ScoreDocument.MusicXml.Private
 {
@@ -11,7 +12,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             this.scorePartXmlConverter = scorePartXmlConverter;
         }
 
-        public void Create(XDocument xDocument, IScoreDocumentEditor scoreEditor)
+        public void Create(XDocument xDocument, IScoreDocumentEditor scoreEditor, IScoreDocumentLayout pageViewLayout)
         {
             scoreEditor.Clear();
 
@@ -19,7 +20,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             {
                 if (element.Name == "score-partwise")
                 {
-                    ProcessScorePartWise(element, scoreEditor);
+                    ProcessScorePartWise(element, scoreEditor, pageViewLayout);
                     return;
                 }
             }
@@ -27,13 +28,13 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             throw new Exception("No score-partwise found in music xml.");
         }
 
-        private void ProcessScorePartWise(XElement scorePartwise, IScoreDocumentEditor scoreEditor)
+        private void ProcessScorePartWise(XElement scorePartwise, IScoreDocumentEditor scoreEditor, IScoreDocumentLayout pageViewLayout)
         {
             foreach (XElement element in scorePartwise.Elements())
             {
                 if (element.Name == "part-list")
                 {
-                    PrepareParts(element, scoreEditor);
+                    PrepareParts(element, scoreEditor, pageViewLayout);
                 }
             }
 
@@ -51,29 +52,29 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                 if (element.Name == "part")
                 {
                     string id = element.Attributes().Single(a => a.Name == "id").Value;
-                    IInstrumentRibbonEditor ribbon = scoreEditor.ReadInstrumentRibbons().First(r => r.ReadLayout().DisplayName.Value == id);
-                    scorePartXmlConverter.Create(element, ribbon);
+                    IInstrumentRibbonEditor ribbon = scoreEditor.ReadInstrumentRibbons().First(r => pageViewLayout.InstrumentRibbonLayout(r).DisplayName == id);
+                    scorePartXmlConverter.Create(element, ribbon, pageViewLayout);
                 }
             }
         }
 
-        private void PrepareParts(XElement partList, IScoreDocumentEditor scoreEditor)
+        private void PrepareParts(XElement partList, IScoreDocumentEditor scoreEditor, IScoreDocumentLayout pageViewLayout)
         {
             IEnumerable<XElement> partNodes = partList.Elements().Where(d => d.Name == "score-part");
 
             foreach (XElement? partListNode in partNodes)
             {
                 string name = partListNode.Elements().Single(d => d.Name == "part-name").Value;
-                if(!Instrument.TryGetFromName(name, out Instrument? instrument))
+                if (!Instrument.TryGetFromName(name, out Instrument? instrument))
                 {
                     instrument = Instrument.Piano;
                 }
                 scoreEditor.AddInstrumentRibbon(instrument);
 
                 IInstrumentRibbonEditor ribbon = scoreEditor.ReadInstrumentRibbon(scoreEditor.NumberOfInstruments - 1);
-                var layout = ribbon.ReadLayout();
-                layout.DisplayName.Value = partListNode.Attributes().Single(a => a.Name == "id").Value;
-                ribbon.ApplyLayout(layout);
+                var layout = pageViewLayout.InstrumentRibbonLayout(ribbon);
+                layout.DisplayName = partListNode.Attributes().Single(a => a.Name == "id").Value;
+                ribbon.Apply(layout);
             }
         }
 

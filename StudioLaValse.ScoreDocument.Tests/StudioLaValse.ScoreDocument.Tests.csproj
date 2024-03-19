@@ -20,7 +20,6 @@
   <ItemGroup>
     <ProjectReference Include="..\StudioLaValse.ScoreDocument.Builder\StudioLaValse.ScoreDocument.Builder.csproj" />
     <ProjectReference Include="..\StudioLaValse.ScoreDocument.Core\StudioLaValse.ScoreDocument.Core.csproj" />
-    <ProjectReference Include="..\StudioLaValse.ScoreDocument.Drawable.PageView.MusicXml\StudioLaValse.ScoreDocument.MusicXml.csproj" />
     <ProjectReference Include="..\StudioLaValse.ScoreDocument.Drawable\StudioLaValse.ScoreDocument.Drawable.csproj" />
     <ProjectReference Include="..\StudioLaValse.ScoreDocument\StudioLaValse.ScoreDocument.csproj" />
   </ItemGroup>

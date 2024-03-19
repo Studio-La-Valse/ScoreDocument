@@ -5,16 +5,15 @@ namespace StudioLaValse.ScoreDocument.Layout
     public class PageLayout : ILayoutElement<PageLayout>
     {
         private readonly PageStyleTemplate pageStyleTemplate;
-        private TemplateProperty<int> pageWidth;
-        private TemplateProperty<int> pageHeight;
-        private TemplateProperty<double> marginLeft;
-        private TemplateProperty<double> marginTop;
-        private TemplateProperty<double> marginRight;
-        private TemplateProperty<double> marginBottom;
+        private readonly TemplateProperty<int> pageWidth;
+        private readonly TemplateProperty<int> pageHeight;
+        private readonly TemplateProperty<double> marginLeft;
+        private readonly TemplateProperty<double> marginTop;
+        private readonly TemplateProperty<double> marginRight;
+        private readonly TemplateProperty<double> marginBottom;
 
         public int PageWidth { get => pageWidth.Value; set => pageWidth.Value = value; }
         public int PageHeight { get => pageHeight.Value; set => pageHeight.Value = value; }
-
         public double MarginLeft { get => marginLeft.Value; set => marginLeft.Value = value; }
         public double MarginTop { get => marginTop.Value; set => marginTop.Value = value; }
         public double MarginRight { get => marginRight.Value; set => marginRight.Value = value; }

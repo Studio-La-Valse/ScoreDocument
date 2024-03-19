@@ -8,8 +8,8 @@ namespace StudioLaValse.ScoreDocument.Layout
     public class MeasureBlockLayout : ILayoutElement<MeasureBlockLayout>
     {
         private readonly MeasureBlockStyleTemplate styleTemplate;
-        private TemplateProperty<double> stemLength;
-        private TemplateProperty<double> beamAngle;
+        private readonly TemplateProperty<double> stemLength;
+        private readonly TemplateProperty<double> beamAngle;
 
         public double StemLength { get => stemLength.Value; set => stemLength.Value = value; }
         public double BeamAngle { get => beamAngle.Value; set => beamAngle.Value = value; }

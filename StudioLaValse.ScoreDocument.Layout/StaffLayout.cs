@@ -8,7 +8,7 @@ namespace StudioLaValse.ScoreDocument.Layout
     public class StaffLayout : ILayoutElement<StaffLayout>
     {
         private readonly StaffStyleTemplate styleTemplate;
-        private TemplateProperty<double> distanceToNext;
+        private readonly TemplateProperty<double> distanceToNext;
 
         public double DistanceToNext { get => distanceToNext.Value; set => distanceToNext.Value = value; }
 

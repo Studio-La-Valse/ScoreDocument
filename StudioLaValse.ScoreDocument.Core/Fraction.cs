@@ -51,11 +51,11 @@ namespace StudioLaValse.ScoreDocument.Core
         /// <returns></returns>
         public virtual Fraction Simplify()
         {
-            int greatestCommonDivisor = Numerator.GCD(Denominator);
+            var greatestCommonDivisor = Numerator.GCD(Denominator);
 
-            int minPosition = Numerator / greatestCommonDivisor;
+            var minPosition = Numerator / greatestCommonDivisor;
 
-            int minSteps = Denominator / greatestCommonDivisor;
+            var minSteps = Denominator / greatestCommonDivisor;
 
             return new Fraction(minPosition, minSteps);
         }

@@ -12,8 +12,9 @@
         /// <param name="canvasLeft"></param>
         /// <param name="canvasTop"></param>
         /// <param name="length"></param>
+        /// <param name="lineSpacing"></param>
         /// <param name="color"></param>
         /// <returns></returns>
-        BaseContentWrapper CreateContent(IStaffSystemReader staffSystem, double canvasLeft, double canvasTop, double length, ColorARGB color);
+        BaseContentWrapper CreateContent(IStaffSystemReader staffSystem, double canvasLeft, double canvasTop, double length, double lineSpacing, ColorARGB color);
     }
 }

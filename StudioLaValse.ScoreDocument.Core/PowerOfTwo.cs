@@ -19,9 +19,9 @@ namespace StudioLaValse.ScoreDocument.Core
         {
             get
             {
-                int value = 1;
+                var value = 1;
 
-                for (int i = 0; i < Power; i++)
+                for (var i = 0; i < Power; i++)
                 {
                     value *= 2;
                 }
@@ -58,9 +58,9 @@ namespace StudioLaValse.ScoreDocument.Core
                 return false;
             }
 
-            int _val = 1;
+            var _val = 1;
 
-            int power = 0;
+            var power = 0;
 
             while (_val <= value)
             {
@@ -124,7 +124,7 @@ namespace StudioLaValse.ScoreDocument.Core
         /// <param name="i"></param>
         public static implicit operator PowerOfTwo(int i)
         {
-            return TryCreate(i, out PowerOfTwo? result) ? result : throw new InvalidCastException();
+            return TryCreate(i, out var result) ? result : throw new InvalidCastException();
         }
 
         /// <inheritdoc/>

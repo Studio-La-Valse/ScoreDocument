@@ -1,7 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Drawable.Private.DrawableElements;
-using StudioLaValse.ScoreDocument.Drawable.Private.Models;
-
-namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
+﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
     internal sealed class VisualStaff : BaseContentWrapper
     {
@@ -9,51 +6,45 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         private readonly double canvasLeft;
         private readonly double canvasTop;
         private readonly double length;
-        private readonly double lineSpacing;
+        private readonly double globalLineSpacing;
+        private readonly double scoreScale;
+        private readonly double instrumentScale;
+        private readonly double lineThickness;
         private readonly Clef openingClef;
         private readonly KeySignature openingKeySignature;
+        private readonly TimeSignature? timeSignature;
         private readonly ColorARGB color;
-        private readonly IScoreDocumentLayout scoreLayoutDictionary;
+        private readonly IScoreDocumentLayout scoreDocumentLayout;
+
+        public static double SpaceUntilClef { get; } = 0.5;
+        public static double ClefSpacing { get; } = 5.5;
+        public static double KeySignatureGlyphSpacing { get; } = 0.9;
+        public static double TimeSignatureSpacing { get; } = 4.0;
+        public double Scale => scoreScale * instrumentScale;
+        public double LineThickness => lineThickness * Scale;
 
 
-        public StaffLayout Layout => scoreLayoutDictionary.StaffLayout(staff);
-        public static double KeySignatureGlyphSpacing { get; set; } = 0.9;
-        public static double ClefSpacing { get; set; } = 5.5;
-        public static double KeySignatureSpacing { get; set; } = 4.5;
-
-
-
-
-
-
-
-
-        public VisualStaff(IStaffReader staff, double canvasLeft, double canvasTop, double length, double lineSpacing, Clef openingClef, KeySignature openingKeySignature, ColorARGB color, IScoreDocumentLayout scoreLayoutDictionary)
+        public VisualStaff(IStaffReader staff, double canvasLeft, double canvasTop, double length, double globalLineSpacing, double scoreScale, double instrumentScale, double lineThickness, Clef openingClef, KeySignature openingKeySignature, TimeSignature? timeSignature, ColorARGB color, IScoreDocumentLayout scoreDocumentLayout)
         {
             this.staff = staff;
             this.canvasLeft = canvasLeft;
             this.canvasTop = canvasTop;
             this.length = length;
-            this.lineSpacing = lineSpacing;
+            this.globalLineSpacing = globalLineSpacing;
+            this.scoreScale = scoreScale;
+            this.instrumentScale = instrumentScale;
+            this.lineThickness = lineThickness;
             this.openingClef = openingClef;
             this.openingKeySignature = openingKeySignature;
+            this.timeSignature = timeSignature;
             this.color = color;
-            this.scoreLayoutDictionary = scoreLayoutDictionary;
+            this.scoreDocumentLayout = scoreDocumentLayout;
         }
 
 
-        public IEnumerable<DrawableLineHorizontal> ConstructStaffLines()
+        public DrawableScoreGlyph ConstructOpeningClef(double canvasLeft, out double _canvasLeft)
         {
-            for (int i = 0; i < 5; i++)
-            {
-                double heightOnPage = canvasTop + i * lineSpacing;
-
-                yield return new DrawableLineHorizontal(heightOnPage, canvasLeft, length, 0.1, color);
-            }
-        }
-        public DrawableScoreGlyph ConstructOpeningClef()
-        {
-            Glyph glyph = openingClef.ClefSpecies switch
+            var glyph = openingClef.ClefSpecies switch
             {
                 ClefSpecies.G => GlyphLibrary.ClefG,
                 ClefSpecies.F => GlyphLibrary.ClefF,
@@ -62,61 +53,129 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                 _ => throw new NotImplementedException()
             };
 
-            return new DrawableScoreGlyph(
-                canvasLeft + 0.5,
-                canvasTop,
-                glyph,
-                color);
+            glyph.Scale = scoreScale * instrumentScale;
+
+            var lineIndex = openingClef.ClefSpecies switch
+            {
+                ClefSpecies.G => 6,
+                ClefSpecies.F => 2,
+                _ => throw new NotImplementedException()
+            };
+
+            _canvasLeft = canvasLeft + (ClefSpacing * scoreScale);
+
+            return new DrawableScoreGlyph(canvasLeft, staff.HeightFromLineIndex(canvasTop, lineIndex, globalLineSpacing, scoreScale, instrumentScale), glyph, HorizontalTextOrigin.Left, VerticalTextOrigin.Center, color);
         }
-        public IEnumerable<DrawableScoreGlyph> ConstructOpeningKeySignature()
+        public IEnumerable<DrawableScoreGlyph> ConstructOpeningKeySignature(double canvasLeft, out double _canvasLeft)
         {
+            _canvasLeft = canvasLeft;
+            var list = new List<DrawableScoreGlyph>();
             if (openingKeySignature.IndexInCircleOfFifths == 0)
             {
-                yield break;
+                return list;
             }
 
-            double xPosition = canvasLeft + 3.5;
+            var _glyph = openingKeySignature.DefaultFlats ?
+                GlyphLibrary.Flat :
+                GlyphLibrary.Sharp;
 
-            Glyph _glyph = openingKeySignature.IndexInCircleOfFifths > 0 ?
-                GlyphLibrary.Sharp :
-                GlyphLibrary.Flat;
+            var glyphWidth = _glyph.Width;
 
-            double glyphWidth = _glyph.Width;
-
-            bool flats = openingKeySignature.DefaultFlats;
-            IEnumerable<int> accidentalLines = flats ?
+            var flats = openingKeySignature.DefaultFlats;
+            var accidentalLines = flats ?
                 openingKeySignature.EnumerateFlatLines(openingClef) :
                 openingKeySignature.EnumerateSharpLines(openingClef);
-            foreach (int line in accidentalLines)
+
+
+            foreach (var line in accidentalLines)
             {
-                xPosition += glyphWidth * KeySignatureGlyphSpacing;
+                _canvasLeft += glyphWidth * KeySignatureGlyphSpacing * scoreScale;
 
-                double yPosition = staff.HeightFromLineIndex(canvasTop, line - 4, lineSpacing);
+                var yPosition = staff.HeightFromLineIndex(canvasTop, line, globalLineSpacing, scoreScale, instrumentScale);
 
-                DrawableScoreGlyph glyph = new(
-                    xPosition,
-                    yPosition,
-                    _glyph,
-                    color);
+                DrawableScoreGlyph glyph = new(_canvasLeft, yPosition, _glyph, HorizontalTextOrigin.Center, VerticalTextOrigin.Center, color);
 
-                yield return glyph;
+                list.Add(glyph);
+            }
+
+            _canvasLeft += glyphWidth * KeySignatureGlyphSpacing * scoreScale;
+            return list;
+        }
+        public IEnumerable<DrawableScoreGlyph> ConstructOpeningTimeSignature(double canvasLeft)
+        {
+            if (timeSignature is null)
+            {
+                return new List<DrawableScoreGlyph>();
+            }
+
+            var topGlyph = timeSignature.Numerator switch
+            {
+                1 => GlyphLibrary.NumberOne,
+                2 => GlyphLibrary.NumberTwo,
+                3 => GlyphLibrary.NumberThree,
+                4 => GlyphLibrary.NumberFour,
+                5 => GlyphLibrary.NumberFive,
+                6 => GlyphLibrary.NumberSix,
+                7 => GlyphLibrary.NumberSeven,
+                8 => GlyphLibrary.NumberEight,
+                9 => GlyphLibrary.NumberNine,
+                _ => throw new NotSupportedException()
+            };
+            topGlyph.Scale = scoreScale * instrumentScale;
+
+            var bottomGlyph = timeSignature.Denominator.Value switch
+            {
+                2 => GlyphLibrary.NumberTwo,
+                4 => GlyphLibrary.NumberFour,
+                8 => GlyphLibrary.NumberEight,
+                _ => throw new NotSupportedException()
+            };
+            bottomGlyph.Scale = scoreScale * instrumentScale;
+
+            var list = new List<DrawableScoreGlyph>()
+            {
+                new DrawableScoreGlyph(canvasLeft, staff.HeightFromLineIndex(canvasTop, 2, globalLineSpacing, scoreScale, instrumentScale), topGlyph, HorizontalTextOrigin.Left, VerticalTextOrigin.Center, color),
+                new DrawableScoreGlyph(canvasLeft, staff.HeightFromLineIndex(canvasTop, 6, globalLineSpacing, scoreScale, instrumentScale), bottomGlyph, HorizontalTextOrigin.Left, VerticalTextOrigin.Center, color)
+            };
+
+            return list;
+        }
+
+        public IEnumerable<DrawableLineHorizontal> ConstructStaffLines()
+        {
+            var verticalLineThickness = scoreDocumentLayout.DocumentLayout().VerticalStaffLineThickness * Scale;
+            var canvasLeft = this.canvasLeft - (verticalLineThickness / 2);
+            var length = this.length + verticalLineThickness;
+
+            for (var i = 0; i < 5; i++)
+            {
+                var heightOnPage = staff.HeightFromLineIndex(canvasTop, i * 2, globalLineSpacing, scoreScale, instrumentScale);
+
+                yield return new DrawableLineHorizontal(heightOnPage, canvasLeft, length, LineThickness, color);
             }
         }
 
 
         public override IEnumerable<BaseDrawableElement> GetDrawableElements()
         {
-            foreach (DrawableLineHorizontal item in ConstructStaffLines())
-            {
-                yield return item;
-            }
+            var canvasLeft = this.canvasLeft + (SpaceUntilClef * scoreScale);
 
-            foreach (DrawableScoreGlyph glyph in ConstructOpeningKeySignature())
+            yield return ConstructOpeningClef(canvasLeft, out canvasLeft);
+
+            foreach (var glyph in ConstructOpeningKeySignature(canvasLeft, out canvasLeft))
             {
                 yield return glyph;
             }
 
-            yield return ConstructOpeningClef();
+            foreach (var glyph in ConstructOpeningTimeSignature(canvasLeft))
+            {
+                yield return glyph;
+            }
+
+            foreach (var item in ConstructStaffLines())
+            {
+                yield return item;
+            }
         }
         public override IEnumerable<BaseContentWrapper> GetContentWrappers()
         {

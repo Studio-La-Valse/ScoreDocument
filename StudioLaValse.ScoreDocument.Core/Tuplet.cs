@@ -82,13 +82,13 @@
             //}
             //return result.Simplify();
 
-            int denom = rythmicDuration.Denominator * TargetLength.Denominator;
+            var denom = rythmicDuration.Denominator * TargetLength.Denominator;
             denom *= SourceLength.Numerator;
 
-            int num = rythmicDuration.Numerator * TargetLength.Numerator;
+            var num = rythmicDuration.Numerator * TargetLength.Numerator;
             num *= SourceLength.Denominator;
 
-            Fraction fraction = new Fraction(num, denom).Simplify();
+            var fraction = new Fraction(num, denom).Simplify();
             return fraction;
         }
     }

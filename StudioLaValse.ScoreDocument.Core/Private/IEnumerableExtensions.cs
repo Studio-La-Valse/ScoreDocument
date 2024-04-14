@@ -14,8 +14,8 @@
         /// <returns></returns>
         public static int IndexOf<T>(this IEnumerable<T> values, Predicate<T> predicate)
         {
-            int count = 0;
-            foreach (T? value in values)
+            var count = 0;
+            foreach (var value in values)
             {
                 if (predicate(value))
                 {

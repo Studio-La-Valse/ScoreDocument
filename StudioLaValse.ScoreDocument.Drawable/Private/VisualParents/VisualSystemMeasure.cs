@@ -7,38 +7,22 @@
         private readonly IScoreDocumentLayout scoreLayoutDictionary;
         private readonly IStaffSystemReader staffSystem;
         private readonly double width;
-        private readonly bool firstMeasure;
+        private readonly double lineSpacing;
         private readonly ColorARGB color;
+        private readonly ISelection<IUniqueScoreElement> selection;
         private readonly double canvasLeft;
         private readonly double canvasTop;
 
 
-        public ScoreMeasureLayout Layout => scoreLayoutDictionary.ScoreMeasureLayout(scoreMeasure);
-
+        public ScoreMeasureLayout Layout =>
+            scoreLayoutDictionary.ScoreMeasureLayout(scoreMeasure);
         public double PaddingRight =>
             Layout.PaddingRight + NextMeasureKeyPadding;
         public double PaddingLeft
         {
             get
             {
-                double basePadding = Layout.PaddingLeft;
-
-                if (firstMeasure)
-                {
-                    KeySignature keySignature = scoreMeasure.KeySignature;
-                    bool flats = keySignature.DefaultFlats;
-                    int numberOfAccidentals = flats ?
-                        keySignature.EnumerateFlats().Count() :
-                        keySignature.EnumerateSharps().Count();
-                    basePadding -= 3;
-                    basePadding += numberOfAccidentals * VisualStaff.KeySignatureGlyphSpacing;
-                    basePadding += VisualStaff.ClefSpacing;
-
-                    if (scoreMeasure.IndexInScore == 0)
-                    {
-                        basePadding += VisualStaff.KeySignatureSpacing;
-                    }
-                }
+                var basePadding = Layout.PaddingLeft;
 
                 return basePadding;
             }
@@ -52,26 +36,25 @@
                     return 0;
                 }
 
-                KeySignature keySignature = scoreMeasure.KeySignature;
-                bool flats = keySignature.DefaultFlats;
-                int numberOfAccidentals = flats ?
+                var keySignature = scoreMeasure.KeySignature;
+                var flats = keySignature.DefaultFlats;
+                var numberOfAccidentals = flats ?
                     keySignature.EnumerateFlats().Count() :
                     keySignature.EnumerateSharps().Count();
 
                 return 1 + numberOfAccidentals;
             }
         }
-
         public KeySignature? InvalidatesNext
         {
             get
             {
-                if (!scoreMeasure.TryReadNext(out IScoreMeasureReader? nextMeasure))
+                if (!scoreMeasure.TryReadNext(out var nextMeasure))
                 {
                     return null;
                 }
 
-                KeySignature nextKeySignature = nextMeasure.KeySignature;
+                var nextKeySignature = nextMeasure.KeySignature;
                 return nextKeySignature.Equals(scoreMeasure.KeySignature) ? null : nextKeySignature;
             }
         }
@@ -79,7 +62,8 @@
 
 
 
-        public VisualSystemMeasure(IScoreMeasureReader scoreMeasure, IStaffSystemReader staffSystem, double canvasLeft, double canvasTop, double width, bool firstMeasure, ColorARGB color, ISelection<IUniqueScoreElement> selection, IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory, IScoreDocumentLayout scoreLayoutDictionary) : base(scoreMeasure, selection)
+
+        public VisualSystemMeasure(IScoreMeasureReader scoreMeasure, IStaffSystemReader staffSystem, double canvasLeft, double canvasTop, double width, double lineSpacing, ColorARGB color, ISelection<IUniqueScoreElement> selection, IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory, IScoreDocumentLayout scoreLayoutDictionary) : base(scoreMeasure, selection)
         {
             this.scoreMeasure = scoreMeasure;
             this.visualInstrumentMeasureFactory = visualInstrumentMeasureFactory;
@@ -87,8 +71,9 @@
             this.canvasTop = canvasTop;
             this.staffSystem = staffSystem;
             this.width = width;
-            this.firstMeasure = firstMeasure;
+            this.lineSpacing = lineSpacing;
             this.color = color;
+            this.selection = selection;
             this.canvasLeft = canvasLeft;
         }
 
@@ -97,16 +82,16 @@
 
         private IEnumerable<BaseContentWrapper> ConstructStaffGroupMeasures()
         {
-            double _canvasTop = canvasTop;
+            var _canvasTop = canvasTop;
 
-            foreach (IStaffGroupReader staffGroup in staffSystem.EnumerateStaffGroups())
+            foreach (var staffGroup in staffSystem.EnumerateStaffGroups())
             {
-                IInstrumentMeasureReader ribbonMesaure = scoreMeasure.ReadMeasure(staffGroup.IndexInSystem);
-                BaseContentWrapper wrapper = visualInstrumentMeasureFactory.CreateContent(ribbonMesaure, staffGroup, _canvasTop, canvasLeft, width, PaddingLeft, PaddingRight, firstMeasure, color);
+                var ribbonMesaure = scoreMeasure.ReadMeasure(staffGroup.IndexInSystem);
+                var wrapper = visualInstrumentMeasureFactory.CreateContent(ribbonMesaure, staffGroup, _canvasTop, canvasLeft, width, PaddingLeft, PaddingRight, lineSpacing, color);
                 yield return wrapper;
 
-                StaffGroupLayout staffGroupLayout = scoreLayoutDictionary.StaffGroupLayout(staffGroup);
-                _canvasTop += staffGroup.CalculateHeight(scoreLayoutDictionary);
+                var staffGroupLayout = scoreLayoutDictionary.StaffGroupLayout(staffGroup);
+                _canvasTop += staffGroup.CalculateHeight(lineSpacing, scoreLayoutDictionary);
                 _canvasTop += staffGroupLayout.DistanceToNext;
             }
         }
@@ -114,7 +99,7 @@
 
         public override BoundingBox BoundingBox()
         {
-            return new BoundingBox(canvasLeft + PaddingLeft, canvasLeft + width - PaddingRight, canvasTop, canvasTop + staffSystem.CalculateHeight(scoreLayoutDictionary));
+            return new BoundingBox(canvasLeft + PaddingLeft, canvasLeft + width - PaddingRight, canvasTop, canvasTop + staffSystem.CalculateHeight(lineSpacing, scoreLayoutDictionary));
         }
         public override IEnumerable<BaseDrawableElement> GetDrawableElements()
         {
@@ -137,7 +122,7 @@
         }
         public override bool OnMouseMove(XY mousePosition)
         {
-            bool currentlyMouseOver = IsMouseOver;
+            var currentlyMouseOver = IsMouseOver;
             IsMouseOver = BoundingBox().Contains(mousePosition);
             return currentlyMouseOver != IsMouseOver;
         }

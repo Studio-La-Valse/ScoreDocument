@@ -1,18 +1,18 @@
-﻿using StudioLaValse.ScoreDocument.Drawable.Scenes;
-
-namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
+﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
     internal sealed class VisualPage : BaseContentWrapper
     {
         private readonly IPageReader page;
         private readonly double canvasLeft;
         private readonly double canvasTop;
+        private readonly double globalLineSpacing;
         private readonly IVisualStaffSystemFactory staffSystemContentFactory;
-        private readonly ColorARGB foregroundColor;
-        private readonly ColorARGB pageColor;
         private readonly IScoreDocumentLayout scoreLayoutDictionary;
 
 
+        public ScoreDocumentLayout DocumentLayout => scoreLayoutDictionary.DocumentLayout();
+        public ColorARGB PageColor => DocumentLayout.PageColor;
+        public ColorARGB ForegroundColor => DocumentLayout.ForegroundColor;
         public PageLayout Layout => scoreLayoutDictionary.PageLayout(page);
         public double MarginLeft => Layout.MarginLeft;
         public double MarginRight => Layout.MarginRight;
@@ -21,14 +21,13 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         public double PageHeight => Layout.PageHeight;
 
 
-        public VisualPage(IPageReader page, double canvasLeft, double canvasTop, IVisualStaffSystemFactory staffSystemContentFactory, ColorARGB foregroundColor, ColorARGB pageColor, IScoreDocumentLayout scoreLayoutDictionary)
+        public VisualPage(IPageReader page, double canvasLeft, double canvasTop, double globalLineSpacing, IVisualStaffSystemFactory staffSystemContentFactory, IScoreDocumentLayout scoreLayoutDictionary)
         {
             this.page = page;
             this.canvasLeft = canvasLeft;
             this.canvasTop = canvasTop;
+            this.globalLineSpacing = globalLineSpacing;
             this.staffSystemContentFactory = staffSystemContentFactory;
-            this.foregroundColor = foregroundColor;
-            this.pageColor = pageColor;
             this.scoreLayoutDictionary = scoreLayoutDictionary;
         }
 
@@ -47,21 +46,32 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                     canvasTop,
                     PageWidth,
                     PageHeight,
-                    pageColor,
-                    0.15,
-                    foregroundColor)
+                    PageColor,
+                    0.05,
+                    ForegroundColor)
             ];
         }
         public override IEnumerable<BaseContentWrapper> GetContentWrappers()
         {
-            double canvasTop = this.canvasTop + MarginTop;
-            foreach (IStaffSystemReader staffSystem in page.EnumerateStaffSystems())
+            var canvasTop = this.canvasTop + MarginTop;
+            foreach (var staffSystem in page.EnumerateStaffSystems())
             {
-                StaffSystemLayout staffSystemLayout = scoreLayoutDictionary.StaffSystemLayout(staffSystem);
-                BaseContentWrapper visualSystem = staffSystemContentFactory.CreateContent(staffSystem, canvasLeft + MarginLeft, canvasTop, PageWidth - (MarginLeft + MarginRight), foregroundColor);
+                var canvasLeft = this.canvasLeft + MarginLeft;
+                if (staffSystem.EnumerateMeasures().First().IndexInScore == 0)
+                {
+                    canvasLeft += scoreLayoutDictionary.DocumentLayout().FirstSystemIndent;
+                }
+
+                var canvasRight = this.canvasLeft + PageWidth - MarginRight;
+                var length = canvasRight - canvasLeft;
+                var measureLengthSum = staffSystem.EnumerateMeasures().Select(m => scoreLayoutDictionary.ScoreMeasureLayout(m).Width).Sum();
+                length = Math.Min(length, measureLengthSum);
+
+                var staffSystemLayout = scoreLayoutDictionary.StaffSystemLayout(staffSystem);
+                var visualSystem = staffSystemContentFactory.CreateContent(staffSystem, canvasLeft, canvasTop, length, globalLineSpacing, ForegroundColor);
                 yield return visualSystem;
 
-                canvasTop += staffSystem.CalculateHeight(scoreLayoutDictionary);
+                canvasTop += staffSystem.CalculateHeight(globalLineSpacing, scoreLayoutDictionary);
                 canvasTop += staffSystemLayout.PaddingBottom;
             }
         }

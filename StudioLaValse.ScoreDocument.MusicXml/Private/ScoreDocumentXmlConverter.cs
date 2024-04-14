@@ -16,7 +16,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
         {
             scoreEditor.Clear();
 
-            foreach (XElement element in xDocument.Elements())
+            foreach (var element in xDocument.Elements())
             {
                 if (element.Name == "score-partwise")
                 {
@@ -30,7 +30,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
 
         private void ProcessScorePartWise(XElement scorePartwise, IScoreDocumentEditor scoreEditor, IScoreDocumentLayout pageViewLayout)
         {
-            foreach (XElement element in scorePartwise.Elements())
+            foreach (var element in scorePartwise.Elements())
             {
                 if (element.Name == "part-list")
                 {
@@ -38,7 +38,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                 }
             }
 
-            foreach (XElement element in scorePartwise.Elements())
+            foreach (var element in scorePartwise.Elements())
             {
                 if (element.Name == "part")
                 {
@@ -47,12 +47,12 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                 }
             }
 
-            foreach (XElement element in scorePartwise.Elements())
+            foreach (var element in scorePartwise.Elements())
             {
                 if (element.Name == "part")
                 {
-                    string id = element.Attributes().Single(a => a.Name == "id").Value;
-                    IInstrumentRibbonEditor ribbon = scoreEditor.ReadInstrumentRibbons().First(r => pageViewLayout.InstrumentRibbonLayout(r).DisplayName == id);
+                    var id = element.Attributes().Single(a => a.Name == "id").Value;
+                    var ribbon = scoreEditor.ReadInstrumentRibbons().First(r => pageViewLayout.InstrumentRibbonLayout(r).DisplayName == id);
                     scorePartXmlConverter.Create(element, ribbon, pageViewLayout);
                 }
             }
@@ -60,18 +60,18 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
 
         private void PrepareParts(XElement partList, IScoreDocumentEditor scoreEditor, IScoreDocumentLayout pageViewLayout)
         {
-            IEnumerable<XElement> partNodes = partList.Elements().Where(d => d.Name == "score-part");
+            var partNodes = partList.Elements().Where(d => d.Name == "score-part");
 
-            foreach (XElement? partListNode in partNodes)
+            foreach (var partListNode in partNodes)
             {
-                string name = partListNode.Elements().Single(d => d.Name == "part-name").Value;
-                if (!Instrument.TryGetFromName(name, out Instrument? instrument))
+                var name = partListNode.Elements().Single(d => d.Name == "part-name").Value;
+                if (!Instrument.TryGetFromName(name, out var instrument))
                 {
                     instrument = Instrument.Piano;
                 }
                 scoreEditor.AddInstrumentRibbon(instrument);
 
-                IInstrumentRibbonEditor ribbon = scoreEditor.ReadInstrumentRibbon(scoreEditor.NumberOfInstruments - 1);
+                var ribbon = scoreEditor.ReadInstrumentRibbon(scoreEditor.NumberOfInstruments - 1);
                 var layout = pageViewLayout.InstrumentRibbonLayout(ribbon);
                 layout.DisplayName = partListNode.Attributes().Single(a => a.Name == "id").Value;
                 ribbon.Apply(layout);
@@ -80,23 +80,23 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
 
         private void PrepareMeasures(XElement part, IScoreDocumentEditor scoreEditor)
         {
-            int lastKeySignature = 0;
-            int lastBeats = 4;
-            int lastBeatsType = 4;
+            var lastKeySignature = 0;
+            var lastBeats = 4;
+            var lastBeatsType = 4;
 
-            IEnumerable<XElement> measures = part.Elements().Where(e => e.Name == "measure");
-            foreach (XElement? measure in measures)
+            var measures = part.Elements().Where(e => e.Name == "measure");
+            foreach (var measure in measures)
             {
                 lastKeySignature = part.Descendants().FirstOrDefault(d => d.Name == "fifths")?.Value.ToIntOrNull() ?? lastKeySignature;
                 lastBeats = part.Descendants().FirstOrDefault(d => d.Name == "beats")?.Value.ToIntOrNull() ?? lastBeats;
                 lastBeatsType = part.Descendants().FirstOrDefault(d => d.Name == "beat-type")?.Value.ToIntOrNull() ?? lastBeatsType;
 
-                bool newSystem = part.Descendants().FirstOrDefault(d => d.Name == "print")?.Attribute("new-system")?.Value.Equals("yes") ?? false;
-                bool newPage = part.Descendants().FirstOrDefault(d => d.Name == "print")?.Attribute("new-page")?.Value.Equals("yes") ?? false;
+                var newSystem = part.Descendants().FirstOrDefault(d => d.Name == "print")?.Attribute("new-system")?.Value.Equals("yes") ?? false;
+                var newPage = part.Descendants().FirstOrDefault(d => d.Name == "print")?.Attribute("new-page")?.Value.Equals("yes") ?? false;
                 TimeSignature timeSignature = new(lastBeats, lastBeatsType);
                 scoreEditor.AppendScoreMeasure(timeSignature);
 
-                IScoreMeasureEditor appendedMeasure = scoreEditor.ReadScoreMeasure(scoreEditor.NumberOfMeasures - 1);
+                var appendedMeasure = scoreEditor.ReadScoreMeasure(scoreEditor.NumberOfMeasures - 1);
                 KeySignature keySignature = new(Step.C.MoveAlongCircleOfFifths(lastKeySignature), MajorOrMinor.Major);
                 appendedMeasure.EditKeySignature(keySignature);
             }

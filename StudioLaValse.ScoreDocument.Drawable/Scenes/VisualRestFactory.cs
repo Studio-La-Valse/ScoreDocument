@@ -16,9 +16,9 @@
             this.selection = selection;
         }
         /// <inheritdoc/>
-        public BaseContentWrapper Build(IChordReader note, double canvasLeft, double canvasTop, double scale, ColorARGB color)
+        public BaseContentWrapper Build(IChordReader note, double canvasLeft, double canvasTop, double lineSpacing, double scoreScale, double instrumentScale, ColorARGB color)
         {
-            return new VisualRest(note, canvasLeft, canvasTop, scale, color, selection);
+            return new VisualRest(note, canvasLeft, canvasTop, lineSpacing, scoreScale, instrumentScale, color, selection);
         }
     }
 }

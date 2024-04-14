@@ -17,8 +17,8 @@ namespace StudioLaValse.ScoreDocument.Layout.Extensions
         /// <returns></returns>
         public static Clef OpeningClefAtOrDefault(this IInstrumentMeasureReader ribbonMeasure, int staffIndex, IScoreDocumentLayout scoreLayoutDictionary)
         {
-            InstrumentMeasureLayout layout = scoreLayoutDictionary.InstrumentMeasureLayout(ribbonMeasure);
-            foreach (ClefChange clefChange in layout.ClefChanges.Where(c => c.Position.Decimal == 0))
+            var layout = scoreLayoutDictionary.InstrumentMeasureLayout(ribbonMeasure);
+            foreach (var clefChange in layout.ClefChanges.Where(c => c.Position.Decimal == 0))
             {
                 if (clefChange.StaffIndex == staffIndex)
                 {
@@ -26,11 +26,11 @@ namespace StudioLaValse.ScoreDocument.Layout.Extensions
                 }
             }
 
-            IInstrumentMeasureReader? previousMeasure = ribbonMeasure;
+            var previousMeasure = ribbonMeasure;
             while (previousMeasure.TryReadPrevious(out previousMeasure))
             {
-                InstrumentMeasureLayout previousLayout = scoreLayoutDictionary.InstrumentMeasureLayout(previousMeasure);
-                foreach (ClefChange? clefChange in previousLayout.ClefChanges.Reverse())
+                var previousLayout = scoreLayoutDictionary.InstrumentMeasureLayout(previousMeasure);
+                foreach (var clefChange in previousLayout.ClefChanges.Reverse())
                 {
                     if (clefChange.StaffIndex == staffIndex)
                     {
@@ -39,7 +39,7 @@ namespace StudioLaValse.ScoreDocument.Layout.Extensions
                 }
             }
 
-            Clef spareClef =
+            var spareClef =
                 ribbonMeasure.Instrument.DefaultClefs.ElementAtOrDefault(staffIndex) ??
                 ribbonMeasure.Instrument.DefaultClefs.Last();
 
@@ -56,8 +56,8 @@ namespace StudioLaValse.ScoreDocument.Layout.Extensions
         /// <returns></returns>
         public static Clef GetClef(this IInstrumentMeasureReader ribbonMeasure, int staffIndex, Position position, IScoreDocumentLayout scoreLayoutDictionary)
         {
-            InstrumentMeasureLayout layout = scoreLayoutDictionary.InstrumentMeasureLayout(ribbonMeasure);
-            ClefChange? lastClefChangeInMeasure = layout.ClefChanges
+            var layout = scoreLayoutDictionary.InstrumentMeasureLayout(ribbonMeasure);
+            var lastClefChangeInMeasure = layout.ClefChanges
                 .Where(c => c.StaffIndex == staffIndex)
                 .Where(c => c.Position <= position)
                 .OrderByDescending(c => c.Position.Decimal)
@@ -78,11 +78,11 @@ namespace StudioLaValse.ScoreDocument.Layout.Extensions
         /// <returns></returns>
         public static Accidental? GetAccidental(this IInstrumentMeasureReader ribbonMeasure, Pitch Pitch, Position position, int staffIndex, IScoreDocumentLayout scoreLayoutDictionary)
         {
-            INoteReader[] precedingNotes = ribbonMeasure
+            var precedingNotes = ribbonMeasure
                 .ReadPrecedingChordsInMeasure(position)
                 .SelectMany(e => e.ReadNotes())
                 .ToArray();
-            bool precedingNotesWithSamePitch = precedingNotes
+            var precedingNotesWithSamePitch = precedingNotes
                 .Where(n => scoreLayoutDictionary.NoteLayout(n).StaffIndex == staffIndex)
                 .Where(n => n.Pitch.Octave == Pitch.Octave)
                 .Where(n => n.Pitch.StepValue == Pitch.StepValue)
@@ -96,7 +96,7 @@ namespace StudioLaValse.ScoreDocument.Layout.Extensions
             //todo: check if note on same line should have natural
             //example An a natural should have natural if A flat came before
             //first attempt:
-            bool precedingNotesSameLineDifferentShift = precedingNotes
+            var precedingNotesSameLineDifferentShift = precedingNotes
                 .Where(n => scoreLayoutDictionary.NoteLayout(n).StaffIndex == staffIndex)
                 .Where(n => n.Pitch.Shift != 0)
                 .Where(n => n.Pitch.StepValue == Pitch.StepValue)
@@ -107,8 +107,8 @@ namespace StudioLaValse.ScoreDocument.Layout.Extensions
                 return (Accidental)Pitch.Shift;
             }
 
-            KeySignature keySignature = ribbonMeasure.KeySignature;
-            Accidental? systemSays = keySignature.GetAccidentalForPitch(Pitch.Step);
+            var keySignature = ribbonMeasure.KeySignature;
+            var systemSays = keySignature.GetAccidentalForPitch(Pitch.Step);
             return systemSays;
         }
 
@@ -120,11 +120,11 @@ namespace StudioLaValse.ScoreDocument.Layout.Extensions
         /// <returns></returns>
         public static IEnumerable<IChordReader> ReadPrecedingChordsInMeasure(this IInstrumentMeasureReader ribbonMeasure, Position position)
         {
-            foreach (int voice in ribbonMeasure.ReadVoices())
+            foreach (var voice in ribbonMeasure.ReadVoices())
             {
-                IMeasureBlockChainReader blocks = ribbonMeasure.ReadBlockChainAt(voice);
-                IEnumerable<IChordReader> chords = blocks.ReadBlocks().SelectMany(b => b.ReadChords());
-                foreach (IChordReader? chord in chords)
+                var blocks = ribbonMeasure.ReadBlockChainAt(voice);
+                var chords = blocks.ReadBlocks().SelectMany(b => b.ReadChords());
+                foreach (var chord in chords)
                 {
                     if (chord.PositionEnd().Decimal > position.Decimal)
                     {

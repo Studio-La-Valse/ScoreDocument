@@ -34,7 +34,7 @@ namespace StudioLaValse.ScoreDocument.Core
 
         private static int IntPow(int x, int pow)
         {
-            int ret = 1;
+            var ret = 1;
             while (pow != 0)
             {
                 if ((pow & 1) == 1)
@@ -71,20 +71,20 @@ namespace StudioLaValse.ScoreDocument.Core
                 return false;
             }
 
-            if (!PowerOfTwo.TryCreate(duration.Denominator, out PowerOfTwo? durationDenominatorAsPowerOfTwo))
+            if (!PowerOfTwo.TryCreate(duration.Denominator, out var durationDenominatorAsPowerOfTwo))
             {
                 return false;
             }
 
-            if (PowerOfTwo.TryCreate(duration.Numerator, out PowerOfTwo? beatsAsPower))
+            if (PowerOfTwo.TryCreate(duration.Numerator, out var beatsAsPower))
             {
                 //eg: 8/16 => 1/2
                 //eg: 64/256 => 1/4
-                int gcd = durationDenominatorAsPowerOfTwo.Value.GCD(beatsAsPower.Value);
+                var gcd = durationDenominatorAsPowerOfTwo.Value.GCD(beatsAsPower.Value);
 
-                int smallerPower = durationDenominatorAsPowerOfTwo.Value / gcd;
+                var smallerPower = durationDenominatorAsPowerOfTwo.Value / gcd;
 
-                if (!PowerOfTwo.TryCreate(smallerPower, out PowerOfTwo? _power))
+                if (!PowerOfTwo.TryCreate(smallerPower, out var _power))
                 {
                     return false;
                 }
@@ -94,7 +94,7 @@ namespace StudioLaValse.ScoreDocument.Core
             }
 
             //valid: 3, 7, 15, 31, etc
-            if (!PowerOfTwo.TryCreate(duration.Numerator + 1, out PowerOfTwo? durationNuminatorPlusOneAsPowerOfTwo))
+            if (!PowerOfTwo.TryCreate(duration.Numerator + 1, out var durationNuminatorPlusOneAsPowerOfTwo))
             {
                 return false;
             }
@@ -104,7 +104,7 @@ namespace StudioLaValse.ScoreDocument.Core
             //consider (15 / 32 =>  7 / 16 => 3 / 8)                            = 1 / 4 with 3 dots
             //consider (63 / 256 => 31 / 128 => 15 / 64 => 7 / 32 => 3 / 16)    = 1 / 8 with 5 dots
             //consider (7 / 64 => 3 / 32)                                       = 1 / 16 with 2 dots
-            int dots = 0;
+            var dots = 0;
             while (durationNuminatorPlusOneAsPowerOfTwo.Value > 2)
             {
                 if (!durationDenominatorAsPowerOfTwo.TryDivideByTwo(out durationDenominatorAsPowerOfTwo))
@@ -137,9 +137,9 @@ namespace StudioLaValse.ScoreDocument.Core
         /// <inheritdoc/>
         public override string ToString()
         {
-            string start = $"1 / {PowerOfTwo.Value}";
+            var start = $"1 / {PowerOfTwo.Value}";
 
-            for (int i = 0; i < Dots; i++)
+            for (var i = 0; i < Dots; i++)
             {
                 start += "dot ";
             }

@@ -42,9 +42,9 @@
         {
             get
             {
-                int octaveOnClavier = 0;
+                var octaveOnClavier = 0;
 
-                int mod = IndexOnKlavier;
+                var mod = IndexOnKlavier;
 
                 while (mod > 11)
                 {
@@ -73,12 +73,12 @@
         {
             get
             {
-                int indexOfPitchAtOctave0 = midiIndexForOctave0
+                var indexOfPitchAtOctave0 = midiIndexForOctave0
                     .ElementAt(Step.StepsFromC).Value;
 
-                int pitchInCorrectOctave = indexOfPitchAtOctave0 + (Octave * 12);
+                var pitchInCorrectOctave = indexOfPitchAtOctave0 + (Octave * 12);
 
-                int pitchAfterShiftCorrection = pitchInCorrectOctave + Shift;
+                var pitchAfterShiftCorrection = pitchInCorrectOctave + Shift;
 
                 return pitchAfterShiftCorrection < 21
                     ? throw new ArgumentOutOfRangeException(nameof(pitchAfterShiftCorrection))
@@ -92,7 +92,7 @@
         {
             get
             {
-                int a0 = midiIndexForOctave0["A"];
+                var a0 = midiIndexForOctave0["A"];
                 return IntValueAsMidiNote - a0;
             }
         }
@@ -103,9 +103,9 @@
         {
             get
             {
-                decimal frequency = frequenciesOfBottomOctavePiano[IndexOnKlavier % 12];
+                var frequency = frequenciesOfBottomOctavePiano[IndexOnKlavier % 12];
 
-                for (int i = 0; i < OctaveOnClavier; i++)
+                for (var i = 0; i < OctaveOnClavier; i++)
                 {
                     frequency *= 2;
                 }
@@ -139,7 +139,7 @@
         /// <inheritdoc/>
         public override string ToString()
         {
-            string shift = Step.Shifts switch
+            var shift = Step.Shifts switch
             {
                 -2 => "bb",
                 -1 => "b",
@@ -155,9 +155,9 @@
         /// <inheritdoc/>
         public static Pitch operator +(Pitch pitch, Interval interval)
         {
-            Step step = pitch.Step;
-            Step newStep = step + interval;
-            int octave = pitch.Octave;
+            var step = pitch.Step;
+            var newStep = step + interval;
+            var octave = pitch.Octave;
             if (interval.SemiTones + step.SemiTones >= 12)
             {
                 octave++;

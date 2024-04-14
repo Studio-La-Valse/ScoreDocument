@@ -26,9 +26,16 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
             visualBeamBuilder = new VisualBeamBuilder();
         }
         /// <inheritdoc/>
-        public BaseContentWrapper Build(IMeasureBlockReader noteGroup, IStaffGroupReader staffGroup, IInstrumentMeasureReader instrumentMeasure, double canvasTopStaffGroup, double canvasLeft, double allowedSpace, ColorARGB colorARGB)
+        public BaseContentWrapper Build(IMeasureBlockReader noteGroup, IStaffGroupReader staffGroup, IInstrumentMeasureReader instrumentMeasure, double canvasTopStaffGroup, double canvasLeft, double allowedSpace, double lineSpacing, ColorARGB colorARGB)
         {
-            return new VisualNoteGroup(noteGroup, staffGroup, instrumentMeasure, canvasTopStaffGroup, canvasLeft, allowedSpace, noteFactory, restFactory, visualBeamBuilder, colorARGB, scoreLayoutDictionary);
+            var scoreLayout = scoreLayoutDictionary.DocumentLayout();
+            var scoreScale = scoreLayout.Scale;
+            var instrumentScale = 1d;
+            if (scoreLayout.InstrumentScales.TryGetValue(staffGroup.Instrument, out var value))
+            {
+                instrumentScale = value;
+            }
+            return new VisualNoteGroup(noteGroup, staffGroup, instrumentMeasure, canvasTopStaffGroup, canvasLeft, allowedSpace, lineSpacing, scoreScale, instrumentScale, noteFactory, restFactory, visualBeamBuilder, colorARGB, scoreLayoutDictionary);
         }
     }
 }

@@ -20,9 +20,10 @@
         }
 
         /// <inheritdoc/>
-        public BaseContentWrapper Build(INoteReader note, double canvasLeft, double canvasTop, double scale, bool offsetDots, Accidental? accidental, ColorARGB color)
+        public BaseContentWrapper Build(INoteReader note, double canvasLeft, double canvasTop, double lineSpacing, double scoreScale, double instrumentScale, bool offsetDots, Accidental? accidental, ColorARGB color)
         {
-            return new VisualNote(note, color, canvasLeft, canvasTop, scale, offsetDots, accidental, selection, scoreLayoutDictionary);
+            var noteScale = scoreLayoutDictionary.NoteLayout(note).Scale;
+            return new VisualNote(note, color, canvasLeft, canvasTop, lineSpacing, scoreScale, instrumentScale, noteScale, offsetDots, accidental, selection, scoreLayoutDictionary);
         }
     }
 }

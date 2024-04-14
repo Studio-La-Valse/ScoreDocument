@@ -23,9 +23,9 @@
         }
 
         /// <inheritdoc/>
-        public BaseContentWrapper CreateContent(IScoreMeasureReader scoreMeasure, IStaffSystemReader staffSystem, double canvasLeft, double canvasTop, double width, bool firstMeasure, ColorARGB colorARGB)
+        public BaseContentWrapper CreateContent(IScoreMeasureReader scoreMeasure, IStaffSystemReader staffSystem, double canvasLeft, double canvasTop, double width, double lineSpacing, ColorARGB colorARGB)
         {
-            return new VisualSystemMeasure(scoreMeasure, staffSystem, canvasLeft, canvasTop, width, firstMeasure, colorARGB, selection, visualInstrumentMeasureFactory, scoreLayoutDictionary);
+            return new VisualSystemMeasure(scoreMeasure, staffSystem, canvasLeft, canvasTop, width, lineSpacing, colorARGB, selection, visualInstrumentMeasureFactory, scoreLayoutDictionary);
         }
     }
 }

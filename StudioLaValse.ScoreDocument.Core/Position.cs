@@ -28,11 +28,11 @@
                 return new Position(position.Numerator + step.Numerator, position.Denominator);
             }
 
-            int nominator =
+            var nominator =
                 (position.Numerator * step.Denominator) +
                 (position.Denominator * step.Numerator);
 
-            int denominator = position.Denominator * step.Denominator;
+            var denominator = position.Denominator * step.Denominator;
 
             return new Position(nominator, denominator).Simplify().ToPosition();
         }
@@ -50,11 +50,11 @@
                 return new Position(position.Numerator - step.Numerator, position.Denominator);
             }
 
-            int nominator =
+            var nominator =
                 (position.Numerator * step.Denominator) -
                 (position.Denominator * step.Numerator);
 
-            int denominator = position.Denominator * step.Denominator;
+            var denominator = position.Denominator * step.Denominator;
 
             return new Position(nominator, denominator).Simplify().ToPosition();
         }
@@ -72,11 +72,11 @@
                 return new Position(position.Numerator + step.Numerator, position.Denominator);
             }
 
-            int nominator =
+            var nominator =
                 (position.Numerator * step.Denominator) +
                 (position.Denominator * step.Numerator);
 
-            int denominator = position.Denominator * step.Denominator;
+            var denominator = position.Denominator * step.Denominator;
 
             return new Position(nominator, denominator).Simplify().ToPosition();
         }
@@ -94,11 +94,11 @@
                 return new Position(position.Numerator - step.Numerator, position.Denominator);
             }
 
-            int nominator =
+            var nominator =
                 (position.Numerator * step.Denominator) -
                 (position.Denominator * step.Numerator);
 
-            int denominator = position.Denominator * step.Denominator;
+            var denominator = position.Denominator * step.Denominator;
 
             return new Position(nominator, denominator).Simplify().ToPosition();
         }

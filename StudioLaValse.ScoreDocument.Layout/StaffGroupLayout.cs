@@ -10,16 +10,14 @@ namespace StudioLaValse.ScoreDocument.Layout
     {
         private readonly StaffGroupStyleTemplate styleTemplate;
         private readonly Instrument instrument;
-        private TemplateProperty<int> numberOfStaves;
-        private TemplateProperty<double> distanceToNext;
-        private TemplateProperty<double> lineSpacing;
+        private readonly TemplateProperty<int> numberOfStaves;
+        private readonly TemplateProperty<double> distanceToNext;
 
         public bool Collapsed { get; set; }
 
 
         public int NumberOfStaves { get => numberOfStaves.Value; set => numberOfStaves.Value = value; }
         public double DistanceToNext { get => distanceToNext.Value; set => distanceToNext.Value = value; }
-        public double LineSpacing { get => lineSpacing.Value; set => lineSpacing.Value = value; }
 
 
         public StaffGroupLayout(StaffGroupStyleTemplate styleTemplate, Instrument instrument)
@@ -28,8 +26,7 @@ namespace StudioLaValse.ScoreDocument.Layout
             this.instrument = instrument;
 
             numberOfStaves = new TemplateProperty<int>(() => instrument.NumberOfStaves);
-            distanceToNext = new TemplateProperty<double>(() => styleTemplate.LineSpacing);
-            lineSpacing = new TemplateProperty<double>(() => styleTemplate.LineSpacing);
+            distanceToNext = new TemplateProperty<double>(() => styleTemplate.DistanceToNext);
             Collapsed = false;
         }
 
@@ -43,7 +40,6 @@ namespace StudioLaValse.ScoreDocument.Layout
             };
             copy.numberOfStaves.Field = numberOfStaves.Field;
             copy.distanceToNext.Field = distanceToNext.Field;
-            copy.lineSpacing.Field = lineSpacing.Field;
             return copy;
         }
     }

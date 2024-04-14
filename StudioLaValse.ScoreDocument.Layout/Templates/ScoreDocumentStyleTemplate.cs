@@ -1,7 +1,27 @@
-﻿namespace StudioLaValse.ScoreDocument.Layout.Templates
+﻿using StudioLaValse.ScoreDocument.Core;
+using StudioLaValse.Geometry;
+using System.Diagnostics.CodeAnalysis;
+
+namespace StudioLaValse.ScoreDocument.Layout.Templates
 {
     public class ScoreDocumentStyleTemplate
     {
+        public double Scale { get; set; } = 1.0;
+
+        public double HorizontalStaffLineThickness { get; set; } = 0.075;
+
+        public double VerticalStaffLineThickness { get; set; } = 0.25;
+
+        public double StemLineThickness { get; set; } = 0.1;
+
+        public double FirstSystemIndent { get; set; } = 15;
+
+        public ColorARGB PageColor { get; set; } = ColorARGB.White;
+
+        public ColorARGB ForegroundColor { get; set; } = ColorARGB.Black;
+
+        public Dictionary<Instrument, double> InstrumentScales { get; set; } = new(new InstrumentComparer());
+
         public PageStyleTemplate PageStyleTemplate { get; init; } = new();
 
         public ScoreMeasureStyleTemplate ScoreMeasureStyleTemplate { get; init; } = new();
@@ -29,6 +49,18 @@
 
         public void Apply(ScoreDocumentStyleTemplate styleTemplate)
         {
+            Scale = styleTemplate.Scale;
+            HorizontalStaffLineThickness = styleTemplate.HorizontalStaffLineThickness;
+            VerticalStaffLineThickness = styleTemplate.VerticalStaffLineThickness;
+            StemLineThickness = styleTemplate.StemLineThickness;
+            FirstSystemIndent = styleTemplate.FirstSystemIndent;
+
+            InstrumentScales.Clear();
+            foreach (var kv in styleTemplate.InstrumentScales)
+            {
+                InstrumentScales.Add(kv.Key, kv.Value);
+            }
+
             PageStyleTemplate.MarginLeft = styleTemplate.PageStyleTemplate.MarginLeft;
             PageStyleTemplate.MarginTop = styleTemplate.PageStyleTemplate.MarginTop;
             PageStyleTemplate.MarginBottom = styleTemplate.PageStyleTemplate.MarginBottom;
@@ -48,10 +80,27 @@
 
             StaffStyleTemplate.DistanceToNext = styleTemplate.StaffStyleTemplate.DistanceToNext;
 
-            StaffGroupStyleTemplate.LineSpacing = styleTemplate.StaffGroupStyleTemplate.LineSpacing;
             StaffGroupStyleTemplate.DistanceToNext = styleTemplate.StaffGroupStyleTemplate.DistanceToNext;
 
             StaffSystemStyleTemplate.PaddingBottom = styleTemplate.StaffSystemStyleTemplate.PaddingBottom;
+        }
+    }
+
+    public class InstrumentComparer : IEqualityComparer<Instrument>
+    {
+        public bool Equals(Instrument? x, Instrument? y)
+        {
+            if (x is null) return false;
+            if (y is null) return false;
+
+            if (ReferenceEquals(x, y)) return true;
+
+            return x.Name.Equals(y.Name);
+        }
+
+        public int GetHashCode([DisallowNull] Instrument obj)
+        {
+            return obj.Name.GetHashCode();
         }
     }
 }

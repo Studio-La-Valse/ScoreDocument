@@ -2,7 +2,7 @@
 {
     internal sealed class VisualStem : BaseContentWrapper
     {
-        private static readonly double thickness = 0.08;
+        private readonly double thickness;
         private readonly ColorARGB color;
 
         public bool VisuallyUp => End.Y < Origin.Y;
@@ -14,9 +14,11 @@
 
 
 
-        public VisualStem(XY origin, XY end, IChordReader chord, ColorARGB color)
+        public VisualStem(XY origin, XY end, double thickness, IChordReader chord, ColorARGB color)
         {
             this.color = color;
+            this.thickness = thickness;
+
             Origin = origin;
             End = end;
             Chord = chord;
@@ -26,7 +28,7 @@
 
         public override IEnumerable<BaseDrawableElement> GetDrawableElements()
         {
-            yield return new DrawableLine(Origin, End, color: color, thickness: thickness);
+            yield return new DrawableLine(Origin, End, color: color, thickness);
         }
         public override IEnumerable<BaseContentWrapper> GetContentWrappers()
         {

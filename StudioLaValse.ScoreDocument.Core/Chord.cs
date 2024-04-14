@@ -26,7 +26,7 @@
         /// <returns></returns>
         public IEnumerable<Step> EnumerateSteps()
         {
-            foreach (Interval step in chordStructure.Intervals)
+            foreach (var step in chordStructure.Intervals)
             {
                 yield return origin + step;
             }

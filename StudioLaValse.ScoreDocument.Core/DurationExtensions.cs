@@ -16,7 +16,7 @@ namespace StudioLaValse.ScoreDocument.Core
         {
             Duration sum = new(0, 4);
 
-            foreach (Duration duration in durations)
+            foreach (var duration in durations)
             {
                 sum += duration;
             }
@@ -50,7 +50,7 @@ namespace StudioLaValse.ScoreDocument.Core
                 throw new InvalidOperationException("Please provide at least one value");
             }
 
-            foreach (int step in steps)
+            foreach (var step in steps)
             {
                 if (step <= 0)
                 {
@@ -58,24 +58,24 @@ namespace StudioLaValse.ScoreDocument.Core
                 }
             }
 
-            int multiplier = timeSignature.Numerator;
-            for (int i = 0; i < steps.Length; i++)
+            var multiplier = timeSignature.Numerator;
+            for (var i = 0; i < steps.Length; i++)
             {
                 steps[i] *= multiplier;
             }
 
-            int sum = steps.Sum();
-            int denomMultiplier = sum / multiplier;
-            int stepDenom = denomMultiplier * timeSignature.Denominator;
+            var sum = steps.Sum();
+            var denomMultiplier = sum / multiplier;
+            var stepDenom = denomMultiplier * timeSignature.Denominator;
 
-            IEnumerable<RythmicDuration> stepsAsRythmicDurations = steps.Select(step =>
+            var stepsAsRythmicDurations = steps.Select(step =>
             {
-                int gcd = step.GCD(stepDenom);
+                var gcd = step.GCD(stepDenom);
                 step /= gcd;
 
-                int denom = stepDenom / gcd;
+                var denom = stepDenom / gcd;
                 Fraction fraction = new(step, denom);
-                return !RythmicDuration.TryConstruct(fraction, out RythmicDuration? rythmicDuration)
+                return !RythmicDuration.TryConstruct(fraction, out var rythmicDuration)
                     ? throw new InvalidOperationException("Not all of the specified steps can be resolved to valid rythmic durations.")
                     : rythmicDuration;
             });
@@ -85,7 +85,7 @@ namespace StudioLaValse.ScoreDocument.Core
                 throw new InvalidOperationException("The specified set of steps does not resolve to the same duration as the timesignature of the measure.");
             }
 
-            foreach (RythmicDuration? rythmicDuration in stepsAsRythmicDurations)
+            foreach (var rythmicDuration in stepsAsRythmicDurations)
             {
                 yield return rythmicDuration;
             }
@@ -100,7 +100,7 @@ namespace StudioLaValse.ScoreDocument.Core
         /// <returns></returns>
         public static IEnumerable<RythmicDuration> DivideEqual(this Duration duration, int number)
         {
-            int[] steps = Enumerable.Range(0, number).Select(i => 1).ToArray();
+            var steps = Enumerable.Range(0, number).Select(i => 1).ToArray();
             return duration.Divide(steps);
         }
     }

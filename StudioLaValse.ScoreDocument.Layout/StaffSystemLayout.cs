@@ -8,7 +8,7 @@ namespace StudioLaValse.ScoreDocument.Layout
     public class StaffSystemLayout : ILayoutElement<StaffSystemLayout>
     {
         private readonly StaffSystemStyleTemplate styleTemplate;
-        private TemplateProperty<double> paddingBottom;
+        private readonly TemplateProperty<double> paddingBottom;
 
         public double PaddingBottom { get => paddingBottom.Value; set => paddingBottom.Value = value; }
 

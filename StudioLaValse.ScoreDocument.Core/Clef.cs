@@ -64,9 +64,9 @@
         /// <returns></returns>
         public int LineIndexAtPitch(Pitch pitch)
         {
-            int lineIndexAtMiddleC = AnchorLineMiddleC;
+            var lineIndexAtMiddleC = AnchorLineMiddleC;
 
-            int linesPerOctave = 7;
+            var linesPerOctave = 7;
 
             return lineIndexAtMiddleC + ((3 - pitch.Octave) * linesPerOctave) + (7 - pitch.Step.StepsFromC);
         }

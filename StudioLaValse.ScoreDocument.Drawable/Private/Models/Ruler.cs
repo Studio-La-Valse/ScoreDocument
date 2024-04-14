@@ -29,10 +29,10 @@
                 return new XY(point.X, Origin.Y);
             }
 
-            double radians = Angle * Math.PI / 180;
-            double a = Origin.X - point.X;
-            double o = a * Math.Tan(radians);
-            double z = point.Y - Origin.Y + o;
+            var radians = Angle * Math.PI / 180;
+            var a = Origin.X - point.X;
+            var o = a * Math.Tan(radians);
+            var z = point.Y - Origin.Y + o;
             XY intersection = new(point.X, point.Y + z);
             return intersection;
         }

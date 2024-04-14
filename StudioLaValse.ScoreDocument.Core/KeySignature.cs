@@ -23,6 +23,10 @@
             IndexInCircleOfFifths > 6;
         /// <summary>
         /// The index in the circle of fifths.
+        /// Please consider the difference between major and minor positions. 
+        /// The minor position is equal to the relative major position.
+        /// In other words, the position for C Major (0), is equal to the position of A Minor (also 0).
+        /// The position for G Major (1), is equal to the position of E Minor (also 1), etcetera.
         /// </summary>
         public int IndexInCircleOfFifths =>
             MajorOrMinor == MajorOrMinor.Major ?
@@ -64,7 +68,7 @@
                 .Select(accidental =>
                 {
                     Pitch pitch = new(accidental, 5);
-                    int line = targetClef.LineIndexAtPitch(pitch);
+                    var line = targetClef.LineIndexAtPitch(pitch);
                     while (line < targetClef.TopMostSharpLine)
                     {
                         line += 7;
@@ -89,7 +93,7 @@
                 .Select(accidental =>
                 {
                     Pitch pitch = new(accidental, 5);
-                    int line = targetClef.LineIndexAtPitch(pitch);
+                    var line = targetClef.LineIndexAtPitch(pitch);
                     while (line < targetClef.TopMostFlatLine)
                     {
                         line += 7;
@@ -107,8 +111,8 @@
         /// <returns></returns>
         public IEnumerable<Step> EnumerateFlats()
         {
-            Step accidental = Step.BFlat;
-            for (int i = 0; i < NumberOfFlats(); i++)
+            var accidental = Step.BFlat;
+            for (var i = 0; i < NumberOfFlats(); i++)
             {
                 yield return accidental;
                 accidental += Interval.Fourth;
@@ -121,8 +125,8 @@
         /// <returns></returns>
         public IEnumerable<Step> EnumerateSharps()
         {
-            Step accidental = Step.FSharp;
-            for (int i = 0; i < NumberOfSharps(); i++)
+            var accidental = Step.FSharp;
+            for (var i = 0; i < NumberOfSharps(); i++)
             {
                 yield return accidental;
                 accidental += Interval.Fifth;

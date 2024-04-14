@@ -37,7 +37,7 @@ namespace StudioLaValse.ScoreDocument.Layout
         public InstrumentMeasureLayout Copy()
         {
             InstrumentMeasureLayout layout = new(styleTemplate);
-            foreach (ClefChange change in _changeList)
+            foreach (var change in _changeList)
             {
                 layout.AddClefChange(change);
             }

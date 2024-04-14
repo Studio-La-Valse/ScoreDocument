@@ -2,16 +2,12 @@
 {
     internal sealed class Glyph
     {
-        public FontFamilyCore FontFamily { get; } = new FontFamilyCore(new Uri("pack://application:,,,/Resources/"), "./#Bravura Text");
+        public FontFamilyCore FontFamily { get; } = new FontFamilyCore(new Uri("pack://application:,,,/Resources/"), "./#Bravura");
 
         private readonly double points = 6;
         private readonly double? knownWidth;
 
         public double Points => points * Scale;
-
-        public double Height => Points / 3 * 4;
-
-        public double HeightCorrection => Height * 0.25;
 
         public double Scale { get; set; }
 

@@ -14,13 +14,13 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
 
         public void Create(XElement scorePart, IInstrumentRibbonEditor ribbonEditor, IScoreDocumentLayout pageViewLayout)
         {
-            int durationOfOneQuarter = 4;
-            foreach (XElement element in scorePart.Elements())
+            var durationOfOneQuarter = 4;
+            foreach (var element in scorePart.Elements())
             {
                 if (element.Name == "measure")
                 {
-                    int measureIndex = element.Attributes().Single(a => a.Name == "number").Value.ToIntOrThrow() - 1;
-                    IInstrumentMeasureEditor measureToEdit = ribbonEditor.ReadMeasure(measureIndex);
+                    var measureIndex = element.Attributes().Single(a => a.Name == "number").Value.ToIntOrThrow() - 1;
+                    var measureToEdit = ribbonEditor.ReadMeasure(measureIndex);
                     measureConverter.Create(element, measureToEdit, pageViewLayout, ref durationOfOneQuarter);
                 }
             }

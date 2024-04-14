@@ -17,6 +17,6 @@ namespace StudioLaValse.ScoreDocument.Layout
         StaffGroupLayout StaffGroupLayout<TElement>(TElement element) where TElement : IStaffGroup, IScoreEntity;
         StaffSystemLayout StaffSystemLayout<TElement>(TElement element) where TElement : IStaffSystem, IScoreEntity;
         PageLayout PageLayout<TElement>(TElement element) where TElement : IPage, IScoreEntity;
-        ScoreDocumentLayout DocumentLayout<TElement>(TElement element) where TElement : IScoreDocument, IScoreEntity;
+        ScoreDocumentLayout DocumentLayout();
     }
 }

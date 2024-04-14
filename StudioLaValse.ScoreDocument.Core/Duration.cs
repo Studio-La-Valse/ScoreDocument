@@ -32,10 +32,10 @@
                 return new Duration(0, 1);
             }
 
-            PowerOfTwo denom = Denominator;
-            int num = Numerator;
-            decimal halfDenom = denom / 2M;
-            decimal halfNum = num / 2M;
+            var denom = Denominator;
+            var num = Numerator;
+            var halfDenom = denom / 2M;
+            var halfNum = num / 2M;
 
             while (halfDenom % 1 == 0 && halfNum % 1 == 0)
             {
@@ -64,11 +64,11 @@
                 return new Duration(first.Numerator + second.Numerator, first.Denominator);
             }
 
-            int nominator =
+            var nominator =
                 (first.Numerator * second.Denominator) +
                 (first.Denominator * second.Numerator);
 
-            int denominator = first.Denominator * second.Denominator;
+            var denominator = first.Denominator * second.Denominator;
 
             return new Duration(nominator, denominator).Simplify();
         }

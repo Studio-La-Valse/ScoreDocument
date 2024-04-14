@@ -3,12 +3,17 @@
     internal abstract class BaseVisualNote : BaseSelectableParent<IUniqueScoreElement>
     {
         protected readonly IPositionElement measureElement;
+        private readonly double lineSpacing;
+        private readonly double scoreScale;
+        private readonly double instrumentScale;
+        private readonly double noteScale;
+        private readonly ISelection<IUniqueScoreElement> selection;
 
         public abstract DrawableScoreGlyph Glyph { get; }
         public abstract bool OffsetDots { get; }
 
 
-        public double Scale { get; }
+        public double Scale => scoreScale * instrumentScale * noteScale;
         public double XPosition => XOffset + CanvasLeft;
         public double CanvasLeft { get; }
         public abstract double XOffset { get; }
@@ -23,20 +28,21 @@
         {
             get
             {
-                double heightOnCanvas = HeightOnCanvas;
+                var lineSpacingOnStaff = lineSpacing * scoreScale * instrumentScale;
+                var heightOnCanvas = HeightOnCanvas;
                 if (OffsetDots)
                 {
-                    heightOnCanvas -= 0.6;
+                    heightOnCanvas -= lineSpacingOnStaff / 2;
                 }
 
-                double spacing = 1.3;
-                double startLeft = XPosition + spacing;
+                var spacing = 1.5 * Scale;
+                var startLeft = XPosition + spacing;
 
-                for (int i = 0; i < measureElement.RythmicDuration.Dots; i++)
+                for (var i = 0; i < measureElement.RythmicDuration.Dots; i++)
                 {
                     DrawableCircle circle = new(
                         new XY(startLeft, heightOnCanvas),
-                        0.3,
+                        0.3 * Scale,
                         DisplayColor);
 
                     yield return circle;
@@ -49,23 +55,33 @@
 
 
 
-        public BaseVisualNote(INoteReader measureElement, double canvasLeft, double canvasTop, double scale, ColorARGB defaultColor, ISelection<IUniqueScoreElement> selection) : base(measureElement, selection)
+        public BaseVisualNote(INoteReader measureElement, double canvasLeft, double canvasTop, double lineSpacing, double scoreScale, double instrumentScale, double noteScale, ColorARGB defaultColor, ISelection<IUniqueScoreElement> selection) : base(measureElement, selection)
         {
             this.measureElement = measureElement;
-            DisplayColor = defaultColor ?? new ColorARGB(255, 0, 0, 0);
+            this.selection = selection;
 
+            this.lineSpacing = lineSpacing;
+            this.scoreScale = scoreScale;
+            this.instrumentScale = instrumentScale;
+            this.noteScale = noteScale;
+
+            DisplayColor = defaultColor;
             CanvasLeft = canvasLeft;
             HeightOnCanvas = canvasTop;
-            Scale = scale;
         }
-        public BaseVisualNote(IChordReader measureElement, double canvasLeft, double canvasTop, double scale, ColorARGB defaultColor, ISelection<IUniqueScoreElement> selection) : base(measureElement, selection)
+        public BaseVisualNote(IChordReader measureElement, double canvasLeft, double canvasTop, double lineSpacing, double scoreScale, double instrumentScale, double noteScale, ColorARGB defaultColor, ISelection<IUniqueScoreElement> selection) : base(measureElement, selection)
         {
             this.measureElement = measureElement;
-            DisplayColor = defaultColor ?? new ColorARGB(255, 0, 0, 0);
+            this.selection = selection;
 
+            this.lineSpacing = lineSpacing;
+            this.scoreScale = scoreScale;
+            this.instrumentScale = instrumentScale;
+            this.noteScale = noteScale;
+
+            DisplayColor = defaultColor;
             CanvasLeft = canvasLeft;
             HeightOnCanvas = canvasTop;
-            Scale = scale;
         }
 
 
@@ -73,7 +89,7 @@
         {
             yield return Glyph;
 
-            foreach (DrawableCircle dot in Dots)
+            foreach (var dot in Dots)
             {
                 yield return dot;
             }
@@ -88,7 +104,7 @@
         }
         public override BoundingBox BoundingBox()
         {
-            return new BoundingBox(XPosition - 0.5, XPosition + 0.5, HeightOnCanvas - 0.5, HeightOnCanvas + 0.5);
+            return new BoundingBox(XPosition - (lineSpacing * Scale / 2), XPosition + (lineSpacing * Scale / 2), HeightOnCanvas - (lineSpacing * Scale / 2), HeightOnCanvas + (lineSpacing * Scale / 2));
         }
     }
 }

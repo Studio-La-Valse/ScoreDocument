@@ -222,11 +222,11 @@ namespace StudioLaValse.ScoreDocument.Core
         {
             get
             {
-                int value = 0;
+                var value = 0;
 
-                for (int i = 0; i < StepsFromC; i++)
+                for (var i = 0; i < StepsFromC; i++)
                 {
-                    int indexInOctave = i % 12;
+                    var indexInOctave = i % 12;
 
                     value += indexInOctave is 2 or 6 ? 1 : 2;
                 }
@@ -317,8 +317,8 @@ namespace StudioLaValse.ScoreDocument.Core
         /// <returns></returns>
         public Step MoveAlongCircleOfFifths(int steps)
         {
-            Step step = this;
-            for (int i = 0; i < steps; i++)
+            var step = this;
+            for (var i = 0; i < steps; i++)
             {
                 step += Interval.Fifth;
             }
@@ -335,7 +335,7 @@ namespace StudioLaValse.ScoreDocument.Core
             }
 
             Scale scale = new(step, ScaleStructure.Major);
-            Step element = scale.EnumerateSteps(interval.Steps + 1).ElementAt(interval.Steps);
+            var element = scale.EnumerateSteps(interval.Steps + 1).ElementAt(interval.Steps);
             return new Step(element.StepsFromC, element.Shifts + interval.Shifts);
         }
         /// <inheritdoc/>
@@ -351,7 +351,7 @@ namespace StudioLaValse.ScoreDocument.Core
         /// <inheritdoc/>
         public override string ToString()
         {
-            string shift = Shifts switch
+            var shift = Shifts switch
             {
                 -2 => "bb",
                 -1 => "b",
@@ -361,7 +361,7 @@ namespace StudioLaValse.ScoreDocument.Core
                 _ => throw new NotSupportedException()
             };
 
-            string step = stepNames.ElementAt(StepsFromC);
+            var step = stepNames.ElementAt(StepsFromC);
 
             return $"{step}{shift}";
         }

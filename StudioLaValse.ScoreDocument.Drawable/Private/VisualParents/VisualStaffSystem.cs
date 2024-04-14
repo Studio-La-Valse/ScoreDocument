@@ -1,6 +1,4 @@
-﻿
-
-namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
+﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
     internal sealed class VisualStaffSystem : BaseSelectableParent<IUniqueScoreElement>
     {
@@ -8,36 +6,41 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         private readonly IVisualSystemMeasureFactory systemMeasureFactory;
         private readonly double canvasLeft;
         private readonly double length;
+        private readonly double globalLineSpacing;
         private readonly double canvasTop;
         private readonly ColorARGB baseColor;
         private readonly IScoreDocumentLayout scoreLayoutDictionary;
 
-        public StaffSystemLayout Layout => scoreLayoutDictionary.StaffSystemLayout(staffSystem);
+
+        public double VerticalLineThickness =>
+            scoreLayoutDictionary.DocumentLayout().VerticalStaffLineThickness * ScoreScale;
+        public double HorizontalLineThickness =>
+            scoreLayoutDictionary.DocumentLayout().HorizontalStaffLineThickness * ScoreScale;
         public DrawableLineVertical OpeningLine =>
-            new(canvasLeft, canvasTop, staffSystem.CalculateHeight(scoreLayoutDictionary), 0.1, color: baseColor);
+            new(canvasLeft, canvasTop, staffSystem.CalculateHeight(globalLineSpacing, scoreLayoutDictionary), VerticalLineThickness, color: baseColor);
         public DrawableLineVertical ClosingLine
         {
             get
             {
-                bool isLast = staffSystem.EnumerateMeasures().Last().IsLastInScore;
-                double x = isLast ? canvasLeft + length - 1 : canvasLeft + length;
+                var isLast = staffSystem.EnumerateMeasures().Last().IsLastInScore;
+                var x = isLast ? canvasLeft + length - 1 : canvasLeft + length;
 
-                return new DrawableLineVertical(x, canvasTop, staffSystem.CalculateHeight(scoreLayoutDictionary), 0.1, color: baseColor);
+                return new DrawableLineVertical(x, canvasTop, staffSystem.CalculateHeight(globalLineSpacing, scoreLayoutDictionary), VerticalLineThickness, color: baseColor);
             }
         }
         public DrawableLineVertical? EndOfPiece
         {
             get
             {
-                bool isLast = staffSystem.EnumerateMeasures().Last().IsLastInScore;
+                var isLast = staffSystem.EnumerateMeasures().Last().IsLastInScore;
                 if (!isLast)
                 {
                     return null;
                 }
 
-                double thickness = isLast ? 0.5 : 0.1;
+                var thickness = isLast ? 0.5 : 0.1;
 
-                return new DrawableLineVertical(canvasLeft + length, canvasTop - 0.05, staffSystem.CalculateHeight(scoreLayoutDictionary) + 0.1, thickness: thickness, color: baseColor);
+                return new DrawableLineVertical(canvasLeft + length, canvasTop - (HorizontalLineThickness / 2), staffSystem.CalculateHeight(globalLineSpacing, scoreLayoutDictionary) + HorizontalLineThickness, thickness: thickness, color: baseColor);
             }
         }
         public DrawableText? MeasureCounter
@@ -49,65 +52,88 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                     return null;
                 }
 
-                int index = staffSystem.EnumerateMeasures().First().IndexInScore + 1;
+                var index = staffSystem.EnumerateMeasures().First().IndexInScore + 1;
 
                 return new DrawableText(canvasLeft, canvasTop - 1, index.ToString(), 2, verticalAlignment: VerticalTextOrigin.Bottom, color: baseColor);
             }
         }
+        public double ScoreScale =>
+            scoreLayoutDictionary.DocumentLayout().Scale;
 
 
 
-
-        public VisualStaffSystem(IStaffSystemReader staffSystem, double canvasLeft, double canvasTop, double length, IVisualSystemMeasureFactory systemMeasureFactory, ColorARGB baseColor, ISelection<IUniqueScoreElement> selection, IScoreDocumentLayout scoreLayoutDictionary) : base(staffSystem, selection)
+        public VisualStaffSystem(IStaffSystemReader staffSystem, double canvasLeft, double canvasTop, double length, double globalLineSpacing, IVisualSystemMeasureFactory systemMeasureFactory, ColorARGB baseColor, ISelection<IUniqueScoreElement> selection, IScoreDocumentLayout scoreLayoutDictionary) : base(staffSystem, selection)
         {
             this.staffSystem = staffSystem;
             this.systemMeasureFactory = systemMeasureFactory;
             this.baseColor = baseColor;
             this.scoreLayoutDictionary = scoreLayoutDictionary;
             this.length = length;
+            this.globalLineSpacing = globalLineSpacing;
             this.canvasLeft = canvasLeft;
             this.canvasTop = canvasTop;
         }
 
 
 
+        public double CalculateOpeningPadding()
+        {
+            var firstMeasure = staffSystem.EnumerateMeasures().First();
+            var keySignature = firstMeasure.KeySignature;
+            var spaceForClef = (VisualStaff.SpaceUntilClef * ScoreScale) + (VisualStaff.ClefSpacing * ScoreScale);
+            var spaceForKeySignature = (keySignature.DefaultFlats ? keySignature.NumberOfFlats() : keySignature.NumberOfSharps()) * VisualStaff.KeySignatureGlyphSpacing * ScoreScale;
+            var spaceForTimeSignature = firstMeasure.IndexInScore == 0 ? VisualStaff.TimeSignatureSpacing * ScoreScale : 0;
 
+            var reservedSpace = spaceForClef + spaceForKeySignature + spaceForTimeSignature;
+            return reservedSpace;
+        }
         public IEnumerable<BaseContentWrapper> ConstructSystemMeasures()
         {
-            double _canvasLeft = canvasLeft;
+            var lengthWithoutAdjustment = staffSystem.EnumerateMeasures().Select(m => scoreLayoutDictionary.ScoreMeasureLayout(m).Width).Sum();
+            var totalLength = length;
+            var paddingStart = CalculateOpeningPadding();
+            var availableLength = totalLength - paddingStart;
 
-            double lengthWithoutAdjustment = staffSystem.EnumerateMeasures().Select(m => scoreLayoutDictionary.ScoreMeasureLayout(m).Width).Sum();
-            bool firstMeasure = true;
-            foreach (IScoreMeasureReader measure in staffSystem.EnumerateMeasures())
+            var _canvasLeft = canvasLeft + paddingStart;
+
+            foreach (var measure in staffSystem.EnumerateMeasures())
             {
-                ScoreMeasureLayout measureLayout = scoreLayoutDictionary.ScoreMeasureLayout(measure);
-                double measureWidth = measureLayout.Width;
+                var measureLayout = scoreLayoutDictionary.ScoreMeasureLayout(measure);
+                var measureWidth = measureLayout.Width;
 
-                measureWidth = MathUtils.Map(measureWidth, 0, lengthWithoutAdjustment, 0, length);
+                measureWidth = MathUtils.Map(measureWidth, 0, lengthWithoutAdjustment, 0, availableLength);
 
-                BaseContentWrapper systemMeasure = systemMeasureFactory.CreateContent(measure, staffSystem, _canvasLeft, canvasTop, measureWidth, firstMeasure, baseColor);
+                var systemMeasure = systemMeasureFactory.CreateContent(measure, staffSystem, _canvasLeft, canvasTop, measureWidth, globalLineSpacing, baseColor);
                 yield return systemMeasure;
 
                 _canvasLeft += measureWidth;
-                firstMeasure = false;
             }
         }
         public IEnumerable<BaseContentWrapper> ConstructStaffGroups()
         {
-            double heightOnCanvas = canvasTop;
+            var heightOnCanvas = canvasTop;
 
-            foreach (IStaffGroupReader staffGroup in staffSystem.EnumerateStaffGroups())
+            foreach (var staffGroup in staffSystem.EnumerateStaffGroups())
             {
+                var instrumentScale = 1d;
+                if (scoreLayoutDictionary.DocumentLayout().InstrumentScales.TryGetValue(staffGroup.Instrument, out var value))
+                {
+                    instrumentScale = value;
+                }
+
                 VisualStaffGroup _staffGroup = new(
                     staffGroup,
                     canvasLeft,
                     heightOnCanvas,
                     length,
+                    globalLineSpacing,
+                    ScoreScale,
+                    instrumentScale,
                     baseColor,
                     scoreLayoutDictionary);
                 yield return _staffGroup;
 
-                heightOnCanvas += staffGroup.CalculateHeight(scoreLayoutDictionary);
+                heightOnCanvas += staffGroup.CalculateHeight(globalLineSpacing, scoreLayoutDictionary);
                 heightOnCanvas += scoreLayoutDictionary.StaffGroupLayout(staffGroup).DistanceToNext;
             }
         }
@@ -116,7 +142,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
         public override BoundingBox BoundingBox()
         {
-            return new BoundingBox(canvasLeft, canvasLeft + length, canvasTop, canvasTop + staffSystem.CalculateHeight(scoreLayoutDictionary));
+            return new BoundingBox(canvasLeft, canvasLeft + length, canvasTop, canvasTop + staffSystem.CalculateHeight(globalLineSpacing, scoreLayoutDictionary));
         }
         public override IEnumerable<BaseDrawableElement> GetDrawableElements()
         {
@@ -135,12 +161,12 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         }
         public override IEnumerable<BaseContentWrapper> GetContentWrappers()
         {
-            foreach (BaseContentWrapper group in ConstructStaffGroups())
+            foreach (var group in ConstructStaffGroups())
             {
                 yield return group;
             }
 
-            foreach (BaseContentWrapper systemMeasure in ConstructSystemMeasures())
+            foreach (var systemMeasure in ConstructSystemMeasures())
             {
                 yield return systemMeasure;
             }

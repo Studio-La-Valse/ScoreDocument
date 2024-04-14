@@ -14,8 +14,9 @@
         /// <param name="canvasTopStaffGroup"></param>
         /// <param name="canvasLeft"></param>
         /// <param name="allowedSpace"></param>
+        /// <param name="lineSpacing"></param>
         /// <param name="colorARGB"></param>
         /// <returns></returns>
-        BaseContentWrapper Build(IMeasureBlockReader noteGroup, IStaffGroupReader staffGroup, IInstrumentMeasureReader instrumentMeasure, double canvasTopStaffGroup, double canvasLeft, double allowedSpace, ColorARGB colorARGB);
+        BaseContentWrapper Build(IMeasureBlockReader noteGroup, IStaffGroupReader staffGroup, IInstrumentMeasureReader instrumentMeasure, double canvasTopStaffGroup, double canvasLeft, double allowedSpace, double lineSpacing, ColorARGB colorARGB);
     }
 }

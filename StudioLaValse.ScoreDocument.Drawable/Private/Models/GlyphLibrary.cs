@@ -2,9 +2,10 @@
 {
     internal static class GlyphLibrary
     {
-        public static Glyph NoteHeadBlack => new("\uE0A4", knownWidth: 1.34);
-        public static Glyph NoteHeadWhite => new("\uE0A3", knownWidth: 1.29);
-        public static Glyph NoteHeadWhole => new("\uE0A2", knownWidth: 1.29);
+        public static double LineSpacing = 1.5;
+        public static Glyph NoteHeadBlack => new("\uE0A4");
+        public static Glyph NoteHeadWhite => new("\uE0A3");
+        public static Glyph NoteHeadWhole => new("\uE0A2");
         public static Glyph DoubleSharp => new("\uE263");
         public static Glyph Sharp => new("\uE262");
         public static Glyph Natural => new("\uE261");

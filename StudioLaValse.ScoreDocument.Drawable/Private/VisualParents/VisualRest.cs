@@ -1,7 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Drawable.Private.DrawableElements;
-using StudioLaValse.ScoreDocument.Drawable.Private.Models;
-
-namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
+﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
     internal sealed class VisualRest : BaseVisualNote
     {
@@ -9,9 +6,9 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         {
             get
             {
-                decimal duration = 1M;
+                var duration = 1M;
 
-                Glyph[] glyphs = new[]
+                var glyphs = new[]
                 {
                     GlyphLibrary.RestWhole,
                     GlyphLibrary.RestHalf,
@@ -21,7 +18,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                     GlyphLibrary.RestThirtySecond,
                 };
 
-                for (int i = 0; i < 6; i++)
+                for (var i = 0; i < 6; i++)
                 {
                     if (DisplayDuration.Decimal >= duration)
                     {
@@ -38,11 +35,11 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         {
             get
             {
-                Glyph glyph = GlyphPrototype;
+                var glyph = GlyphPrototype;
 
                 if (measureElement.Grace)
                 {
-                    glyph.Scale = 0.5;
+                    glyph.Scale = Scale;
                 }
 
                 return new DrawableScoreGlyph(
@@ -58,8 +55,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         public override bool OffsetDots => false;
         public override double XOffset => 0;
 
-        public VisualRest(IChordReader note, double canvasLeft, double canvasTop, double scale, ColorARGB color, ISelection<IUniqueScoreElement> selection) :
-            base(note, canvasLeft, canvasTop, scale, color, selection)
+        public VisualRest(IChordReader note, double canvasLeft, double canvasTop, double lineSpacing, double scoreScale, double instrumentScale, ColorARGB color, ISelection<IUniqueScoreElement> selection) :
+            base(note, canvasLeft, canvasTop, lineSpacing, scoreScale, instrumentScale, 1, color, selection)
         {
 
         }

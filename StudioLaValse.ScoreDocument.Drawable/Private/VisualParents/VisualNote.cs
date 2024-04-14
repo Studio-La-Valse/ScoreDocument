@@ -1,15 +1,17 @@
-﻿using StudioLaValse.ScoreDocument.Drawable.Private.DrawableElements;
-using StudioLaValse.ScoreDocument.Drawable.Private.Models;
-
-namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
+﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
     internal sealed class VisualNote : BaseVisualNote
     {
         private readonly INoteReader note;
         private readonly ColorARGB color;
+        private readonly double canvasLeft;
         private readonly double canvasTop;
+        private readonly double scoreScale;
+        private readonly double instrumentScale;
+        private readonly double noteScale;
         private readonly bool offsetDots;
         private readonly Accidental? accidental;
+        private readonly ISelection<IUniqueScoreElement> selection;
         private readonly IScoreDocumentLayout scoreLayoutDictionary;
 
 
@@ -18,7 +20,14 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         {
             get
             {
-                Glyph glyph = GlyphPrototype;
+                var glyph = DisplayDuration.Decimal switch
+                {
+                    1M => GlyphLibrary.NoteHeadWhole,
+                    0.5M => GlyphLibrary.NoteHeadWhite,
+                    _ => GlyphLibrary.NoteHeadBlack
+                };
+                glyph.Scale = Scale;
+
                 return new DrawableScoreGlyph(XPosition, canvasTop, glyph, HorizontalTextOrigin.Center, VerticalTextOrigin.Center, color);
             }
         }
@@ -26,7 +35,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         {
             get
             {
-                Glyph? glyph = accidental switch
+                var glyph = accidental switch
                 {
                     Accidental.DoubleFlat => GlyphLibrary.DoubleFlat,
                     Accidental.Flat => GlyphLibrary.Flat,
@@ -41,7 +50,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                 {
                     glyph.Scale = Scale;
                     return new DrawableScoreGlyph(
-                        XPosition - glyph.Width * 2,
+                        XPosition - (glyph.Width * 2),
                         canvasTop,
                         glyph,
                         HorizontalTextOrigin.Center,
@@ -51,34 +60,23 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                 return null;
             }
         }
-        public Glyph GlyphPrototype
-        {
-            get
-            {
-                Glyph glyph = DisplayDuration.Decimal switch
-                {
-                    1M => GlyphLibrary.NoteHeadWhole,
-                    0.5M => GlyphLibrary.NoteHeadWhite,
-                    _ => GlyphLibrary.NoteHeadBlack
-                };
-
-                glyph.Scale = Scale;
-
-                return glyph;
-            }
-        }
 
         public override bool OffsetDots => offsetDots;
         public override double XOffset => NoteLayout.XOffset;
 
-        public VisualNote(INoteReader note, ColorARGB color, double canvasLeft, double canvasTop, double scale, bool offsetDots, Accidental? accidental, ISelection<IUniqueScoreElement> selection, IScoreDocumentLayout scoreLayoutDictionary) :
-            base(note, canvasLeft, canvasTop, scale, color, selection)
+        public VisualNote(INoteReader note, ColorARGB color, double canvasLeft, double canvasTop, double lineSpacing, double scoreScale, double instrumentScale, double noteScale, bool offsetDots, Accidental? accidental, ISelection<IUniqueScoreElement> selection, IScoreDocumentLayout scoreLayoutDictionary) :
+            base(note, canvasLeft, canvasTop, lineSpacing, scoreScale, instrumentScale, noteScale, color, selection)
         {
             this.note = note;
             this.color = color;
+            this.canvasLeft = canvasLeft;
             this.canvasTop = canvasTop;
+            this.scoreScale = scoreScale;
+            this.instrumentScale = instrumentScale;
+            this.noteScale = noteScale;
             this.offsetDots = offsetDots;
             this.accidental = accidental;
+            this.selection = selection;
             this.scoreLayoutDictionary = scoreLayoutDictionary;
         }
 

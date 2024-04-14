@@ -153,12 +153,12 @@
         {
             get
             {
-                int chromaticDistance = 0;
+                var chromaticDistance = 0;
 
                 //C D E F G A B etc
-                for (int i = 0; i < Steps; i++)
+                for (var i = 0; i < Steps; i++)
                 {
-                    int indexInOctave = i % 7;
+                    var indexInOctave = i % 7;
 
                     chromaticDistance += indexInOctave is 2 or 6 ? 1 : 2;
                 }

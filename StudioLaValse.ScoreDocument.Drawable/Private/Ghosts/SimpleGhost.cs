@@ -18,7 +18,7 @@
 
         public override IEnumerable<BaseDrawableElement> GetDrawableElements()
         {
-            int alpha = 0;
+            var alpha = 0;
             if (creator.IsMouseOver)
             {
                 alpha += 50;

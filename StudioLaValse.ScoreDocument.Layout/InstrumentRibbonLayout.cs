@@ -11,8 +11,8 @@ namespace StudioLaValse.ScoreDocument.Layout
         private readonly InstrumentRibbonStyleTemplate styleTemplate;
         private readonly IInstrumentRibbon instrumentRibbon;
         private readonly NullableTemplateProperty<string> abbreviatedName;
-        private NullableTemplateProperty<string> displayName;
-        private TemplateProperty<int> numberOfStaves;
+        private readonly NullableTemplateProperty<string> displayName;
+        private readonly TemplateProperty<int> numberOfStaves;
 
         public string AbbreviatedName { get => abbreviatedName.Value; set => abbreviatedName.Value = value; }
         public string DisplayName { get => displayName.Value; set => displayName.Value = value; }

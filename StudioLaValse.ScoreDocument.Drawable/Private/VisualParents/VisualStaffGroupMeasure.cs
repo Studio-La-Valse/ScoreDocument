@@ -1,4 +1,8 @@
-﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
+﻿using StudioLaValse.ScoreDocument.Primitives;
+using StudioLaValse.ScoreDocument.Reader;
+using StudioLaValse.ScoreDocument.Reader.Extensions;
+
+namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
     internal sealed class VisualStaffGroupMeasure : BaseSelectableParent<IUniqueScoreElement>
     {
@@ -19,9 +23,9 @@
 
 
         public double MeasureDividerLineThickness =>
-            scoreLayoutDictionary.DocumentLayout().VerticalStaffLineThickness * scoreScale * instrumentScale;
-        public StaffGroupLayout Layout =>
-            scoreLayoutDictionary.StaffGroupLayout(staffGroup);
+            scoreLayoutDictionary.VerticalStaffLineThickness * scoreScale * instrumentScale;
+        public IStaffGroupLayout Layout =>
+            staffGroup.ReadLayout();
         public KeySignature KeySignature =>
             source.KeySignature;
         public KeySignature? InvalidatesNext
@@ -88,7 +92,7 @@
                 var elements = chordGroup.ReadChords().SelectMany(c => c.ReadNotes());
                 var anyOnStaff = elements.Any(ele =>
                 {
-                    var eleLayout = scoreLayoutDictionary.NoteLayout(ele);
+                    var eleLayout = ele.ReadLayout();
                     return eleLayout.StaffIndex < Layout.NumberOfStaves;
                 });
                 if (!anyOnStaff)
@@ -97,7 +101,7 @@
                 }
 
                 var firstChord = chordGroup.ReadChords().First();
-                var firstChordLayout = scoreLayoutDictionary.ChordLayout(firstChord);
+                var firstChordLayout = firstChord.ReadLayout();
                 var xParameter = MathUtils.Map((double)firstChord.Position.Decimal, 0, (double)source.TimeSignature.Decimal, 0, 1);
                 var canvasLeft = XPositionFromParameter(xParameter + firstChordLayout.XOffset);
                 var allowedSpace = MathUtils.Map((double)chordGroup.RythmicDuration.Decimal, 0, (double)source.TimeSignature.Decimal, 0, DrawableWidth);
@@ -116,24 +120,20 @@
 
         public IEnumerable<BaseContentWrapper> ConstructStaffMeasures()
         {
-            var scoreLayout = scoreLayoutDictionary.DocumentLayout();
+            var scoreLayout = scoreLayoutDictionary;
             var scoreScale = scoreLayout.Scale;
-            var instrumentScale = 1d;
-            if (scoreLayout.InstrumentScales.TryGetValue(staffGroup.Instrument, out var value))
-            {
-                instrumentScale = value;
-            }
+            var instrumentScale = scoreLayout.GetInstrumentScale(staffGroup.Instrument);
 
             var _canvasTop = canvasTop;
             foreach (var staff in staffGroup.EnumerateStaves(Layout.NumberOfStaves))
             {
-                var staffLayout = scoreLayoutDictionary.StaffLayout(staff);
-                var instrumentMeasureLayout = scoreLayoutDictionary.InstrumentMeasureLayout(source);
-                var measureClef = source.OpeningClefAtOrDefault(staff.IndexInStaffGroup, scoreLayoutDictionary);
+                var staffLayout = staff.ReadLayout();
+                var instrumentMeasureLayout = source.ReadLayout();
+                var measureClef = source.OpeningClefAtOrDefault(staff.IndexInStaffGroup);
                 var lastClefChange = instrumentMeasureLayout.ClefChanges.LastOrDefault(c => c.StaffIndex == staff.IndexInStaffGroup)?.Clef ?? measureClef;
 
                 _ = source.TryReadNext(out var nextMeasure);
-                var nextClefLayout = nextMeasure?.OpeningClefAtOrDefault(staff.IndexInStaffGroup, scoreLayoutDictionary);
+                var nextClefLayout = nextMeasure?.OpeningClefAtOrDefault(staff.IndexInStaffGroup);
                 var invalidatingNextClef = nextClefLayout is null ?
                     null :
                     nextClefLayout.ClefSpecies == lastClefChange.ClefSpecies ?

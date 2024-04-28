@@ -1,4 +1,7 @@
-﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
+﻿using StudioLaValse.ScoreDocument.Reader;
+using StudioLaValse.ScoreDocument.Reader.Extensions;
+
+namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
     internal sealed class VisualChord : BaseContentWrapper
     {
@@ -15,7 +18,7 @@
         private readonly ColorARGB color;
         private readonly IScoreDocumentLayout scoreLayoutDictionary;
 
-        public ChordLayout Layout => scoreLayoutDictionary.ChordLayout(chord);
+        public IChordLayout Layout => chord.ReadLayout();
         public double XOffset => Layout.XOffset;
 
 
@@ -39,13 +42,9 @@
 
         public IEnumerable<BaseContentWrapper> GetNotes()
         {
-            var scoreLayout = scoreLayoutDictionary.DocumentLayout();
+            var scoreLayout = scoreLayoutDictionary;
             var scoreScale = scoreLayout.Scale;
-            var instrumentScale = 1d;
-            if (scoreLayout.InstrumentScales.TryGetValue(staffGroup.Instrument, out var value))
-            {
-                instrumentScale = value;
-            }
+            var instrumentScale = scoreLayout.GetInstrumentScale(staffGroup.Instrument);
 
             var notes = chord.ReadNotes();
             if (!notes.Any())
@@ -57,16 +56,16 @@
 
             foreach (var note in notes)
             {
-                var staffIndex = scoreLayoutDictionary.NoteLayout(note).StaffIndex;
-                if (staffIndex >= scoreLayoutDictionary.StaffGroupLayout(staffGroup).NumberOfStaves)
+                var staffIndex = note.ReadLayout().StaffIndex;
+                if (staffIndex >= staffGroup.ReadLayout().NumberOfStaves)
                 {
                     continue;
                 }
 
-                var clef = instrumentMeasureReader.GetClef(staffIndex, chord.Position, scoreLayoutDictionary);
+                var clef = instrumentMeasureReader.GetClef(staffIndex, chord.Position);
                 var lineIndex = clef.LineIndexAtPitch(note.Pitch);
                 var offsetDots = lineIndex % 2 == 0;
-                var canvasTop = staffGroup.HeightOnCanvas(canvasTopStaffGroup, staffIndex, lineIndex, lineSpacing, scoreLayoutDictionary);
+                var canvasTop = staffGroup.HeightOnCanvas(canvasTopStaffGroup, staffIndex, lineIndex, lineSpacing, scoreLayout);
                 var accidental = GetAccidental(note);
                 yield return noteFactory.Build(note, canvasLeft + XOffset, canvasTop, lineSpacing, scoreScale, instrumentScale, offsetDots, accidental, color);
             }
@@ -75,7 +74,7 @@
 
         public Accidental? GetAccidental(INoteReader note)
         {
-            var noteLayout = scoreLayoutDictionary.NoteLayout(note);
+            var noteLayout = note.ReadLayout();
             var forceAccidental = noteLayout.ForceAccidental;
 
             if (forceAccidental == AccidentalDisplay.ForceOff)
@@ -85,7 +84,7 @@
 
             if (forceAccidental == AccidentalDisplay.Default)
             {
-                return instrumentMeasureReader.GetAccidental(note.Pitch, note.Position, noteLayout.StaffIndex, scoreLayoutDictionary);
+                return instrumentMeasureReader.GetAccidental(note.Pitch, note.Position, noteLayout.StaffIndex);
             }
 
             if (forceAccidental == AccidentalDisplay.ForceAccidental)
@@ -107,12 +106,12 @@
 
             var canvasTopStaff = canvasTopStaffGroup;
             List<DrawableLineHorizontal> linesFromChord = [];
-            var staffGroupLayout = scoreLayoutDictionary.StaffGroupLayout(staffGroup);
+            var staffGroupLayout = staffGroup.ReadLayout();
             foreach (var staff in staffGroup.EnumerateStaves(staffGroupLayout.NumberOfStaves))
             {
-                var staffLayout = scoreLayoutDictionary.StaffLayout(staff);
+                var staffLayout = staff.ReadLayout();
                 var notesOnStaff = notes
-                    .Where(c => scoreLayoutDictionary.NoteLayout(c).StaffIndex == staff.IndexInStaffGroup)
+                    .Where(c => c.ReadLayout().StaffIndex == staff.IndexInStaffGroup)
                     .OrderBy(c => c.Pitch.IndexOnKlavier);
 
                 if (notesOnStaff.Any())
@@ -146,7 +145,7 @@
                 return new DrawableLineHorizontal(height, canvasLeft - (width / 2), width, 0.1 * scoreScale * instrumentScale, color);
             }
 
-            var lineIndex = instrumentMeasureReader.GetClef(staff.IndexInStaffGroup, note.Position, scoreLayoutDictionary).LineIndexAtPitch(note.Pitch);
+            var lineIndex = instrumentMeasureReader.GetClef(staff.IndexInStaffGroup, note.Position).LineIndexAtPitch(note.Pitch);
             var overflowTop = lineIndex < -1;
             var overflowBottom = lineIndex > 9;
 

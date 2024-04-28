@@ -1,6 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Core.Primitives;
-
-namespace StudioLaValse.ScoreDocument.Builder
+﻿namespace StudioLaValse.ScoreDocument.Builder
 {
     /// <summary>
     /// The interface for a measure block chain editor.

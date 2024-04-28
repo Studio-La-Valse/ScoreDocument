@@ -1,12 +1,9 @@
-﻿using StudioLaValse.ScoreDocument.Core.Primitives;
-using StudioLaValse.ScoreDocument.Layout;
-
-namespace StudioLaValse.ScoreDocument.Builder
+﻿namespace StudioLaValse.ScoreDocument.Builder
 {
     /// <summary>
     /// Represents an instrument measure editor.
     /// </summary>
-    public interface IInstrumentMeasureEditor : IInstrumentMeasure<IMeasureBlockChainEditor, IInstrumentMeasureEditor>, IScoreElementEditor, ILayoutEditor<InstrumentMeasureLayout>
+    public interface IInstrumentMeasureEditor : IInstrumentMeasure<IMeasureBlockChainEditor, IInstrumentMeasureEditor>, IScoreElementEditor<IInstrumentMeasureLayout>
     {
         /// <summary>
         /// Clears the content of the instrument measure.
@@ -22,5 +19,11 @@ namespace StudioLaValse.ScoreDocument.Builder
         /// </summary>
         /// <param name="voice"></param>
         void AddVoice(int voice);
+
+        /// <summary>
+        /// Add a clefchange to this instrument measure.
+        /// </summary>
+        /// <param name="clefChange"></param>
+        void AddClefChange(ClefChange clefChange);
     }
 }

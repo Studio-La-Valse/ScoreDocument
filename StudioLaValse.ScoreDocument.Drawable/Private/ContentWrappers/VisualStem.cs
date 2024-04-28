@@ -1,4 +1,6 @@
-﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
+﻿using StudioLaValse.ScoreDocument.Reader;
+
+namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
     internal sealed class VisualStem : BaseContentWrapper
     {

@@ -1,4 +1,6 @@
-﻿namespace StudioLaValse.ScoreDocument.Drawable.Scenes
+﻿using StudioLaValse.ScoreDocument.Reader;
+
+namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
     /// <summary>
     /// The default implementation of the visual score document factory.
@@ -34,7 +36,7 @@
             var globalLineSpacing = GlyphLibrary.LineSpacing;
             foreach (var page in scoreDocument.GeneratePages())
             {
-                var pageLayout = scoreLayoutDictionary.PageLayout(page);
+                var pageLayout = page.ReadLayout();
                 var visualPage = new VisualPage(page, pageCanvasLeft, 0, globalLineSpacing, staffSystemContentFactory, scoreLayoutDictionary);
                 pages.Add(visualPage);
                 pageCanvasLeft += pageLayout.PageWidth;

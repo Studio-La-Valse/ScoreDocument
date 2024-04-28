@@ -1,4 +1,6 @@
 ﻿using StudioLaValse.ScoreDocument.Drawable.Private.Interfaces;
+using StudioLaValse.ScoreDocument.Reader;
+using StudioLaValse.ScoreDocument.Reader.Extensions;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
@@ -19,10 +21,10 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         private readonly ColorARGB colorARGB;
         private readonly IScoreDocumentLayout scoreLayoutDictionary;
 
-        public MeasureBlockLayout Layout =>
-            scoreLayoutDictionary.MeasureBlockLayout(measureBlock);
+        public IMeasureBlockLayout Layout =>
+            measureBlock.ReadLayout();
         public double StemThickness =>
-            scoreLayoutDictionary.DocumentLayout().StemLineThickness * Scale;
+            scoreLayoutDictionary.StemLineThickness * Scale;
         public double Scale
         {
             get
@@ -107,7 +109,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         }
         public XY ConstructChordOrigin(IChordReader chord, IStaffGroupReader staffGroup, double staffGroupCanvasTop, double chordCanvasLeft, bool stemUp)
         {
-            var staffGroupLayout = scoreLayoutDictionary.StaffGroupLayout(staffGroup);
+            var staffGroupLayout = staffGroup.ReadLayout();
 
             if (!chord.ReadNotes().Any())
             {
@@ -118,18 +120,18 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
             var notesFromVisualHighToLow = chord
                 .ReadNotes()
-                .OrderBy(note => scoreLayoutDictionary.NoteLayout(note).StaffIndex)
+                .OrderBy(note => note.ReadLayout().StaffIndex)
                 .ThenByDescending(n => n.Pitch.IndexOnKlavier);
 
             var anchorNote = stemUp ?
                 notesFromVisualHighToLow.Last() :
                 notesFromVisualHighToLow.First();
 
-            var noteLayout = scoreLayoutDictionary.NoteLayout(anchorNote);
-            var clef = instrumentMeasure.GetClef(noteLayout.StaffIndex, anchorNote.Position, scoreLayoutDictionary);
-            var noteStaffIndex = scoreLayoutDictionary.NoteLayout(anchorNote).StaffIndex;
+            var noteLayout = anchorNote.ReadLayout();
+            var noteStaffIndex = noteLayout.StaffIndex;
+            var clef = instrumentMeasure.GetClef(noteStaffIndex, anchorNote.Position);
             var staff = staffGroup.EnumerateStaves(noteStaffIndex + 1).ElementAt(noteStaffIndex);
-            var heightOriginOnCanvas = staffGroup.HeightOnCanvas(staffGroupCanvasTop, noteLayout.StaffIndex, clef.LineIndexAtPitch(anchorNote.Pitch), globalLineSpacing, scoreLayoutDictionary);
+            var heightOriginOnCanvas = staffGroup.HeightOnCanvas(staffGroupCanvasTop, noteStaffIndex, clef.LineIndexAtPitch(anchorNote.Pitch), globalLineSpacing, scoreLayoutDictionary);
             var offsetToNeatlyFitNoteHead = globalLineSpacing * scoreScale * instrumentScale * 0.17;
             heightOriginOnCanvas += stemUp ?
                 -offsetToNeatlyFitNoteHead : offsetToNeatlyFitNoteHead;

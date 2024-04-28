@@ -52,7 +52,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                 if (element.Name == "part")
                 {
                     var id = element.Attributes().Single(a => a.Name == "id").Value;
-                    var ribbon = scoreEditor.ReadInstrumentRibbons().First(r => pageViewLayout.InstrumentRibbonLayout(r).DisplayName == id);
+                    var ribbon = scoreEditor.ReadInstrumentRibbons().First(r => r.ReadLayout().DisplayName == id);
                     scorePartXmlConverter.Create(element, ribbon, pageViewLayout);
                 }
             }
@@ -72,9 +72,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                 scoreEditor.AddInstrumentRibbon(instrument);
 
                 var ribbon = scoreEditor.ReadInstrumentRibbon(scoreEditor.NumberOfInstruments - 1);
-                var layout = pageViewLayout.InstrumentRibbonLayout(ribbon);
-                layout.DisplayName = partListNode.Attributes().Single(a => a.Name == "id").Value;
-                ribbon.Apply(layout);
+                ribbon.SetDisplayName(partListNode.Attributes().Single(a => a.Name == "id").Value);
             }
         }
 

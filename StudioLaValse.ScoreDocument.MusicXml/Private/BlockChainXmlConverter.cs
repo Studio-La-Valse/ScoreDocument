@@ -1,5 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.Core.Primitives.Extensions;
-using StudioLaValse.ScoreDocument.Layout;
+﻿using StudioLaValse.ScoreDocument.Layout;
+using StudioLaValse.ScoreDocument.Primitives.Extensions;
 using System.Xml.Linq;
 
 namespace StudioLaValse.ScoreDocument.MusicXml.Private
@@ -72,9 +72,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             {
                 chordDocument.Add(pitch.Value);
                 var note = chordDocument.ReadNotes().Single(n => n.Pitch.Equals(pitch));
-                var layout = pageViewLayout.NoteLayout(note);
-                layout.StaffIndex = staff ?? 0;
-                note.Apply(layout);
+                note.SetStaffIndex(staff ?? 0);
             }
 
             if (!grace)

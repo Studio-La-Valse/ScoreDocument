@@ -1,4 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Drawable.Private.Interfaces;
+using StudioLaValse.ScoreDocument.Reader;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
@@ -28,13 +29,9 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// <inheritdoc/>
         public BaseContentWrapper Build(IMeasureBlockReader noteGroup, IStaffGroupReader staffGroup, IInstrumentMeasureReader instrumentMeasure, double canvasTopStaffGroup, double canvasLeft, double allowedSpace, double lineSpacing, ColorARGB colorARGB)
         {
-            var scoreLayout = scoreLayoutDictionary.DocumentLayout();
+            var scoreLayout = scoreLayoutDictionary;
             var scoreScale = scoreLayout.Scale;
-            var instrumentScale = 1d;
-            if (scoreLayout.InstrumentScales.TryGetValue(staffGroup.Instrument, out var value))
-            {
-                instrumentScale = value;
-            }
+            var instrumentScale = scoreLayout.GetInstrumentScale(staffGroup.Instrument);
             return new VisualNoteGroup(noteGroup, staffGroup, instrumentMeasure, canvasTopStaffGroup, canvasLeft, allowedSpace, lineSpacing, scoreScale, instrumentScale, noteFactory, restFactory, visualBeamBuilder, colorARGB, scoreLayoutDictionary);
         }
     }

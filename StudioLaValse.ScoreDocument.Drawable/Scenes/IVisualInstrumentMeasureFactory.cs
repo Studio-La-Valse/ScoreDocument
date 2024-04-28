@@ -1,4 +1,6 @@
-﻿namespace StudioLaValse.ScoreDocument.Drawable.Scenes
+﻿using StudioLaValse.ScoreDocument.Reader;
+
+namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
     /// <summary>
     /// A factory for a visual instrument measure.

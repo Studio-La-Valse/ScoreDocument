@@ -20,12 +20,10 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             if (attributes is not null)
             {
                 ProcessMeasureAttributes(attributes, ref durationOfOneQuarter, out var clefChanges);
-                var layout = pageViewLayout.InstrumentMeasureLayout(measureEditor);
                 foreach (var clefChange in clefChanges)
                 {
-                    layout.AddClefChange(clefChange);
+                    measureEditor.AddClefChange(clefChange);
                 }
-                measureEditor.Apply(layout);
             }
 
             var voices = measure.ExtractVoices();

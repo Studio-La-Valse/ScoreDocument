@@ -1,5 +1,16 @@
-﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
+﻿using StudioLaValse.ScoreDocument.Reader;
+using StudioLaValse.ScoreDocument.Reader.Extensions;
+
+namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
+    internal static class GeometryExtensions
+    {
+        public static ColorARGB FromPrimitive(this Layout.Templates.ColorARGB color)
+        {
+            return new ColorARGB(color.A, color.R, color.G, color.B);
+        }
+    }
+
     internal sealed class VisualPage : BaseContentWrapper
     {
         private readonly IPageReader page;
@@ -10,10 +21,10 @@
         private readonly IScoreDocumentLayout scoreLayoutDictionary;
 
 
-        public ScoreDocumentLayout DocumentLayout => scoreLayoutDictionary.DocumentLayout();
-        public ColorARGB PageColor => DocumentLayout.PageColor;
-        public ColorARGB ForegroundColor => DocumentLayout.ForegroundColor;
-        public PageLayout Layout => scoreLayoutDictionary.PageLayout(page);
+        public IScoreDocumentLayout DocumentLayout => scoreLayoutDictionary;
+        public ColorARGB PageColor => DocumentLayout.PageColor.FromPrimitive();
+        public ColorARGB ForegroundColor => DocumentLayout.ForegroundColor.FromPrimitive();
+        public IPageLayout Layout => page.ReadLayout();
         public double MarginLeft => Layout.MarginLeft;
         public double MarginRight => Layout.MarginRight;
         public double MarginTop => Layout.MarginTop;
@@ -59,15 +70,15 @@
                 var canvasLeft = this.canvasLeft + MarginLeft;
                 if (staffSystem.EnumerateMeasures().First().IndexInScore == 0)
                 {
-                    canvasLeft += scoreLayoutDictionary.DocumentLayout().FirstSystemIndent;
+                    canvasLeft += scoreLayoutDictionary.FirstSystemIndent;
                 }
 
                 var canvasRight = this.canvasLeft + PageWidth - MarginRight;
                 var length = canvasRight - canvasLeft;
-                var measureLengthSum = staffSystem.EnumerateMeasures().Select(m => scoreLayoutDictionary.ScoreMeasureLayout(m).Width).Sum();
+                var measureLengthSum = staffSystem.EnumerateMeasures().Select(m => m.ReadLayout().Width).Sum();
                 length = Math.Min(length, measureLengthSum);
 
-                var staffSystemLayout = scoreLayoutDictionary.StaffSystemLayout(staffSystem);
+                var staffSystemLayout = staffSystem.ReadLayout();
                 var visualSystem = staffSystemContentFactory.CreateContent(staffSystem, canvasLeft, canvasTop, length, globalLineSpacing, ForegroundColor);
                 yield return visualSystem;
 

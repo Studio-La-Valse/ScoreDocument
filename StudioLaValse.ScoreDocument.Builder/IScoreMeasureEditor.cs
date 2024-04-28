@@ -1,12 +1,9 @@
-﻿using StudioLaValse.ScoreDocument.Core.Primitives;
-using StudioLaValse.ScoreDocument.Layout;
-
-namespace StudioLaValse.ScoreDocument.Builder
+﻿namespace StudioLaValse.ScoreDocument.Builder
 {
     /// <summary>
     /// Represents a score measure editor.
     /// </summary>
-    public interface IScoreMeasureEditor : IScoreMeasure<IInstrumentMeasureEditor, IScoreMeasureEditor>, IScoreElementEditor, ILayoutEditor<ScoreMeasureLayout>
+    public interface IScoreMeasureEditor : IScoreMeasure<IInstrumentMeasureEditor, IScoreMeasureEditor>, IScoreElementEditor<IScoreMeasureLayout>
     {
         /// <summary>
         /// Assign the specified key signature to the score measure.

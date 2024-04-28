@@ -1,12 +1,9 @@
-﻿using StudioLaValse.ScoreDocument.Core.Primitives;
-using StudioLaValse.ScoreDocument.Layout;
-
-namespace StudioLaValse.ScoreDocument.Builder
+﻿namespace StudioLaValse.ScoreDocument.Builder
 {
     /// <summary>
     /// Represents a chord editor interface.
     /// </summary>
-    public interface IChordEditor : IChord<INoteEditor>, IScoreElementEditor, ILayoutEditor<ChordLayout>
+    public interface IChordEditor : IChord<INoteEditor>, IScoreElementEditor<IChordLayout>
     {
         /// <summary>
         /// Clear the content of the chord.

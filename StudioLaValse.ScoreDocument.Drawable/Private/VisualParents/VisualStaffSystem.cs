@@ -1,6 +1,10 @@
-﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
+﻿using StudioLaValse.ScoreDocument.Primitives;
+using StudioLaValse.ScoreDocument.Reader;
+using StudioLaValse.ScoreDocument.Reader.Extensions;
+
+namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
-    internal sealed class VisualStaffSystem : BaseSelectableParent<IUniqueScoreElement>
+    internal sealed class VisualStaffSystem : BaseContentWrapper
     {
         private readonly IStaffSystemReader staffSystem;
         private readonly IVisualSystemMeasureFactory systemMeasureFactory;
@@ -13,9 +17,9 @@
 
 
         public double VerticalLineThickness =>
-            scoreLayoutDictionary.DocumentLayout().VerticalStaffLineThickness * ScoreScale;
+            scoreLayoutDictionary.VerticalStaffLineThickness * ScoreScale;
         public double HorizontalLineThickness =>
-            scoreLayoutDictionary.DocumentLayout().HorizontalStaffLineThickness * ScoreScale;
+            scoreLayoutDictionary.HorizontalStaffLineThickness * ScoreScale;
         public DrawableLineVertical OpeningLine =>
             new(canvasLeft, canvasTop, staffSystem.CalculateHeight(globalLineSpacing, scoreLayoutDictionary), VerticalLineThickness, color: baseColor);
         public DrawableLineVertical ClosingLine
@@ -58,11 +62,11 @@
             }
         }
         public double ScoreScale =>
-            scoreLayoutDictionary.DocumentLayout().Scale;
+            scoreLayoutDictionary.Scale;
 
 
 
-        public VisualStaffSystem(IStaffSystemReader staffSystem, double canvasLeft, double canvasTop, double length, double globalLineSpacing, IVisualSystemMeasureFactory systemMeasureFactory, ColorARGB baseColor, ISelection<IUniqueScoreElement> selection, IScoreDocumentLayout scoreLayoutDictionary) : base(staffSystem, selection)
+        public VisualStaffSystem(IStaffSystemReader staffSystem, double canvasLeft, double canvasTop, double length, double globalLineSpacing, IVisualSystemMeasureFactory systemMeasureFactory, ColorARGB baseColor, ISelection<IUniqueScoreElement> selection, IScoreDocumentLayout scoreLayoutDictionary)
         {
             this.staffSystem = staffSystem;
             this.systemMeasureFactory = systemMeasureFactory;
@@ -89,7 +93,7 @@
         }
         public IEnumerable<BaseContentWrapper> ConstructSystemMeasures()
         {
-            var lengthWithoutAdjustment = staffSystem.EnumerateMeasures().Select(m => scoreLayoutDictionary.ScoreMeasureLayout(m).Width).Sum();
+            var lengthWithoutAdjustment = staffSystem.EnumerateMeasures().Select(m => m.ReadLayout().Width).Sum();
             var totalLength = length;
             var paddingStart = CalculateOpeningPadding();
             var availableLength = totalLength - paddingStart;
@@ -98,7 +102,7 @@
 
             foreach (var measure in staffSystem.EnumerateMeasures())
             {
-                var measureLayout = scoreLayoutDictionary.ScoreMeasureLayout(measure);
+                var measureLayout = measure.ReadLayout();
                 var measureWidth = measureLayout.Width;
 
                 measureWidth = MathUtils.Map(measureWidth, 0, lengthWithoutAdjustment, 0, availableLength);
@@ -115,11 +119,7 @@
 
             foreach (var staffGroup in staffSystem.EnumerateStaffGroups())
             {
-                var instrumentScale = 1d;
-                if (scoreLayoutDictionary.DocumentLayout().InstrumentScales.TryGetValue(staffGroup.Instrument, out var value))
-                {
-                    instrumentScale = value;
-                }
+                var instrumentScale = scoreLayoutDictionary.GetInstrumentScale(staffGroup.Instrument);
 
                 VisualStaffGroup _staffGroup = new(
                     staffGroup,
@@ -134,7 +134,7 @@
                 yield return _staffGroup;
 
                 heightOnCanvas += staffGroup.CalculateHeight(globalLineSpacing, scoreLayoutDictionary);
-                heightOnCanvas += scoreLayoutDictionary.StaffGroupLayout(staffGroup).DistanceToNext;
+                heightOnCanvas += staffGroup.ReadLayout().DistanceToNext;
             }
         }
 
@@ -170,8 +170,6 @@
             {
                 yield return systemMeasure;
             }
-
-            yield return new SimpleGhost(this);
         }
     }
 }

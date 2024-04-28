@@ -1,4 +1,8 @@
-﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
+﻿using StudioLaValse.ScoreDocument.Primitives;
+using StudioLaValse.ScoreDocument.Reader;
+using StudioLaValse.ScoreDocument.Reader.Extensions;
+
+namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
     internal sealed class VisualSystemMeasure : BaseSelectableParent<IUniqueScoreElement>
     {
@@ -14,8 +18,8 @@
         private readonly double canvasTop;
 
 
-        public ScoreMeasureLayout Layout =>
-            scoreLayoutDictionary.ScoreMeasureLayout(scoreMeasure);
+        public IScoreMeasureLayout Layout => 
+            scoreMeasure.ReadLayout();
         public double PaddingRight =>
             Layout.PaddingRight + NextMeasureKeyPadding;
         public double PaddingLeft
@@ -90,7 +94,7 @@
                 var wrapper = visualInstrumentMeasureFactory.CreateContent(ribbonMesaure, staffGroup, _canvasTop, canvasLeft, width, PaddingLeft, PaddingRight, lineSpacing, color);
                 yield return wrapper;
 
-                var staffGroupLayout = scoreLayoutDictionary.StaffGroupLayout(staffGroup);
+                var staffGroupLayout = staffGroup.ReadLayout();
                 _canvasTop += staffGroup.CalculateHeight(lineSpacing, scoreLayoutDictionary);
                 _canvasTop += staffGroupLayout.DistanceToNext;
             }

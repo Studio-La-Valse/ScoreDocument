@@ -1,12 +1,9 @@
-﻿using StudioLaValse.ScoreDocument.Core.Primitives;
-using StudioLaValse.ScoreDocument.Layout;
-
-namespace StudioLaValse.ScoreDocument.Builder
+﻿namespace StudioLaValse.ScoreDocument.Builder
 {
     /// <summary>
     /// 
     /// </summary>
-    public interface IStaffSystemEditor : IStaffSystem<IStaffGroupEditor, IScoreMeasureEditor>, IScoreElementEditor, ILayoutEditor<StaffSystemLayout>
+    public interface IStaffSystemEditor : IStaffSystem<IStaffGroupEditor, IScoreMeasureEditor>, IHasLayout<IStaffSystemLayout>
     {
 
     }

@@ -1,4 +1,7 @@
-﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
+﻿using StudioLaValse.ScoreDocument.Primitives;
+using StudioLaValse.ScoreDocument.Reader;
+
+namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
     internal sealed class VisualNote : BaseVisualNote
     {
@@ -15,7 +18,7 @@
         private readonly IScoreDocumentLayout scoreLayoutDictionary;
 
 
-        public NoteLayout NoteLayout => scoreLayoutDictionary.NoteLayout(note);
+        public INoteLayout NoteLayout => note.ReadLayout();
         public override DrawableScoreGlyph Glyph
         {
             get

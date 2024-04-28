@@ -1,6 +1,4 @@
 ﻿using StudioLaValse.ScoreDocument.Core;
-using StudioLaValse.Geometry;
-using System.Diagnostics.CodeAnalysis;
 
 namespace StudioLaValse.ScoreDocument.Layout.Templates
 {
@@ -16,9 +14,9 @@ namespace StudioLaValse.ScoreDocument.Layout.Templates
 
         public double FirstSystemIndent { get; set; } = 15;
 
-        public ColorARGB PageColor { get; set; } = ColorARGB.White;
+        public ColorARGB PageColor { get; set; } = new ColorARGB() { A = 255, R = 255, G = 255, B = 255 };  
 
-        public ColorARGB ForegroundColor { get; set; } = ColorARGB.Black;
+        public ColorARGB ForegroundColor { get; set; } = new ColorARGB() { A = 255, R = 0, G = 0, B = 0 };
 
         public Dictionary<Instrument, double> InstrumentScales { get; set; } = new(new InstrumentComparer());
 
@@ -83,24 +81,6 @@ namespace StudioLaValse.ScoreDocument.Layout.Templates
             StaffGroupStyleTemplate.DistanceToNext = styleTemplate.StaffGroupStyleTemplate.DistanceToNext;
 
             StaffSystemStyleTemplate.PaddingBottom = styleTemplate.StaffSystemStyleTemplate.PaddingBottom;
-        }
-    }
-
-    public class InstrumentComparer : IEqualityComparer<Instrument>
-    {
-        public bool Equals(Instrument? x, Instrument? y)
-        {
-            if (x is null) return false;
-            if (y is null) return false;
-
-            if (ReferenceEquals(x, y)) return true;
-
-            return x.Name.Equals(y.Name);
-        }
-
-        public int GetHashCode([DisallowNull] Instrument obj)
-        {
-            return obj.Name.GetHashCode();
         }
     }
 }

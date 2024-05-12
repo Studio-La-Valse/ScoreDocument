@@ -55,6 +55,27 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             return element.Name == "note" || element.Name == "forward" || element.Name == "backup";
         }
 
+        public static bool IsNote(this XElement element)
+        {
+            return element.Name == "note";
+        }
+
+        public static IEnumerable<string> GetBeams(this XElement element)
+        {
+            var beams = element.Descendants().Where(a => a.Name == "beam").Select(e => e.Value);
+            return beams;
+        }
+
+        public static bool IsNoteOrForward(this XElement element)
+        {
+            return element.Name == "note" || element.Name == "forward";
+        }
+
+        public static bool IsBackward(this XElement element)
+        {
+            return element.Name == "backup";
+        }
+
         public static PowerOfTwo FromTypeString(this string @string)
         {
             return @string switch

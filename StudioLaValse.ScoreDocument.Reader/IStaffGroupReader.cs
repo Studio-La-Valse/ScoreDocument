@@ -6,7 +6,7 @@ namespace StudioLaValse.ScoreDocument.Reader
     /// <summary>
     /// A staff group reader.
     /// </summary>
-    public interface IStaffGroupReader : IStaffGroup<IStaffReader, IInstrumentRibbonReader, IInstrumentMeasureReader>
+    public interface IStaffGroupReader : IStaffGroup<IStaffReader, IInstrumentRibbonReader, IInstrumentMeasureReader>, IHasLayout<IStaffGroupLayout>
     {
 
     }

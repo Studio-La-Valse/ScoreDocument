@@ -13,8 +13,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         public XY End { get; }
         public IChordReader Chord { get; }
 
-
-
+        public double Thickness => this.thickness;
 
         public VisualStem(XY origin, XY end, double thickness, IChordReader chord, ColorARGB color)
         {
@@ -30,7 +29,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 
         public override IEnumerable<BaseDrawableElement> GetDrawableElements()
         {
-            yield return new DrawableLine(Origin, End, color: color, thickness);
+            yield return new DrawableLine(Origin, End, color: color, Thickness);
         }
         public override IEnumerable<BaseContentWrapper> GetContentWrappers()
         {

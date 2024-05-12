@@ -1,6 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Layout;
-using StudioLaValse.ScoreDocument.Primitives.Extensions;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 
 namespace StudioLaValse.ScoreDocument.MusicXml.Private
 {
@@ -11,76 +9,99 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
 
         }
 
-        public void ProcessElements(IEnumerable<XElement> elements, IMeasureBlockChainEditor editor, int divisionsOfOneQuarter, IScoreDocumentLayout pageViewLayout)
+        internal static readonly string[] sourceArray = ["hook start", "continue", "begin"];
+
+        public void ProcessElements(IEnumerable<XElement> elements, IMeasureBlockChainEditor editor, int divisionsOfOneQuarter)
         {
-            Position position = new(0, 4);
-            foreach (var element in elements)
+            editor.Clear();
+
+            var groups = CreateGroups(elements);
+            foreach(var group in groups)
             {
-                ProcessMeasureElement(element, editor, divisionsOfOneQuarter, pageViewLayout, ref position);
+                var rythmicDuration = GetRythmicDurationOrThrow(group, divisionsOfOneQuarter);
+
+                editor.Append(rythmicDuration, false);
+                var measureBlock = editor.ReadBlocks().Last();
+                FillBlock(group, divisionsOfOneQuarter, measureBlock);
             }
         }
 
-        private void ProcessMeasureElement(XElement measureElement, IMeasureBlockChainEditor measureBlockChain, int divisionsOfOneQuarter, IScoreDocumentLayout pageViewLayout, ref Position position)
+        private IEnumerable<IEnumerable<XElement>> CreateGroups(IEnumerable<XElement> elements)
         {
-            if (!measureElement.IsNoteOrForwardOrBackup())
+            var groups = new List<List<XElement>>();
+            var makeNewGroup = true;
+            foreach (var element in elements.Where(e => e.IsNoteOrForward()))
             {
-                return;
-            }
-
-            GetRythmicInformationFromNode(measureElement, divisionsOfOneQuarter, out var actualDuration, out var displayDuration, out var grace);
-
-            GetInformationFromMeasureElement(measureElement, out var chord, out var rest, out var staff, out var forward, out var backup, out var pitch, out var stemUp);
-
-            if (backup)
-            {
-                position -= actualDuration;
-                return;
-            }
-
-            if (forward)
-            {
-                position += actualDuration;
-                return;
-            }
-
-            if (chord && !grace)
-            {
-                position -= actualDuration;
-            }
-
-            Position _position = new(position.Numerator, position.Denominator);
-            var measureBlock = measureBlockChain.ReadBlocks().First(b => b.ContainsPosition(_position));
-
-            //create a new chord in the block if the no 'chord' attribute is specified, or if there are no chords in the block.
-            if (!chord || !measureBlock.ReadChords().Any())
-            {
-                if (displayDuration is null)
+                if (makeNewGroup)
                 {
-                    if (!RythmicDuration.TryConstruct(actualDuration, out displayDuration))
-                    {
-                        throw new Exception("A valid rythmic duration is required for a note or measure element with a duration, but could not be found.");
-                    }
+                    groups.Add([]);
                 }
 
-                measureBlock.AppendChord(displayDuration);
-            }
+                groups.Last().Add(element);
 
-            //Always add to the last chord in the block
-            var chordDocument = measureBlock.ReadChords().Last();
-
-            if (pitch.HasValue)
-            {
-                chordDocument.Add(pitch.Value);
-                var note = chordDocument.ReadNotes().Single(n => n.Pitch.Equals(pitch));
-                note.SetStaffIndex(staff ?? 0);
+                var beams = element.GetBeams();
+                foreach (var beam in beams)
+                {
+                    if (sourceArray.Contains(beam))
+                    {
+                        makeNewGroup = false;
+                    }
+                }
             }
-
-            if (!grace)
-            {
-                position += actualDuration;
-            }
+            return groups;
         }
 
+        private RythmicDuration GetRythmicDurationOrThrow(IEnumerable<XElement> group, int divisionsOfOneQuarter)
+        {
+            var duration = group
+                .Select(e =>
+                {
+                    GetRythmicInformationFromNode(e, divisionsOfOneQuarter, out var actualDuration, out var displayDuration, out var grace);
+                    return actualDuration;
+                })
+                .Sum();
+
+            if (!RythmicDuration.TryConstruct(duration, out var rythmicDuration))
+            {
+                throw new Exception("A valid rythmic duration is required for a note or measure element with a duration, but could not be found.");
+            }
+            return rythmicDuration;
+        }
+
+        private void FillBlock(IEnumerable<XElement> elements, int divisionsOfOneQuarter, IMeasureBlockEditor measureBlock)
+        {
+            foreach(var element in elements)
+            {
+                GetRythmicInformationFromNode(element, divisionsOfOneQuarter, out var actualDuration, out var displayDuration, out var grace);
+
+                GetInformationFromMeasureElement(element, out var chord, out var rest, out var staff, out var forward, out var backup, out var pitch, out var stemUp);
+
+                //create a new chord in the block if the 'chord' attribute is not specified, or if there are no chords in the block.
+                if (!chord || !measureBlock.ReadChords().Any())
+                {
+                    // In case the display duration of the note (or rest, in case of a forward) is not available, create one from the calculated actual duration.
+                    if (displayDuration is null)
+                    {
+                        if (!RythmicDuration.TryConstruct(actualDuration, out displayDuration))
+                        {
+                            throw new Exception("A valid rythmic duration is required for a note or measure element with a duration, but could not be found.");
+                        }
+                    }
+
+                    measureBlock.AppendChord(displayDuration);
+                }
+
+                //Always add to the last chord in the block
+                var chordDocument = measureBlock.ReadChords().Last();
+
+                if (pitch.HasValue)
+                {
+                    chordDocument.Add(pitch.Value);
+                    var note = chordDocument.ReadNotes().Single(n => n.Pitch.Equals(pitch));
+                    note.SetStaffIndex(staff ?? 0);
+                }
+            }
+        }
 
 
         private static void GetRythmicInformationFromNode(XElement measureElement, int durationOfOneQuarter, out Fraction actualDuration, out RythmicDuration? displayDuration, out bool grace)

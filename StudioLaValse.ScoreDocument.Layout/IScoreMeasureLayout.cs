@@ -8,5 +8,6 @@ namespace StudioLaValse.ScoreDocument.Layout
         double PaddingLeft { get; }
         double PaddingRight { get; }
         double Width { get; }
+        double? PaddingBottom { get; }
     }
 }

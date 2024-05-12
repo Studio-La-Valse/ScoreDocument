@@ -1,11 +1,9 @@
-﻿using StudioLaValse.ScoreDocument.Layout;
-
-namespace StudioLaValse.ScoreDocument.Primitives
+﻿namespace StudioLaValse.ScoreDocument.Primitives
 {
     /// <summary>
     /// Represents a primitive score document.
     /// </summary>
-    public interface IScoreDocument : IHasLayout<IScoreDocumentLayout>
+    public interface IScoreDocument : IScoreElement, IScoreEntity
     {
         /// <summary>
         /// The number of score measures in the score.

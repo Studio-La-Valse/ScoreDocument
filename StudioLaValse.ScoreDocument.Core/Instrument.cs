@@ -78,14 +78,15 @@ namespace StudioLaValse.ScoreDocument.Core
         /// Create a custom instrument from a collection of clefs. Each clef will be the default clef for one staff of the instrument.
         /// Therefore, the instrument will have a number of staves that is equal to the amount of supplied clefs. At least one clef is required.
         /// </summary>
+        /// <param name="name"></param>
         /// <param name="clefs"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public static Instrument CreateCustom(params Clef[] clefs)
+        public static Instrument CreateCustom(string name, params Clef[] clefs)
         {
             return clefs.Length == 0
                 ? throw new InvalidOperationException("Please provide at least one clef.")
-                : new Instrument("Custom", clefs);
+                : new Instrument(name, clefs);
         }
     }
 }

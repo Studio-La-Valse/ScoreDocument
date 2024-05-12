@@ -51,6 +51,11 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         {
             get
             {
+                if (!staffSystem.EnumerateMeasures().Any())
+                {
+                    return null;
+                }
+
                 if (staffSystem.EnumerateMeasures().First().IndexInScore == 0)
                 {
                     return null;
@@ -82,8 +87,13 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
         public double CalculateOpeningPadding()
         {
+            if (!staffSystem.EnumerateMeasures().Any())
+            {
+                throw new UnreachableException();   
+            }
+
             var firstMeasure = staffSystem.EnumerateMeasures().First();
-            var keySignature = firstMeasure.KeySignature;
+            var keySignature = firstMeasure.ReadLayout().KeySignature;
             var spaceForClef = (VisualStaff.SpaceUntilClef * ScoreScale) + (VisualStaff.ClefSpacing * ScoreScale);
             var spaceForKeySignature = (keySignature.DefaultFlats ? keySignature.NumberOfFlats() : keySignature.NumberOfSharps()) * VisualStaff.KeySignatureGlyphSpacing * ScoreScale;
             var spaceForTimeSignature = firstMeasure.IndexInScore == 0 ? VisualStaff.TimeSignatureSpacing * ScoreScale : 0;
@@ -119,7 +129,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
             foreach (var staffGroup in staffSystem.EnumerateStaffGroups())
             {
-                var instrumentScale = scoreLayoutDictionary.GetInstrumentScale(staffGroup.Instrument);
+                var instrumentScale = scoreLayoutDictionary.GetInstrumentScale(staffGroup.InstrumentRibbon);
 
                 VisualStaffGroup _staffGroup = new(
                     staffGroup,

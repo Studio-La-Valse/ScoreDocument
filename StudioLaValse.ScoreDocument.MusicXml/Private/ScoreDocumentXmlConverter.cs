@@ -12,7 +12,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             this.scorePartXmlConverter = scorePartXmlConverter;
         }
 
-        public void Create(XDocument xDocument, IScoreDocumentEditor scoreEditor, IScoreDocumentLayout pageViewLayout)
+        public void Create(XDocument xDocument, IScoreDocumentEditor scoreEditor)
         {
             scoreEditor.Clear();
 
@@ -20,7 +20,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             {
                 if (element.Name == "score-partwise")
                 {
-                    ProcessScorePartWise(element, scoreEditor, pageViewLayout);
+                    ProcessScorePartWise(element, scoreEditor);
                     return;
                 }
             }
@@ -28,13 +28,13 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             throw new Exception("No score-partwise found in music xml.");
         }
 
-        private void ProcessScorePartWise(XElement scorePartwise, IScoreDocumentEditor scoreEditor, IScoreDocumentLayout pageViewLayout)
+        private void ProcessScorePartWise(XElement scorePartwise, IScoreDocumentEditor scoreEditor)
         {
             foreach (var element in scorePartwise.Elements())
             {
                 if (element.Name == "part-list")
                 {
-                    PrepareParts(element, scoreEditor, pageViewLayout);
+                    PrepareParts(element, scoreEditor);
                 }
             }
 
@@ -53,12 +53,12 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                 {
                     var id = element.Attributes().Single(a => a.Name == "id").Value;
                     var ribbon = scoreEditor.ReadInstrumentRibbons().First(r => r.ReadLayout().DisplayName == id);
-                    scorePartXmlConverter.Create(element, ribbon, pageViewLayout);
+                    scorePartXmlConverter.Create(element, ribbon);
                 }
             }
         }
 
-        private void PrepareParts(XElement partList, IScoreDocumentEditor scoreEditor, IScoreDocumentLayout pageViewLayout)
+        private void PrepareParts(XElement partList, IScoreDocumentEditor scoreEditor)
         {
             var partNodes = partList.Elements().Where(d => d.Name == "score-part");
 
@@ -96,7 +96,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
 
                 var appendedMeasure = scoreEditor.ReadScoreMeasure(scoreEditor.NumberOfMeasures - 1);
                 KeySignature keySignature = new(Step.C.MoveAlongCircleOfFifths(lastKeySignature), MajorOrMinor.Major);
-                appendedMeasure.EditKeySignature(keySignature);
+                appendedMeasure.SetKeySignature(keySignature);
             }
         }
     }

@@ -40,7 +40,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                     return 0;
                 }
 
-                var keySignature = scoreMeasure.KeySignature;
+                var keySignature = scoreMeasure.ReadLayout().KeySignature;
                 var flats = keySignature.DefaultFlats;
                 var numberOfAccidentals = flats ?
                     keySignature.EnumerateFlats().Count() :
@@ -58,8 +58,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                     return null;
                 }
 
-                var nextKeySignature = nextMeasure.KeySignature;
-                return nextKeySignature.Equals(scoreMeasure.KeySignature) ? null : nextKeySignature;
+                var nextKeySignature = nextMeasure.ReadLayout().KeySignature;
+                return nextKeySignature.Equals(scoreMeasure.ReadLayout().KeySignature) ? null : nextKeySignature;
             }
         }
 

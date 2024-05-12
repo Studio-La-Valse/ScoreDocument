@@ -44,7 +44,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         {
             var scoreLayout = scoreLayoutDictionary;
             var scoreScale = scoreLayout.Scale;
-            var instrumentScale = scoreLayout.GetInstrumentScale(staffGroup.Instrument);
+            var instrumentScale = scoreLayout.GetInstrumentScale(staffGroup.InstrumentRibbon);
 
             var notes = chord.ReadNotes();
             if (!notes.Any())

@@ -1,6 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Layout;
-
-namespace StudioLaValse.ScoreDocument.Primitives
+﻿namespace StudioLaValse.ScoreDocument.Primitives
 {
     /// <summary>
     /// An interface that defines a score element that has children.

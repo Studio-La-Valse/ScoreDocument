@@ -1,11 +1,9 @@
-﻿using StudioLaValse.ScoreDocument.Layout;
-
-namespace StudioLaValse.ScoreDocument.Primitives
+﻿namespace StudioLaValse.ScoreDocument.Primitives
 {
     /// <summary>
     /// Represents a primitive chord.
     /// </summary>
-    public interface IChord : IPositionElement, IHasLayout<IChordLayout>
+    public interface IChord : IScoreElement, IScoreEntity, IPositionElement
     {
 
     }

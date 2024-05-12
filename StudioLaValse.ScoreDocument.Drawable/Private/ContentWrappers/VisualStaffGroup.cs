@@ -84,7 +84,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
             {
                 var staffLayout = staff.ReadLayout();
                 var clef = FirstMeasure.OpeningClefAtOrDefault(staff.IndexInStaffGroup);
-                var keySignature = FirstMeasure.KeySignature;
+                var keySignature = FirstMeasure.ReadLayout().KeySignature;
                 var timeSignature = FirstMeasure.MeasureIndex == 0 ? FirstMeasure.TimeSignature : null;
                 VisualStaff newStaff = new(
                     staff,

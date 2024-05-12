@@ -25,6 +25,23 @@ namespace StudioLaValse.ScoreDocument.Core
         }
 
         /// <summary>
+        /// Calculate the total duration of the provided durations.
+        /// </summary>
+        /// <param name="durations"></param>
+        /// <returns></returns>
+        public static Fraction Sum(this IEnumerable<Fraction> durations)
+        {
+            Fraction sum = new(0, 4);
+
+            foreach (var duration in durations)
+            {
+                sum += duration;
+            }
+
+            return sum;
+        }
+
+        /// <summary>
         /// Casts the specified fraction to a musical position.
         /// </summary>
         /// <param name="fraction"></param>

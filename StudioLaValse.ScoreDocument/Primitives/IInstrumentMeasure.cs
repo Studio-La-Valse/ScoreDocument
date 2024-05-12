@@ -5,7 +5,7 @@ namespace StudioLaValse.ScoreDocument.Primitives
     /// <summary>
     /// Represents a primitive instrument measure.
     /// </summary>
-    public interface IInstrumentMeasure
+    public interface IInstrumentMeasure : IScoreElement, IScoreEntity
     {
         /// <summary>
         /// The measure index of the host instrument ribbon. 
@@ -24,10 +24,6 @@ namespace StudioLaValse.ScoreDocument.Primitives
         /// The time signature of the measure.
         /// </summary>
         TimeSignature TimeSignature { get; }
-        /// <summary>
-        /// The key signature of the measure.
-        /// </summary>
-        KeySignature KeySignature { get; }
         /// <summary>
         /// Enumemerate the voices in the measure.
         /// </summary>

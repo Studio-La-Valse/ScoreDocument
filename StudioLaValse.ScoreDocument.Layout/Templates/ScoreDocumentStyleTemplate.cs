@@ -18,7 +18,7 @@ namespace StudioLaValse.ScoreDocument.Layout.Templates
 
         public ColorARGB ForegroundColor { get; set; } = new ColorARGB() { A = 255, R = 0, G = 0, B = 0 };
 
-        public Dictionary<Instrument, double> InstrumentScales { get; set; } = new(new InstrumentComparer());
+        public Dictionary<Guid, double> InstrumentScales { get; set; } = [];
 
         public PageStyleTemplate PageStyleTemplate { get; init; } = new();
 

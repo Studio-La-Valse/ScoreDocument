@@ -101,13 +101,13 @@
                 return (Accidental)Pitch.Shift;
             }
 
-            var keySignature = ribbonMeasure.KeySignature;
+            var keySignature = ribbonMeasure.ReadLayout().KeySignature;
             var systemSays = keySignature.GetAccidentalForPitch(Pitch.Step);
             return systemSays;
         }
 
         /// <summary>
-        /// 
+        /// Read all the chords that precede the position in this measure.
         /// </summary>
         /// <param name="ribbonMeasure"></param>
         /// <param name="position"></param>

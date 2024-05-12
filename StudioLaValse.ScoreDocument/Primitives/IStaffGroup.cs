@@ -1,11 +1,9 @@
-﻿using StudioLaValse.ScoreDocument.Layout;
-
-namespace StudioLaValse.ScoreDocument.Primitives
+﻿namespace StudioLaValse.ScoreDocument.Primitives
 {
     /// <summary>
     /// The base interface for staff groups.
     /// </summary>
-    public interface IStaffGroup : IHasLayout<IStaffGroupLayout>
+    public interface IStaffGroup 
     {
         /// <summary>
         /// The instrument of the staff group.

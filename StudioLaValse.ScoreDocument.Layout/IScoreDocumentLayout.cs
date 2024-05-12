@@ -1,5 +1,6 @@
 ﻿using StudioLaValse.ScoreDocument.Core;
 using StudioLaValse.ScoreDocument.Layout.Templates;
+using StudioLaValse.ScoreDocument.Primitives;
 
 namespace StudioLaValse.ScoreDocument.Layout
 {
@@ -14,6 +15,6 @@ namespace StudioLaValse.ScoreDocument.Layout
         ColorARGB PageColor { get; }
         ColorARGB ForegroundColor { get; }
 
-        double GetInstrumentScale(Instrument instrument);
+        double GetInstrumentScale(IInstrumentRibbon instrumentRibbon);
     }
 }

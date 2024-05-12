@@ -6,7 +6,7 @@ namespace StudioLaValse.ScoreDocument.Reader
     /// <summary>
     /// 
     /// </summary>
-    public interface IStaffSystemReader : IStaffSystem<IStaffGroupReader, IScoreMeasureReader>
+    public interface IStaffSystemReader : IStaffSystem<IStaffGroupReader, IScoreMeasureReader>, IHasLayout<IStaffSystemLayout>
     {
 
     }

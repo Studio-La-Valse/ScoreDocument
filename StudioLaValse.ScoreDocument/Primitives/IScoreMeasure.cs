@@ -5,7 +5,7 @@ namespace StudioLaValse.ScoreDocument.Primitives
     /// <summary>
     /// Represents a score measure primitive.
     /// </summary>
-    public interface IScoreMeasure
+    public interface IScoreMeasure : IScoreElement, IScoreEntity
     {
         /// <summary>
         /// Specifies the index in the score.
@@ -15,10 +15,6 @@ namespace StudioLaValse.ScoreDocument.Primitives
         /// The time signature of the measure.
         /// </summary>
         TimeSignature TimeSignature { get; }
-        /// <summary>
-        /// The key signature of the measure.
-        /// </summary>
-        KeySignature KeySignature { get; }
     }
 
     /// <inheritdoc/>

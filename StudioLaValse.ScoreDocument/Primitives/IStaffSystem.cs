@@ -1,11 +1,9 @@
-﻿using StudioLaValse.ScoreDocument.Layout;
-
-namespace StudioLaValse.ScoreDocument.Primitives
+﻿namespace StudioLaValse.ScoreDocument.Primitives
 {
     /// <summary>
     /// The base interface for a staff system.
     /// </summary>
-    public interface IStaffSystem : IHasLayout<IStaffSystemLayout> 
+    public interface IStaffSystem
     {
 
     }

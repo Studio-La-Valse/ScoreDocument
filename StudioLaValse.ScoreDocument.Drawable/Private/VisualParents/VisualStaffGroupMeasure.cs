@@ -27,14 +27,14 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         public IStaffGroupLayout Layout =>
             staffGroup.ReadLayout();
         public KeySignature KeySignature =>
-            source.KeySignature;
+            source.ReadLayout().KeySignature;
         public KeySignature? InvalidatesNext
         {
             get
             {
                 if (source.TryReadNext(out var next))
                 {
-                    var nextKeySignature = next.KeySignature;
+                    var nextKeySignature = next.ReadLayout().KeySignature;
                     if (nextKeySignature != KeySignature)
                     {
                         return nextKeySignature;
@@ -122,7 +122,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         {
             var scoreLayout = scoreLayoutDictionary;
             var scoreScale = scoreLayout.Scale;
-            var instrumentScale = scoreLayout.GetInstrumentScale(staffGroup.Instrument);
+            var instrumentScale = scoreLayout.GetInstrumentScale(staffGroup.InstrumentRibbon);
 
             var _canvasTop = canvasTop;
             foreach (var staff in staffGroup.EnumerateStaves(Layout.NumberOfStaves))

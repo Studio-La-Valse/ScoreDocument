@@ -54,12 +54,10 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
 
             DrawableScoreGlyph flag = null!;
 
-            var flagIndex = -1;
+            var flagIndex = 3;
 
-            for (PowerOfTwo i = 8; i <= 64; i = i.Double())
+            for (PowerOfTwo i = 64; i >= 8; i /= 2)
             {
-                flagIndex++;
-
                 var beam = GetLayout(stem).ReadBeamType(i);
                 if (beam is not null and BeamType.Flag)
                 {
@@ -68,13 +66,15 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
                     glyph.Scale = scale;
 
                     flag = new DrawableScoreGlyph(
-                        stem.Origin.X,
+                        stem.Origin.X - stem.Thickness / 2,
                         stem.End.Y,
                         glyph,
-                        stem.VisuallyUp ? HorizontalTextOrigin.Left : HorizontalTextOrigin.Right,
-                        stem.VisuallyUp ? VerticalTextOrigin.Top : VerticalTextOrigin.Bottom,
+                        HorizontalTextOrigin.Left,
+                        VerticalTextOrigin.Center,
                         color);
+                    break;
                 }
+                flagIndex--;
             }
 
             return flag is null ? throw new UnreachableException("Invalid beaming information.") : flag;
@@ -198,7 +198,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
 
             var endPoint = ruler.IntersectVerticalRay(stem.End);
 
-            var startPoint = endPoint.Move(length * -1, ruler.Angle);
+            var startPoint = endPoint.Move(length * -1, ruler.Angle.ToRadians());
 
             return new DrawableTrapezoid(startPoint, endPoint, thickness, color);
         }
@@ -226,7 +226,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
 
             var startPoint = ruler.IntersectVerticalRay(stem.End);
 
-            var endPoint = startPoint.Move(length, ruler.Angle);
+            var endPoint = startPoint.Move(length, ruler.Angle.ToRadians());
 
             return new DrawableTrapezoid(startPoint, endPoint, thickness, color);
         }

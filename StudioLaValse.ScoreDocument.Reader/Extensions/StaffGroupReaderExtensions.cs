@@ -78,7 +78,7 @@ namespace StudioLaValse.ScoreDocument.Reader.Extensions
             ArgumentOutOfRangeException.ThrowIfNegative(staffIndex, nameof(staffIndex));
 
             var scoreScale = scoreLayout.Scale;
-            var instrumentScale = scoreLayout.GetInstrumentScale(staffGroup.Instrument);
+            var instrumentScale = scoreLayout.GetInstrumentScale(staffGroup.InstrumentRibbon);
 
             foreach (var staff in staffGroup.EnumerateStaves(staffIndex))
             {
@@ -111,7 +111,7 @@ namespace StudioLaValse.ScoreDocument.Reader.Extensions
             }
 
             var scoreScale = scoreLayout.Scale;
-            var instrumentScale = scoreLayout.GetInstrumentScale(staffGroup.Instrument);
+            var instrumentScale = scoreLayout.GetInstrumentScale(staffGroup.InstrumentRibbon);
 
             var lastStaffSpacing = 0d;
             foreach (var staff in staffGroup.EnumerateStaves(groupLayout.NumberOfStaves))

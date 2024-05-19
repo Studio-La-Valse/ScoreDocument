@@ -3,6 +3,6 @@
     public class MeasureBlockStyleTemplate
     {
         public double StemLength { get; set; } = -5;
-        public double BracketAngle { get; set; } = 0;
+        public double BeamAngle { get; set; } = 0;
     }
 }

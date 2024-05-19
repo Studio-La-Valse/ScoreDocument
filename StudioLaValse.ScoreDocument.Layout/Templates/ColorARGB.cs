@@ -1,21 +1,15 @@
 ﻿namespace StudioLaValse.ScoreDocument.Layout.Templates
 {
-    public class ColorARGB : ICloneable
+    public struct ColorARGB
     {
-        public int A { get; set; }
-        public int R { get; set; }
-        public int G { get; set; }
-        public int B { get; set; }
+        public required int A { get; init; }
+        public required int R { get; init; }
+        public required int G { get; init; }
+        public required int B { get; init; }
 
-        public object Clone()
+        public ColorARGB()
         {
-            return new ColorARGB()
-            {
-                A = A,
-                R = R,
-                G = G,
-                B = B
-            };
+            
         }
     }
 }

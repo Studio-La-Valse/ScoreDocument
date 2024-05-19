@@ -1,13 +1,9 @@
-﻿#nullable disable
-
-namespace StudioLaValse.ScoreDocument.Models.Classes
+﻿namespace StudioLaValse.ScoreDocument.Models.Classes
 {
     public class Instrument
     {
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
-        public ICollection<string> Clefs { get; set; }
+        public required ICollection<string> Clefs { get; set; }
     }
 }
-
-#nullable enable

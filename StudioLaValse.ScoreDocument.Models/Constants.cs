@@ -1,11 +1,7 @@
-﻿#nullable disable
-
-namespace StudioLaValse.ScoreDocument.Models
+﻿namespace StudioLaValse.ScoreDocument.Models
 {
     internal static class Constants
     {
-        public const double GenerallyNotZero = 0.01;
+        public const double GreaterThanZero = 0.01;
     }
 }
-
-#nullable enable

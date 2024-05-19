@@ -1,6 +1,4 @@
-﻿#nullable disable
-
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace StudioLaValse.ScoreDocument.Models.Attributes
 {
@@ -11,7 +9,7 @@ namespace StudioLaValse.ScoreDocument.Models.Attributes
 
         }
 
-        public override bool IsValid(object value)
+        public override bool IsValid(object? value)
         {
             if (value is not int i)
             {
@@ -27,5 +25,3 @@ namespace StudioLaValse.ScoreDocument.Models.Attributes
         }
     }
 }
-
-#nullable enable

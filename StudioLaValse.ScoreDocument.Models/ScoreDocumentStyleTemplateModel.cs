@@ -1,9 +1,8 @@
-﻿#nullable disable
-
-using StudioLaValse.ScoreDocument.Models.Classes;
+﻿using StudioLaValse.ScoreDocument.Models.Classes;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace StudioLaValse.ScoreDocument.Models.Entities;
+namespace StudioLaValse.ScoreDocument.Models;
 
 public class ScoreDocumentStyleTemplateModel
 {
@@ -31,31 +30,37 @@ public class ScoreDocumentStyleTemplateModel
 
 
 
-    [Range(Constants.GenerallyNotZero, double.MaxValue)]
+    [Range(Constants.GreaterThanZero, double.MaxValue)]
     public double Scale { get; set; }
 
-    [Range(Constants.GenerallyNotZero, double.MaxValue)]
+    [Range(Constants.GreaterThanZero, double.MaxValue)]
     public double HorizontalStaffLineThickness { get; set; }
 
-    [Range(Constants.GenerallyNotZero, double.MaxValue)]
+    [Range(Constants.GreaterThanZero, double.MaxValue)]
     public double VerticalStaffLineThickness { get; set; }
 
-    [Range(Constants.GenerallyNotZero, double.MaxValue)]
+    [Range(Constants.GreaterThanZero, double.MaxValue)]
     public double StemLineThickness { get; set; }
 
     [Range(0, double.MaxValue)]
     public double FirstSystemIndent { get; set; }
 
+    [Column(TypeName = "jsonb")]
     public ColorARGB PageColor { get; set; }
 
+    [Column(TypeName = "jsonb")]
     public ColorARGB ForegroundColor { get; set; }
 
+    [Column(TypeName = "jsonb")]
     public Dictionary<Guid, double> InstrumentScales { get; set; }
 }
 
 public class StaffSystemStyleTemplateModel
 {
     public Guid Id { get; set; }
+
+    [ForeignKey(nameof(ScoreDocumentStyleTemplate))]
+    public Guid ScoreDocumentStyleTemplateId { get; set; }
     public ScoreDocumentStyleTemplateModel ScoreDocumentStyleTemplate { get; set; }
 
 
@@ -66,6 +71,9 @@ public class StaffSystemStyleTemplateModel
 public class StaffGroupStyleTemplateModel
 {
     public Guid Id { get; set; }
+
+    [ForeignKey(nameof(ScoreDocumentStyleTemplate))]
+    public Guid ScoreDocumentStyleTemplateId { get; set; }
     public ScoreDocumentStyleTemplateModel ScoreDocumentStyleTemplate { get; set; }
 
 
@@ -76,6 +84,9 @@ public class StaffGroupStyleTemplateModel
 public class StaffStyleTemplateModel
 {
     public Guid Id { get; set; }
+
+    [ForeignKey(nameof(ScoreDocumentStyleTemplate))]
+    public Guid ScoreDocumentStyleTemplateId { get; set; }
     public ScoreDocumentStyleTemplateModel ScoreDocumentStyleTemplate { get; set; }
 
 
@@ -86,6 +97,9 @@ public class StaffStyleTemplateModel
 public class MeasureBlockStyleTemplateModel
 {
     public Guid Id { get; set; }
+
+    [ForeignKey(nameof(ScoreDocumentStyleTemplate))]
+    public Guid ScoreDocumentStyleTemplateId { get; set; }
     public ScoreDocumentStyleTemplateModel ScoreDocumentStyleTemplate { get; set; }
 
 
@@ -96,9 +110,14 @@ public class MeasureBlockStyleTemplateModel
 public class NoteStyleTemplateModel
 {
     public Guid Id { get; set; }
+
+    [ForeignKey(nameof(ScoreDocumentStyleTemplate))]
+    public Guid ScoreDocumentStyleTemplateId { get; set; }
     public ScoreDocumentStyleTemplateModel ScoreDocumentStyleTemplate { get; set; }
 
-    [Range(Constants.GenerallyNotZero, double.MaxValue)]
+
+
+    [Range(Constants.GreaterThanZero, double.MaxValue)]
     public double Scale { get; set; }
     public int AccidentalDisplay { get; set; }
 }
@@ -106,28 +125,47 @@ public class NoteStyleTemplateModel
 public class ChordStyleTemplateModel
 {
     public Guid Id { get; set; }
+
+
+
+    [ForeignKey(nameof(ScoreDocumentStyleTemplate))]
+    public Guid ScoreDocumentStyleTemplateId { get; set; }
     public ScoreDocumentStyleTemplateModel ScoreDocumentStyleTemplate { get; set; }
 }
 
 public class InstrumentRibbonStyleTemplateModel
 {
     public Guid Id { get; set; }
+
+
+
+    [ForeignKey(nameof(ScoreDocumentStyleTemplate))]
+    public Guid ScoreDocumentStyleTemplateId { get; set; }
     public ScoreDocumentStyleTemplateModel ScoreDocumentStyleTemplate { get; set; }
 }
 
 public class InstrumentMeasureStyleTemplateModel
 {
     public Guid Id { get; set; }
+
+
+
+    [ForeignKey(nameof(ScoreDocumentStyleTemplate))]
+    public Guid ScoreDocumentStyleTemplateId { get; set; }
     public ScoreDocumentStyleTemplateModel ScoreDocumentStyleTemplate { get; set; }
 }
 
 public class ScoreMeasureStyleTemplateModel
 {
     public Guid Id { get; set; }
+
+    [ForeignKey(nameof(ScoreDocumentStyleTemplate))]
+    public Guid ScoreDocumentStyleTemplateId { get; set; }
     public ScoreDocumentStyleTemplateModel ScoreDocumentStyleTemplate { get; set; }
 
 
-    [Range(Constants.GenerallyNotZero, double.MaxValue)]
+
+    [Range(Constants.GreaterThanZero, double.MaxValue)]
     public double Width { get; set; }
 
     [Range(0, double.MaxValue)]
@@ -140,7 +178,11 @@ public class ScoreMeasureStyleTemplateModel
 public class PageStyleTemplateModel
 {
     public Guid Id { get; set; }
+
+    [ForeignKey(nameof(ScoreDocumentStyleTemplate))]
+    public Guid ScoreDocumentStyleTemplateId { get; set; }
     public ScoreDocumentStyleTemplateModel ScoreDocumentStyleTemplate { get; set; }
+
 
 
     [Range(1, int.MaxValue)]
@@ -161,5 +203,3 @@ public class PageStyleTemplateModel
     [Range(0, double.MaxValue)]
     public double MarginBottom { get; set; }
 }
-
-#nullable enable

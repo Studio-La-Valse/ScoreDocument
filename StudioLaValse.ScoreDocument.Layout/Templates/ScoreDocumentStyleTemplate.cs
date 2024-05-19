@@ -18,7 +18,7 @@ namespace StudioLaValse.ScoreDocument.Layout.Templates
 
         public ColorARGB ForegroundColor { get; set; } = new ColorARGB() { A = 255, R = 0, G = 0, B = 0 };
 
-        public Dictionary<Guid, double> InstrumentScales { get; set; } = [];
+        public Dictionary<Guid, double> InstrumentScales { get; init; } = [];
 
         public PageStyleTemplate PageStyleTemplate { get; init; } = new();
 
@@ -74,7 +74,7 @@ namespace StudioLaValse.ScoreDocument.Layout.Templates
             NoteStyleTemplate.AccidentalDisplay = styleTemplate.NoteStyleTemplate.AccidentalDisplay;
 
             MeasureBlockStyleTemplate.StemLength = styleTemplate.MeasureBlockStyleTemplate.StemLength;
-            MeasureBlockStyleTemplate.BracketAngle = styleTemplate.MeasureBlockStyleTemplate.BracketAngle;
+            MeasureBlockStyleTemplate.BeamAngle = styleTemplate.MeasureBlockStyleTemplate.BeamAngle;
 
             StaffStyleTemplate.DistanceToNext = styleTemplate.StaffStyleTemplate.DistanceToNext;
 

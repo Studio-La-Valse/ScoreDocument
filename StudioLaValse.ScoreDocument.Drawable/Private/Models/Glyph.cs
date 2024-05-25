@@ -4,7 +4,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
 {
     internal sealed class Glyph
     {
-        public FontFamilyCore FontFamily { get; } = new FontFamilyCore("avares://Sinfonia/Resources/#Bravura");
+        public FontFamilyCore FontFamily { get; } = new FontFamilyCore(new Uri("avares://Sinfonia/Resources/"), "#Bravura");
 
         private readonly double points = 6;
         private readonly double? knownWidth;

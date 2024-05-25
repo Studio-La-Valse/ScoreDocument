@@ -1,4 +1,6 @@
-﻿using StudioLaValse.ScoreDocument.Reader;
+﻿using StudioLaValse.ScoreDocument.Layout.Templates;
+using StudioLaValse.ScoreDocument.Reader;
+using StudioLaValse.ScoreDocument.Reader.Extensions;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
@@ -8,28 +10,26 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
     public class SinglePageViewSceneFactory : IVisualScoreDocumentContentFactory
     {
         private readonly int pageIndex;
-        private readonly IVisualStaffSystemFactory staffSystemContentFactory;
-        private readonly IScoreDocumentLayout scoreLayoutDictionary;
+        private readonly ScoreDocumentStyleTemplate styleTemplate;
+        private readonly IVisualPageFactory visualPageFactory;
 
         /// <summary>
         /// The default constructor.
         /// </summary>
         /// <param name="pageIndex"></param>
-        /// <param name="staffSystemContentFactory"></param>
-        /// <param name="scoreLayoutDictionary"></param>
-        public SinglePageViewSceneFactory(int pageIndex, IVisualStaffSystemFactory staffSystemContentFactory, IScoreDocumentLayout scoreLayoutDictionary)
+        /// <param name="styleTemplate"></param>
+        /// <param name="visualPageFactory"></param>
+        public SinglePageViewSceneFactory(int pageIndex, ScoreDocumentStyleTemplate styleTemplate, IVisualPageFactory visualPageFactory)
         {
             this.pageIndex = pageIndex;
-            this.staffSystemContentFactory = staffSystemContentFactory;
-            this.scoreLayoutDictionary = scoreLayoutDictionary;
+            this.styleTemplate = styleTemplate;
+            this.visualPageFactory = visualPageFactory;
         }
         /// <inheritdoc/>
         public BaseContentWrapper CreateContent(IScoreDocumentReader scoreDocument)
         {
-            var page = scoreDocument.GeneratePages().ElementAt(pageIndex);
-            var lineSpacing = GlyphLibrary.LineSpacing;
-            var visualPage = new VisualPage(page, 0, 0, lineSpacing, staffSystemContentFactory, scoreLayoutDictionary);
-            return visualPage;
+            var page = scoreDocument.ReadPages(styleTemplate).ElementAt(pageIndex);
+            return visualPageFactory.CreateContent(page);
         }
     }
 }

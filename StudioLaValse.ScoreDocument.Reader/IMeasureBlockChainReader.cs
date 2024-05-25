@@ -5,7 +5,7 @@ namespace StudioLaValse.ScoreDocument.Reader
     /// <summary>
     /// The interface for a measure block chain reader.
     /// </summary>
-    public interface IMeasureBlockChainReader : IMeasureBlockChain<IMeasureBlockReader>, IScoreElementReader
+    public interface IMeasureBlockChainReader : IMeasureBlockChain<IMeasureBlockReader>
     {
 
     }

@@ -20,7 +20,6 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         private readonly IVisualStaffSystemFactory staffSystemContentFactory;
         private readonly IScoreDocumentLayout scoreLayoutDictionary;
 
-
         public IScoreDocumentLayout DocumentLayout => scoreLayoutDictionary;
         public ColorARGB PageColor => DocumentLayout.PageColor.FromPrimitive();
         public ColorARGB ForegroundColor => DocumentLayout.ForegroundColor.FromPrimitive();
@@ -67,6 +66,11 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
             var canvasTop = this.canvasTop + MarginTop;
             foreach (var staffSystem in page.EnumerateStaffSystems())
             {
+                if (!staffSystem.EnumerateMeasures().Any())
+                {
+                    throw new Exception("An empty staff system is not allowed.");
+                }
+
                 var canvasLeft = this.canvasLeft + MarginLeft;
                 if (staffSystem.EnumerateMeasures().First().IndexInScore == 0)
                 {

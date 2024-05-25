@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents the score document editor.
     /// </summary>
-    public interface IScoreDocumentEditor : IScoreDocument<IPageEditor, IScoreMeasureEditor, IInstrumentRibbonEditor>, IScoreElementEditor<IScoreDocumentLayout>
+    public interface IScoreDocumentEditor : IScoreDocument<IScoreMeasureEditor, IInstrumentRibbonEditor>, IScoreElementEditor<IScoreDocumentLayout>
     {
         /// <summary>
         /// Clears all content of the score.

@@ -42,12 +42,18 @@ public class MeasureBlockMembers : MeasureBlockLayoutMembers
 
     [Column(TypeName = "jsonb")]
     public required RythmicDuration Duration { get; set; }
+
+    [Column(TypeName = "jsonb")]
+    public required Position Position { get; set; }
 }
 
 public class ChordMembers : ChordLayoutMembers
 {
     [Column(TypeName = "jsonb")]
     public required RythmicDuration RythmicDuration { get; set; }
+
+    [Column(TypeName = "jsonb")]
+    public required Position Position { get; set; }
 }
 
 public class NoteMembers : NoteLayoutMembers

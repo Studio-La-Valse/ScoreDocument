@@ -31,7 +31,7 @@ public class ScoreDocumentLayoutMembers
     public required ColorARGB? ForegroundColor { get; set; }
 
     [Column(TypeName = "jsonb")]
-    public required Dictionary<Guid, double>? InstrumentScales { get; set; }
+    public required Dictionary<Guid, double> InstrumentScales { get; set; }
 }
 
 public class ScoreMeasureLayoutMembers
@@ -73,10 +73,10 @@ public class InstrumentMeasureLayoutMembers
     public required Guid Id { get; set; }
     
     [Column(TypeName = "jsonb")]
-    public required List<ClefChange>? ClefChanges { get; set; }
+    public required List<ClefChange> ClefChanges { get; set; }
 
     [Column(TypeName = "jsonb")]
-    public required List<ClefChange>? IgnoredClefChanges { get; set; }
+    public required Dictionary<int, double> StaffPaddingBottom { get; set; }
 
     public required bool? Collapsed { get; set; }
 
@@ -85,9 +85,6 @@ public class InstrumentMeasureLayoutMembers
 
     [Range(0, int.MaxValue)]
     public required double? PaddingBottom { get; set; }
-
-    [Column(TypeName = "jsonb")]
-    public required Dictionary<int, double>? StaffPaddingBottom { get; set; }
 }
 
 public class MeasureBlockLayoutMembers

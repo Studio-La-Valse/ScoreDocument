@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\StudioLaValse.ScoreDocument.Core\StudioLaValse.ScoreDocument.Core.csproj" />
+    <ProjectReference Include="..\StudioLaValse.ScoreDocument.Layout\StudioLaValse.ScoreDocument.Layout.csproj" />
+  </ItemGroup>
+
 </Project>

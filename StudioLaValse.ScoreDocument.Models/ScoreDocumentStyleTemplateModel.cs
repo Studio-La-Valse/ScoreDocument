@@ -6,200 +6,200 @@ namespace StudioLaValse.ScoreDocument.Models;
 
 public class ScoreDocumentStyleTemplateModel
 {
-    public Guid Id { get; set; }
+    public required Guid Id { get; set; }
 
-    public PageStyleTemplateModel PageStyleTemplate { get; set; }
+    public required PageStyleTemplateModel PageStyleTemplate { get; init; }
 
-    public ScoreMeasureStyleTemplateModel ScoreMeasureStyleTemplate { get; set; }
+    public required ScoreMeasureStyleTemplateModel ScoreMeasureStyleTemplate { get; init; }
 
-    public InstrumentMeasureStyleTemplateModel InstrumentMeasureStyleTemplate { get; set; }
+    public required InstrumentMeasureStyleTemplateModel InstrumentMeasureStyleTemplate { get; init; }
 
-    public InstrumentRibbonStyleTemplateModel InstrumentRibbonStyleTemplate { get; set; }
+    public required InstrumentRibbonStyleTemplateModel InstrumentRibbonStyleTemplate { get; init; }
 
-    public ChordStyleTemplateModel ChordStyleTemplate { get; set; }
+    public required ChordStyleTemplateModel ChordStyleTemplate { get; init; }
 
-    public NoteStyleTemplateModel NoteStyleTemplate { get; set; }
+    public required NoteStyleTemplateModel NoteStyleTemplate { get; init; }
 
-    public MeasureBlockStyleTemplateModel MeasureBlockStyleTemplate { get; set; }
+    public required MeasureBlockStyleTemplateModel MeasureBlockStyleTemplate { get; init; }
 
-    public StaffStyleTemplateModel StaffStyleTemplate { get; set; }
+    public required StaffStyleTemplateModel StaffStyleTemplate { get; init; }
 
-    public StaffGroupStyleTemplateModel StaffGroupStyleTemplate { get; set; }
+    public required StaffGroupStyleTemplateModel StaffGroupStyleTemplate { get; init; }
 
-    public StaffSystemStyleTemplateModel StaffSystemStyleTemplate { get; set; }
+    public required StaffSystemStyleTemplateModel StaffSystemStyleTemplate { get; init; }
 
 
-
-    [Range(Constants.GreaterThanZero, double.MaxValue)]
-    public double Scale { get; set; }
 
     [Range(Constants.GreaterThanZero, double.MaxValue)]
-    public double HorizontalStaffLineThickness { get; set; }
+    public required double Scale { get; init; }
 
     [Range(Constants.GreaterThanZero, double.MaxValue)]
-    public double VerticalStaffLineThickness { get; set; }
+    public required double HorizontalStaffLineThickness { get; init; }
 
     [Range(Constants.GreaterThanZero, double.MaxValue)]
-    public double StemLineThickness { get; set; }
+    public required double VerticalStaffLineThickness { get; init; }
+
+    [Range(Constants.GreaterThanZero, double.MaxValue)]
+    public required double StemLineThickness { get; init; }
 
     [Range(0, double.MaxValue)]
-    public double FirstSystemIndent { get; set; }
+    public required double FirstSystemIndent { get; init; }
 
     [Column(TypeName = "jsonb")]
-    public ColorARGB PageColor { get; set; }
+    public required ColorARGB PageColor { get; init; }
 
     [Column(TypeName = "jsonb")]
-    public ColorARGB ForegroundColor { get; set; }
+    public required ColorARGB ForegroundColor { get; init; }
 
     [Column(TypeName = "jsonb")]
-    public Dictionary<Guid, double> InstrumentScales { get; set; }
+    public required Dictionary<Guid, double> InstrumentScales { get; init; }
 }
 
 public class StaffSystemStyleTemplateModel
 {
-    public Guid Id { get; set; }
+    public required Guid Id { get; init; }
 
     [ForeignKey(nameof(ScoreDocumentStyleTemplate))]
-    public Guid ScoreDocumentStyleTemplateId { get; set; }
-    public ScoreDocumentStyleTemplateModel ScoreDocumentStyleTemplate { get; set; }
+    public required Guid ScoreDocumentStyleTemplateId { get; init; }
+    public required ScoreDocumentStyleTemplateModel ScoreDocumentStyleTemplate { get; init; }
 
 
     [Range(0, double.MaxValue)]
-    public double PaddingBottom { get; set; }
+    public required double PaddingBottom { get; init; }
 }
 
 public class StaffGroupStyleTemplateModel
 {
-    public Guid Id { get; set; }
+    public required Guid Id { get; init; }
 
     [ForeignKey(nameof(ScoreDocumentStyleTemplate))]
-    public Guid ScoreDocumentStyleTemplateId { get; set; }
-    public ScoreDocumentStyleTemplateModel ScoreDocumentStyleTemplate { get; set; }
+    public required Guid ScoreDocumentStyleTemplateId { get; init; }
+    public required ScoreDocumentStyleTemplateModel ScoreDocumentStyleTemplate { get; init; }
 
 
     [Range(0, double.MaxValue)]
-    public double DistanceToNext { get; set; }
+    public required double DistanceToNext { get; init; }
 }
 
 public class StaffStyleTemplateModel
 {
-    public Guid Id { get; set; }
+    public required Guid Id { get; init; }
 
     [ForeignKey(nameof(ScoreDocumentStyleTemplate))]
-    public Guid ScoreDocumentStyleTemplateId { get; set; }
-    public ScoreDocumentStyleTemplateModel ScoreDocumentStyleTemplate { get; set; }
+    public required Guid ScoreDocumentStyleTemplateId { get; init; }
+    public required ScoreDocumentStyleTemplateModel ScoreDocumentStyleTemplate { get; init; }
 
 
     [Range(0, double.MaxValue)]
-    public double DistanceToNext { get; set; }
+    public required double DistanceToNext { get; init; }
 }
 
 public class MeasureBlockStyleTemplateModel
 {
-    public Guid Id { get; set; }
+    public required Guid Id { get; init; }
 
     [ForeignKey(nameof(ScoreDocumentStyleTemplate))]
-    public Guid ScoreDocumentStyleTemplateId { get; set; }
-    public ScoreDocumentStyleTemplateModel ScoreDocumentStyleTemplate { get; set; }
+    public required Guid ScoreDocumentStyleTemplateId { get; init; }
+    public required ScoreDocumentStyleTemplateModel ScoreDocumentStyleTemplate { get; init; }
 
 
-    public double StemLength { get; set; }
-    public double BracketAngle { get; set; }
+    public required double StemLength { get; init; }
+    public required double BracketAngle { get; init; }
 }
 
 public class NoteStyleTemplateModel
 {
-    public Guid Id { get; set; }
+    public required Guid Id { get; init; }
 
     [ForeignKey(nameof(ScoreDocumentStyleTemplate))]
-    public Guid ScoreDocumentStyleTemplateId { get; set; }
-    public ScoreDocumentStyleTemplateModel ScoreDocumentStyleTemplate { get; set; }
+    public required Guid ScoreDocumentStyleTemplateId { get; init; }
+    public required ScoreDocumentStyleTemplateModel ScoreDocumentStyleTemplate { get; init; }
 
 
 
     [Range(Constants.GreaterThanZero, double.MaxValue)]
-    public double Scale { get; set; }
-    public int AccidentalDisplay { get; set; }
+    public required double Scale { get; init; }
+    public required int AccidentalDisplay { get; init; }
 }
 
 public class ChordStyleTemplateModel
 {
-    public Guid Id { get; set; }
+    public required Guid Id { get; init; }
 
 
 
     [ForeignKey(nameof(ScoreDocumentStyleTemplate))]
-    public Guid ScoreDocumentStyleTemplateId { get; set; }
-    public ScoreDocumentStyleTemplateModel ScoreDocumentStyleTemplate { get; set; }
+    public required Guid ScoreDocumentStyleTemplateId { get; init; }
+    public required ScoreDocumentStyleTemplateModel ScoreDocumentStyleTemplate { get; init; }
 }
 
 public class InstrumentRibbonStyleTemplateModel
 {
-    public Guid Id { get; set; }
+    public required Guid Id { get; init; }
 
 
 
     [ForeignKey(nameof(ScoreDocumentStyleTemplate))]
-    public Guid ScoreDocumentStyleTemplateId { get; set; }
-    public ScoreDocumentStyleTemplateModel ScoreDocumentStyleTemplate { get; set; }
+    public required Guid ScoreDocumentStyleTemplateId { get; init; }
+    public required ScoreDocumentStyleTemplateModel ScoreDocumentStyleTemplate { get; init; }
 }
 
 public class InstrumentMeasureStyleTemplateModel
 {
-    public Guid Id { get; set; }
+    public required Guid Id { get; set; }
 
 
 
     [ForeignKey(nameof(ScoreDocumentStyleTemplate))]
-    public Guid ScoreDocumentStyleTemplateId { get; set; }
-    public ScoreDocumentStyleTemplateModel ScoreDocumentStyleTemplate { get; set; }
+    public required Guid ScoreDocumentStyleTemplateId { get; set; }
+    public required ScoreDocumentStyleTemplateModel ScoreDocumentStyleTemplate { get; set; }
 }
 
 public class ScoreMeasureStyleTemplateModel
 {
-    public Guid Id { get; set; }
+    public required Guid Id { get; set; }
 
     [ForeignKey(nameof(ScoreDocumentStyleTemplate))]
-    public Guid ScoreDocumentStyleTemplateId { get; set; }
-    public ScoreDocumentStyleTemplateModel ScoreDocumentStyleTemplate { get; set; }
+    public required Guid ScoreDocumentStyleTemplateId { get; set; }
+    public required ScoreDocumentStyleTemplateModel ScoreDocumentStyleTemplate { get; set; }
 
 
 
     [Range(Constants.GreaterThanZero, double.MaxValue)]
-    public double Width { get; set; }
+    public required double Width { get; set; }
 
     [Range(0, double.MaxValue)]
-    public double PaddingLeft { get; set; }
+    public required double PaddingLeft { get; set; }
 
     [Range(0, double.MaxValue)]
-    public double PaddingRight { get; set; }
+    public required double PaddingRight { get; set; }
 }
 
 public class PageStyleTemplateModel
 {
-    public Guid Id { get; set; }
+    public required Guid Id { get; set; }
 
     [ForeignKey(nameof(ScoreDocumentStyleTemplate))]
-    public Guid ScoreDocumentStyleTemplateId { get; set; }
-    public ScoreDocumentStyleTemplateModel ScoreDocumentStyleTemplate { get; set; }
+    public required Guid ScoreDocumentStyleTemplateId { get; set; }
+    public required ScoreDocumentStyleTemplateModel ScoreDocumentStyleTemplate { get; set; }
 
 
 
     [Range(1, int.MaxValue)]
-    public int PageHeight { get; set; }
+    public required int PageHeight { get; set; }
 
     [Range(1, int.MaxValue)]
-    public int PageWidth { get; set; }
+    public required int PageWidth { get; set; }
 
     [Range(0, double.MaxValue)]
-    public double MarginTop { get; set; }
+    public required double MarginTop { get; set; }
 
     [Range(0, double.MaxValue)]
-    public double MarginRight { get; set; }
+    public required double MarginRight { get; set; }
 
     [Range(0, double.MaxValue)]
-    public double MarginLeft { get; set; }
+    public required double MarginLeft { get; set; }
 
     [Range(0, double.MaxValue)]
-    public double MarginBottom { get; set; }
+    public required double MarginBottom { get; set; }
 }

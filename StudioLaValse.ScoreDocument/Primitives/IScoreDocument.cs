@@ -44,14 +44,4 @@
         /// <returns></returns>
         TRibbon ReadInstrumentRibbon(int indexInScore);
     }
-
-    /// <inheritdoc/>
-    public interface IScoreDocument<TPage, TScoreMeasure, TRibbon> : IScoreDocument<TScoreMeasure, TRibbon> where TPage : IPage where TScoreMeasure : IScoreMeasure where TRibbon : IInstrumentRibbon
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        IEnumerable<TPage> GeneratePages();
-    }
 }

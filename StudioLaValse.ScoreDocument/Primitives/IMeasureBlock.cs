@@ -22,19 +22,19 @@ namespace StudioLaValse.ScoreDocument.Primitives
 
     /// <inheritdoc/>
     public interface IMeasureBlock<TChord, TSelf> : IMeasureBlock<TChord>, IPositionElement where TChord : IChord
-                                                                                            where TSelf : IMeasureBlock
+                                                                                            where TSelf : IMeasureBlock<TChord, TSelf>
     {
-        /// <summary>
-        /// Tries to read the next measure block.
-        /// </summary>
-        /// <param name="right"></param>
-        /// <returns><see langword="true"/> if the next measure exists.</returns>
-        bool TryReadNext([NotNullWhen(true)] out TSelf? right);
-        /// <summary>
-        /// Tries to read the previous measure block.
-        /// </summary>
-        /// <param name="previous"></param>
-        /// <returns><see langword="true"/> if the previous measure exists.</returns>
-        bool TryReadPrevious([NotNullWhen(true)] out TSelf? previous);
+        ///// <summary>
+        ///// Tries to read the next measure block.
+        ///// </summary>
+        ///// <param name="right"></param>
+        ///// <returns><see langword="true"/> if the next measure exists.</returns>
+        //bool TryReadNext([NotNullWhen(true)] out TSelf? right);
+        ///// <summary>
+        ///// Tries to read the previous measure block.
+        ///// </summary>
+        ///// <param name="previous"></param>
+        ///// <returns><see langword="true"/> if the previous measure exists.</returns>
+        //bool TryReadPrevious([NotNullWhen(true)] out TSelf? previous);
     }
 }

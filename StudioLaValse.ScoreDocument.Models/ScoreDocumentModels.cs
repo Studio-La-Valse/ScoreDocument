@@ -1,4 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Models.Base;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace StudioLaValse.ScoreDocument.Models
 {

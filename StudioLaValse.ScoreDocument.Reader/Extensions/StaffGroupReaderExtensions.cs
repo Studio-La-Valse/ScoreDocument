@@ -5,6 +5,7 @@ using StudioLaValse.ScoreDocument.Reader.Extensions;
 
 namespace StudioLaValse.ScoreDocument.Reader.Extensions
 {
+
     /// <summary>
     /// Extensions to staff (-group and -system) readers.
     /// </summary>

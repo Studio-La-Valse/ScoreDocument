@@ -3,7 +3,7 @@
     /// <summary>
     /// The interface for a measure block chain editor.
     /// </summary>
-    public interface IMeasureBlockChainEditor : IMeasureBlockChain<IMeasureBlockEditor>, IScoreElementEditor
+    public interface IMeasureBlockChainEditor : IMeasureBlockChain<IMeasureBlockEditor>
     {
         /// <summary>
         /// Clear all content from the block chain.

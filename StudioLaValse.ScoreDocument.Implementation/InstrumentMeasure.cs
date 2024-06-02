@@ -1,5 +1,4 @@
-﻿
-namespace StudioLaValse.ScoreDocument.Implementation
+﻿namespace StudioLaValse.ScoreDocument.Implementation
 {
     public class InstrumentMeasure : ScoreElement, IUniqueScoreElement, IMementoElement<InstrumentMeasureModel>
     {

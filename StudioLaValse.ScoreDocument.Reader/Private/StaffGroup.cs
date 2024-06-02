@@ -70,5 +70,15 @@ namespace StudioLaValse.ScoreDocument.Reader.Private
             var layout = new StaffGroupLayout(numberOfStaves.Value, distanceToNext, collapsed);
             return layout;
         }
+
+        public IEnumerable<IScoreElement> EnumerateChildren()
+        {
+            return EnumerateMeasures();
+        }
+
+        public override string ToString()
+        {
+            return $"Staff Group : [{Instrument}]";
+        }
     }
 }

@@ -13,5 +13,10 @@
                 AccidentalDisplay = AccidentalDisplay.Default
             };
         }
+        public void Apply(NoteStyleTemplate template)
+        {
+            Scale = template.Scale;
+            AccidentalDisplay = template.AccidentalDisplay;
+        }
     }
 }

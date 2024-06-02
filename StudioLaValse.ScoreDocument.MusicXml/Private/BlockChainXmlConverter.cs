@@ -9,7 +9,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
 
         }
 
-        internal static readonly string[] sourceArray = ["hook start", "continue", "begin"];
+        internal static readonly string[] beamTypesThatIndicateAGroupIsNotClosedYet = ["hook start", "continue", "begin"];
 
         public void ProcessElements(IEnumerable<XElement> elements, IMeasureBlockChainEditor editor, int divisionsOfOneQuarter)
         {
@@ -42,9 +42,13 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                 var beams = element.GetBeams();
                 foreach (var beam in beams)
                 {
-                    if (sourceArray.Contains(beam))
+                    if (beamTypesThatIndicateAGroupIsNotClosedYet.Contains(beam))
                     {
                         makeNewGroup = false;
+                    }
+                    else
+                    {
+                        makeNewGroup = true;
                     }
                 }
             }

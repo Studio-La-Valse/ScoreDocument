@@ -49,7 +49,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
             var notes = chord.ReadNotes();
             if (!notes.Any())
             {
-                var canvasTop = staffGroup.EnumerateStaves(1).First().HeightFromLineIndex(canvasTopStaffGroup, 4, lineSpacing, scoreScale, instrumentScale);
+                var canvasTop = staffGroup.EnumerateStaves().First().HeightFromLineIndex(canvasTopStaffGroup, 4, lineSpacing, scoreScale, instrumentScale);
                 yield return restFactory.Build(chord, canvasLeft, canvasTop, lineSpacing, scoreScale, instrumentScale, color);
                 yield break;
             }
@@ -107,7 +107,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
             var canvasTopStaff = canvasTopStaffGroup;
             List<DrawableLineHorizontal> linesFromChord = [];
             var staffGroupLayout = staffGroup.ReadLayout();
-            foreach (var staff in staffGroup.EnumerateStaves(staffGroupLayout.NumberOfStaves))
+            foreach (var staff in staffGroup.EnumerateStaves())
             {
                 var staffLayout = staff.ReadLayout();
                 var notesOnStaff = notes

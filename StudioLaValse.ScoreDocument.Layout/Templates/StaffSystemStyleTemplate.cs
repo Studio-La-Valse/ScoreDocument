@@ -11,5 +11,10 @@
                 DistanceToNext = 30,
             };
         }
+
+        public void Apply(StaffSystemStyleTemplate template)
+        {
+            DistanceToNext = template.DistanceToNext;
+        }
     }
 }

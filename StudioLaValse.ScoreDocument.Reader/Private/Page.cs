@@ -28,6 +28,16 @@ namespace StudioLaValse.ScoreDocument.Reader.Private
         {
             return Layout;
         }
+
+        public IEnumerable<IScoreElement> EnumerateChildren()
+        {
+            return EnumerateStaffSystems();
+        }
+
+        public override string ToString()
+        {
+            return $"Page {IndexInScore}";
+        }
     }
 }
 

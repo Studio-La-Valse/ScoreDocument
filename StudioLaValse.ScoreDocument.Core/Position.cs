@@ -146,5 +146,11 @@
         {
             return right.Decimal <= left.Decimal;
         }
+
+        ///<inheritdoc/>
+        public override string ToString()
+        {
+            return $"{Numerator} / {Denominator}";
+        }
     }
 }

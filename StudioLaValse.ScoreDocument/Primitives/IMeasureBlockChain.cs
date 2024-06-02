@@ -3,7 +3,7 @@
     /// <summary>
     /// The interface for a measure block chain primitive.
     /// </summary>
-    public interface IMeasureBlockChain
+    public interface IMeasureBlockChain : IScoreElement
     {
         /// <summary>
         /// The voice of the block chain.

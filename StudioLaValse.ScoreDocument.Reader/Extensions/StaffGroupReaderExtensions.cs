@@ -2,6 +2,7 @@
 using StudioLaValse.ScoreDocument.Layout;
 using StudioLaValse.ScoreDocument.Reader;
 using StudioLaValse.ScoreDocument.Reader.Extensions;
+using StudioLaValse.ScoreDocument.Reader.Private;
 
 namespace StudioLaValse.ScoreDocument.Reader.Extensions
 {
@@ -19,15 +20,13 @@ namespace StudioLaValse.ScoreDocument.Reader.Extensions
         /// <returns></returns>
         public static IEnumerable<(int, Clef)> EnumerateDefaultInstrumentClefs(this IStaffGroupReader staffGroup, int numberOfStaves)
         {
-            var index = 0;
-            foreach (var staff in staffGroup.EnumerateStaves(numberOfStaves))
+            for (var i = 0; i < numberOfStaves; i++)
             {
                 var clef =
-                    staffGroup.Instrument.DefaultClefs.ElementAtOrDefault(staff.IndexInStaffGroup) ??
+                    staffGroup.Instrument.DefaultClefs.ElementAtOrDefault(i) ??
                     staffGroup.Instrument.DefaultClefs.Last();
 
-                yield return (index, clef);
-                index++;
+                yield return (i, clef);
             }
         }
 
@@ -81,14 +80,14 @@ namespace StudioLaValse.ScoreDocument.Reader.Extensions
             var scoreScale = scoreLayout.Scale;
             var instrumentScale = staffGroup.InstrumentRibbon.ReadLayout().Scale;
 
-            foreach (var staff in staffGroup.EnumerateStaves(staffIndex))
+            foreach (var staff in staffGroup.EnumerateStaves().Take(staffIndex))
             {
                 var staffLayout = staff.ReadLayout();
                 canvasTopStaffGroup += staff.CalculateHeight(globalLineSpacing, scoreScale, instrumentScale);
                 canvasTopStaffGroup += staffLayout.DistanceToNext;
             }
 
-            var _staff = staffGroup.EnumerateStaves(staffIndex + 1).ElementAt(staffIndex);
+            var _staff = staffGroup.EnumerateStaves().ElementAt(staffIndex);
             var canvasTop = _staff.HeightFromLineIndex(canvasTopStaffGroup, lineIndex, globalLineSpacing, scoreScale, instrumentScale);
             return canvasTop;
         }
@@ -115,7 +114,7 @@ namespace StudioLaValse.ScoreDocument.Reader.Extensions
             var instrumentScale = staffGroup.InstrumentRibbon.ReadLayout().Scale;
 
             var lastStaffSpacing = 0d;
-            foreach (var staff in staffGroup.EnumerateStaves(groupLayout.NumberOfStaves))
+            foreach (var staff in staffGroup.EnumerateStaves())
             {
                 var staffHeight = staff.CalculateHeight(globalLineSpacing, scoreScale, instrumentScale);
                 var staffSpacing = staff.ReadLayout().DistanceToNext;

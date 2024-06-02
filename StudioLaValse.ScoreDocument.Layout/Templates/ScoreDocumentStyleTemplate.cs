@@ -52,7 +52,7 @@ namespace StudioLaValse.ScoreDocument.Layout.Templates
                 VerticalStaffLineThickness = 0.25,
                 FirstSystemIndent = 15,
                 StemLineThickness = 0.1,
-                ChordPositionFactor = 0,
+                ChordPositionFactor = 0.5,
                 InstrumentScales = [],
                 PageStyleTemplate = PageStyleTemplate.Create(),
                 ScoreMeasureStyleTemplate = ScoreMeasureStyleTemplate.Create(),
@@ -82,27 +82,17 @@ namespace StudioLaValse.ScoreDocument.Layout.Templates
                 InstrumentScales.Add(kv.Key, kv.Value);
             }
 
-            PageStyleTemplate.MarginLeft = styleTemplate.PageStyleTemplate.MarginLeft;
-            PageStyleTemplate.MarginTop = styleTemplate.PageStyleTemplate.MarginTop;
-            PageStyleTemplate.MarginBottom = styleTemplate.PageStyleTemplate.MarginBottom;
-            PageStyleTemplate.MarginRight = styleTemplate.PageStyleTemplate.MarginRight;
-            PageStyleTemplate.PageWidth = styleTemplate.PageStyleTemplate.PageWidth;
-            PageStyleTemplate.PageHeight = styleTemplate.PageStyleTemplate.PageHeight;
+            PageStyleTemplate.Apply(styleTemplate.PageStyleTemplate);
 
-            ScoreMeasureStyleTemplate.PaddingLeft = styleTemplate.ScoreMeasureStyleTemplate.PaddingLeft;
-            ScoreMeasureStyleTemplate.PaddingRight = styleTemplate.ScoreMeasureStyleTemplate.PaddingRight;
+            ScoreMeasureStyleTemplate.Apply(styleTemplate.ScoreMeasureStyleTemplate);
 
-            NoteStyleTemplate.Scale = styleTemplate.NoteStyleTemplate.Scale;
-            NoteStyleTemplate.AccidentalDisplay = styleTemplate.NoteStyleTemplate.AccidentalDisplay;
+            MeasureBlockStyleTemplate.Apply(styleTemplate.MeasureBlockStyleTemplate);
+            ChordStyleTemplate.Apply(styleTemplate.ChordStyleTemplate);
+            NoteStyleTemplate.Apply(styleTemplate.NoteStyleTemplate);
 
-            MeasureBlockStyleTemplate.StemLength = styleTemplate.MeasureBlockStyleTemplate.StemLength;
-            MeasureBlockStyleTemplate.BeamAngle = styleTemplate.MeasureBlockStyleTemplate.BeamAngle;
-
-            ChordStyleTemplate.SpaceRight = styleTemplate.ChordStyleTemplate.SpaceRight;
-
-            StaffStyleTemplate.DistanceToNext = styleTemplate.StaffStyleTemplate.DistanceToNext;
-            StaffGroupStyleTemplate.DistanceToNext = styleTemplate.StaffGroupStyleTemplate.DistanceToNext;
-            StaffSystemStyleTemplate.DistanceToNext = styleTemplate.StaffSystemStyleTemplate.DistanceToNext;
+            StaffStyleTemplate.Apply(styleTemplate.StaffStyleTemplate);
+            StaffGroupStyleTemplate.Apply(styleTemplate.StaffGroupStyleTemplate);
+            StaffSystemStyleTemplate.Apply(styleTemplate.StaffSystemStyleTemplate);
         }
     }
 }

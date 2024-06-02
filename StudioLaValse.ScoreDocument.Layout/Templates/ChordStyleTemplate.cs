@@ -11,5 +11,10 @@
                 SpaceRight = 12
             };
         }
+
+        public void Apply(ChordStyleTemplate styleTemplate)
+        {
+            SpaceRight = styleTemplate.SpaceRight;
+        }
     }
 }

@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a primitive chord.
     /// </summary>
-    public interface IChord : IScoreElement, IPositionElement
+    public interface IChord : IScoreElement, IPositionElement, IUniqueScoreElement
     {
 
     }

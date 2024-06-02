@@ -1,8 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using StudioLaValse.ScoreDocument.Implementation.Interfaces;
-using StudioLaValse.ScoreDocument.Implementation.Layout;
-
-namespace StudioLaValse.ScoreDocument.Implementation
+﻿namespace StudioLaValse.ScoreDocument.Implementation
 {
     public class MeasureBlock : ScoreElement, IPositionElement, IMementoElement<MeasureBlockModel>
     {

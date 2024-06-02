@@ -88,5 +88,11 @@ namespace StudioLaValse.ScoreDocument.Core
                 ? throw new InvalidOperationException("Please provide at least one clef.")
                 : new Instrument(name, clefs);
         }
+
+        ///<inheritdoc/>
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

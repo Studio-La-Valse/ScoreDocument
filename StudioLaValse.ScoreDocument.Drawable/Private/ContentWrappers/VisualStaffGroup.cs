@@ -80,7 +80,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         public IEnumerable<VisualStaff> ConstructStaves()
         {
             var _canvasTop = canvasTop;
-            foreach (var staff in staffGroup.EnumerateStaves(Layout.NumberOfStaves))
+            foreach (var staff in staffGroup.EnumerateStaves())
             {
                 var staffLayout = staff.ReadLayout();
                 var clef = FirstMeasure.OpeningClefAtOrDefault(staff.IndexInStaffGroup);

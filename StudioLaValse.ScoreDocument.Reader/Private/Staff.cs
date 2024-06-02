@@ -25,5 +25,15 @@ namespace StudioLaValse.ScoreDocument.Reader.Private
             var layout = new StaffLayout(paddingBottom.Value);
             return layout;
         }
+
+        public IEnumerable<IScoreElement> EnumerateChildren()
+        {
+            yield break;
+        }
+
+        public override string ToString()
+        {
+            return $"Staff {IndexInStaffGroup}";
+        }
     }
 }

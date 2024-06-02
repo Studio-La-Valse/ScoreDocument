@@ -79,19 +79,31 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
             var firstNoteWidth = firstNote.Width;
 
-            var firstStemUp = Layout.StemLength > 0;
+            var firstStemUp = Layout.StemLength < 0;
             var firstChordCanvasLeft = positionDictionary[firstChord.Position];
             var firstStemOrigin = ConstructStemOrigin(firstChord, staffGroup, canvasTopStaffGroup, firstChordCanvasLeft, firstStemUp, firstNoteWidth);
-            XY firstStemTip = new(firstStemOrigin.X, firstStemOrigin.Y + (Layout.StemLength * Scale));
-            Ruler beamDefinition = new(firstStemTip, Layout.BeamAngle);
-            List<VisualStem> stems = [];
-            var groupLength = chords.Select(c => c.RythmicDuration).Sum().Decimal;
+            var firstStemTip = new XY(firstStemOrigin.X, firstStemOrigin.Y + (Layout.StemLength * Scale));
+            var firstStem = new VisualStem(firstStemOrigin, firstStemTip, StemThickness, firstChord, colorARGB);
+            var stems = new List<VisualStem>()
+            {
+                firstStem
+            };
+
+            var beamDefinition = new Ruler(firstStemTip, Layout.BeamAngle);
+            var groupLength = chords.Select(c => c.RythmicDuration).Sum().Decimal; 
+            var isFirstChord = true;
             foreach (var chord in chords)
             {
                 var canvasLeft = positionDictionary[chord.Position];
 
                 yield return new VisualChord(chord, canvasLeft, canvasTopStaffGroup, globalLineSpacing, scoreScale, instrumentScale, staffGroup, instrumentMeasure, noteFactory, restFactory, colorARGB, scoreLayoutDictionary);
 
+                if (isFirstChord)
+                {
+                    isFirstChord = false;
+                    continue;
+                }
+                
                 if (chord.ReadNotes().Any(note => note.RythmicDuration.Decimal <= 0.5M))
                 {
                     var chordOrigin = ConstructChordOrigin(chord, staffGroup, canvasTopStaffGroup, canvasLeft, true);
@@ -101,12 +113,49 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                     var stemOrigin = ConstructStemOrigin(chord, staffGroup, canvasTopStaffGroup, canvasLeft, stemUp, firstNoteWidth);
                     stemIntersection = beamDefinition.IntersectVerticalRay(stemOrigin);
 
-                    VisualStem visualStem = new(stemOrigin, stemIntersection, StemThickness, chord, colorARGB);
+                    var visualStem = new VisualStem(stemOrigin, stemIntersection, StemThickness, chord, colorARGB);
                     stems.Add(visualStem);
                 }
             }
 
-            yield return new VisualBeamGroup(stems, beamDefinition, Scale, colorARGB, visualBeamBuilder);
+            // prepare for a cross beam group.
+            if(stems.Any(s => s.VisuallyUp && stems.Any(s => !s.VisuallyUp)))
+            {
+                // if the first stem faces upwards
+                // all stems that face downward (visually) should be extended the first beam size.
+                if (stems.First().VisuallyUp)
+                {
+                    for (var i = 0; i < stems.Count; i++)
+                    {
+                        var stem = stems[i];
+                        if (stem.VisuallyUp)
+                        {
+                            continue;
+                        }
+
+                        var newEndPoint = stem.End + new XY(0, Layout.BeamThickness * Scale);
+                        stems[i] = new VisualStem(stem.Origin, newEndPoint, StemThickness, stem.Chord, colorARGB);
+                    }
+                }
+                // if the first stem faces downwards
+                // all stems that face upward (visually) should be extended the first beam size.
+                else
+                {
+                    for (var i = 0; i < stems.Count; i++)
+                    {
+                        var stem = stems[i];
+                        if (!stem.VisuallyUp)
+                        {
+                            continue;
+                        }
+
+                        var newEndPoint = stem.End - new XY(0, Layout.BeamThickness * Scale);
+                        stems[i] = new VisualStem(stem.Origin, newEndPoint, StemThickness, stem.Chord, colorARGB);
+                    }
+                }
+            }
+
+            yield return new VisualBeamGroup(stems, beamDefinition, Layout.BeamThickness, Layout.BeamSpacing, Scale, colorARGB, visualBeamBuilder);
         }
         public XY ConstructStemOrigin(IChordReader chord, IStaffGroupReader staffGroup, double staffGroupCanvasTop, double chordCanvasLeft, bool stemUp, double noteWidth)
         {
@@ -124,7 +173,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             if (!chord.ReadNotes().Any())
             {
                 var line = 4;
-                var heightOnCanvas = staffGroup.EnumerateStaves(1).First().HeightFromLineIndex(staffGroupCanvasTop, line, globalLineSpacing, scoreScale, instrumentScale);
+                var heightOnCanvas = staffGroup.EnumerateStaves().First().HeightFromLineIndex(staffGroupCanvasTop, line, globalLineSpacing, scoreScale, instrumentScale);
                 return new XY(chordCanvasLeft, heightOnCanvas);
             }
 
@@ -140,7 +189,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             var noteLayout = anchorNote.ReadLayout();
             var noteStaffIndex = noteLayout.StaffIndex;
             var clef = instrumentMeasure.GetClef(noteStaffIndex, anchorNote.Position);
-            var staff = staffGroup.EnumerateStaves(noteStaffIndex + 1).ElementAt(noteStaffIndex);
+            var staff = staffGroup.EnumerateStaves().ElementAt(noteStaffIndex);
             var heightOriginOnCanvas = staffGroup.HeightOnCanvas(staffGroupCanvasTop, noteStaffIndex, clef.LineIndexAtPitch(anchorNote.Pitch), globalLineSpacing, scoreLayoutDictionary);
             var offsetToNeatlyFitNoteHead = globalLineSpacing * scoreScale * instrumentScale * 0.17;
             heightOriginOnCanvas += stemUp ?

@@ -5,7 +5,7 @@ namespace StudioLaValse.ScoreDocument.Primitives
     /// <summary>
     /// Represents a primitive instrument measure.
     /// </summary>
-    public interface IInstrumentMeasure : IScoreElement
+    public interface IInstrumentMeasure : IScoreElement, IUniqueScoreElement
     {
         /// <summary>
         /// The measure index of the host instrument ribbon. 

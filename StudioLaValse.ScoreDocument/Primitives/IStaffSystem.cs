@@ -3,7 +3,7 @@
     /// <summary>
     /// The base interface for a staff system.
     /// </summary>
-    public interface IStaffSystem
+    public interface IStaffSystem : IScoreElement
     {
 
     }

@@ -3,7 +3,7 @@
     /// <summary>
     /// The base interface for staff groups.
     /// </summary>
-    public interface IStaffGroup 
+    public interface IStaffGroup : IScoreElement
     {
         /// <summary>
         /// The instrument of the staff group.
@@ -34,7 +34,7 @@
         /// <summary>
         /// Enumerate the staves.
         /// </summary>
-        IEnumerable<TStaff> EnumerateStaves(int numberOfStaves);
+        IEnumerable<TStaff> EnumerateStaves();
         /// <summary>
         /// Enuemrate the measures.
         /// </summary>

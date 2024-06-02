@@ -1,5 +1,4 @@
 ﻿using StudioLaValse.ScoreDocument.Primitives;
-using StudioLaValse.ScoreDocument.Reader;
 using StudioLaValse.ScoreDocument.Reader.Extensions;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
@@ -115,7 +114,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             var instrumentScale = staffGroup.InstrumentRibbon.ReadLayout().Scale;
 
             var _canvasTop = canvasTop;
-            foreach (var staff in staffGroup.EnumerateStaves(Layout.NumberOfStaves))
+            foreach (var staff in staffGroup.EnumerateStaves())
             {
                 var staffLayout = staff.ReadLayout();
                 var instrumentMeasureLayout = source.ReadLayout();

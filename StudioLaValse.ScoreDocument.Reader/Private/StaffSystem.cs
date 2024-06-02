@@ -33,5 +33,15 @@ namespace StudioLaValse.ScoreDocument.Reader.Private
             paddingBottom ??= scoreDocument.ReadLayout().StaffSystemPaddingBottom;
             return new StaffSystemLayout(paddingBottom.Value);
         }
+
+        public IEnumerable<IScoreElement> EnumerateChildren()
+        {
+            return EnumerateMeasures().OfType<IScoreElement>().Concat(EnumerateStaffGroups());
+        }
+
+        public override string ToString()
+        {
+            return $"Staff System";
+        }
     }
 }

@@ -10,8 +10,14 @@
             return new ScoreMeasureStyleTemplate()
             {
                 PaddingLeft = 5,
-                PaddingRight = 10,
+                PaddingRight = 5,
             };
+        }
+
+        public void Apply(ScoreMeasureStyleTemplate styleTemplate)
+        {
+            PaddingLeft = styleTemplate.PaddingLeft;
+            PaddingRight = styleTemplate.PaddingRight;
         }
     }
 }

@@ -3,7 +3,7 @@
     /// <summary>
     /// A page in a score doccument.
     /// </summary>
-    public interface IPage 
+    public interface IPage : IScoreElement
     {
         /// <summary>
         /// The index in the score.

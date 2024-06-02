@@ -3,7 +3,7 @@
     /// <summary>
     /// The base interface for staves.
     /// </summary>
-    public interface IStaff
+    public interface IStaff : IScoreElement
     {
         /// <summary>
         /// The index in the staff group.

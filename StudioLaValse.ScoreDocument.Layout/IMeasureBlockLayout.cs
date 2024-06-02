@@ -2,7 +2,9 @@
 {
     public interface IMeasureBlockLayout
     {
-        double BeamAngle { get; }
         double StemLength { get; }
+        double BeamAngle { get; }
+        double BeamThickness { get; }
+        double BeamSpacing { get; }
     }
 }

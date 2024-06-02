@@ -22,9 +22,21 @@
                 MarginRight = 5,
                 MarginLeft = 10,
                 MarginBottom = 10,
-                PageColor = new ColorARGB() { A = 255, R = 255, G = 255, B = 255 },
+                PageColor = new ColorARGB() { A = 255, R = 214, G = 187, B = 137 },
                 ForegroundColor = new ColorARGB() { A = 255, R = 0, G = 0, B = 0 }
             };
+        }
+
+        public void Apply(PageStyleTemplate pageStyleTemplate)
+        {
+            PageHeight = pageStyleTemplate.PageHeight;
+            PageWidth = pageStyleTemplate.PageWidth;
+            MarginTop = pageStyleTemplate.MarginTop;
+            MarginRight = pageStyleTemplate.MarginRight;
+            MarginLeft = pageStyleTemplate.MarginLeft;
+            MarginBottom = pageStyleTemplate.MarginBottom;
+            PageColor = pageStyleTemplate.PageColor;
+            ForegroundColor = pageStyleTemplate.ForegroundColor;
         }
     }
 }

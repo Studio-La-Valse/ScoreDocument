@@ -1,5 +1,6 @@
 ﻿using StudioLaValse.ScoreDocument.Drawable.Private.Interfaces;
 using StudioLaValse.ScoreDocument.Reader;
+using System.Text.RegularExpressions;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
 {
@@ -17,21 +18,21 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
         }
 
 
-        public IEnumerable<BaseDrawableElement> Build(IEnumerable<VisualStem> stems, Ruler beamDefinition, double scale, ColorARGB color)
+        public IEnumerable<BaseDrawableElement> Build(IEnumerable<VisualStem> stems, Ruler beamDefinition, double beamThickness, double beamSpacing, double scale, ColorARGB color)
         {
             if (!stems.Any() || !stems.First().Chord.ReadBeamTypes().Any())
             {
                 return [];
             }
 
-            var groupUp = stems.First().VisuallyUp;
+            var crossGroup = stems.Any(s => s.VisuallyUp) && stems.Any(s => !s.VisuallyUp);
 
-            var beamThickness = 0.8 * scale;
-            var beamSpacing = 0.2 * scale;
+            var _beamThickness = beamThickness * scale;
+            var _beamSpacing = beamSpacing * scale;
 
             return stems.Count() == 1
                 ? ([AsFlag(stems.First(), scale, color)])
-                : AsGroup(stems, beamDefinition, beamSpacing, beamThickness, groupUp, color);
+                : AsGroup(stems, beamDefinition, _beamSpacing, _beamThickness, crossGroup, color);
         }
 
         public DrawableScoreGlyph AsFlag(VisualStem stem, double scale, ColorARGB color)
@@ -80,7 +81,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
             return flag is null ? throw new UnreachableException("Invalid beaming information.") : flag;
         }
 
-        public IEnumerable<DrawableTrapezoid> AsGroup(IEnumerable<VisualStem> stems, Ruler beamDefinition, double beamSpacing, double beamThickness, bool groupUp, ColorARGB color)
+        public IEnumerable<DrawableTrapezoid> AsGroup(IEnumerable<VisualStem> stems, Ruler beamDefinition, double beamSpacing, double beamThickness, bool crossGroup, ColorARGB color)
         {
             List<DrawableTrapezoid> beams = [];
 
@@ -115,13 +116,13 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
 
                         if (beamType == BeamType.HookStart)
                         {
-                            beams.Add(AsHookStart(stem, 1, beamIndex, beamDefinition, beamSpacing, beamThickness, groupUp, color));
+                            beams.Add(AsHookStart(stem, 1, beamIndex, beamDefinition, beamSpacing, beamThickness, crossGroup, color));
                             continue;
                         }
 
                         if (beamType == BeamType.HookEnd)
                         {
-                            beams.Add(AsHookEnd(stem, 1, beamIndex, beamDefinition, beamSpacing, beamThickness, groupUp, color));
+                            beams.Add(AsHookEnd(stem, 1, beamIndex, beamDefinition, beamSpacing, beamThickness, crossGroup, color));
                             continue;
                         }
 
@@ -136,7 +137,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
 
                     if (beamType == BeamType.End)
                     {
-                        beams.Add(BetweenTwoStems(openingStem, stem, beamIndex, beamDefinition, beamSpacing, beamThickness, groupUp, color));
+                        beams.Add(BetweenTwoStems(openingStem, stem, beamIndex, beamDefinition, beamSpacing, beamThickness, crossGroup, color));
                         openingStem = null;
                         continue;
                     }
@@ -148,7 +149,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
             return beams;
         }
 
-        public static DrawableTrapezoid BetweenTwoStems(VisualStem left, VisualStem right, int beamIndex, Ruler beamDefinition, double beamSpacing, double beamThickness, bool groupUp, ColorARGB color)
+        public static DrawableTrapezoid BetweenTwoStems(VisualStem left, VisualStem right, int beamIndex, Ruler beamDefinition, double beamSpacing, double beamThickness, bool crossGroup, ColorARGB color)
         {
             var stemUp = left.VisuallyUp;
             var ruler = stemUp ?
@@ -156,13 +157,6 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
                 beamDefinition.OffsetY(beamIndex * (beamSpacing + beamThickness)) :
                 //draw beams upwards
                 beamDefinition.OffsetY(beamIndex * ((beamSpacing + beamThickness) * -1));
-
-            if (stemUp != groupUp)
-            {
-                ruler = stemUp ?
-                    ruler.OffsetY(beamThickness) :
-                    ruler.OffsetY(beamThickness * -1);
-            }
 
             var thickness = stemUp ?
                 beamThickness :
@@ -175,7 +169,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
             return new DrawableTrapezoid(startPoint, endPoint, thickness, color);
         }
 
-        public static DrawableTrapezoid AsHookEnd(VisualStem stem, double length, int beamIndex, Ruler beamDefinition, double beamSpacing, double beamThickness, bool GroupUp, ColorARGB color)
+        public static DrawableTrapezoid AsHookEnd(VisualStem stem, double length, int beamIndex, Ruler beamDefinition, double beamSpacing, double beamThickness, bool crossGroup, ColorARGB color)
         {
             var stemUp = stem.VisuallyUp;
 
@@ -185,11 +179,11 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
                 //draw beams upwards
                 beamDefinition.OffsetY(beamIndex * ((beamSpacing + beamThickness) * -1));
 
-            if (stemUp != GroupUp)
+            if (crossGroup)
             {
                 ruler = stemUp ?
-                    ruler.OffsetY(beamThickness) :
-                    ruler.OffsetY(beamThickness * -1);
+                    ruler.OffsetY(beamThickness * -1) :
+                    ruler.OffsetY(beamThickness);
             }
 
             var thickness = stemUp ?
@@ -203,7 +197,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
             return new DrawableTrapezoid(startPoint, endPoint, thickness, color);
         }
 
-        public static DrawableTrapezoid AsHookStart(VisualStem stem, double length, int beamIndex, Ruler beamDefinition, double beamSpacing, double beamThickness, bool groupUp, ColorARGB color)
+        public static DrawableTrapezoid AsHookStart(VisualStem stem, double length, int beamIndex, Ruler beamDefinition, double beamSpacing, double beamThickness, bool crossGroup, ColorARGB color)
         {
             var stemUp = stem.VisuallyUp;
 
@@ -213,11 +207,11 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
                 //draw beams upwards
                 beamDefinition.OffsetY(beamIndex * ((beamSpacing + beamThickness) * -1));
 
-            if (stemUp != groupUp)
+            if (crossGroup)
             {
                 ruler = stemUp ?
-                    ruler.OffsetY(beamThickness) :
-                    ruler.OffsetY(beamThickness * -1);
+                    ruler.OffsetY(beamThickness * -1) :
+                    ruler.OffsetY(beamThickness);
             }
 
             var thickness = stemUp ?

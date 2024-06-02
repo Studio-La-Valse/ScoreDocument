@@ -103,7 +103,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         }
         public IEnumerable<BaseContentWrapper> ConstructSystemMeasures()
         {
-            var lengthWithoutAdjustment = staffSystem.EnumerateMeasures().Select(m => m.ReadLayout().Width).Sum();
+            var lengthWithoutAdjustment = staffSystem.EnumerateMeasures().Select(m => m.ApproximateWidth()).Sum();
             var totalLength = length;
             var paddingStart = CalculateOpeningPadding();
             var availableLength = totalLength - paddingStart;
@@ -112,10 +112,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
             foreach (var measure in staffSystem.EnumerateMeasures())
             {
-                var measureLayout = measure.ReadLayout();
-                var measureWidth = measureLayout.Width;
-
-                measureWidth = MathUtils.Map(measureWidth, 0, lengthWithoutAdjustment, 0, availableLength);
+                var measureWidth = measure.ApproximateWidth().Map(0, lengthWithoutAdjustment, 0, availableLength);
 
                 var systemMeasure = systemMeasureFactory.CreateContent(measure, staffSystem, _canvasLeft, canvasTop, measureWidth, globalLineSpacing, baseColor);
                 yield return systemMeasure;
@@ -129,7 +126,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
             foreach (var staffGroup in staffSystem.EnumerateStaffGroups())
             {
-                var instrumentScale = scoreLayoutDictionary.GetInstrumentScale(staffGroup.InstrumentRibbon);
+                var instrumentScale = staffGroup.InstrumentRibbon.ReadLayout().Scale;
 
                 VisualStaffGroup _staffGroup = new(
                     staffGroup,

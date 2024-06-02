@@ -4,45 +4,67 @@ namespace StudioLaValse.ScoreDocument.Layout.Templates
 {
     public class ScoreDocumentStyleTemplate
     {
-        public double Scale { get; set; } = 1.0;
+        public required double Scale { get; set; }
 
-        public double HorizontalStaffLineThickness { get; set; } = 0.075;
+        public required double HorizontalStaffLineThickness { get; set; }
 
-        public double VerticalStaffLineThickness { get; set; } = 0.25;
+        public required double VerticalStaffLineThickness { get; set; }
 
-        public double StemLineThickness { get; set; } = 0.1;
+        public required double StemLineThickness { get; set; }
 
-        public double FirstSystemIndent { get; set; } = 15;
+        public required double FirstSystemIndent { get; set; }
 
-        public ColorARGB PageColor { get; set; } = new ColorARGB() { A = 255, R = 255, G = 255, B = 255 };  
+        public required double ChordPositionFactor { get; set; }
 
-        public ColorARGB ForegroundColor { get; set; } = new ColorARGB() { A = 255, R = 0, G = 0, B = 0 };
+        public required Dictionary<Guid, double> InstrumentScales { get; init; }
 
-        public Dictionary<Guid, double> InstrumentScales { get; init; } = [];
 
-        public PageStyleTemplate PageStyleTemplate { get; init; } = new();
 
-        public ScoreMeasureStyleTemplate ScoreMeasureStyleTemplate { get; init; } = new();
+        public required PageStyleTemplate PageStyleTemplate { get; init; }
 
-        public InstrumentMeasureStyleTemplate InstrumentMeasureStyleTemplate { get; init; } = new();
+        public required ScoreMeasureStyleTemplate ScoreMeasureStyleTemplate { get; init; }
 
-        public InstrumentRibbonStyleTemplate InstrumentRibbonStyleTemplate { get; init; } = new();
+        public required InstrumentMeasureStyleTemplate InstrumentMeasureStyleTemplate { get; init; }
 
-        public ChordStyleTemplate ChordStyleTemplate { get; init; } = new();
+        public required InstrumentRibbonStyleTemplate InstrumentRibbonStyleTemplate { get; init; }
 
-        public NoteStyleTemplate NoteStyleTemplate { get; init; } = new();
+        public required ChordStyleTemplate ChordStyleTemplate { get; init; } 
 
-        public MeasureBlockStyleTemplate MeasureBlockStyleTemplate { get; init; } = new();
+        public required NoteStyleTemplate NoteStyleTemplate { get; init; }
 
-        public StaffStyleTemplate StaffStyleTemplate { get; init; } = new();
+        public required MeasureBlockStyleTemplate MeasureBlockStyleTemplate { get; init; }
 
-        public StaffGroupStyleTemplate StaffGroupStyleTemplate { get; init; } = new();
+        public required StaffStyleTemplate StaffStyleTemplate { get; init; }
 
-        public StaffSystemStyleTemplate StaffSystemStyleTemplate { get; init; } = new();
+        public required StaffGroupStyleTemplate StaffGroupStyleTemplate { get; init; }
 
-        public ScoreDocumentStyleTemplate()
+        public required StaffSystemStyleTemplate StaffSystemStyleTemplate { get; init; }
+
+
+
+
+        public static ScoreDocumentStyleTemplate Create()
         {
-
+            return new ScoreDocumentStyleTemplate()
+            {
+                Scale = 1,
+                HorizontalStaffLineThickness = 0.075,
+                VerticalStaffLineThickness = 0.25,
+                FirstSystemIndent = 15,
+                StemLineThickness = 0.1,
+                ChordPositionFactor = 0,
+                InstrumentScales = [],
+                PageStyleTemplate = PageStyleTemplate.Create(),
+                ScoreMeasureStyleTemplate = ScoreMeasureStyleTemplate.Create(),
+                InstrumentMeasureStyleTemplate = new(),
+                InstrumentRibbonStyleTemplate = new(),
+                ChordStyleTemplate = ChordStyleTemplate.Create(),
+                NoteStyleTemplate = NoteStyleTemplate.Create(),
+                MeasureBlockStyleTemplate = MeasureBlockStyleTemplate.Create(),
+                StaffStyleTemplate = StaffStyleTemplate.Create(),
+                StaffGroupStyleTemplate = StaffGroupStyleTemplate.Create(),
+                StaffSystemStyleTemplate = StaffSystemStyleTemplate.Create()
+            };
         }
 
         public void Apply(ScoreDocumentStyleTemplate styleTemplate)
@@ -52,6 +74,7 @@ namespace StudioLaValse.ScoreDocument.Layout.Templates
             VerticalStaffLineThickness = styleTemplate.VerticalStaffLineThickness;
             StemLineThickness = styleTemplate.StemLineThickness;
             FirstSystemIndent = styleTemplate.FirstSystemIndent;
+            ChordPositionFactor = styleTemplate.ChordPositionFactor;
 
             InstrumentScales.Clear();
             foreach (var kv in styleTemplate.InstrumentScales)
@@ -68,7 +91,6 @@ namespace StudioLaValse.ScoreDocument.Layout.Templates
 
             ScoreMeasureStyleTemplate.PaddingLeft = styleTemplate.ScoreMeasureStyleTemplate.PaddingLeft;
             ScoreMeasureStyleTemplate.PaddingRight = styleTemplate.ScoreMeasureStyleTemplate.PaddingRight;
-            ScoreMeasureStyleTemplate.Width = styleTemplate.ScoreMeasureStyleTemplate.Width;
 
             NoteStyleTemplate.Scale = styleTemplate.NoteStyleTemplate.Scale;
             NoteStyleTemplate.AccidentalDisplay = styleTemplate.NoteStyleTemplate.AccidentalDisplay;
@@ -76,11 +98,11 @@ namespace StudioLaValse.ScoreDocument.Layout.Templates
             MeasureBlockStyleTemplate.StemLength = styleTemplate.MeasureBlockStyleTemplate.StemLength;
             MeasureBlockStyleTemplate.BeamAngle = styleTemplate.MeasureBlockStyleTemplate.BeamAngle;
 
+            ChordStyleTemplate.SpaceRight = styleTemplate.ChordStyleTemplate.SpaceRight;
+
             StaffStyleTemplate.DistanceToNext = styleTemplate.StaffStyleTemplate.DistanceToNext;
-
             StaffGroupStyleTemplate.DistanceToNext = styleTemplate.StaffGroupStyleTemplate.DistanceToNext;
-
-            StaffSystemStyleTemplate.PaddingBottom = styleTemplate.StaffSystemStyleTemplate.PaddingBottom;
+            StaffSystemStyleTemplate.DistanceToNext = styleTemplate.StaffSystemStyleTemplate.DistanceToNext;
         }
     }
 }

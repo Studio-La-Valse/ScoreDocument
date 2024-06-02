@@ -1,8 +1,8 @@
 ﻿namespace StudioLaValse.ScoreDocument.Models.Classes
 {
-    public class KeySignature
+    public class KeySignatureClass
     {
-        public required Step Step { get; set; }
+        public required StepClass Step { get; set; }
 
         public required bool Major { get; set; }
     }

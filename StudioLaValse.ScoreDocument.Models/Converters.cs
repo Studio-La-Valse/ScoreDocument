@@ -2,18 +2,18 @@
 using StudioLaValse.ScoreDocument.Layout;
 using StudioLaValse.ScoreDocument.Layout.Templates;
 
-namespace Sinfonia.Implementations.ScoreDocument.Converters
+namespace StudioLaValse.ScoreDocument.Models
 {
     public static class Converters
     {
-        public static Instrument Convert(this StudioLaValse.ScoreDocument.Models.Classes.Instrument instrument)
+        public static Instrument Convert(this Classes.InstrumentClass instrument)
         {
             var _instrument = Instrument.CreateCustom(instrument.Name, instrument.Clefs.Select(Convert).ToArray());
             return _instrument;
         }
-        public static StudioLaValse.ScoreDocument.Models.Classes.Instrument Convert(this Instrument instrument)
+        public static Classes.InstrumentClass Convert(this Instrument instrument)
         {
-            var _instrument = new StudioLaValse.ScoreDocument.Models.Classes.Instrument()
+            var _instrument = new Classes.InstrumentClass()
             {
                 Clefs = instrument.DefaultClefs.Select(Convert).ToList(),
                 Name = instrument.Name,
@@ -21,14 +21,14 @@ namespace Sinfonia.Implementations.ScoreDocument.Converters
             return _instrument;
         }
 
-        public static RythmicDuration Convert(this StudioLaValse.ScoreDocument.Models.Classes.RythmicDuration rythmicDuration)
+        public static RythmicDuration Convert(this Classes.RythmicDurationClass rythmicDuration)
         {
             var _rythmicDuration = new RythmicDuration(rythmicDuration.PowerOfTwo, rythmicDuration.Dots);
             return _rythmicDuration;
         }
-        public static StudioLaValse.ScoreDocument.Models.Classes.RythmicDuration Convert(this RythmicDuration rythmicDuration)
+        public static Classes.RythmicDurationClass Convert(this RythmicDuration rythmicDuration)
         {
-            var _rythmicDuration = new StudioLaValse.ScoreDocument.Models.Classes.RythmicDuration()
+            var _rythmicDuration = new Classes.RythmicDurationClass()
             {
                 PowerOfTwo = rythmicDuration.PowerOfTwo,
                 Dots = rythmicDuration.Dots
@@ -36,14 +36,14 @@ namespace Sinfonia.Implementations.ScoreDocument.Converters
             return _rythmicDuration;
         }
 
-        public static TimeSignature Convert(this StudioLaValse.ScoreDocument.Models.Classes.TimeSignature timeSignature)
+        public static TimeSignature Convert(this Classes.TimeSignatureClass timeSignature)
         {
             var _timeSignature = new TimeSignature(timeSignature.Numerator, timeSignature.Denominator);
             return _timeSignature;
         }
-        public static StudioLaValse.ScoreDocument.Models.Classes.TimeSignature Convert(this TimeSignature timeSignature)
+        public static Classes.TimeSignatureClass Convert(this TimeSignature timeSignature)
         {
-            var _timeSignature = new StudioLaValse.ScoreDocument.Models.Classes.TimeSignature()
+            var _timeSignature = new Classes.TimeSignatureClass()
             {
                 Denominator = timeSignature.Denominator,
                 Numerator = timeSignature.Numerator,
@@ -51,17 +51,17 @@ namespace Sinfonia.Implementations.ScoreDocument.Converters
             return _timeSignature;
         }
 
-        public static KeySignature Convert(this StudioLaValse.ScoreDocument.Models.Classes.KeySignature keySignature)
+        public static KeySignature Convert(this Classes.KeySignatureClass keySignature)
         {
-            var step = Convert(keySignature.Step);
+            var step = keySignature.Step.Convert();
             var _keySignature = new KeySignature(step, keySignature.Major ? MajorOrMinor.Major : MajorOrMinor.Minor);
             return _keySignature;
         }
-        public static StudioLaValse.ScoreDocument.Models.Classes.KeySignature Convert(this KeySignature keySignature)
+        public static Classes.KeySignatureClass Convert(this KeySignature keySignature)
         {
-            var step = Convert(keySignature.Origin);
+            var step = keySignature.Origin.Convert();
             var major = keySignature.MajorOrMinor == MajorOrMinor.Major ? true : false;
-            var _keySignature = new StudioLaValse.ScoreDocument.Models.Classes.KeySignature()
+            var _keySignature = new Classes.KeySignatureClass()
             {
                 Major = major,
                 Step = step,
@@ -90,14 +90,14 @@ namespace Sinfonia.Implementations.ScoreDocument.Converters
         }
 
 
-        public static ClefChange Convert(this StudioLaValse.ScoreDocument.Models.Classes.ClefChange clefChange)
+        public static ClefChange Convert(this Classes.ClefChangeClass clefChange)
         {
             var _clefChange = new ClefChange(clefChange.Clef.Convert(), clefChange.StaffIndex, clefChange.Position.Convert());
             return _clefChange;
         }
-        public static StudioLaValse.ScoreDocument.Models.Classes.ClefChange Convert(this ClefChange clefChange)
+        public static Classes.ClefChangeClass Convert(this ClefChange clefChange)
         {
-            var _clefChange = new StudioLaValse.ScoreDocument.Models.Classes.ClefChange()
+            var _clefChange = new Classes.ClefChangeClass()
             {
                 Clef = clefChange.Clef.Convert(),
                 Position = clefChange.Position.Convert(),
@@ -107,14 +107,14 @@ namespace Sinfonia.Implementations.ScoreDocument.Converters
         }
 
 
-        public static Step Convert(this StudioLaValse.ScoreDocument.Models.Classes.Step step)
+        public static Step Convert(this Classes.StepClass step)
         {
             var _step = new Step(step.StepsFromC, step.Shifts);
             return _step;
         }
-        public static StudioLaValse.ScoreDocument.Models.Classes.Step Convert(this Step step)
+        public static Classes.StepClass Convert(this Step step)
         {
-            var _step = new StudioLaValse.ScoreDocument.Models.Classes.Step()
+            var _step = new Classes.StepClass()
             {
                 StepsFromC = step.StepsFromC,
                 Shifts = step.Shifts
@@ -122,30 +122,30 @@ namespace Sinfonia.Implementations.ScoreDocument.Converters
             return _step;
         }
 
-        public static Pitch Convert(this StudioLaValse.ScoreDocument.Models.Classes.Pitch pitch)
+        public static Pitch Convert(this Classes.PitchClass pitch)
         {
-            var step = Convert(pitch.Step);
+            var step = pitch.Step.Convert();
             var _pitch = new Pitch(step, pitch.Octave);
             return _pitch;
         }
-        public static StudioLaValse.ScoreDocument.Models.Classes.Pitch Convert(this Pitch pitch)
+        public static Classes.PitchClass Convert(this Pitch pitch)
         {
-            var _pitch = new StudioLaValse.ScoreDocument.Models.Classes.Pitch()
+            var _pitch = new Classes.PitchClass()
             {
                 Octave = pitch.Octave,
-                Step = Convert(pitch.Step)
+                Step = pitch.Step.Convert()
             };
             return _pitch;
         }
 
-        public static Position Convert(this StudioLaValse.ScoreDocument.Models.Classes.Position position)
+        public static Position Convert(this Classes.PositionClass position)
         {
             var _position = new Position(position.Numerator, position.Denominator);
             return _position;
         }
-        public static StudioLaValse.ScoreDocument.Models.Classes.Position Convert(this Position position)
+        public static Classes.PositionClass Convert(this Position position)
         {
-            var _position = new StudioLaValse.ScoreDocument.Models.Classes.Position()
+            var _position = new Classes.PositionClass()
             {
                 Denominator = position.Denominator,
                 Numerator = position.Numerator,
@@ -153,7 +153,7 @@ namespace Sinfonia.Implementations.ScoreDocument.Converters
             return _position;
         }
 
-        public static ColorARGB Convert(this StudioLaValse.ScoreDocument.Models.Classes.ColorARGB Color)
+        public static ColorARGB Convert(this Classes.ColorARGBClass Color)
         {
             var _color = new ColorARGB()
             {
@@ -164,9 +164,9 @@ namespace Sinfonia.Implementations.ScoreDocument.Converters
             };
             return _color;
         }
-        public static StudioLaValse.ScoreDocument.Models.Classes.ColorARGB Convert(this ColorARGB Color)
+        public static Classes.ColorARGBClass Convert(this ColorARGB Color)
         {
-            var _color = new StudioLaValse.ScoreDocument.Models.Classes.ColorARGB()
+            var _color = new Classes.ColorARGBClass()
             {
                 A = Color.A,
                 B = Color.B,
@@ -183,7 +183,7 @@ namespace Sinfonia.Implementations.ScoreDocument.Converters
         }
         public static int ConvertBeam(this BeamType beamType)
         {
-            return (int)beamType;   
+            return (int)beamType;
         }
         public static AccidentalDisplay ConvertAccidental(this int i)
         {

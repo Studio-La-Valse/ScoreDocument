@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace StudioLaValse.ScoreDocument.Models.Classes
 {
-    public class Position : IEquatable<Position>
+    public class PositionClass : IEquatable<PositionClass>
     {
         public required int Numerator { get; set; }
 
@@ -11,7 +11,7 @@ namespace StudioLaValse.ScoreDocument.Models.Classes
         [Range(1, int.MaxValue)]
         public required int Denominator { get; set; }
 
-        public bool Equals(Position? other)
+        public bool Equals(PositionClass? other)
         {
             if(other is null)
             {

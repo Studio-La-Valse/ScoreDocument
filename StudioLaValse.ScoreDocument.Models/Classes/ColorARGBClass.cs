@@ -2,7 +2,7 @@
 
 namespace StudioLaValse.ScoreDocument.Models.Classes
 {
-    public class ColorARGB
+    public class ColorARGBClass
     {
         [Range(0, 255)]
         public required int R { get; set; }

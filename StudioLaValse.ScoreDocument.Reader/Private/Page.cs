@@ -12,11 +12,11 @@ namespace StudioLaValse.ScoreDocument.Reader.Private
 
 
 
-        public Page(int indexInScore, ScoreDocumentStyleTemplate styleTemplate)
+        public Page(int indexInScore, IScoreDocumentLayout scoreDocumentLayout)
         {
             IndexInScore = indexInScore;
 
-            Layout = new PageLayout(styleTemplate.PageStyleTemplate);
+            Layout = new PageLayout(scoreDocumentLayout);
         }
 
         public IEnumerable<IStaffSystemReader> EnumerateStaffSystems()

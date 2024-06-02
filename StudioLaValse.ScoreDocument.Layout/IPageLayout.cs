@@ -1,4 +1,6 @@
-﻿namespace StudioLaValse.ScoreDocument.Layout
+﻿using StudioLaValse.ScoreDocument.Layout.Templates;
+
+namespace StudioLaValse.ScoreDocument.Layout
 {
     public interface IPageLayout
     {
@@ -8,5 +10,7 @@
         double MarginTop { get; }
         int PageHeight { get; }
         int PageWidth { get; }
+        ColorARGB PageColor { get; }
+        ColorARGB ForegroundColor { get; }
     }
 }

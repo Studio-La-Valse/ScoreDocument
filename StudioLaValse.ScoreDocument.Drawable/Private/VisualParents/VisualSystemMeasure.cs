@@ -87,11 +87,13 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         private IEnumerable<BaseContentWrapper> ConstructStaffGroupMeasures()
         {
             var _canvasTop = canvasTop;
+            var positions = scoreMeasure.EnumeratePositions();
+            positions.Remap(canvasLeft + PaddingLeft, canvasLeft + width - PaddingRight, scoreMeasure.TimeSignature, scoreLayoutDictionary.ChordPositionFactor);
 
             foreach (var staffGroup in staffSystem.EnumerateStaffGroups())
             {
                 var ribbonMesaure = scoreMeasure.ReadMeasure(staffGroup.IndexInSystem);
-                var wrapper = visualInstrumentMeasureFactory.CreateContent(ribbonMesaure, staffGroup, _canvasTop, canvasLeft, width, PaddingLeft, PaddingRight, lineSpacing, color);
+                var wrapper = visualInstrumentMeasureFactory.CreateContent(ribbonMesaure, staffGroup, positions, _canvasTop, canvasLeft, width, PaddingLeft, PaddingRight, lineSpacing, color);
                 yield return wrapper;
 
                 var staffGroupLayout = staffGroup.ReadLayout();

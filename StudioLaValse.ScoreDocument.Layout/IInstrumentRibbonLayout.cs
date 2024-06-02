@@ -8,6 +8,7 @@ namespace StudioLaValse.ScoreDocument.Layout
         bool Collapsed { get; }
         string DisplayName { get; }
         int NumberOfStaves { get; }
+        double Scale { get; }
     }
 
     public static class InstrumentRibbonLayoutExtensions

@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a score element that may be edited.
     /// </summary>
-    public interface IScoreElementEditor : IScoreEntity, IScoreElement
+    public interface IScoreElementEditor : IScoreElement
     {
 
     }

@@ -2,8 +2,16 @@
 {
     public class ScoreMeasureStyleTemplate
     {
-        public int Width { get; set; } = 50;
-        public int PaddingLeft { get; set; } = 5;
-        public int PaddingRight { get; set; } = 0;
+        public required double PaddingLeft { get; set; }
+        public required double PaddingRight { get; set; }
+
+        public static ScoreMeasureStyleTemplate Create()
+        {
+            return new ScoreMeasureStyleTemplate()
+            {
+                PaddingLeft = 5,
+                PaddingRight = 10,
+            };
+        }
     }
 }

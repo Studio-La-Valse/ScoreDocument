@@ -2,16 +2,16 @@
 
 namespace StudioLaValse.ScoreDocument.Models.Classes
 {
-    public class ClefChange : IEquatable<ClefChange>
+    public class ClefChangeClass : IEquatable<ClefChangeClass>
     {
         public required string Clef { get; set; }
 
         [Range(0, int.MaxValue)]
         public required int StaffIndex { get; set; }
 
-        public required Position Position { get; set; }
+        public required PositionClass Position { get; set; }
 
-        public bool Equals(ClefChange? other)
+        public bool Equals(ClefChangeClass? other)
         {
             if (other is null)
             {

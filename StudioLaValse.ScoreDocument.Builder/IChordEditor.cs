@@ -26,5 +26,11 @@
         /// </summary>
         /// <param name="offset"></param>
         void SetXOffset(double offset);
+
+        /// <summary>
+        /// Sets the required amount of space on the right of the chord.
+        /// </summary>
+        /// <param name="spaceRight"></param>
+        void SetSpaceRight(double spaceRight);
     }
 }

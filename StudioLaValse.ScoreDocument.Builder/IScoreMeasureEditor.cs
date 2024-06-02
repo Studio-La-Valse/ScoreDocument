@@ -21,11 +21,6 @@
         /// <param name="padding"></param>
         void SetPaddingRight(double padding);
         /// <summary>
-        /// Sets the width of the measure. Can cause the staff sytem to overflow and push measures to the next staff sytem. Absolute value that does not change with scaling.
-        /// </summary>
-        /// <param name="width"></param>
-        void SetWidth(double width);
-        /// <summary>
         /// Requests padding bottom for this measure in the staff system. 
         /// If no value is applied, no padding is requested. 
         /// The highest non-null value of all measures in the staff system will determine the padding of the staff system.

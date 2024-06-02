@@ -11,7 +11,7 @@ public class ScoreDocumentMembers : ScoreDocumentLayoutMembers
 public class ScoreMeasureMembers : ScoreMeasureLayoutMembers
 {
     [Column(TypeName = "jsonb")]
-    public required TimeSignature TimeSignature { get; set; }
+    public required TimeSignatureClass TimeSignature { get; set; }
 
     [Range(0, int.MaxValue)]
     public required int IndexInScore { get; set; }
@@ -20,7 +20,7 @@ public class ScoreMeasureMembers : ScoreMeasureLayoutMembers
 public class InstrumentRibbonMembers : InstrumentRibbonLayoutMembers
 {
     [Column(TypeName = "jsonb")]
-    public required Instrument Instrument { get; set; }
+    public required InstrumentClass Instrument { get; set; }
 
     [Range(0, int.MaxValue)]
     public required int IndexInScore { get; set; }
@@ -41,23 +41,23 @@ public class MeasureBlockMembers : MeasureBlockLayoutMembers
     public required int Voice { get; set; }
 
     [Column(TypeName = "jsonb")]
-    public required RythmicDuration Duration { get; set; }
+    public required RythmicDurationClass Duration { get; set; }
 
     [Column(TypeName = "jsonb")]
-    public required Position Position { get; set; }
+    public required PositionClass Position { get; set; }
 }
 
 public class ChordMembers : ChordLayoutMembers
 {
     [Column(TypeName = "jsonb")]
-    public required RythmicDuration RythmicDuration { get; set; }
+    public required RythmicDurationClass RythmicDuration { get; set; }
 
     [Column(TypeName = "jsonb")]
-    public required Position Position { get; set; }
+    public required PositionClass Position { get; set; }
 }
 
 public class NoteMembers : NoteLayoutMembers
 {
     [Column(TypeName = "jsonb")]
-    public required Pitch Pitch { get; set; }
+    public required PitchClass Pitch { get; set; }
 }

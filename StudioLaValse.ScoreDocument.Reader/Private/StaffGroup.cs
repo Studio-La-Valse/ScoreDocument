@@ -1,13 +1,12 @@
 ﻿using StudioLaValse.ScoreDocument.Layout;
-using StudioLaValse.ScoreDocument.Layout.Templates;
-using StudioLaValse.ScoreDocument.Primitives;
+using StudioLaValse.ScoreDocument.Reader.Extensions;
 
 namespace StudioLaValse.ScoreDocument.Reader.Private
 {
     internal class StaffGroup : IStaffGroupReader
     {
-        private readonly ScoreDocumentStyleTemplate documentStyleTemplate;
-        private readonly IList<IScoreMeasureReader> scoreMeasures;
+        private readonly IScoreDocumentLayout documentStyleTemplate;
+        private readonly IEnumerable<IScoreMeasureReader> scoreMeasures;
 
 
         public IInstrumentRibbonReader InstrumentRibbon { get; }
@@ -19,7 +18,7 @@ namespace StudioLaValse.ScoreDocument.Reader.Private
             InstrumentRibbon.IndexInScore;
 
 
-        public StaffGroup(IInstrumentRibbonReader instrumentRibbon, ScoreDocumentStyleTemplate documentStyleTemplate, IList<IScoreMeasureReader> scoreMeasures)
+        public StaffGroup(IInstrumentRibbonReader instrumentRibbon, IScoreDocumentLayout documentStyleTemplate, IEnumerable<IScoreMeasureReader> scoreMeasures)
         {
             InstrumentRibbon = instrumentRibbon;
 
@@ -39,7 +38,7 @@ namespace StudioLaValse.ScoreDocument.Reader.Private
         {
             for (var staffIndex = 0; staffIndex < numberOfStaves; staffIndex++)
             {
-                yield return new Staff(staffIndex, documentStyleTemplate.StaffStyleTemplate, EnumerateMeasures());
+                yield return new Staff(staffIndex, documentStyleTemplate, EnumerateMeasures());
             }
         }
 
@@ -50,13 +49,25 @@ namespace StudioLaValse.ScoreDocument.Reader.Private
 
         public IStaffGroupLayout ReadLayout()
         {
-            var numberOfStaves = EnumerateMeasures().Max(m => m.ReadLayout().NumberOfStaves) ??
-                    Instrument.NumberOfStaves;
+            var numberOfStaves = EnumerateMeasures().Max(m => m.ReadLayout().NumberOfStaves);
+            if(numberOfStaves is null)
+            {
+                var highestStaffIndex = 1;
+                foreach(var measure in EnumerateMeasures())
+                {
+                    foreach(var note in measure.ReadNotes())
+                    {
+                        highestStaffIndex = Math.Max(highestStaffIndex, note.ReadLayout().StaffIndex + 1);
+                    }
+                }
+                numberOfStaves = Math.Max(Instrument.NumberOfStaves, highestStaffIndex);
+            }
+                
             var distanceToNext = EnumerateMeasures().Max(m => m.ReadLayout().PaddingBottom) ??
-                documentStyleTemplate.StaffGroupStyleTemplate.DistanceToNext;
+                documentStyleTemplate.StaffGroupPaddingBottom;
             var collapsed = EnumerateMeasures().Any(m => m.ReadLayout().Collapsed);
 
-            var layout = new StaffGroupLayout(numberOfStaves, distanceToNext, collapsed);
+            var layout = new StaffGroupLayout(numberOfStaves.Value, distanceToNext, collapsed);
             return layout;
         }
     }

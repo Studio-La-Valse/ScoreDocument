@@ -7,15 +7,13 @@ namespace StudioLaValse.ScoreDocument.Reader.Private
     internal class StaffSystem : IStaffSystemReader
     {
         private readonly IScoreDocumentReader scoreDocument;
-        private readonly ScoreDocumentStyleTemplate documentStyleTemplate;
 
         public IList<IScoreMeasureReader> ScoreMeasures { get; } = [];
 
 
-        public StaffSystem(IScoreDocumentReader scoreDocument, ScoreDocumentStyleTemplate documentStyleTemplate)
+        public StaffSystem(IScoreDocumentReader scoreDocument)
         {
             this.scoreDocument = scoreDocument;
-            this.documentStyleTemplate = documentStyleTemplate;
         }
 
 
@@ -26,13 +24,13 @@ namespace StudioLaValse.ScoreDocument.Reader.Private
 
         public IEnumerable<IStaffGroupReader> EnumerateStaffGroups()
         {
-            return scoreDocument.ReadInstrumentRibbons().Select(r => new StaffGroup(r, documentStyleTemplate, ScoreMeasures));
+            return scoreDocument.ReadInstrumentRibbons().Select(r => new StaffGroup(r, scoreDocument.ReadLayout(), ScoreMeasures));
         }
 
         public IStaffSystemLayout ReadLayout()
         {
             var paddingBottom = ScoreMeasures.Max(m => m.ReadLayout().PaddingBottom);
-            paddingBottom ??= documentStyleTemplate.StaffSystemStyleTemplate.PaddingBottom;
+            paddingBottom ??= scoreDocument.ReadLayout().StaffSystemPaddingBottom;
             return new StaffSystemLayout(paddingBottom.Value);
         }
     }

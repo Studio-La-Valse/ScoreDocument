@@ -3,12 +3,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace StudioLaValse.ScoreDocument.Models.Classes
 {
-    public class TimeSignature
+    public class RythmicDurationClass
     {
-        [Range(1, int.MaxValue)]
-        public required int Numerator { get; set; }
-
         [PowerOfTwo]
-        public required int Denominator { get; set; }
+        [Range(1, int.MaxValue)]
+        public required int PowerOfTwo { get; set; }
+
+        [Range(0, int.MaxValue)]
+        public required int Dots { get; set; }
     }
 }

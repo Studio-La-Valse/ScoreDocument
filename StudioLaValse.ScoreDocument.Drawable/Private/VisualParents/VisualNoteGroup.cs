@@ -9,9 +9,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         private readonly IMeasureBlockReader measureBlock;
         private readonly IStaffGroupReader staffGroup;
         private readonly IInstrumentMeasureReader instrumentMeasure;
+        private readonly IReadOnlyDictionary<Position, double> positionDictionary;
         private readonly double canvasTopStaffGroup;
-        private readonly double canvasLeft;
-        private readonly double allowedSpace;
         private readonly double globalLineSpacing;
         private readonly double scoreScale;
         private readonly double instrumentScale;
@@ -35,14 +34,25 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         }
 
 
-        public VisualNoteGroup(IMeasureBlockReader measureBlock, IStaffGroupReader staffGroup, IInstrumentMeasureReader instrumentMeasure, double canvasTopStaffGroup, double canvasLeft, double allowedSpace, double globalLineSpacing, double scoreScale, double instrumentScale, IVisualNoteFactory noteFactory, IVisualRestFactory restFactory, IVisualBeamBuilder visualBeamBuilder, ColorARGB colorARGB, IScoreDocumentLayout scoreLayoutDictionary)
+        public VisualNoteGroup(IMeasureBlockReader measureBlock,
+                               IStaffGroupReader staffGroup,
+                               IInstrumentMeasureReader instrumentMeasure,
+                               IReadOnlyDictionary<Position, double> positionDictionary,
+                               double canvasTopStaffGroup,
+                               double globalLineSpacing,
+                               double scoreScale,
+                               double instrumentScale,
+                               IVisualNoteFactory noteFactory,
+                               IVisualRestFactory restFactory,
+                               IVisualBeamBuilder visualBeamBuilder,
+                               ColorARGB colorARGB,
+                               IScoreDocumentLayout scoreLayoutDictionary)
         {
             this.measureBlock = measureBlock;
             this.staffGroup = staffGroup;
             this.instrumentMeasure = instrumentMeasure;
+            this.positionDictionary = positionDictionary;
             this.canvasTopStaffGroup = canvasTopStaffGroup;
-            this.canvasLeft = canvasLeft;
-            this.allowedSpace = allowedSpace;
             this.globalLineSpacing = globalLineSpacing;
             this.scoreScale = scoreScale;
             this.instrumentScale = instrumentScale;
@@ -69,15 +79,17 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
             var firstNoteWidth = firstNote.Width;
 
-            var canvasLeft = this.canvasLeft;
             var firstStemUp = Layout.StemLength > 0;
-            var firstStemOrigin = ConstructStemOrigin(firstChord, staffGroup, canvasTopStaffGroup, canvasLeft, firstStemUp, firstNoteWidth);
+            var firstChordCanvasLeft = positionDictionary[firstChord.Position];
+            var firstStemOrigin = ConstructStemOrigin(firstChord, staffGroup, canvasTopStaffGroup, firstChordCanvasLeft, firstStemUp, firstNoteWidth);
             XY firstStemTip = new(firstStemOrigin.X, firstStemOrigin.Y + (Layout.StemLength * Scale));
             Ruler beamDefinition = new(firstStemTip, Layout.BeamAngle);
             List<VisualStem> stems = [];
             var groupLength = chords.Select(c => c.RythmicDuration).Sum().Decimal;
             foreach (var chord in chords)
             {
+                var canvasLeft = positionDictionary[chord.Position];
+
                 yield return new VisualChord(chord, canvasLeft, canvasTopStaffGroup, globalLineSpacing, scoreScale, instrumentScale, staffGroup, instrumentMeasure, noteFactory, restFactory, colorARGB, scoreLayoutDictionary);
 
                 if (chord.ReadNotes().Any(note => note.RythmicDuration.Decimal <= 0.5M))
@@ -92,8 +104,6 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                     VisualStem visualStem = new(stemOrigin, stemIntersection, StemThickness, chord, colorARGB);
                     stems.Add(visualStem);
                 }
-
-                canvasLeft += MathUtils.Map((double)chord.RythmicDuration.Decimal, 0d, (double)groupLength, 0, allowedSpace);
             }
 
             yield return new VisualBeamGroup(stems, beamDefinition, Scale, colorARGB, visualBeamBuilder);

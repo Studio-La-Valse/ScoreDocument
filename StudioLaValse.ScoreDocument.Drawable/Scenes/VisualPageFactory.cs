@@ -16,10 +16,10 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         }
 
         /// <inheritdoc/>
-        public BaseContentWrapper CreateContent(IPageReader page)
+        public BaseContentWrapper CreateContent(IPageReader page, double canvasLeft, double canvasTop)
         {
             var lineSpacing = GlyphLibrary.LineSpacing;
-            var visualPage = new VisualPage(page, 0, 0, lineSpacing, staffSystemContentFactory, scoreLayoutDictionary);
+            var visualPage = new VisualPage(page, canvasLeft, canvasTop, lineSpacing, staffSystemContentFactory, scoreLayoutDictionary);
             return visualPage;
         }
     }

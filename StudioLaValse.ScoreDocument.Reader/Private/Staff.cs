@@ -5,12 +5,12 @@ namespace StudioLaValse.ScoreDocument.Reader.Private
 {
     internal class Staff : IStaffReader
     {
-        private readonly StaffStyleTemplate staffStyleTemplate;
+        private readonly IScoreDocumentLayout staffStyleTemplate;
         private readonly IEnumerable<IInstrumentMeasureReader> measures;
 
         public int IndexInStaffGroup { get; }
 
-        public Staff(int indexInStaffGroup, StaffStyleTemplate staffStyleTemplate, IEnumerable<IInstrumentMeasureReader> measures)
+        public Staff(int indexInStaffGroup, IScoreDocumentLayout staffStyleTemplate, IEnumerable<IInstrumentMeasureReader> measures)
         {
             this.staffStyleTemplate = staffStyleTemplate;
             this.measures = measures;
@@ -21,7 +21,7 @@ namespace StudioLaValse.ScoreDocument.Reader.Private
         public IStaffLayout ReadLayout()
         {
             var paddingBottom = measures.Max(m => m.ReadLayout().GetPaddingBottom(IndexInStaffGroup));
-            paddingBottom ??= staffStyleTemplate.DistanceToNext;
+            paddingBottom ??= staffStyleTemplate.StaffPaddingBottom;
             var layout = new StaffLayout(paddingBottom.Value);
             return layout;
         }

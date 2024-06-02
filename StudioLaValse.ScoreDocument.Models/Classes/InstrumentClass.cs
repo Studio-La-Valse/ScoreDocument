@@ -1,6 +1,6 @@
 ﻿namespace StudioLaValse.ScoreDocument.Models.Classes
 {
-    public class Instrument
+    public class InstrumentClass
     {
         public required string Name { get; set; }
 

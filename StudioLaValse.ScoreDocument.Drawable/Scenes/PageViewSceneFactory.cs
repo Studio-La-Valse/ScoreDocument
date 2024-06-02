@@ -12,7 +12,6 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         private readonly IVisualPageFactory pageFactory;
         private readonly double smallPadding;
         private readonly double largePadding;
-        private readonly ScoreDocumentStyleTemplate styleTemplate;
 
         /// <summary>
         /// The default constructor.
@@ -20,13 +19,11 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// <param name="pageFactory"></param>
         /// <param name="smallPadding"></param>
         /// <param name="largePadding"></param>
-        /// <param name="styleTemplate"></param>
-        public PageViewSceneFactory(IVisualPageFactory pageFactory, double smallPadding, double largePadding, ScoreDocumentStyleTemplate styleTemplate)
+        public PageViewSceneFactory(IVisualPageFactory pageFactory, double smallPadding, double largePadding)
         {
             this.pageFactory = pageFactory;
             this.smallPadding = smallPadding;
             this.largePadding = largePadding;
-            this.styleTemplate = styleTemplate;
         }
 
         /// <inheritdoc/>
@@ -35,10 +32,10 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
             IList<BaseContentWrapper> pages = [];
 
             var pageCanvasLeft = 0d;
-            foreach (var page in scoreDocument.ReadPages(styleTemplate))
+            foreach (var page in scoreDocument.ReadPages())
             {
                 var pageLayout = page.ReadLayout();
-                var visualPage = pageFactory.CreateContent(page);
+                var visualPage = pageFactory.CreateContent(page, pageCanvasLeft, 0);
                 pages.Add(visualPage);
                 pageCanvasLeft += pageLayout.PageWidth;
                 pageCanvasLeft += pages.Count % 2 == 0 ? largePadding : smallPadding;

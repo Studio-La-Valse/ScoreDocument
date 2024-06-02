@@ -11,7 +11,9 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// Create the visual page.
         /// </summary>
         /// <param name="page"></param>
+        /// <param name="canvasLeft"></param>
+        /// <param name="canvasTop"></param>
         /// <returns></returns>
-        BaseContentWrapper CreateContent(IPageReader page);
+        BaseContentWrapper CreateContent(IPageReader page, double canvasLeft, double canvasTop);
     }
 }

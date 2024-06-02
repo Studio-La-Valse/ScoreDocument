@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a primitive score document.
     /// </summary>
-    public interface IScoreDocument : IScoreElement, IScoreEntity
+    public interface IScoreDocument : IScoreElement
     {
         /// <summary>
         /// The number of score measures in the score.

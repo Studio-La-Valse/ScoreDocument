@@ -10,26 +10,23 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
     public class SinglePageViewSceneFactory : IVisualScoreDocumentContentFactory
     {
         private readonly int pageIndex;
-        private readonly ScoreDocumentStyleTemplate styleTemplate;
         private readonly IVisualPageFactory visualPageFactory;
 
         /// <summary>
         /// The default constructor.
         /// </summary>
         /// <param name="pageIndex"></param>
-        /// <param name="styleTemplate"></param>
         /// <param name="visualPageFactory"></param>
-        public SinglePageViewSceneFactory(int pageIndex, ScoreDocumentStyleTemplate styleTemplate, IVisualPageFactory visualPageFactory)
+        public SinglePageViewSceneFactory(int pageIndex, IVisualPageFactory visualPageFactory)
         {
             this.pageIndex = pageIndex;
-            this.styleTemplate = styleTemplate;
             this.visualPageFactory = visualPageFactory;
         }
         /// <inheritdoc/>
         public BaseContentWrapper CreateContent(IScoreDocumentReader scoreDocument)
         {
-            var page = scoreDocument.ReadPages(styleTemplate).ElementAt(pageIndex);
-            return visualPageFactory.CreateContent(page);
+            var page = scoreDocument.ReadPages().ElementAt(pageIndex);
+            return visualPageFactory.CreateContent(page, 0, 0);
         }
     }
 }

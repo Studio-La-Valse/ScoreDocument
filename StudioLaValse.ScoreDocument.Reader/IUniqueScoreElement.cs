@@ -1,4 +1,4 @@
-﻿namespace StudioLaValse.ScoreDocument.Primitives
+﻿namespace StudioLaValse.ScoreDocument.Reader
 {
     /// <summary>
     /// Defines a score element that has an ID that can be queried to compare two score elements.

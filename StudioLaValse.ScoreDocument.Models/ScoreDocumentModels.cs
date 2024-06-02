@@ -3,8 +3,17 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace StudioLaValse.ScoreDocument.Models
 {
+    public class ScoreDocumentMetaDataModel
+    {
+        public required Guid Id { get; set; }
+        public required Guid ScoreDocumentId { get; set; }
+        public required string OwnerEmail { get; set; }
+        public required bool IsPublic { get; set; }
+    }
     public class ScoreDocumentModel : ScoreDocumentMembers
     {
+        public required Guid Id { get; set; }
+
         public required List<ScoreMeasureModel> ScoreMeasures { get; set; }
 
         public required List<InstrumentRibbonModel> InstrumentRibbons { get; set; }
@@ -17,8 +26,8 @@ namespace StudioLaValse.ScoreDocument.Models
             {
                 Id = Guid.NewGuid(),
                 InstrumentRibbons = [],
-                InstrumentScales = [],
                 ScoreMeasures = [],
+                ChordPositionFactor = null,
                 FirstSystemIndent = null,
                 ForegroundColor = null,
                 HorizontalStaffLineThickness = null,
@@ -33,6 +42,8 @@ namespace StudioLaValse.ScoreDocument.Models
 
     public class ScoreMeasureModel : ScoreMeasureMembers
     {
+        public required Guid Id { get; set; }
+
         public required List<InstrumentMeasureModel> InstrumentMeasures { get; set; }
 
         public required ScoreMeasureLayoutModel? Layout { get; set; }
@@ -40,11 +51,15 @@ namespace StudioLaValse.ScoreDocument.Models
 
     public class InstrumentRibbonModel : InstrumentRibbonMembers
     {
+        public required Guid Id { get; set; }
+
         public required InstrumentRibbonLayoutModel? Layout { get; set; }
     }
 
     public class InstrumentMeasureModel : InstrumentMeasureMembers
     {
+        public required Guid Id { get; set; }
+
         public required List<MeasureBlockModel> MeasureBlocks { get; set; }
 
         public required InstrumentMeasureLayoutModel? Layout { get; set; }
@@ -52,6 +67,8 @@ namespace StudioLaValse.ScoreDocument.Models
 
     public class MeasureBlockModel : MeasureBlockMembers
     {
+        public required Guid Id { get; set; }
+
         public required List<ChordModel> Chords { get; set; }
 
         public required MeasureBlockLayoutModel? Layout { get; set; }
@@ -59,6 +76,8 @@ namespace StudioLaValse.ScoreDocument.Models
 
     public class ChordModel : ChordMembers
     {
+        public required Guid Id { get; set; }
+
         public required List<NoteModel> Notes { get; set; }
 
         public required ChordLayoutModel? Layout { get; set; }
@@ -66,6 +85,8 @@ namespace StudioLaValse.ScoreDocument.Models
 
     public class NoteModel : NoteMembers
     {
+        public required Guid Id { get; set; }
+
         public required NoteLayoutModel? Layout { get; set; }
     }
 }

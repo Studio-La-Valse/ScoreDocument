@@ -7,6 +7,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
     internal sealed class VisualStaffGroupMeasure : BaseSelectableParent<IUniqueScoreElement>
     {
         private readonly IStaffGroupReader staffGroup;
+        private readonly IReadOnlyDictionary<Position, double> positions;
         private readonly double canvasTop;
         private readonly double canvasLeft;
         private readonly double width;
@@ -52,9 +53,10 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
 
 
-        public VisualStaffGroupMeasure(IInstrumentMeasureReader source, IStaffGroupReader staffGroup, double canvasTop, double canvasLeft, double width, double paddingLeft, double paddingRight, double globalLineSpacing, double scoreScale, double instrumentScale, ColorARGB color, IVisualNoteGroupFactory visualNoteGroupFactory, ISelection<IUniqueScoreElement> selection, IScoreDocumentLayout scoreLayoutDictionary) : base(source, selection)
+        public VisualStaffGroupMeasure(IInstrumentMeasureReader source, IStaffGroupReader staffGroup, IReadOnlyDictionary<Position, double> positions, double canvasTop, double canvasLeft, double width, double paddingLeft, double paddingRight, double globalLineSpacing, double scoreScale, double instrumentScale, ColorARGB color, IVisualNoteGroupFactory visualNoteGroupFactory, ISelection<IUniqueScoreElement> selection, IScoreDocumentLayout scoreLayoutDictionary) : base(source, selection)
         {
             this.staffGroup = staffGroup;
+            this.positions = positions;
             this.canvasTop = canvasTop;
             this.canvasLeft = canvasLeft;
             this.width = width;
@@ -77,16 +79,17 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             foreach (var voice in source.ReadVoices())
             {
                 var chain = source.ReadBlockChainAt(voice);
-                foreach (var element in ConstructNoteGroups(chain))
+                foreach (var element in ConstructNoteGroups(chain, this.positions))
                 {
                     yield return element;
                 }
             }
         }
 
-        public IEnumerable<BaseContentWrapper> ConstructNoteGroups(IMeasureBlockChainReader blockChain)
+        public IEnumerable<BaseContentWrapper> ConstructNoteGroups(IMeasureBlockChainReader blockChain, IReadOnlyDictionary<Position, double> positions)
         {
             var blocks = blockChain.ReadBlocks();
+            
             foreach (var chordGroup in blocks)
             {
                 var elements = chordGroup.ReadChords().SelectMany(c => c.ReadNotes());
@@ -100,20 +103,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                     continue;
                 }
 
-                var firstChord = chordGroup.ReadChords().First();
-                var firstChordLayout = firstChord.ReadLayout();
-                var xParameter = MathUtils.Map((double)firstChord.Position.Decimal, 0, (double)source.TimeSignature.Decimal, 0, 1);
-                var canvasLeft = XPositionFromParameter(xParameter + firstChordLayout.XOffset);
-                var allowedSpace = MathUtils.Map((double)chordGroup.RythmicDuration.Decimal, 0, (double)source.TimeSignature.Decimal, 0, DrawableWidth);
-
-                if (chordGroup.Grace)
-                {
-                    var graceSpacing = 0.1;
-                    allowedSpace = chordGroup.ReadChords().Count() * graceSpacing;
-                    canvasLeft -= allowedSpace;
-                }
-
-                var visualNoteGroup = visualNoteGroupFactory.Build(chordGroup, staffGroup, source, canvasTop, canvasLeft, allowedSpace, globalLineSpacing, color);
+                var visualNoteGroup = visualNoteGroupFactory.Build(chordGroup, staffGroup, source, positions, canvasTop, globalLineSpacing, color);
                 yield return visualNoteGroup;
             }
         }
@@ -122,7 +112,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         {
             var scoreLayout = scoreLayoutDictionary;
             var scoreScale = scoreLayout.Scale;
-            var instrumentScale = scoreLayout.GetInstrumentScale(staffGroup.InstrumentRibbon);
+            var instrumentScale = staffGroup.InstrumentRibbon.ReadLayout().Scale;
 
             var _canvasTop = canvasTop;
             foreach (var staff in staffGroup.EnumerateStaves(Layout.NumberOfStaves))

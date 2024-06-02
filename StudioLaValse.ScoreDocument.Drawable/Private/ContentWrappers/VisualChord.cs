@@ -1,4 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.Reader;
+﻿using StudioLaValse.ScoreDocument.Primitives;
+using StudioLaValse.ScoreDocument.Reader;
 using StudioLaValse.ScoreDocument.Reader.Extensions;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
@@ -16,13 +17,13 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         private readonly IVisualNoteFactory noteFactory;
         private readonly IVisualRestFactory restFactory;
         private readonly ColorARGB color;
-        private readonly IScoreDocumentLayout scoreLayoutDictionary;
+        private readonly IScoreDocumentLayout scoreDocumentLayout;
 
         public IChordLayout Layout => chord.ReadLayout();
         public double XOffset => Layout.XOffset;
 
 
-        public VisualChord(IChordReader chord, double canvasLeft, double canvasTopStaffGroup, double lineSpacing, double scoreScale, double instrumentScale, IStaffGroupReader staffGroup, IInstrumentMeasureReader instrumentMeasureReader, IVisualNoteFactory noteFactory, IVisualRestFactory restFactory, ColorARGB color, IScoreDocumentLayout scoreLayoutDictionary)
+        public VisualChord(IChordReader chord, double canvasLeft, double canvasTopStaffGroup, double lineSpacing, double scoreScale, double instrumentScale, IStaffGroupReader staffGroup, IInstrumentMeasureReader instrumentMeasureReader, IVisualNoteFactory noteFactory, IVisualRestFactory restFactory, ColorARGB color, IScoreDocumentLayout scoreDocumentLayout)
         {
             this.chord = chord;
             this.canvasLeft = canvasLeft;
@@ -35,16 +36,15 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
             this.noteFactory = noteFactory;
             this.restFactory = restFactory;
             this.color = color;
-            this.scoreLayoutDictionary = scoreLayoutDictionary;
+            this.scoreDocumentLayout = scoreDocumentLayout;
         }
 
 
 
         public IEnumerable<BaseContentWrapper> GetNotes()
         {
-            var scoreLayout = scoreLayoutDictionary;
-            var scoreScale = scoreLayout.Scale;
-            var instrumentScale = scoreLayout.GetInstrumentScale(staffGroup.InstrumentRibbon);
+            var scoreScale = scoreDocumentLayout.Scale;
+            var instrumentScale = staffGroup.InstrumentRibbon.ReadLayout().Scale;
 
             var notes = chord.ReadNotes();
             if (!notes.Any())
@@ -65,7 +65,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                 var clef = instrumentMeasureReader.GetClef(staffIndex, chord.Position);
                 var lineIndex = clef.LineIndexAtPitch(note.Pitch);
                 var offsetDots = lineIndex % 2 == 0;
-                var canvasTop = staffGroup.HeightOnCanvas(canvasTopStaffGroup, staffIndex, lineIndex, lineSpacing, scoreLayout);
+                var canvasTop = staffGroup.HeightOnCanvas(canvasTopStaffGroup, staffIndex, lineIndex, lineSpacing, scoreDocumentLayout);
                 var accidental = GetAccidental(note);
                 yield return noteFactory.Build(note, canvasLeft + XOffset, canvasTop, lineSpacing, scoreScale, instrumentScale, offsetDots, accidental, color);
             }

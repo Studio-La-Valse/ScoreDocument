@@ -7,7 +7,6 @@ namespace StudioLaValse.ScoreDocument.Layout
         KeySignature KeySignature { get; }
         double PaddingLeft { get; }
         double PaddingRight { get; }
-        double Width { get; }
         double? PaddingBottom { get; }
     }
 }

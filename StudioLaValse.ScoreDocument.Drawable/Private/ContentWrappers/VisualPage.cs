@@ -18,11 +18,10 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         private readonly double canvasTop;
         private readonly double globalLineSpacing;
         private readonly IVisualStaffSystemFactory staffSystemContentFactory;
-        private readonly IScoreDocumentLayout scoreLayoutDictionary;
+        private readonly IScoreDocumentLayout scoreDocumentLayout;
 
-        public IScoreDocumentLayout DocumentLayout => scoreLayoutDictionary;
-        public ColorARGB PageColor => DocumentLayout.PageColor.FromPrimitive();
-        public ColorARGB ForegroundColor => DocumentLayout.ForegroundColor.FromPrimitive();
+        public ColorARGB PageColor => page.ReadLayout().PageColor.FromPrimitive();
+        public ColorARGB ForegroundColor => page.ReadLayout().ForegroundColor.FromPrimitive();
         public IPageLayout Layout => page.ReadLayout();
         public double MarginLeft => Layout.MarginLeft;
         public double MarginRight => Layout.MarginRight;
@@ -31,14 +30,14 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         public double PageHeight => Layout.PageHeight;
 
 
-        public VisualPage(IPageReader page, double canvasLeft, double canvasTop, double globalLineSpacing, IVisualStaffSystemFactory staffSystemContentFactory, IScoreDocumentLayout scoreLayoutDictionary)
+        public VisualPage(IPageReader page, double canvasLeft, double canvasTop, double globalLineSpacing, IVisualStaffSystemFactory staffSystemContentFactory, IScoreDocumentLayout scoreDocumentLayout)
         {
             this.page = page;
             this.canvasLeft = canvasLeft;
             this.canvasTop = canvasTop;
             this.globalLineSpacing = globalLineSpacing;
             this.staffSystemContentFactory = staffSystemContentFactory;
-            this.scoreLayoutDictionary = scoreLayoutDictionary;
+            this.scoreDocumentLayout = scoreDocumentLayout;
         }
 
 
@@ -61,6 +60,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                     ForegroundColor)
             ];
         }
+
         public override IEnumerable<BaseContentWrapper> GetContentWrappers()
         {
             var canvasTop = this.canvasTop + MarginTop;
@@ -74,19 +74,19 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                 var canvasLeft = this.canvasLeft + MarginLeft;
                 if (staffSystem.EnumerateMeasures().First().IndexInScore == 0)
                 {
-                    canvasLeft += scoreLayoutDictionary.FirstSystemIndent;
+                    canvasLeft += scoreDocumentLayout.FirstSystemIndent;
                 }
 
                 var canvasRight = this.canvasLeft + PageWidth - MarginRight;
                 var length = canvasRight - canvasLeft;
-                var measureLengthSum = staffSystem.EnumerateMeasures().Select(m => m.ReadLayout().Width).Sum();
+                var measureLengthSum = staffSystem.EnumerateMeasures().Select(m => m.ApproximateWidth()).Sum();
                 length = Math.Min(length, measureLengthSum);
 
                 var staffSystemLayout = staffSystem.ReadLayout();
                 var visualSystem = staffSystemContentFactory.CreateContent(staffSystem, canvasLeft, canvasTop, length, globalLineSpacing, ForegroundColor);
                 yield return visualSystem;
 
-                canvasTop += staffSystem.CalculateHeight(globalLineSpacing, scoreLayoutDictionary);
+                canvasTop += staffSystem.CalculateHeight(globalLineSpacing, scoreDocumentLayout);
                 canvasTop += staffSystemLayout.PaddingBottom;
             }
         }

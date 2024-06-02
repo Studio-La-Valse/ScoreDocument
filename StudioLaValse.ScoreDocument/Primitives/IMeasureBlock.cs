@@ -5,7 +5,7 @@ namespace StudioLaValse.ScoreDocument.Primitives
     /// <summary>
     /// Represents a primitive measure block.
     /// </summary>
-    public interface IMeasureBlock : IScoreElement, IScoreEntity
+    public interface IMeasureBlock : IScoreElement
     {
 
     }

@@ -26,12 +26,26 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         }
 
         /// <inheritdoc/>
-        public BaseContentWrapper CreateContent(IInstrumentMeasureReader source, IStaffGroupReader staffGroup, double canvasTop, double canvasLeft, double width, double paddingLeft, double paddingRight, double lineSpacing, ColorARGB color)
+        public BaseContentWrapper CreateContent(IInstrumentMeasureReader source, IStaffGroupReader staffGroup, IReadOnlyDictionary<Position, double> positions, double canvasTop, double canvasLeft, double width, double paddingLeft, double paddingRight, double lineSpacing, ColorARGB color)
         {
             var scoreLayout = scoreLayoutDictionary;
             var scoreScale = scoreLayout.Scale;
-            var instrumentScale = scoreLayout.GetInstrumentScale(staffGroup.InstrumentRibbon);
-            return new VisualStaffGroupMeasure(source, staffGroup, canvasTop, canvasLeft, width, paddingLeft, paddingRight, lineSpacing, scoreScale, instrumentScale, color, noteGroupFactory, selection, scoreLayoutDictionary);
+            var instrumentScale = staffGroup.InstrumentRibbon.ReadLayout().Scale;
+            return new VisualStaffGroupMeasure(source,
+                                               staffGroup,
+                                               positions,
+                                               canvasTop,
+                                               canvasLeft,
+                                               width,
+                                               paddingLeft,
+                                               paddingRight,
+                                               lineSpacing,
+                                               scoreScale,
+                                               instrumentScale,
+                                               color,
+                                               noteGroupFactory,
+                                               selection,
+                                               scoreLayoutDictionary);
         }
     }
 }

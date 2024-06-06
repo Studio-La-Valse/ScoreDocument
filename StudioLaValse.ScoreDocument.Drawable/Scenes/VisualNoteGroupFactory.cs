@@ -32,7 +32,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
             var scoreLayout = scoreLayoutDictionary;
             var scoreScale = scoreLayout.Scale;
             var instrumentScale = staffGroup.InstrumentRibbon.ReadLayout().Scale;
-            return new VisualNoteGroup(noteGroup, staffGroup, instrumentMeasure, positionDictionary, canvasTopStaffGroup, lineSpacing, scoreScale, instrumentScale, noteFactory, restFactory, visualBeamBuilder, colorARGB, scoreLayoutDictionary);
+            return new VisualNoteGroup(noteGroup, staffGroup, instrumentMeasure, positionDictionary, canvasTopStaffGroup, lineSpacing, scoreScale, instrumentScale, noteFactory, restFactory, visualBeamBuilder, colorARGB, scoreLayoutDictionary, this);
         }
     }
 }

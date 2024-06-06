@@ -47,80 +47,42 @@
 
         public void Divide(params int[] steps)
         {
-            var stepsAsRythmicDurations = TimeSignature.Divide(steps);
+            var stepsAsRythmicDurations = TimeSignature.Divide(steps).ToArray();
+
+            Divide(stepsAsRythmicDurations);
+        }
+        public void Divide(params RythmicDuration[] steps)
+        {
+            if (blocks.Any(b => b.Containers.Any(c => c.EnumerateNotesCore().Any())))
+            {
+                throw new InvalidOperationException("There are already blocks that contain content in this block chain.");
+            }
+            if (!steps.Sum().Equals(TimeSignature as Duration))
+            {
+                throw new InvalidOperationException("The sum of the specified steps does not equal the total duration of the measure.");
+            }
 
             Clear();
-            foreach (var rythmicDuration in stepsAsRythmicDurations)
+            foreach (var rythmicDuration in steps)
             {
-                Append(rythmicDuration, false);
+                AppendCore(rythmicDuration, Guid.NewGuid(), Guid.NewGuid());
             }
         }
         public void DivideEqual(int number)
         {
-            var stepsAsRythmicDurations = TimeSignature.DivideEqual(number);
+            var stepsAsRythmicDurations = TimeSignature.DivideEqual(number).ToArray();
 
-            Clear();
-            foreach (var rythmicDuration in stepsAsRythmicDurations)
-            {
-                Append(rythmicDuration, false);
-            }
+            Divide(stepsAsRythmicDurations);
         }
-        public void Prepend(RythmicDuration duration, bool grace)
+        public MeasureBlock AppendCore(RythmicDuration rythmicDuration, Guid blockGuid, Guid secondaryLayoutGuid)
         {
-            if (!grace)
-            {
-                var newLength = blocks.Select(e => e.RythmicDuration).Sum() + duration;
-                if (newLength > RibbonMeasure.TimeSignature)
-                {
-                    throw new Exception("New measure block cannot fit in this measure.");
-                }
-            }
-
-            var layout = new AuthorMeasureBlockLayout(scoreDocumentStyle.MeasureBlockStyleTemplate);
-            var secondaryLayout = new UserMeasureBlockLayout(Guid.NewGuid(), layout);
-            var newBlock = new MeasureBlock(duration, this, scoreDocumentStyle, layout, secondaryLayout, grace, keyGenerator, Guid.NewGuid());
-            blocks.Insert(0, newBlock);
-        }
-        public void Append(RythmicDuration duration, bool grace)
-        {
-            var blockId = Guid.NewGuid();
-            var layoutId = Guid.NewGuid();
-            AppendCore(duration, grace, blockId, layoutId);
-        }
-        public MeasureBlock AppendCore(RythmicDuration rythmicDuration, bool grace, Guid blockGuid, Guid secondaryLayoutGuid)
-        {
-            if (!grace)
-            {
-                ThrowIfWillCauseOverflow(rythmicDuration);
-            }
+            ThrowIfWillCauseOverflow(rythmicDuration);
 
             var layout = new AuthorMeasureBlockLayout(scoreDocumentStyle.MeasureBlockStyleTemplate);
             var secondaryLayout = new UserMeasureBlockLayout(secondaryLayoutGuid, layout);
-            var newBlock = new MeasureBlock(rythmicDuration, this, scoreDocumentStyle, layout, secondaryLayout, grace, keyGenerator, blockGuid);
+            var newBlock = new MeasureBlock(rythmicDuration, this, scoreDocumentStyle, layout, secondaryLayout, false, keyGenerator, blockGuid);
             blocks.Add(newBlock);
             return newBlock;
-        }
-        public void Insert(Position position, RythmicDuration duration, bool grace)
-        {
-            if (!grace)
-            {
-                ThrowIfWillCauseOverflow(duration);
-            }
-
-            for (var i = 0; i < blocks.Count; i++)
-            {
-                var block = blocks[i];
-                if (block.Position == position)
-                {
-                    var layout = new AuthorMeasureBlockLayout(scoreDocumentStyle.MeasureBlockStyleTemplate);
-                    var secondaryBlockLayout = new UserMeasureBlockLayout(Guid.NewGuid(), layout);
-                    var newBlock = new MeasureBlock(duration, this, scoreDocumentStyle, layout, secondaryBlockLayout, grace, keyGenerator, Guid.NewGuid());
-                    blocks.Insert(i, newBlock);
-                    return;
-                }
-            }
-
-            throw new Exception($"No existing block found that starts at position {position}");
         }
         public void ThrowIfWillCauseOverflow(RythmicDuration rythmicDuration)
         {

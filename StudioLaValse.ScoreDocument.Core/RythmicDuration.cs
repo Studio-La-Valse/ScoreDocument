@@ -8,11 +8,16 @@ namespace StudioLaValse.ScoreDocument.Core
     public class RythmicDuration : Duration, IEquatable<RythmicDuration>
     {
         /// <summary>
+        /// A default quarter note.
+        /// </summary>
+        public static readonly RythmicDuration QuarterNote = new (4);
+
+        /// <summary>
         /// The number of dots.
         /// </summary>
         public int Dots { get; }
         /// <summary>
-        /// The 
+        /// The denominator of the duration. For example 8 in a one/eigth note. The numerator of a rythmic duration is always 1.
         /// </summary>
         public PowerOfTwo PowerOfTwo { get; }
 

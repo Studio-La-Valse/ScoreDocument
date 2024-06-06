@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a note editor.
     /// </summary>
-    public interface INoteEditor : INote, IScoreElementEditor<INoteLayout>
+    public interface INoteEditor : INote, IPositionElement, IScoreElementEditor<INoteLayout>
     {
         /// <summary>
         /// Move this note to the specified staff index.

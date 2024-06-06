@@ -9,6 +9,12 @@
         /// The voice of the block chain.
         /// </summary>
         int Voice { get; }
+
+
+        /// <summary>
+        /// The time signature of the chain.
+        /// </summary>
+        TimeSignature TimeSignature { get; }
     }
 
     /// <inheritdoc/>

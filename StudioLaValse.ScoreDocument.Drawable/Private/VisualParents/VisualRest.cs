@@ -39,11 +39,6 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             {
                 var glyph = GlyphPrototype;
 
-                if (measureElement.Grace)
-                {
-                    glyph.Scale = Scale;
-                }
-
                 return new DrawableScoreGlyph(
                     XPosition,
                     HeightOnCanvas,

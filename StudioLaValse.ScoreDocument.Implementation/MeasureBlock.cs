@@ -116,13 +116,14 @@
         {
             chords.Clear();
         }
-        public void AppendChord(RythmicDuration rythmicDuration, bool rebeam = true)
+        public void AppendChord(RythmicDuration rythmicDuration, bool rebeam = true, params Pitch[] pitches)
         {
             var guid = Guid.NewGuid();
             var layoutGuid = Guid.NewGuid();
             var chordLayout = new AuthorChordLayout(documentStyleTemplate.ChordStyleTemplate);
             var secondaryChordLayout = new UserChordLayout(chordLayout, layoutGuid);
             var chord = new Chord(this, rythmicDuration, documentStyleTemplate, chordLayout, secondaryChordLayout, keyGenerator, guid);
+            chord.Add(pitches);
             chords.Add(chord);
             if (rebeam)
             {
@@ -175,7 +176,7 @@
             {
                 Id = Guid,
                 Chords = chords.Select(c => c.GetMemento()).ToList(),
-                Duration = RythmicDuration.Convert(),
+                RythmicDuration = RythmicDuration.Convert(),
                 Layout = UserLayout.GetMemento(),
                 Voice = host.Voice,
                 BeamAngle = AuthorLayout._BeamAngle.Field,

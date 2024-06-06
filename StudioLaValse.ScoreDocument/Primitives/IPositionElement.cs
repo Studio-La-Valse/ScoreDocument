@@ -6,10 +6,6 @@
     public interface IPositionElement
     {
         /// <summary>
-        /// Specifies whether the element is a grace element or not.
-        /// </summary>
-        bool Grace { get; }
-        /// <summary>
         /// The position of the element in the measure.
         /// </summary>
         Position Position { get; }

@@ -1,4 +1,7 @@
-﻿namespace StudioLaValse.ScoreDocument.Implementation
+﻿using StudioLaValse.ScoreDocument.Core;
+using StudioLaValse.ScoreDocument.Primitives;
+
+namespace StudioLaValse.ScoreDocument.Implementation
 {
     public sealed class Chord : ScoreElement, IPositionElement, IMementoElement<ChordModel>, IBeamEditor
     {
@@ -35,11 +38,11 @@
                 return position;
             }
         }
-        public bool Grace =>
-            hostBlock.Grace;
         public InstrumentMeasure HostMeasure =>
             hostBlock.RibbonMeasure;
 
+
+        public GraceGroup? GraceGroup { get; set; }
 
 
         public Chord(MeasureBlock hostBlock,
@@ -55,6 +58,8 @@
             this.documentStyleTemplate = documentStyleTemplate;
 
             measureElements = [];
+
+            GraceGroup = null;
 
             RythmicDuration = displayDuration;
             AuthorLayout = chordLayout;
@@ -77,10 +82,11 @@
             {
                 if (measureElements.Any(e => e.Pitch == pitch))
                 {
+                    //or throw....
                     continue;
                 }
 
-                var noteLayout = new AuthorNoteLayout(documentStyleTemplate.NoteStyleTemplate, Grace);
+                var noteLayout = new AuthorNoteLayout(documentStyleTemplate.NoteStyleTemplate);
                 var secondaryNoteLayout = new UserNoteLayout(Guid.NewGuid(), noteLayout);
                 Note noteInMeasure = new(pitch, this, noteLayout, secondaryNoteLayout, keyGenerator, Guid.NewGuid());
                 measureElements.Add(noteInMeasure);
@@ -125,7 +131,7 @@
             foreach (var noteMemento in memento.Notes)
             {
                 var pitch = noteMemento.Pitch.Convert();
-                var noteLayout = new AuthorNoteLayout(documentStyleTemplate.NoteStyleTemplate, Grace);
+                var noteLayout = new AuthorNoteLayout(documentStyleTemplate.NoteStyleTemplate);
                 var secondaryLayout = new UserNoteLayout(noteMemento.Layout?.Id ?? Guid.NewGuid(), noteLayout);
                 var noteInMeasure = new Note(pitch, this, noteLayout, secondaryLayout, keyGenerator, noteMemento.Id);
                 measureElements.Add(noteInMeasure);
@@ -134,35 +140,20 @@
         }
 
 
-
-
-        public void ClearBeams()
+        public void ApplyGrace()
         {
-            beamTypes.Clear();
+            GraceGroup = new GraceGroup(this, keyGenerator, Guid.NewGuid());
         }
-        public void SetBeamType(PowerOfTwo flag, BeamType beamType)
-        {
-            beamTypes[flag.Value] = beamType;
-        }
-        public bool TryGetBeamType(PowerOfTwo i, out BeamType? beamType)
-        {
-            beamType = null;
 
-            if (beamTypes.TryGetValue(i.Value, out var _beamType))
-            {
-                beamType = _beamType;
-                return true;
-            }
 
-            return false;
-        }
+
         public BeamType? GetBeamType(PowerOfTwo i)
         {
             return beamTypes.TryGetValue(i, out var value) ? value : null;
         }
-        public IEnumerable<(BeamType beam, PowerOfTwo duration)> GetBeamTypes()
+        public IEnumerable<KeyValuePair<PowerOfTwo, BeamType>> GetBeamTypes()
         {
-            return beamTypes.Select(e => (e.Value, new PowerOfTwo(e.Key)));
+            return beamTypes;
         }
     }
 }

@@ -41,7 +41,7 @@ public class MeasureBlockMembers : MeasureBlockLayoutMembers
     public required int Voice { get; set; }
 
     [Column(TypeName = "jsonb")]
-    public required RythmicDurationClass Duration { get; set; }
+    public required RythmicDurationClass RythmicDuration { get; set; }
 
     [Column(TypeName = "jsonb")]
     public required PositionClass Position { get; set; }

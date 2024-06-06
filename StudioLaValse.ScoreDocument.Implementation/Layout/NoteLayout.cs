@@ -73,12 +73,12 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
 
 
 
-        public AuthorNoteLayout(NoteStyleTemplate styleTemplate, bool grace)
+        public AuthorNoteLayout(NoteStyleTemplate styleTemplate)
         {
             this.styleTemplate = styleTemplate;
 
             _ForceAccidental = new ValueTemplateProperty<AccidentalDisplay>(() => this.styleTemplate.AccidentalDisplay);
-            _Scale = new ValueTemplateProperty<double>(() => this.styleTemplate.Scale * (grace ? 0.5 : 1));
+            _Scale = new ValueTemplateProperty<double>(() => this.styleTemplate.Scale);
             _StaffIndex = new ValueTemplateProperty<int>(() => 0);
             _XOffset = new ValueTemplateProperty<double>(() => 0);
         }

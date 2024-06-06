@@ -1,5 +1,4 @@
 ﻿using StudioLaValse.ScoreDocument.Layout;
-using StudioLaValse.ScoreDocument.Layout.Templates;
 
 namespace StudioLaValse.ScoreDocument.Reader.Private
 {

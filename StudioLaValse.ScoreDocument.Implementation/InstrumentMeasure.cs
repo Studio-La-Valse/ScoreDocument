@@ -140,9 +140,10 @@
                 var blockChain = GetBlockChainOrThrowCore(voice);
 
                 blockChain.Clear();
-                foreach (var block in voiceGroup)
+                foreach(var block in voiceGroup)
                 {
-                    var newBlock = blockChain.AppendCore(block.Duration.Convert(), false, block.Id, block.Layout?.Id ?? Guid.NewGuid());
+                    blockChain.AppendCore(block.RythmicDuration.Convert(), block.Id, block.Layout?.Id ?? Guid.NewGuid());
+                    var newBlock = blockChain.GetBlocksCore().Last();
                     newBlock.ApplyMemento(block);
                 }
             }

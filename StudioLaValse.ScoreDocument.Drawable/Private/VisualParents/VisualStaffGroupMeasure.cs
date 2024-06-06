@@ -78,14 +78,14 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             foreach (var voice in source.ReadVoices())
             {
                 var chain = source.ReadBlockChainAt(voice);
-                foreach (var element in ConstructNoteGroups(chain, this.positions))
+                foreach (var element in ConstructNoteGroups(chain))
                 {
                     yield return element;
                 }
             }
         }
 
-        public IEnumerable<BaseContentWrapper> ConstructNoteGroups(IMeasureBlockChainReader blockChain, IReadOnlyDictionary<Position, double> positions)
+        public IEnumerable<BaseContentWrapper> ConstructNoteGroups(IMeasureBlockChainReader blockChain)
         {
             var blocks = blockChain.ReadBlocks();
             

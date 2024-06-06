@@ -21,47 +21,34 @@ namespace StudioLaValse.ScoreDocument.Reader.Extensions
         /// <summary>
         /// 
         /// </summary>
-        public static void Remap(this Dictionary<Position, double> positions, double canvasLeft, double canvasRight)
+        public static Dictionary<Position, (double, double)> Remap(this Dictionary<Position, (double, double)> positions, double canvasLeft, double canvasRight)
         {
-            var originalMin = positions.Min(e => e.Value);
-            var originalMax = positions.Max(e => e.Value);
+            var originalMin = positions.Min(e => e.Value.Item1);
+            var originalMax = positions.Max(e => e.Value.Item1 + e.Value.Item2);
 
             foreach (var kv in positions)
             {
-                var remappedValue = kv.Value.Map(originalMin, originalMax, canvasLeft, canvasRight);
-                positions[kv.Key] = remappedValue;
+                var position = kv.Value.Item1.Map(originalMin, originalMax, canvasLeft, canvasRight);
+                var spaceRight = kv.Value.Item2.Map(originalMin, originalMax, canvasLeft, canvasRight);
+                positions[kv.Key] = (position, spaceRight);
             }
+
+            return positions;
+        }
+
+
+        public static Dictionary<Position, double> PositionsOnly(this Dictionary<Position, (double, double)> dictionary)
+        {
+            return dictionary.ToDictionary(e => e.Key, e => e.Value.Item1, dictionary.Comparer);
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public static void Remap(this Dictionary<Position, double> positions, double canvasLeft, double canvasRight, TimeSignature timeSignature, double factor)
-        {
-            var originalMin = positions.Min(e => e.Value);
-            var originalMax = positions.Max(e => e.Value);
-
-            foreach (var kv in positions)
-            {
-                var remappedValue = kv.Value.Map(originalMin, originalMax, canvasLeft, canvasRight);
-
-                var parameter = (double)(kv.Key.Decimal / timeSignature.Decimal);
-
-                var positionFromParamer = parameter.Map(0, 1, canvasLeft, canvasRight);
-
-                var finalValue = factor.Map(0, 1, remappedValue, positionFromParamer);
-
-                positions[kv.Key] = finalValue;
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public static Dictionary<Position, double> EnumeratePositions(this IScoreMeasureReader scoreMeasureReader)
+        public static Dictionary<Position, (double, double)> EnumeratePositions(this IScoreMeasureReader scoreMeasureReader)
         {
             var comparer = new PositionComparer();
-            var positions = new Dictionary<Position, double>(comparer);
+            var positions = new Dictionary<Position, (double, double)>(comparer);
             foreach (var instrumentMeasure in scoreMeasureReader.ReadMeasures())
             {
                 if (instrumentMeasure.ReadLayout().Collapsed)
@@ -72,10 +59,31 @@ namespace StudioLaValse.ScoreDocument.Reader.Extensions
                 foreach (var positionGroup in instrumentMeasure.ReadChords().GroupBy(e => e.Position, comparer))
                 {
                     var spaceRight = positionGroup.Max(e => e.ReadLayout().SpaceRight);
+                    var graceSpace = positionGroup.Max(e =>
+                    {
+                        var graceGroup = e.ReadGraceGroup();
+                        var space = 0d;
+                        if (graceGroup is null || !graceGroup.ReadLayout().OccupySpace)
+                        {
+                            return space;
+                        }
+                        space = graceGroup.ReadChords().Count() * (graceGroup.ReadLayout().ChordSpacing * graceGroup.ReadLayout().Scale);
+                        return space;
+                    });
+                    left += graceSpace;
                     var position = positionGroup.First().Position;
 
-                    positions.Add(position, left);
-                    left += spaceRight;
+                    if(positions.TryGetValue(position, out var positionFromParamer))
+                    {
+                        var max = Math.Max(spaceRight, positionFromParamer.Item2);
+                        positions[position] = (left, max);
+                        left += max;
+                    }
+                    else
+                    {
+                        positions.Add(position, (left, spaceRight));
+                        left += spaceRight;
+                    }
                 }
             }
             return positions;
@@ -85,8 +93,9 @@ namespace StudioLaValse.ScoreDocument.Reader.Extensions
         /// </summary>
         public static double ApproximateWidth(this IScoreMeasureReader scoreMeasure)
         {
-            var width = scoreMeasure.EnumeratePositions().Last().Value;
-            return width;
+            var last = scoreMeasure.EnumeratePositions().LastOrDefault().Value;
+
+            return last.Item1 + last.Item2;
         }
 
         /// <summary>

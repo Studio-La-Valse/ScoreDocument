@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System.Linq.Expressions;
+using System.Xml.Linq;
 
 namespace StudioLaValse.ScoreDocument.MusicXml.Private
 {
@@ -16,12 +17,15 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             editor.Clear();
 
             var groups = CreateGroups(elements);
-            foreach(var group in groups)
-            {
-                var rythmicDuration = GetRythmicDurationOrThrow(group, divisionsOfOneQuarter);
 
-                editor.Append(rythmicDuration, false);
-                var measureBlock = editor.ReadBlocks().Last();
+            var blockSizes = groups.Select(g => GetRythmicDurationOrThrow(g, divisionsOfOneQuarter)).ToArray();
+            var blockSizesSum = blockSizes.Sum();
+
+            editor.Divide(blockSizes);
+            var measureBlocks = editor.ReadBlocks();
+
+            foreach (var (group, measureBlock) in groups.Zip(measureBlocks))
+            {
                 FillBlock(group, divisionsOfOneQuarter, measureBlock);
             }
         }

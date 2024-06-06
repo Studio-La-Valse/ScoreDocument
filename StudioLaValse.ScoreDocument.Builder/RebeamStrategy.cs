@@ -15,13 +15,19 @@ namespace StudioLaValse.ScoreDocument.Builder
         public void Rebeam(IEnumerable<IBeamEditor> beamEditors)
         {
             var chords = beamEditors.ToList();
+            if(chords.Count == 0) 
+            {
+                return;
+            }
 
             foreach (var chord in chords)
             {
                 chord.BeamTypes.Clear();
             }
 
-            for (var i = 8; i <= 64; i *= 2)
+            var shortestValue = chords.Select(e => e.RythmicDuration.PowerOfTwo.Value).OrderByDescending(e => e).First();
+
+            for (var i = 8; i <= shortestValue; i *= 2)
             {
                 for (var j = 0; j < chords.Count; j++)
                 {

@@ -86,8 +86,10 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         private IEnumerable<BaseContentWrapper> ConstructStaffGroupMeasures()
         {
             var _canvasTop = canvasTop;
-            var positions = scoreMeasure.EnumeratePositions();
-            positions.Remap(canvasLeft + PaddingLeft, canvasLeft + width - PaddingRight, scoreMeasure.TimeSignature, scoreLayoutDictionary.ChordPositionFactor);
+            var positions = scoreMeasure
+                .EnumeratePositions()
+                .Remap(canvasLeft + PaddingLeft, canvasLeft + width - PaddingRight)
+                .PositionsOnly();
 
             foreach (var staffGroup in staffSystem.EnumerateStaffGroups())
             {

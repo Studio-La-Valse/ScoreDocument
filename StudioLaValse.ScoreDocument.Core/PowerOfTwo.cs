@@ -13,7 +13,7 @@ namespace StudioLaValse.ScoreDocument.Core
         public int Power { get; }
 
         /// <summary>
-        /// The actual value.
+        /// The actual value when two is raised to the <see cref="Power"/>.
         /// </summary>
         public int Value
         {

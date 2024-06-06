@@ -11,8 +11,6 @@
 
         public InstrumentMeasure HostMeasure =>
             container.HostMeasure;
-        public bool Grace =>
-            container.Grace;
         public Position Position =>
             container.Position;
         public RythmicDuration RythmicDuration =>

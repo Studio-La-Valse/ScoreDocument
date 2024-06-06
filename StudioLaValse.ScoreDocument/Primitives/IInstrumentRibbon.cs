@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a primitive instrument ribbon.
     /// </summary>
-    public interface IInstrumentRibbon : IScoreElement, IUniqueScoreElement
+    public interface IInstrumentRibbon<TMeasure>
     {
         /// <summary>
         /// The index of the isntrument ribbon in the score.
@@ -13,11 +13,7 @@
         /// The instrument of the instrument ribbon.
         /// </summary>
         Instrument Instrument { get; }
-    }
 
-    /// <inheritdoc/>
-    public interface IInstrumentRibbon<TMeasure> : IInstrumentRibbon where TMeasure : IInstrumentMeasure
-    {
         /// <summary>
         /// Enumerate the measures in the ribbon.
         /// </summary>

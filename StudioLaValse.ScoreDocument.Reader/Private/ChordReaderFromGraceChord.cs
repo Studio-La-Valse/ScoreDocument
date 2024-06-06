@@ -13,7 +13,7 @@ namespace StudioLaValse.ScoreDocument.Reader.Private
         {
             get
             {
-                var nRemaining = graceGroup.Length - (graceGroup.TryGetIndex(graceChordReader, out var index) ? index : throw new Exception());
+                var nRemaining = graceGroup.Length - graceChordReader.IndexInGroup;
                 var distanceToTarget = graceGroup.ChordDuration * nRemaining;
                 var position = graceGroup.Target - distanceToTarget;
                 return position;

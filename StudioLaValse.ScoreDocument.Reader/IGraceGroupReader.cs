@@ -3,8 +3,8 @@ using StudioLaValse.ScoreDocument.Primitives;
 
 namespace StudioLaValse.ScoreDocument.Reader
 {
-    public interface IGraceGroupReader : IGraceGroup<IGraceChordReader>, IHasLayout<IGraceGroupLayout>
+    public interface IGraceGroupReader : IChordContainerReader<IGraceChordReader>, IGraceGroup<IGraceChordReader>, IHasLayout<IGraceGroupLayout>, IUniqueScoreElement
     {
-        bool TryGetIndex(IGraceChordReader graceChordReader, out int index);
+        
     }
 }

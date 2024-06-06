@@ -1,4 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.Layout;
+﻿using StudioLaValse.ScoreDocument.Core;
+using StudioLaValse.ScoreDocument.Layout;
 using StudioLaValse.ScoreDocument.Primitives;
 
 namespace StudioLaValse.ScoreDocument.Reader
@@ -6,7 +7,7 @@ namespace StudioLaValse.ScoreDocument.Reader
     /// <summary>
     /// Represents a measure block reader.
     /// </summary>
-    public interface IMeasureBlockReader : IMeasureBlock<IChordReader>, IScoreElementReader<IMeasureBlockLayout>, IPositionElement
+    public interface IMeasureBlockReader : IChordContainerReader<IChordReader>, IMeasureBlock<IChordReader>, IScoreElementReader<IMeasureBlockLayout>, IPositionElement
     {
 
     }

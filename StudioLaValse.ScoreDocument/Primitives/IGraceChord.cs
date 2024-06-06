@@ -3,30 +3,13 @@
     /// <summary>
     /// Represents a grace chord.
     /// </summary>
-    public interface IGraceChord : IChord, IScoreElement
-    {
-
-    }
-
-    /// <summary>
-    /// Represents a grace chord.
-    /// </summary>
     /// <typeparam name="TNote"></typeparam>
-    public interface IGraceChord<TNote> : IGraceChord, IChord<TNote>
-        where TNote : IGraceNote
+    /// <typeparam name="TGrace"></typeparam>
+    public interface IGraceChord<TNote, TGrace> : INoteContainer<TNote, TGrace>
     {
-
-    }
-
-    /// <summary>
-    /// Represents a grace chord.
-    /// </summary>
-    /// <typeparam name="TNote"></typeparam>
-    /// /// <typeparam name="TGrace"></typeparam>
-    public interface IGraceChord<TNote, TGrace> : IGraceChord<TNote>, IChord<TNote, TGrace>
-        where TNote : IGraceNote
-        where TGrace : IGraceGroup
-    {
-
+        /// <summary>
+        /// The index of the chord in the grace group.
+        /// </summary>
+        int IndexInGroup { get; }
     }
 }

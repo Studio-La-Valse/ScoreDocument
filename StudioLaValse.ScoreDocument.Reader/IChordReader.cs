@@ -1,10 +1,8 @@
-﻿using StudioLaValse.ScoreDocument.Layout;
-using StudioLaValse.ScoreDocument.Primitives;
-using System.Runtime.CompilerServices;
+﻿using StudioLaValse.ScoreDocument.Primitives;
 
 namespace StudioLaValse.ScoreDocument.Reader
 {
-    public interface IChordReader : IChord<INoteReader, IGraceGroupReader>, IPositionElement, IScoreElementReader<IChordLayout>
+    public interface IChordReader : IChord<INoteReader, IGraceGroupReader>, INoteContainerReader<INoteReader>, IUniqueScoreElement
     {
 
     }

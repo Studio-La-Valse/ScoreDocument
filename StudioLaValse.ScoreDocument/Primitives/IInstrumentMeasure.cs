@@ -5,7 +5,7 @@ namespace StudioLaValse.ScoreDocument.Primitives
     /// <summary>
     /// Represents a primitive instrument measure.
     /// </summary>
-    public interface IInstrumentMeasure : IScoreElement, IUniqueScoreElement
+    public interface IInstrumentMeasure<TMeasureBlockChain, TSelf> where TSelf : IInstrumentMeasure<TMeasureBlockChain, TSelf>
     {
         /// <summary>
         /// The measure index of the host instrument ribbon. 
@@ -29,19 +29,10 @@ namespace StudioLaValse.ScoreDocument.Primitives
         /// </summary>
         /// <returns></returns>
         IEnumerable<int> ReadVoices();
-    }
 
-    /// <inheritdoc/>
-    public interface IInstrumentMeasure<TMeasureBlockChain> : IInstrumentMeasure where TMeasureBlockChain : IMeasureBlockChain
-    {
         /// <inheritdoc/>
         TMeasureBlockChain ReadBlockChainAt(int voice);
-    }
 
-    /// <inheritdoc/>
-    public interface IInstrumentMeasure<TMeasureBlockChain, TSelf> : IInstrumentMeasure<TMeasureBlockChain> where TMeasureBlockChain : IMeasureBlockChain
-                                                                                                            where TSelf : IInstrumentMeasure
-    {
         /// <summary>
         /// Tries to read the previous instrument measure.
         /// </summary>

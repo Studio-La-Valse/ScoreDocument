@@ -3,18 +3,9 @@
     /// <summary>
     /// The base interface for a staff system.
     /// </summary>
-    public interface IStaffSystem : IScoreElement
-    {
-
-    }
-
-    /// <summary>
-    /// The base interface for a staff system.
-    /// </summary>
     /// <typeparam name="TStaffGroup"></typeparam>
     /// <typeparam name="TScoreMeasure"></typeparam>
-    public interface IStaffSystem<TStaffGroup, TScoreMeasure> : IStaffSystem where TStaffGroup : IStaffGroup
-                                                                             where TScoreMeasure : IScoreMeasure
+    public interface IStaffSystem<TStaffGroup, TScoreMeasure> : IScoreElement
     {
         /// <summary>
         /// Enumerate the staff groups.

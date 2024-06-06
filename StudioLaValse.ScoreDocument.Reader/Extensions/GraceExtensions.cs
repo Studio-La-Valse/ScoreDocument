@@ -22,12 +22,12 @@ namespace StudioLaValse.ScoreDocument.Reader.Extensions
         public static Tuplet CreateTuplet(this IGraceGroupReader graceGroupReader)
         {
             var fallback = RythmicDuration.QuarterNote;
-            return new(graceGroupReader.CreateImpliedRythmicDuration(fallback), graceGroupReader.ReadChords().Select(c => graceGroupReader.ReadLayout().ChordDuration).ToArray());
+            return new(graceGroupReader.ImplyRythmicDuration(fallback), graceGroupReader.ReadChords().Select(c => graceGroupReader.ReadLayout().ChordDuration).ToArray());
         }
 
-        public static RythmicDuration CreateImpliedRythmicDuration(this IGraceGroupReader graceGroupReader, RythmicDuration fallback)
+        public static RythmicDuration ImplyRythmicDuration(this IGraceGroupReader graceGroupReader, RythmicDuration fallback)
         {
-            if (RythmicDuration.TryConstruct(graceGroupReader.CreateImpliedDuration(), out var rythmicDuration))
+            if (RythmicDuration.TryConstruct(graceGroupReader.ImplyDuration(), out var rythmicDuration))
             {
                 return rythmicDuration;
             }
@@ -35,7 +35,7 @@ namespace StudioLaValse.ScoreDocument.Reader.Extensions
             return fallback;
         }
 
-        public static Duration CreateImpliedDuration(this IGraceGroupReader graceGroupReader)
+        public static Duration ImplyDuration(this IGraceGroupReader graceGroupReader)
         {
             var duration = graceGroupReader.ReadLayout().ChordDuration * graceGroupReader.ReadChords().Count();
             return duration;

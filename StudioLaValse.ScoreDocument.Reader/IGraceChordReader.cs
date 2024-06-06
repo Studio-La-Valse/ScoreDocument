@@ -3,7 +3,7 @@ using StudioLaValse.ScoreDocument.Primitives;
 
 namespace StudioLaValse.ScoreDocument.Reader
 {
-    public interface IGraceChordReader : IGraceChord<IGraceNoteReader, IGraceGroupReader>, IHasLayout<IChordLayout>
+    public interface IGraceChordReader : INoteContainerReader<IGraceNoteReader>, IGraceChord<IGraceNoteReader, IGraceGroupReader>
     {
 
     }

@@ -5,7 +5,7 @@ namespace StudioLaValse.ScoreDocument.Primitives
     /// <summary>
     /// Represents a score measure primitive.
     /// </summary>
-    public interface IScoreMeasure : IScoreElement, IUniqueScoreElement
+    public interface IScoreMeasure<TMeasure, TSelf> where TSelf : IScoreMeasure<TMeasure, TSelf>
     {
         /// <summary>
         /// Specifies the index in the score.
@@ -15,11 +15,6 @@ namespace StudioLaValse.ScoreDocument.Primitives
         /// The time signature of the measure.
         /// </summary>
         TimeSignature TimeSignature { get; }
-    }
-
-    /// <inheritdoc/>
-    public interface IScoreMeasure<TMeasure> : IScoreMeasure where TMeasure : IInstrumentMeasure
-    {
 
         /// <summary>
         /// Enumerates the instrument measures of the score.
@@ -32,12 +27,7 @@ namespace StudioLaValse.ScoreDocument.Primitives
         /// <param name="ribbonIndex"></param>
         /// <returns></returns>
         TMeasure ReadMeasure(int ribbonIndex);
-    }
 
-    /// <inheritdoc/>
-    public interface IScoreMeasure<TMeasure, TSelf> : IScoreMeasure<TMeasure> where TMeasure : IInstrumentMeasure
-                                                                              where TSelf : IScoreMeasure
-    {
         /// <summary>
         /// Tries to read the previous score measure.
         /// </summary>

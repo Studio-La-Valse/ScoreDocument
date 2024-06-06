@@ -9,20 +9,15 @@ namespace StudioLaValse.ScoreDocument.Reader.Private
 
 
 
-        public Position Position => graceGroupReader.Target - graceGroupReader.CreateImpliedDuration();
+        public Position Position => graceGroupReader.Target - graceGroupReader.ImplyDuration();
 
-        public RythmicDuration RythmicDuration => graceGroupReader.CreateImpliedRythmicDuration(RythmicDuration.QuarterNote);
+        public RythmicDuration RythmicDuration => graceGroupReader.ImplyRythmicDuration(RythmicDuration.QuarterNote);
 
         public Tuplet Tuplet => new (RythmicDuration, graceGroupReader.ReadChords().Select(c => graceGroupReader.ReadLayout().ChordDuration).ToArray());
 
         public int Id => graceGroupReader.Id;
 
         public int Length => graceGroupReader.Length;
-
-        public bool TryGetIndex(IGraceChordReader reader, out int index)
-        {
-            return graceGroupReader.TryGetIndex(reader, out index);
-        }
 
         public Position Target => graceGroupReader.Target;
 

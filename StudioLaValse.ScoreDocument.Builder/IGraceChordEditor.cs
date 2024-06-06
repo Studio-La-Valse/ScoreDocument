@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents an editable grace chord.
     /// </summary>
-    public interface IGraceChordEditor : IChordEditor<IGraceNoteEditor>, IGraceChord<IGraceNoteEditor, IGraceGroupEditor>
+    public interface IGraceChordEditor : INoteContainerEditor<IGraceNoteEditor>, IGraceChord<IGraceNoteEditor, IGraceGroupEditor>
     {
 
     }

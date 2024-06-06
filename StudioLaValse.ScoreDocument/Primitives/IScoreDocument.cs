@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a primitive score document.
     /// </summary>
-    public interface IScoreDocument : IScoreElement, IUniqueScoreElement
+    public interface IScoreDocument<TScoreMeasure, TRibbon>
     {
         /// <summary>
         /// The number of score measures in the score.
@@ -13,12 +13,7 @@
         /// The number of instrument ribbons in the score.
         /// </summary>
         int NumberOfInstruments { get; }
-    }
 
-    /// <inheritdoc/>
-    public interface IScoreDocument<TScoreMeasure, TRibbon> : IScoreDocument where TScoreMeasure : IScoreMeasure
-                                                                             where TRibbon : IInstrumentRibbon
-    {
         /// <summary>
         /// Enumerates the score measures in the score.
         /// </summary>

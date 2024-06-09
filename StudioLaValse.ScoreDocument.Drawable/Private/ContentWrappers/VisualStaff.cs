@@ -1,4 +1,7 @@
-﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
+﻿using StudioLaValse.ScoreDocument.Reader;
+using StudioLaValse.ScoreDocument.Reader.Extensions;
+
+namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
     internal sealed class VisualStaff : BaseContentWrapper
     {
@@ -143,7 +146,7 @@
 
         public IEnumerable<DrawableLineHorizontal> ConstructStaffLines()
         {
-            var verticalLineThickness = scoreDocumentLayout.DocumentLayout().VerticalStaffLineThickness * Scale;
+            var verticalLineThickness = scoreDocumentLayout.VerticalStaffLineThickness * Scale;
             var canvasLeft = this.canvasLeft - (verticalLineThickness / 2);
             var length = this.length + verticalLineThickness;
 

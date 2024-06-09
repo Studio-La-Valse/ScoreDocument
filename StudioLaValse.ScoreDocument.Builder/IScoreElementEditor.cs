@@ -1,12 +1,21 @@
-﻿using StudioLaValse.ScoreDocument.Core.Primitives;
-
-namespace StudioLaValse.ScoreDocument.Builder
+﻿namespace StudioLaValse.ScoreDocument.Builder
 {
     /// <summary>
     /// Represents a score element that may be edited.
     /// </summary>
-    public interface IScoreElementEditor : IScoreEntity, IScoreElement
+    public interface IScoreElementEditor : IScoreElement
     {
 
+    }
+
+    /// <summary>
+    /// Represents a score element that may be edited.
+    /// </summary>
+    public interface IScoreElementEditor<TLayout> : IScoreElementEditor, IScoreElement, IHasLayout<TLayout>
+    {
+        /// <summary>
+        /// Restores the layout to the default layout.
+        /// </summary>
+        void RemoveLayout();
     }
 }

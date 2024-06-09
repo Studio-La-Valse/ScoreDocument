@@ -60,6 +60,29 @@ namespace StudioLaValse.ScoreDocument.Core
             return new Fraction(minPosition, minSteps);
         }
 
+        /// <summary>
+        /// Add two fractions.
+        /// </summary>
+        /// <param name="first"></param>
+        /// <param name="second"></param>
+        /// <returns></returns>
+        public static Fraction operator +(Fraction first, Fraction second)
+        {
+            if (first.Denominator == second.Denominator)
+            {
+                return new Duration(first.Numerator + second.Numerator, first.Denominator);
+            }
+
+            var nominator =
+                (first.Numerator * second.Denominator) +
+                (first.Denominator * second.Numerator);
+
+            var denominator = first.Denominator * second.Denominator;
+
+            return new Fraction(nominator, denominator).Simplify();
+        }
+
+
         /// <inheritdoc/>
         public override string ToString()
         {

@@ -1,4 +1,6 @@
-﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
+﻿using StudioLaValse.ScoreDocument.Primitives;
+
+namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
     internal sealed class VisualRest : BaseVisualNote
     {
@@ -36,11 +38,6 @@
             get
             {
                 var glyph = GlyphPrototype;
-
-                if (measureElement.Grace)
-                {
-                    glyph.Scale = Scale;
-                }
 
                 return new DrawableScoreGlyph(
                     XPosition,

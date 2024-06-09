@@ -4,7 +4,7 @@
     /// Represents a duration of a musical element.
     /// Extends a generic fraction.
     /// </summary>
-    public class Duration : Fraction
+    public class Duration : Fraction, IEquatable<Duration>
     {
         /// <inheritdoc/>
         public new PowerOfTwo Denominator { get; }
@@ -46,6 +46,17 @@
             }
 
             return new Duration(num, denom);
+        }
+
+        /// <inheritdoc/>
+        public bool Equals(Duration? other)
+        {
+            if(other is null)
+            {
+                return false;
+            }
+
+            return Decimal == other.Decimal;
         }
 
 
@@ -115,6 +126,17 @@
         public static bool operator >=(Duration first, decimal second)
         {
             return first.Decimal >= second;
+        }
+
+        /// <summary>
+        /// Multply this position by n steps.
+        /// </summary>
+        /// <param name="duration"></param>
+        /// <param name="n"></param>
+        /// <returns></returns>
+        public static Duration operator *(Duration duration, int n)
+        {
+            return new Duration(duration.Numerator * n, duration.Denominator).Simplify();
         }
     }
 }

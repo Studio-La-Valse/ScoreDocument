@@ -2,6 +2,19 @@
 {
     public class StaffSystemStyleTemplate
     {
-        public double PaddingBottom { get; set; } = 30;
+        public required double DistanceToNext { get; set; }
+
+        public static StaffSystemStyleTemplate Create()
+        {
+            return new StaffSystemStyleTemplate()
+            {
+                DistanceToNext = 30,
+            };
+        }
+
+        public void Apply(StaffSystemStyleTemplate template)
+        {
+            DistanceToNext = template.DistanceToNext;
+        }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace StudioLaValse.ScoreDocument.Builder
+﻿using StudioLaValse.ScoreDocument.Reader;
+
+namespace StudioLaValse.ScoreDocument.Builder
 {
     /// <summary>
     /// The main interface for the scorebuilder.
@@ -25,6 +27,6 @@
         /// Build the pending score builder actions.
         /// </summary>
         /// <returns></returns>
-        IScoreBuilder Build();
+        IScoreDocumentReader Build();
     }
 }

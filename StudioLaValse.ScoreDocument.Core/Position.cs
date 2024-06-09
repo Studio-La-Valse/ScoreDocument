@@ -146,5 +146,22 @@
         {
             return right.Decimal <= left.Decimal;
         }
+
+        /// <summary>
+        /// Multply this position by n steps.
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="n"></param>
+        /// <returns></returns>
+        public static Position operator *(Position position, int n)
+        {
+            return new Position(position.Numerator * n, position.Denominator);
+        }
+
+        ///<inheritdoc/>
+        public override string ToString()
+        {
+            return $"{Numerator} / {Denominator}";
+        }
     }
 }

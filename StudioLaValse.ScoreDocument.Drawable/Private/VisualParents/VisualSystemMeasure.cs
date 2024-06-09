@@ -1,4 +1,7 @@
-﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
+﻿using StudioLaValse.ScoreDocument.Primitives;
+using StudioLaValse.ScoreDocument.Reader.Extensions;
+
+namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
     internal sealed class VisualSystemMeasure : BaseSelectableParent<IUniqueScoreElement>
     {
@@ -14,8 +17,8 @@
         private readonly double canvasTop;
 
 
-        public ScoreMeasureLayout Layout =>
-            scoreLayoutDictionary.ScoreMeasureLayout(scoreMeasure);
+        public IScoreMeasureLayout Layout => 
+            scoreMeasure.ReadLayout();
         public double PaddingRight =>
             Layout.PaddingRight + NextMeasureKeyPadding;
         public double PaddingLeft
@@ -36,7 +39,7 @@
                     return 0;
                 }
 
-                var keySignature = scoreMeasure.KeySignature;
+                var keySignature = scoreMeasure.ReadLayout().KeySignature;
                 var flats = keySignature.DefaultFlats;
                 var numberOfAccidentals = flats ?
                     keySignature.EnumerateFlats().Count() :
@@ -54,8 +57,8 @@
                     return null;
                 }
 
-                var nextKeySignature = nextMeasure.KeySignature;
-                return nextKeySignature.Equals(scoreMeasure.KeySignature) ? null : nextKeySignature;
+                var nextKeySignature = nextMeasure.ReadLayout().KeySignature;
+                return nextKeySignature.Equals(scoreMeasure.ReadLayout().KeySignature) ? null : nextKeySignature;
             }
         }
 
@@ -83,14 +86,18 @@
         private IEnumerable<BaseContentWrapper> ConstructStaffGroupMeasures()
         {
             var _canvasTop = canvasTop;
+            var positions = scoreMeasure
+                .EnumeratePositions()
+                .Remap(canvasLeft + PaddingLeft, canvasLeft + width - PaddingRight)
+                .PositionsOnly();
 
             foreach (var staffGroup in staffSystem.EnumerateStaffGroups())
             {
                 var ribbonMesaure = scoreMeasure.ReadMeasure(staffGroup.IndexInSystem);
-                var wrapper = visualInstrumentMeasureFactory.CreateContent(ribbonMesaure, staffGroup, _canvasTop, canvasLeft, width, PaddingLeft, PaddingRight, lineSpacing, color);
+                var wrapper = visualInstrumentMeasureFactory.CreateContent(ribbonMesaure, staffGroup, positions, _canvasTop, canvasLeft, width, PaddingLeft, PaddingRight, lineSpacing, color);
                 yield return wrapper;
 
-                var staffGroupLayout = scoreLayoutDictionary.StaffGroupLayout(staffGroup);
+                var staffGroupLayout = staffGroup.ReadLayout();
                 _canvasTop += staffGroup.CalculateHeight(lineSpacing, scoreLayoutDictionary);
                 _canvasTop += staffGroupLayout.DistanceToNext;
             }

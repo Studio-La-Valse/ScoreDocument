@@ -2,6 +2,19 @@
 {
     public class StaffStyleTemplate
     {
-        public double DistanceToNext { get; set; } = 13;
+        public required double DistanceToNext { get; set; }
+
+        public static StaffStyleTemplate Create()
+        {
+            return new StaffStyleTemplate()
+            {
+                DistanceToNext = 13,
+            };
+        }
+
+        public void Apply(StaffStyleTemplate template)
+        {
+            DistanceToNext = template.DistanceToNext;
+        }
     }
 }

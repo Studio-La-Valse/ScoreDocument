@@ -1,12 +1,9 @@
-﻿using StudioLaValse.ScoreDocument.Core.Primitives;
-using StudioLaValse.ScoreDocument.Layout;
-
-namespace StudioLaValse.ScoreDocument.Builder
+﻿namespace StudioLaValse.ScoreDocument.Builder
 {
     /// <summary>
     /// Represents the score document editor.
     /// </summary>
-    public interface IScoreDocumentEditor : IScoreDocument<IScoreMeasureEditor, IInstrumentRibbonEditor>, IScoreElementEditor, ILayoutEditor<ScoreDocumentLayout>
+    public interface IScoreDocumentEditor : IScoreDocument<IScoreMeasureEditor, IInstrumentRibbonEditor>, IScoreElementEditor<IScoreDocumentLayout>
     {
         /// <summary>
         /// Clears all content of the score.

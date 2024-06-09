@@ -1,21 +1,18 @@
-﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
+﻿using StudioLaValse.ScoreDocument.Primitives;
+
+namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
     internal sealed class VisualNote : BaseVisualNote
     {
         private readonly INoteReader note;
         private readonly ColorARGB color;
-        private readonly double canvasLeft;
         private readonly double canvasTop;
-        private readonly double scoreScale;
-        private readonly double instrumentScale;
-        private readonly double noteScale;
         private readonly bool offsetDots;
         private readonly Accidental? accidental;
         private readonly ISelection<IUniqueScoreElement> selection;
-        private readonly IScoreDocumentLayout scoreLayoutDictionary;
 
 
-        public NoteLayout NoteLayout => scoreLayoutDictionary.NoteLayout(note);
+        public INoteLayout NoteLayout => note.ReadLayout();
         public override DrawableScoreGlyph Glyph
         {
             get
@@ -64,20 +61,15 @@
         public override bool OffsetDots => offsetDots;
         public override double XOffset => NoteLayout.XOffset;
 
-        public VisualNote(INoteReader note, ColorARGB color, double canvasLeft, double canvasTop, double lineSpacing, double scoreScale, double instrumentScale, double noteScale, bool offsetDots, Accidental? accidental, ISelection<IUniqueScoreElement> selection, IScoreDocumentLayout scoreLayoutDictionary) :
+        public VisualNote(INoteReader note, ColorARGB color, double canvasLeft, double canvasTop, double lineSpacing, double scoreScale, double instrumentScale, double noteScale, bool offsetDots, Accidental? accidental, ISelection<IUniqueScoreElement> selection) :
             base(note, canvasLeft, canvasTop, lineSpacing, scoreScale, instrumentScale, noteScale, color, selection)
         {
             this.note = note;
             this.color = color;
-            this.canvasLeft = canvasLeft;
             this.canvasTop = canvasTop;
-            this.scoreScale = scoreScale;
-            this.instrumentScale = instrumentScale;
-            this.noteScale = noteScale;
             this.offsetDots = offsetDots;
             this.accidental = accidental;
             this.selection = selection;
-            this.scoreLayoutDictionary = scoreLayoutDictionary;
         }
 
 

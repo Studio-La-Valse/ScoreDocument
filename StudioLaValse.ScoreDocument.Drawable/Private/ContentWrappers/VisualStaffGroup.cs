@@ -1,4 +1,7 @@
-﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
+﻿using StudioLaValse.ScoreDocument.Reader;
+using StudioLaValse.ScoreDocument.Reader.Extensions;
+
+namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
     internal sealed class VisualStaffGroup : BaseContentWrapper
     {
@@ -15,10 +18,10 @@
 
         public IInstrumentRibbonReader Context =>
             staffGroup.InstrumentRibbon;
-        public InstrumentRibbonLayout ContextLayout =>
-            scoreLayoutDictionary.InstrumentRibbonLayout(Context);
-        public StaffGroupLayout Layout =>
-            scoreLayoutDictionary.StaffGroupLayout(staffGroup);
+        public IInstrumentRibbonLayout ContextLayout =>
+            Context.ReadLayout();
+        public IStaffGroupLayout Layout =>
+            staffGroup.ReadLayout();
         public DrawableText ID
         {
             get
@@ -77,11 +80,11 @@
         public IEnumerable<VisualStaff> ConstructStaves()
         {
             var _canvasTop = canvasTop;
-            foreach (var staff in staffGroup.EnumerateStaves(Layout.NumberOfStaves))
+            foreach (var staff in staffGroup.EnumerateStaves())
             {
-                var staffLayout = scoreLayoutDictionary.StaffLayout(staff);
-                var clef = FirstMeasure.OpeningClefAtOrDefault(staff.IndexInStaffGroup, scoreLayoutDictionary);
-                var keySignature = FirstMeasure.KeySignature;
+                var staffLayout = staff.ReadLayout();
+                var clef = FirstMeasure.OpeningClefAtOrDefault(staff.IndexInStaffGroup);
+                var keySignature = FirstMeasure.ReadLayout().KeySignature;
                 var timeSignature = FirstMeasure.MeasureIndex == 0 ? FirstMeasure.TimeSignature : null;
                 VisualStaff newStaff = new(
                     staff,
@@ -91,7 +94,7 @@
                     globalLineSpacing,
                     scoreScale,
                     instrumentScale,
-                    scoreLayoutDictionary.DocumentLayout().HorizontalStaffLineThickness,
+                    scoreLayoutDictionary.HorizontalStaffLineThickness,
                     clef,
                     keySignature,
                     timeSignature,

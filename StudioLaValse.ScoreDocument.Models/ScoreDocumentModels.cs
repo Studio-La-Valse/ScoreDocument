@@ -74,6 +74,15 @@ namespace StudioLaValse.ScoreDocument.Models
         public required MeasureBlockLayoutModel? Layout { get; set; }
     }
 
+    public class GraceGroupModel : GraceGroupMembers
+    {
+        public required Guid Id { get; set; }
+
+        public required List<GraceChordModel> Chords { get; set; }
+
+        public required GraceGroupLayoutModel? Layout { get; set; }
+    }
+
     public class ChordModel : ChordMembers
     {
         public required Guid Id { get; set; }
@@ -81,6 +90,17 @@ namespace StudioLaValse.ScoreDocument.Models
         public required List<NoteModel> Notes { get; set; }
 
         public required ChordLayoutModel? Layout { get; set; }
+
+        public required GraceGroupModel? GraceGroup { get; set; }
+    }
+
+    public class GraceChordModel : GraceChordMembers
+    {
+        public required Guid Id { get; set; }
+
+        public required List<GraceNoteModel> Notes { get; set; }
+
+        public required GraceChordLayoutModel? Layout { get; set; }
     }
 
     public class NoteModel : NoteMembers
@@ -88,5 +108,12 @@ namespace StudioLaValse.ScoreDocument.Models
         public required Guid Id { get; set; }
 
         public required NoteLayoutModel? Layout { get; set; }
+    }
+
+    public class GraceNoteModel : GraceNoteMembers
+    {
+        public required Guid Id { get; set; }
+
+        public required GraceNoteLayoutModel? Layout { get; set; }
     }
 }

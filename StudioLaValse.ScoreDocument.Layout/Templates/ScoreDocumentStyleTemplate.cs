@@ -34,6 +34,8 @@ namespace StudioLaValse.ScoreDocument.Layout.Templates
 
         public required MeasureBlockStyleTemplate MeasureBlockStyleTemplate { get; init; }
 
+        public required GraceGroupStyleTemplate GraceGroupStyleTemplate { get; init; }
+
         public required StaffStyleTemplate StaffStyleTemplate { get; init; }
 
         public required StaffGroupStyleTemplate StaffGroupStyleTemplate { get; init; }
@@ -61,6 +63,7 @@ namespace StudioLaValse.ScoreDocument.Layout.Templates
                 ChordStyleTemplate = ChordStyleTemplate.Create(),
                 NoteStyleTemplate = NoteStyleTemplate.Create(),
                 MeasureBlockStyleTemplate = MeasureBlockStyleTemplate.Create(),
+                GraceGroupStyleTemplate = GraceGroupStyleTemplate.Create(),
                 StaffStyleTemplate = StaffStyleTemplate.Create(),
                 StaffGroupStyleTemplate = StaffGroupStyleTemplate.Create(),
                 StaffSystemStyleTemplate = StaffSystemStyleTemplate.Create()
@@ -87,6 +90,7 @@ namespace StudioLaValse.ScoreDocument.Layout.Templates
             ScoreMeasureStyleTemplate.Apply(styleTemplate.ScoreMeasureStyleTemplate);
 
             MeasureBlockStyleTemplate.Apply(styleTemplate.MeasureBlockStyleTemplate);
+            GraceGroupStyleTemplate.Apply(styleTemplate.GraceGroupStyleTemplate);
             ChordStyleTemplate.Apply(styleTemplate.ChordStyleTemplate);
             NoteStyleTemplate.Apply(styleTemplate.NoteStyleTemplate);
 

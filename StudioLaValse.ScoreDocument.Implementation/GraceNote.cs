@@ -4,16 +4,41 @@ namespace StudioLaValse.ScoreDocument.Implementation
 {
     public sealed class GraceNote : ScoreElement
     {
-        private readonly GraceChord graceChord;
-
+        public AuthorGraceNoteLayout AuthorLayout { get; }
+        public UserGraceNoteLayout UserLayout { get; }
         public Pitch Pitch { get; set; }
+        public InstrumentMeasure InstrumentMeasure { get; }
 
-
-        public GraceNote(GraceChord graceChord, Pitch pitch, IKeyGenerator<int> keyGenerator, Guid guid) : base(keyGenerator, guid)
+        public GraceNote(InstrumentMeasure instrumentMeasure,
+                         AuthorGraceNoteLayout authorGraceNoteLayout,
+                         UserGraceNoteLayout userGraceNoteLayout,
+                         Pitch pitch,
+                         IKeyGenerator<int> keyGenerator,
+                         Guid guid) : base(keyGenerator, guid)
         {
-            this.graceChord = graceChord;
-            
+            InstrumentMeasure = instrumentMeasure;
+            AuthorLayout = authorGraceNoteLayout;
+            UserLayout = userGraceNoteLayout;
             Pitch = pitch;
+        }
+
+        public GraceNoteModel GetMemento()
+        {
+            return new GraceNoteModel()
+            {
+                Id = Guid,
+                ForceAccidental = (int)AuthorLayout.ForceAccidental,
+                Pitch = Pitch.Convert(),
+                StaffIndex = AuthorLayout.StaffIndex,
+                Layout = UserLayout.GetMemento()
+            };
+        }
+
+        public void ApplyMemento(GraceNoteModel memento)
+        {
+            AuthorLayout.ApplyMemento(memento);
+            UserLayout.ApplyMemento(memento.Layout);
+            Pitch = memento.Pitch.Convert();
         }
     }
 }

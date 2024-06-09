@@ -47,6 +47,11 @@ public class MeasureBlockMembers : MeasureBlockLayoutMembers
     public required PositionClass Position { get; set; }
 }
 
+public class GraceGroupMembers : GraceGroupLayoutMembers
+{
+
+}
+
 public class ChordMembers : ChordLayoutMembers
 {
     [Column(TypeName = "jsonb")]
@@ -56,7 +61,18 @@ public class ChordMembers : ChordLayoutMembers
     public required PositionClass Position { get; set; }
 }
 
+public class GraceChordMembers : GraceChordLayoutMembers
+{
+    public required int IndexInGroup { get; set; }
+}
+
 public class NoteMembers : NoteLayoutMembers
+{
+    [Column(TypeName = "jsonb")]
+    public required PitchClass Pitch { get; set; }
+}
+
+public class GraceNoteMembers : GraceNoteLayoutMembers
 {
     [Column(TypeName = "jsonb")]
     public required PitchClass Pitch { get; set; }

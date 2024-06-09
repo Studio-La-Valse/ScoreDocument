@@ -20,7 +20,12 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
 
         public IEnumerable<BaseDrawableElement> Build(IEnumerable<VisualStem> stems, Ruler beamDefinition, double beamThickness, double beamSpacing, double scale, ColorARGB color)
         {
-            if (!stems.Any() || !stems.First().Chord.ReadBeamTypes().Any())
+            if (!stems.Any())
+            {
+                return [];
+            }
+
+            if(stems.Count() == 1 && !stems.First().Chord.ReadBeamTypes().Any())
             {
                 return [];
             }

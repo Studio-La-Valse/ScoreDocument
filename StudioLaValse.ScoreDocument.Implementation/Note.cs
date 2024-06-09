@@ -52,7 +52,6 @@
         {
             AuthorLayout.ApplyMemento(memento);
             UserLayout.ApplyMemento(memento.Layout);
-
             Pitch = memento.Pitch.Convert();
         }
     }

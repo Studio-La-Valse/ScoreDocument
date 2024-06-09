@@ -1,9 +1,10 @@
 ﻿using StudioLaValse.ScoreDocument.Core;
 using StudioLaValse.ScoreDocument.Primitives;
+using System.ComponentModel.DataAnnotations;
 
 namespace StudioLaValse.ScoreDocument.Implementation
 {
-    public sealed class Chord : ScoreElement, IPositionElement, IMementoElement<ChordModel>, IBeamEditor
+    public sealed class Chord : ScoreElement, IPositionElement, IMementoElement<ChordModel>, IBeamEditor, IGraceTarget
     {
         private readonly List<Note> measureElements;
         private readonly MeasureBlock hostBlock;
@@ -27,10 +28,9 @@ namespace StudioLaValse.ScoreDocument.Implementation
                     return hostBlock.Position;
                 }
 
-                var index = hostBlock.IndexOfOrThrow(this);
                 var position = hostBlock.Position;
 
-                foreach (var container in hostBlock.Containers.Take(index))
+                foreach (var container in hostBlock.Containers.Take(IndexInGroup))
                 {
                     position += container.ActualDuration();
                 }
@@ -43,7 +43,7 @@ namespace StudioLaValse.ScoreDocument.Implementation
 
 
         public GraceGroup? GraceGroup { get; set; }
-
+        public int IndexInGroup => hostBlock.IndexOfOrThrow(this);
 
         public Chord(MeasureBlock hostBlock,
                      RythmicDuration displayDuration,
@@ -116,6 +116,7 @@ namespace StudioLaValse.ScoreDocument.Implementation
                 Notes = measureElements.Select(n => n.GetMemento()).ToList(),
                 RythmicDuration = RythmicDuration.Convert(),
                 Layout = UserLayout.GetMemento(),
+                GraceGroup = GraceGroup?.GetMemento(),
                 XOffset = AuthorLayout._XOffset.Field,
                 SpaceRight = AuthorLayout._SpaceRight.Field,
                 Position = Position.Convert()
@@ -137,14 +138,31 @@ namespace StudioLaValse.ScoreDocument.Implementation
                 measureElements.Add(noteInMeasure);
                 noteInMeasure.ApplyMemento(noteMemento);
             }
+
+            GraceGroup = null;
+            if(memento.GraceGroup is not null)
+            {
+                var authorLayout = new AuthorGraceGroupLayout(documentStyleTemplate.GraceGroupStyleTemplate);
+                var userLayout = new UserGraceGroupLayout(authorLayout, memento.Layout?.Id ?? Guid.NewGuid());
+                var graceGroup = new GraceGroup(this, HostMeasure, documentStyleTemplate, authorLayout, userLayout, keyGenerator, memento.GraceGroup.Id);
+                GraceGroup = graceGroup; ;
+                graceGroup.ApplyMemento(memento.GraceGroup);
+            }
         }
 
 
-        public void ApplyGrace()
+        public void ApplyGrace(params Pitch[] pitches)
         {
-            GraceGroup = new GraceGroup(this, keyGenerator, Guid.NewGuid());
+            var authorLayout = new AuthorGraceGroupLayout(documentStyleTemplate.GraceGroupStyleTemplate);
+            var userLayout = new UserGraceGroupLayout(authorLayout, Guid.NewGuid());
+            var graceGroup = new GraceGroup(this, HostMeasure, documentStyleTemplate, authorLayout, userLayout, keyGenerator, Guid.NewGuid());
+            graceGroup.Append(pitches);
+            ApplyGrace(graceGroup);
         }
-
+        public void ApplyGrace(GraceGroup graceGroup)
+        {
+            GraceGroup = graceGroup;
+        }
 
 
         public BeamType? GetBeamType(PowerOfTwo i)

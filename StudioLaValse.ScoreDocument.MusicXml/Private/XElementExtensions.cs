@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using StudioLaValse.ScoreDocument.Core;
+using System.Xml.Linq;
 
 namespace StudioLaValse.ScoreDocument.MusicXml.Private
 {
@@ -55,9 +56,28 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             return element.Name == "note" || element.Name == "forward" || element.Name == "backup";
         }
 
-        public static bool IsNote(this XElement element)
+        public static bool IsNoteOrRest(this XElement element)
         {
             return element.Name == "note";
+        }
+
+        public static bool TryParsePitch(this XElement element, out Pitch pitch)
+        {
+            pitch = default;
+            try
+            {
+                pitch = ParsePitch(element);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static int? StaffIndex(this XElement element)
+        {
+            return element.Descendants().SingleOrDefault(d => d.Name == "staff")?.Value.ToIntOrThrow() - 1;
         }
 
         public static IEnumerable<string> GetBeams(this XElement element)
@@ -74,6 +94,16 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
         public static bool IsBackward(this XElement element)
         {
             return element.Name == "backup";
+        }
+
+        public static bool IsGrace(this XElement element)
+        {
+            return element.Descendants().Any(d => d.Name == "grace");
+        }
+
+        public static bool IsChord(this XElement element)
+        {
+            return element.Element("chord") != null;
         }
 
         public static PowerOfTwo FromTypeString(this string @string)

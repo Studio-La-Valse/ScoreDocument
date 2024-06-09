@@ -40,12 +40,27 @@ public class MeasureBlockLayoutModel : MeasureBlockLayoutMembers
     public required Guid Id { get; set; }
 }
 
+public class GraceGroupLayoutModel : GraceGroupLayoutMembers
+{
+    public required Guid Id { get; set; }
+}
+
 public class ChordLayoutModel : ChordLayoutMembers
 {
     public required Guid Id { get; set; }
 }
 
+public class GraceChordLayoutModel : GraceChordLayoutMembers
+{
+    public required Guid Id { get; set; }
+}
+
 public class NoteLayoutModel : NoteLayoutMembers
+{
+    public required Guid Id { get; set; }
+}
+
+public class GraceNoteLayoutModel : GraceNoteLayoutMembers
 {
     public required Guid Id { get; set; }
 }

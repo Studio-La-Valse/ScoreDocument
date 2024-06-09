@@ -86,12 +86,27 @@ public class MeasureBlockLayoutMembers
     public required double? StemLength { get; set; }
 }
 
+public class GraceGroupLayoutMembers : MeasureBlockLayoutMembers
+{
+    public required bool? OccupySpace { get; set; }
+
+    [Range(Constants.GreaterThanZero, double.MaxValue)]
+    public required double? ChordSpacing { get; set; }
+
+    public required RythmicDurationClass? ChordDuration { get; set; }
+}
+
 public class ChordLayoutMembers
 {    
     public required double? XOffset { get; set; }
 
     [Range(Constants.GreaterThanZero, double.MaxValue)]
     public required double? SpaceRight { get; set; }
+}
+
+public class GraceChordLayoutMembers
+{
+
 }
 
 public class NoteLayoutMembers
@@ -105,4 +120,12 @@ public class NoteLayoutMembers
     public required double? Scale { get; set; }
 
     public required double? XOffset { get; set; }
+}
+
+public class GraceNoteLayoutMembers
+{
+    public required int? ForceAccidental { get; set; }
+
+    [Range(0, int.MaxValue)]
+    public required int? StaffIndex { get; set; }
 }

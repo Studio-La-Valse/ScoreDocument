@@ -103,9 +103,9 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         }
         public IEnumerable<BaseContentWrapper> CreateVisualBeamGroup(IEnumerable<IChordReader> chords)
         {
-            if (!chords.Any())
+            if (!chords.Any() || chords.First().RythmicDuration.Decimal >= 1)
             {
-                throw new UnreachableException();
+                yield break;
             }
 
             var firstNote = GlyphLibrary.NoteHeadBlack;

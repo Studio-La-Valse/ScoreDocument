@@ -37,18 +37,18 @@ namespace StudioLaValse.ScoreDocument.Reader.Extensions
         }
 
 
-        public static Dictionary<Position, double> PositionsOnly(this Dictionary<Position, (double, double)> dictionary)
+        public static Dictionary<Position, double> PositionsOnly(this Dictionary<Position, (double position, double spaceRight)> dictionary)
         {
-            return dictionary.ToDictionary(e => e.Key, e => e.Value.Item1, dictionary.Comparer);
+            return dictionary.OrderBy(e => e.Key.Decimal).ToDictionary(e => e.Key, e => e.Value.position, dictionary.Comparer);
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public static Dictionary<Position, (double, double)> EnumeratePositions(this IScoreMeasureReader scoreMeasureReader)
+        public static Dictionary<Position, (double position, double spaceRight)> EnumeratePositions(this IScoreMeasureReader scoreMeasureReader)
         {
             var comparer = new PositionComparer();
-            var positions = new Dictionary<Position, (double, double)>(comparer);
+            var positions = new Dictionary<Position, (double position, double spaceRight)>(comparer);
             foreach (var instrumentMeasure in scoreMeasureReader.ReadMeasures())
             {
                 if (instrumentMeasure.ReadLayout().Collapsed)
@@ -56,7 +56,7 @@ namespace StudioLaValse.ScoreDocument.Reader.Extensions
                     continue;
                 }
                 var left = 0d;
-                foreach (var positionGroup in instrumentMeasure.ReadChords().GroupBy(e => e.Position, comparer))
+                foreach (var positionGroup in instrumentMeasure.ReadChords().OrderBy(e => e.Position.Decimal).GroupBy(e => e.Position, comparer))
                 {
                     var spaceRight = positionGroup.Max(e => e.ReadLayout().SpaceRight);
                     var graceSpace = positionGroup.Max(e =>
@@ -75,9 +75,10 @@ namespace StudioLaValse.ScoreDocument.Reader.Extensions
 
                     if(positions.TryGetValue(position, out var positionFromParamer))
                     {
-                        var max = Math.Max(spaceRight, positionFromParamer.Item2);
-                        positions[position] = (left, max);
-                        left += max;
+                        var maxSpaceRight = Math.Max(spaceRight, positionFromParamer.spaceRight);
+                        var maxLeft = Math.Max(left, positionFromParamer.position);
+                        positions[position] = (maxLeft, maxSpaceRight);
+                        left += maxSpaceRight;
                     }
                     else
                     {

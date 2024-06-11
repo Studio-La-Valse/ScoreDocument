@@ -102,16 +102,16 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         }
         public IEnumerable<BaseContentWrapper> ConstructSystemMeasures()
         {
-            var lengthWithoutAdjustment = staffSystem.EnumerateMeasures().Select(m => m.ApproximateWidth()).Sum();
-            var totalLength = length;
+            var approximateSystemLength = staffSystem.EnumerateMeasures().Select(m => m.ApproximateWidth()).Sum();
             var paddingStart = CalculateOpeningPadding();
-            var availableLength = totalLength - paddingStart;
+            var availableLength = length - paddingStart;
 
             var _canvasLeft = canvasLeft + paddingStart;
 
             foreach (var measure in staffSystem.EnumerateMeasures())
             {
-                var measureWidth = measure.ApproximateWidth().Map(0, lengthWithoutAdjustment, 0, availableLength);
+                
+                var measureWidth = measure.ApproximateWidth().Map(0, approximateSystemLength, 0, availableLength);
 
                 var systemMeasure = systemMeasureFactory.CreateContent(measure, staffSystem, _canvasLeft, canvasTop, measureWidth, globalLineSpacing, baseColor);
                 yield return systemMeasure;

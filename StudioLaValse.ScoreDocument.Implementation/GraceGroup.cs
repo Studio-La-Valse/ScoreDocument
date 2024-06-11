@@ -5,6 +5,7 @@ namespace StudioLaValse.ScoreDocument.Implementation
     public interface IGraceTarget
     {
         Position Position { get; }
+        int Voice { get; }
     }
     public sealed class GraceGroup : ScoreElement, IMementoElement<GraceGroupModel>
     {
@@ -15,6 +16,7 @@ namespace StudioLaValse.ScoreDocument.Implementation
 
         public IEnumerable<GraceChord> Chords => chords;
         public int Length => chords.Count;
+        public int Voice => target.Voice;
         public Position Target => target.Position;
 
         public InstrumentMeasure HostMeasure { get; }
@@ -91,9 +93,10 @@ namespace StudioLaValse.ScoreDocument.Implementation
                 Chords = chords.Select(c => c.GetMemento()).ToList(),
                 BeamAngle = AuthorLayout.BeamAngle,
                 ChordDuration = AuthorLayout.ChordDuration.Convert(),
-                ChordSpacing = AuthorLayout.ChordSpacing,
-                OccupySpace = AuthorLayout.OccupySpace,
-                StemLength = AuthorLayout.StemLength,
+                ChordSpacing = AuthorLayout._ChordSpacing.Field,
+                OccupySpace = AuthorLayout._OccupySpace.Field,
+                StemLength = AuthorLayout._StemLength.Field,
+                StemDirection = AuthorLayout._StemDirection.Field,
                 Layout = UserLayout.GetMemento()
             };
         }

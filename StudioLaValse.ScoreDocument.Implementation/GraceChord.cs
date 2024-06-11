@@ -27,6 +27,8 @@ namespace StudioLaValse.ScoreDocument.Implementation
                 return thisPosition;
             }
         }
+        public int Voice => graceGroup.Voice;
+        
         public GraceGroup? GraceGroup { get; set; } = null;
 
         public InstrumentMeasure HostMeasure { get; }
@@ -68,7 +70,7 @@ namespace StudioLaValse.ScoreDocument.Implementation
         }
         public void Grace(params Pitch[] pitches)
         {
-            var authorLayout = new AuthorGraceGroupLayout(scoreDocumentStyleTemplate.GraceGroupStyleTemplate);
+            var authorLayout = new AuthorGraceGroupLayout(scoreDocumentStyleTemplate.GraceGroupStyleTemplate, Voice);
             var userLayout = new UserGraceGroupLayout(authorLayout, Guid.NewGuid());
             var graceGroup = new GraceGroup(this, HostMeasure, scoreDocumentStyleTemplate, authorLayout, userLayout, keyGenerator, Guid.NewGuid());
             graceGroup.Append(pitches);

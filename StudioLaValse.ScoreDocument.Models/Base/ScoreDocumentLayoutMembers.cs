@@ -1,4 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.Models.Classes;
+﻿using StudioLaValse.ScoreDocument.Layout;
+using StudioLaValse.ScoreDocument.Models.Classes;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -84,6 +85,8 @@ public class MeasureBlockLayoutMembers
     public required double? BeamAngle { get; set; }
 
     public required double? StemLength { get; set; }
+
+    public required StemDirection? StemDirection { get; set; }
 }
 
 public class GraceGroupLayoutMembers : MeasureBlockLayoutMembers

@@ -90,13 +90,15 @@ namespace StudioLaValse.ScoreDocument.Reader.Extensions
             return positions;
         }
         /// <summary>
-        /// 
+        /// Approximates the required width of a score measure by enumerating all unique positions and accounting for the required space for each of them. 
+        /// Takes into account any styling like padding or margins.
         /// </summary>
         public static double ApproximateWidth(this IScoreMeasureReader scoreMeasure)
         {
-            var last = scoreMeasure.EnumeratePositions().LastOrDefault().Value;
-
-            return last.Item1 + last.Item2;
+            var (position, spaceRight) = scoreMeasure.EnumeratePositions().LastOrDefault().Value;
+            var measureLayout = scoreMeasure.ReadLayout();
+            var measurePadding = measureLayout.PaddingLeft + measureLayout.PaddingRight;
+            return position + spaceRight + measurePadding;
         }
 
         /// <summary>

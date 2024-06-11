@@ -78,7 +78,7 @@
         {
             ThrowIfWillCauseOverflow(rythmicDuration);
 
-            var layout = new AuthorMeasureBlockLayout(scoreDocumentStyle.MeasureBlockStyleTemplate);
+            var layout = new AuthorMeasureBlockLayout(scoreDocumentStyle.MeasureBlockStyleTemplate, Voice);
             var secondaryLayout = new UserMeasureBlockLayout(secondaryLayoutGuid, layout);
             var newBlock = new MeasureBlock(rythmicDuration, this, scoreDocumentStyle, layout, secondaryLayout, false, keyGenerator, blockGuid);
             blocks.Add(newBlock);

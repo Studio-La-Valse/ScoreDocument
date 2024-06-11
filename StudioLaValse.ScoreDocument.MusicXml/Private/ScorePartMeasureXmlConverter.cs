@@ -27,11 +27,12 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             }
 
             var voices = measure.ExtractVoices();
+            var voiceCounter = -1;
             foreach (var voice in voices)
             {
-                measureEditor.AddVoice(voice);
-                var blockChainEditor = measureEditor.ReadBlockChainAt(voice);
-                //blockChainEditor.DivideEqual(measureEditor.TimeSignature.Denominator);
+                voiceCounter++;
+                measureEditor.AddVoice(voiceCounter);
+                var blockChainEditor = measureEditor.ReadBlockChainAt(voiceCounter);
 
                 var elements = measure.ExtractElements(voice);
                 blockChainXmlConverter.ProcessElements(elements, blockChainEditor, durationOfOneQuarter);

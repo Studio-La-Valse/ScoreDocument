@@ -17,11 +17,6 @@
 
                 foreach (var block in host.GetBlocksCore().Take(index))
                 {
-                    if (block.Grace)
-                    {
-                        continue;
-                    }
-
                     position += block.RythmicDuration;
                 }
 
@@ -40,9 +35,8 @@
                 return new Tuplet(RythmicDuration, groupLength);
             }
         }
+        public int Voice => host.Voice;
 
-
-        public bool Grace { get; }
         public RythmicDuration RythmicDuration { get; }
         public AuthorMeasureBlockLayout AuthorLayout { get; }
         public UserMeasureBlockLayout UserLayout { get; }
@@ -64,7 +58,6 @@
 
             chords = [];
 
-            Grace = grace;
             RythmicDuration = duration;
             AuthorLayout = layout;
             UserLayout = secondaryLayout;
@@ -181,6 +174,7 @@
                 Voice = host.Voice,
                 BeamAngle = AuthorLayout._BeamAngle.Field,
                 StemLength = AuthorLayout._StemLength.Field,
+                StemDirection = AuthorLayout._StemDirection.Field,
                 Position = Position.Convert()
             };
         }

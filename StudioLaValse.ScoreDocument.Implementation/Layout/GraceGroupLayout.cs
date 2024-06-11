@@ -1,20 +1,18 @@
-﻿using StudioLaValse.ScoreDocument.Layout;
-using StudioLaValse.ScoreDocument.Layout.Templates;
-using StudioLaValse.ScoreDocument.Models.Base;
-using System;
+﻿using StudioLaValse.ScoreDocument.Models.Base;
 
 namespace StudioLaValse.ScoreDocument.Implementation
 {
     public abstract class GraceGroupLayout 
     {
-        protected abstract ValueTemplateProperty<bool> _OccupySpace { get; }
-        protected abstract ValueTemplateProperty<double> _ChordSpacing { get; }
-        protected abstract ReferenceTemplateProperty<RythmicDuration> _ChordDuration { get; }
-        protected abstract ValueTemplateProperty<double> _Scale { get; }
-        protected abstract ValueTemplateProperty<double> _StemLength { get; }
-        protected abstract ValueTemplateProperty<double> _BeamAngle { get; }
-        protected abstract ValueTemplateProperty<double> _BeamThickness { get; }
-        protected abstract ValueTemplateProperty<double> _BeamSpacing { get; }
+        public abstract ValueTemplateProperty<bool> _OccupySpace { get; }
+        public abstract ValueTemplateProperty<double> _ChordSpacing { get; }
+        public abstract ReferenceTemplateProperty<RythmicDuration> _ChordDuration { get; }
+        public abstract ValueTemplateProperty<double> _Scale { get; }
+        public abstract ValueTemplateProperty<double> _StemLength { get; }
+        public abstract ValueTemplateProperty<double> _BeamAngle { get; }
+        public abstract ValueTemplateProperty<double> _BeamThickness { get; }
+        public abstract ValueTemplateProperty<double> _BeamSpacing { get; }
+        public abstract ValueTemplateProperty<StemDirection> _StemDirection { get; }
 
         public bool OccupySpace
         {
@@ -45,6 +43,12 @@ namespace StudioLaValse.ScoreDocument.Implementation
             get => _BeamAngle.Value;
             set => _BeamAngle.Value = value;
         }
+        public StemDirection StemDirection 
+        { 
+            get => _StemDirection.Value; 
+            set => _StemDirection.Value = value; 
+        }
+
         public double BeamThickness
         {
             get => _BeamThickness.Value;
@@ -68,6 +72,7 @@ namespace StudioLaValse.ScoreDocument.Implementation
             _ChordSpacing.Field = memento.ChordSpacing;
             _BeamAngle.Field = memento.BeamAngle;
             _StemLength.Field = memento.StemLength;
+            _StemDirection.Field = memento.StemDirection;
         }
         public void ApplyMemento(GraceGroupLayoutModel? memento)
         {
@@ -83,21 +88,23 @@ namespace StudioLaValse.ScoreDocument.Implementation
             _BeamAngle.Reset();
             _BeamThickness.Reset();
             _BeamSpacing.Reset();
+            _StemDirection.Reset();
         }
     }
 
     public class AuthorGraceGroupLayout : GraceGroupLayout, IGraceGroupLayout, ILayout<GraceGroupLayoutMembers>
     {
-        protected override ValueTemplateProperty<bool> _OccupySpace { get; }
-        protected override ValueTemplateProperty<double> _ChordSpacing { get; }
-        protected override ReferenceTemplateProperty<RythmicDuration> _ChordDuration { get; }
-        protected override ValueTemplateProperty<double> _Scale { get; }
-        protected override ValueTemplateProperty<double> _StemLength { get; }
-        protected override ValueTemplateProperty<double> _BeamAngle { get; }
-        protected override ValueTemplateProperty<double> _BeamThickness { get; }
-        protected override ValueTemplateProperty<double> _BeamSpacing { get; }
+        public override ValueTemplateProperty<bool> _OccupySpace { get; }
+        public override ValueTemplateProperty<double> _ChordSpacing { get; }
+        public override ReferenceTemplateProperty<RythmicDuration> _ChordDuration { get; }
+        public override ValueTemplateProperty<double> _Scale { get; }
+        public override ValueTemplateProperty<double> _StemLength { get; }
+        public override ValueTemplateProperty<double> _BeamAngle { get; }
+        public override ValueTemplateProperty<double> _BeamThickness { get; }
+        public override ValueTemplateProperty<double> _BeamSpacing { get; }
+        public override ValueTemplateProperty<StemDirection> _StemDirection { get; }
 
-        public AuthorGraceGroupLayout(GraceGroupStyleTemplate graceGroupStyleTemplate)
+        public AuthorGraceGroupLayout(GraceGroupStyleTemplate graceGroupStyleTemplate, int voice)
         {          
             _OccupySpace = new ValueTemplateProperty<bool>(() => graceGroupStyleTemplate.OccupySpace);
             _ChordSpacing = new ValueTemplateProperty<double>(() => graceGroupStyleTemplate.ChordSpaceRight);
@@ -107,6 +114,7 @@ namespace StudioLaValse.ScoreDocument.Implementation
             _BeamAngle = new ValueTemplateProperty<double>(() => graceGroupStyleTemplate.BeamAngle);
             _BeamThickness = new ValueTemplateProperty<double>(() => graceGroupStyleTemplate.BeamThickness);
             _BeamSpacing = new ValueTemplateProperty<double>(() => graceGroupStyleTemplate.BeamSpacing);
+            _StemDirection = new ValueTemplateProperty<StemDirection>(() => voice % 2 == 0 ? StemDirection.Up : StemDirection.Down);
         }
 
         public GraceGroupLayoutMembers GetMemento()
@@ -118,6 +126,7 @@ namespace StudioLaValse.ScoreDocument.Implementation
                 ChordSpacing = _ChordSpacing.Field,
                 OccupySpace = _OccupySpace.Field,
                 StemLength = _StemLength.Field,
+                StemDirection = _StemDirection.Field
             };
         }
     }
@@ -127,14 +136,15 @@ namespace StudioLaValse.ScoreDocument.Implementation
         private readonly Guid guid;
 
 
-        protected override ValueTemplateProperty<bool> _OccupySpace { get; }
-        protected override ValueTemplateProperty<double> _ChordSpacing { get; }
-        protected override ReferenceTemplateProperty<RythmicDuration> _ChordDuration { get; }
-        protected override ValueTemplateProperty<double> _Scale { get; }
-        protected override ValueTemplateProperty<double> _StemLength { get; }
-        protected override ValueTemplateProperty<double> _BeamAngle { get; }
-        protected override ValueTemplateProperty<double> _BeamThickness { get; }
-        protected override ValueTemplateProperty<double> _BeamSpacing { get; }
+        public override ValueTemplateProperty<bool> _OccupySpace { get; }
+        public override ValueTemplateProperty<double> _ChordSpacing { get; }
+        public override ReferenceTemplateProperty<RythmicDuration> _ChordDuration { get; }
+        public override ValueTemplateProperty<double> _Scale { get; }
+        public override ValueTemplateProperty<double> _StemLength { get; }
+        public override ValueTemplateProperty<double> _BeamAngle { get; }
+        public override ValueTemplateProperty<double> _BeamThickness { get; }
+        public override ValueTemplateProperty<double> _BeamSpacing { get; }
+        public override ValueTemplateProperty<StemDirection> _StemDirection { get; }
 
         public UserGraceGroupLayout(AuthorGraceGroupLayout authorGraceGroupLayout, Guid guid)
         {
@@ -148,6 +158,7 @@ namespace StudioLaValse.ScoreDocument.Implementation
             _BeamAngle = new ValueTemplateProperty<double>(() => authorGraceGroupLayout.BeamAngle);
             _BeamThickness = new ValueTemplateProperty<double>(() => authorGraceGroupLayout.BeamThickness);
             _BeamSpacing = new ValueTemplateProperty<double>(() => authorGraceGroupLayout.BeamSpacing);
+            _StemDirection = new ValueTemplateProperty<StemDirection>(() => authorGraceGroupLayout.StemDirection);
         }
 
         public GraceGroupLayoutModel GetMemento()
@@ -160,6 +171,7 @@ namespace StudioLaValse.ScoreDocument.Implementation
                 ChordSpacing = _ChordSpacing.Field,
                 OccupySpace = _OccupySpace.Field,
                 StemLength = _StemLength.Field,
+                StemDirection = _StemDirection.Field,
             };
         }
     }

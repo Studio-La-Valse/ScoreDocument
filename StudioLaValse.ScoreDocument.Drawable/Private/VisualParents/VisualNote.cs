@@ -17,10 +17,10 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         {
             get
             {
-                var glyph = DisplayDuration.Decimal switch
+                var glyph = DisplayDuration.PowerOfTwo.Value switch
                 {
-                    1M => GlyphLibrary.NoteHeadWhole,
-                    0.5M => GlyphLibrary.NoteHeadWhite,
+                    1 => GlyphLibrary.NoteHeadWhole,
+                    2 => GlyphLibrary.NoteHeadWhite,
                     _ => GlyphLibrary.NoteHeadBlack
                 };
                 glyph.Scale = Scale;

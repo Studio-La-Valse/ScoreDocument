@@ -2,7 +2,6 @@
 {
     internal static class GlyphLibrary
     {
-        public static double LineSpacing = 0.3968749995;
         public static Glyph NoteHeadBlack => new("\uE0A4");
         public static Glyph NoteHeadWhite => new("\uE0A3");
         public static Glyph NoteHeadWhole => new("\uE0A2");

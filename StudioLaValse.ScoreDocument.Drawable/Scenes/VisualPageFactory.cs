@@ -20,7 +20,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// <inheritdoc/>
         public BaseContentWrapper CreateContent(IPageReader page, double canvasLeft, double canvasTop)
         {
-            var lineSpacing = GlyphLibrary.LineSpacing;
+            var lineSpacing = Glyph.LineSpacing;
             var visualPage = new VisualPage(page, canvasLeft, canvasTop, lineSpacing, staffSystemContentFactory, scoreLayoutDictionary, unitToPixelConverter);
             return visualPage;
         }

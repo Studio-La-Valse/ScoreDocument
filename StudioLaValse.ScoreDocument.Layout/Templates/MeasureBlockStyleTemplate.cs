@@ -13,8 +13,8 @@
             {
                 StemLength = 5,
                 BeamAngle = 0,
-                BeamThickness = 0.8,
-                BeamSpacing = 0.3
+                BeamThickness = 0.25,
+                BeamSpacing = 0.1
             };
         }
 

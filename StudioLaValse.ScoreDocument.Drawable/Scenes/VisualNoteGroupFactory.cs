@@ -27,7 +27,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
             this.restFactory = restFactory;
             this.scoreLayoutDictionary = scoreLayoutDictionary;
             this.unitToPixelConverter = unitToPixelConverter;
-            visualBeamBuilder = new VisualBeamBuilder(scoreLayoutDictionary);
+            visualBeamBuilder = new VisualBeamBuilder(scoreLayoutDictionary, unitToPixelConverter);
         }
         /// <inheritdoc/>
         public BaseContentWrapper Build(IMeasureBlockReader noteGroup, IStaffGroupReader staffGroup, IInstrumentMeasureReader instrumentMeasure, IReadOnlyDictionary<Position, double> positionDictionary, double canvasTopStaffGroup, double lineSpacing)

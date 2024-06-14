@@ -7,10 +7,12 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
     internal sealed class VisualBeamBuilder : IVisualBeamBuilder
     {
         private readonly IScoreDocumentLayout scoreDocumentLayout;
+        private readonly IUnitToPixelConverter unitToPixelConverter;
 
-        public VisualBeamBuilder(IScoreDocumentLayout scoreDocumentLayout)
+        public VisualBeamBuilder(IScoreDocumentLayout scoreDocumentLayout, IUnitToPixelConverter unitToPixelConverter)
         {
             this.scoreDocumentLayout = scoreDocumentLayout;
+            this.unitToPixelConverter = unitToPixelConverter;
         }
 
 
@@ -35,12 +37,14 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
             // Draw beams in the opposite direction of the first stem direction.
             var drawBeamCanvasUp = !stems.First().VisuallyUp;
 
-            var _beamThickness = beamThickness * scale;
-            var _beamSpacing = beamSpacing * scale;
+            beamThickness *= scale;
+            beamSpacing *= scale;
+            beamThickness = unitToPixelConverter.UnitsToPixels(beamThickness);
+            beamSpacing = unitToPixelConverter.UnitsToPixels(beamSpacing);
 
             return stems.Count() == 1
                 ? ([AsFlag(stems.First(), scale, scoreDocumentLayout.PageForegroundColor.FromPrimitive())])
-                : AsGroup(stems, beamDefinition, _beamSpacing, _beamThickness, drawBeamCanvasUp, scoreDocumentLayout.PageForegroundColor.FromPrimitive());
+                : AsGroup(stems, beamDefinition, beamSpacing, beamThickness, drawBeamCanvasUp, scoreDocumentLayout.PageForegroundColor.FromPrimitive());
         }
 
         public DrawableScoreGlyph AsFlag(VisualStem stem, double scale, ColorARGB color)
@@ -124,13 +128,13 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
 
                         if (beamType == BeamType.HookStart)
                         {
-                            beams.Add(AsHookStart(stem, 5, beamIndex, beamDefinition, beamSpacing, beamThickness, crossGroup, color));
+                            beams.Add(AsHookStart(stem, beamIndex, beamDefinition, beamSpacing, beamThickness, crossGroup, color));
                             continue;
                         }
 
                         if (beamType == BeamType.HookEnd)
                         {
-                            beams.Add(AsHookEnd(stem, 5, beamIndex, beamDefinition, beamSpacing, beamThickness, crossGroup, color));
+                            beams.Add(AsHookEnd(stem, beamIndex, beamDefinition, beamSpacing, beamThickness, crossGroup, color));
                             continue;
                         }
 
@@ -188,7 +192,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
             return new DrawableBeam(startPoint, endPoint, beamThickness, drawBeamCanvasUp, color);
         }
 
-        public static DrawableBeam AsHookEnd(VisualStem stem, double length, int beamIndex, Ruler beamDefinition, double beamSpacing, double beamThickness, bool drawBeamCanvasUp, ColorARGB color)
+        public DrawableBeam AsHookEnd(VisualStem stem, int beamIndex, Ruler beamDefinition, double beamSpacing, double beamThickness, bool drawBeamCanvasUp, ColorARGB color)
         {
             var stemUp = stem.VisuallyUp;
 
@@ -202,13 +206,14 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
                 beamDefinition.OffsetY(beamIndex * ((beamSpacing + beamThickness) * -1));
 
             var endPoint = ruler.IntersectVerticalRay(stem.End);
-
+            
+            var length = unitToPixelConverter.UnitsToPixels(stem.Chord.ReadLayout().SpaceRight);
             var startPoint = endPoint.Move(length * -1, ruler.Angle.ToRadians());
 
             return new DrawableBeam(startPoint, endPoint, beamThickness, drawBeamCanvasUp, color);
         }
 
-        public static DrawableBeam AsHookStart(VisualStem stem, double length, int beamIndex, Ruler beamDefinition, double beamSpacing, double beamThickness, bool drawBeamCanvasUp, ColorARGB color)
+        public DrawableBeam AsHookStart(VisualStem stem, int beamIndex, Ruler beamDefinition, double beamSpacing, double beamThickness, bool drawBeamCanvasUp, ColorARGB color)
         {
             var stemUp = stem.VisuallyUp;
 
@@ -223,6 +228,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
 
             var startPoint = ruler.IntersectVerticalRay(stem.End);
 
+            var length = unitToPixelConverter.UnitsToPixels(stem.Chord.ReadLayout().SpaceRight);
             var endPoint = startPoint.Move(length, ruler.Angle.ToRadians());
 
             return new DrawableBeam(startPoint, endPoint, beamThickness, drawBeamCanvasUp, color);

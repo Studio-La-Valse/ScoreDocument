@@ -26,7 +26,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
             IList<BaseContentWrapper> pages = [];
 
             var pageCanvasLeft = 0d;
-            foreach (var page in scoreDocument.ReadPages(GlyphLibrary.LineSpacing))
+            foreach (var page in scoreDocument.ReadPages(Glyph.LineSpacing))
             {
                 var pageLayout = page.ReadLayout();
                 var visualPage = pageFactory.CreateContent(page, pageCanvasLeft, 0);

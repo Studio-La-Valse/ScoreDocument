@@ -37,10 +37,9 @@ public class MmToPixelConverter : IUnitToPixelConverter
     /// <summary>
     /// The default constructor
     /// </summary>
-    /// <param name="dpi"></param>
-    public MmToPixelConverter(double dpi)
+    public MmToPixelConverter()
     {
-        this.dpi = dpi;
+        this.dpi = 72;
     }
 
     /// <inheritdoc/>
@@ -57,9 +56,9 @@ public class MmToPixelConverter : IUnitToPixelConverter
     public double UnitsToPixels(double mm)
     {
         // 1 inch = 25.4 mm
-        // 1 px = 1 inch / dpi
-        // 1 px = 25.4 mm / dpi
-        var pixels = mm * dpi / 25.4;
+        // dpi = pixels / inch
+        // pixels/mm = dpi * 25.4
+        var pixels = dpi / 25.4 * mm;
         return pixels;
     }
 }

@@ -25,7 +25,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// <inheritdoc/>
         public BaseContentWrapper CreateContent(IScoreDocumentReader scoreDocument)
         {
-            var page = scoreDocument.ReadPages().ElementAt(pageIndex);
+            var page = scoreDocument.ReadPages(GlyphLibrary.LineSpacing).ElementAt(pageIndex);
             return visualPageFactory.CreateContent(page, 0, 0);
         }
     }

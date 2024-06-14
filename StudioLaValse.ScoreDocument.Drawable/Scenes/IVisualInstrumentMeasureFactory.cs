@@ -19,8 +19,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// <param name="paddingLeft"></param>
         /// <param name="paddingRight"></param>
         /// <param name="lineSpacing"></param>
-        /// <param name="color"></param>
         /// <returns></returns>
-        BaseContentWrapper CreateContent(IInstrumentMeasureReader source, IStaffGroupReader staffGroup, IReadOnlyDictionary<Position, double> positionDictionary, double canvasTop, double canvasLeft, double width, double paddingLeft, double paddingRight, double lineSpacing, ColorARGB color);
+        BaseContentWrapper CreateContent(IInstrumentMeasureReader source, IStaffGroupReader staffGroup, IReadOnlyDictionary<Position, double> positionDictionary, double canvasTop, double canvasLeft, double width, double paddingLeft, double paddingRight, double lineSpacing);
     }
 }

@@ -10,6 +10,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         private readonly ISelection<IUniqueScoreElement> selection;
         private readonly IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory;
         private readonly IScoreDocumentLayout scoreLayoutDictionary;
+        private readonly IUnitToPixelConverter unitToPixelConverter;
 
         /// <summary>
         /// The default constructor
@@ -17,17 +18,29 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// <param name="selection"></param>
         /// <param name="visualInstrumentMeasureFactory"></param>
         /// <param name="scoreLayoutDictionary"></param>
-        public VisualSystemMeasureFactory(ISelection<IUniqueScoreElement> selection, IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory, IScoreDocumentLayout scoreLayoutDictionary)
+        /// <param name="unitToPixelConverter"></param>
+        public VisualSystemMeasureFactory(ISelection<IUniqueScoreElement> selection, IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory, IScoreDocumentLayout scoreLayoutDictionary, IUnitToPixelConverter unitToPixelConverter)
         {
             this.selection = selection;
             this.visualInstrumentMeasureFactory = visualInstrumentMeasureFactory;
             this.scoreLayoutDictionary = scoreLayoutDictionary;
+            this.unitToPixelConverter = unitToPixelConverter;
         }
 
         /// <inheritdoc/>
-        public BaseContentWrapper CreateContent(IScoreMeasureReader scoreMeasure, IStaffSystemReader staffSystem, double canvasLeft, double canvasTop, double width, double lineSpacing, ColorARGB colorARGB)
+        public BaseContentWrapper CreateContent(IScoreMeasureReader scoreMeasure, IStaffSystemReader staffSystem, double canvasLeft, double canvasTop, double width, double lineSpacing)
         {
-            return new VisualSystemMeasure(scoreMeasure, staffSystem, canvasLeft, canvasTop, width, lineSpacing, colorARGB, selection, visualInstrumentMeasureFactory, scoreLayoutDictionary);
+            return new VisualSystemMeasure(
+                scoreMeasure,
+                staffSystem,
+                canvasLeft,
+                canvasTop,
+                width,
+                lineSpacing,
+                selection,
+                visualInstrumentMeasureFactory,
+                scoreLayoutDictionary,
+                unitToPixelConverter);
         }
     }
 }

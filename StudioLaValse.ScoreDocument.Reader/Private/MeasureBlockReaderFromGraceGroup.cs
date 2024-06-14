@@ -44,5 +44,15 @@ namespace StudioLaValse.ScoreDocument.Reader.Private
         {
             return graceGroupReader.ReadLayout();
         }
+
+        public bool Equals(IUniqueScoreElement? other)
+        {
+            if (other is null)
+            {
+                return false;
+            }
+
+            return other.Id == Id;
+        }
     }
 }

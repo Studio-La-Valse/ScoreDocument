@@ -14,6 +14,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         private readonly double globalLineSpacing;
         private readonly double scoreScale;
         private readonly double instrumentScale;
+        private readonly IUnitToPixelConverter unitToPixelConverter;
 
         public double CanvasLeft { get; }
         public double Width { get; }
@@ -164,7 +165,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
             double canvasTop,
             double globalLineSpacing,
             double scoreScale,
-            double instrumentScale)
+            double instrumentScale,
+            IUnitToPixelConverter unitToPixelConverter)
         {
             this.staff = staff;
             this.openingClef = openingClef;
@@ -175,6 +177,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
             this.globalLineSpacing = globalLineSpacing;
             this.scoreScale = scoreScale;
             this.instrumentScale = instrumentScale;
+            this.unitToPixelConverter = unitToPixelConverter;
 
             NextMeasureKeySignature = prepareNext;
             ClefChanges = clefChanges;
@@ -191,14 +194,12 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         }
         public double HeightFromLineIndex(int line)
         {
-            return staff.HeightFromLineIndex(canvasTop, line, globalLineSpacing, scoreScale, instrumentScale);
+            return canvasTop + unitToPixelConverter.UnitsToPixels(staff.DistanceFromTop(line, globalLineSpacing, scoreScale, instrumentScale));
         }
 
         public override IEnumerable<BaseContentWrapper> GetContentWrappers()
         {
-            List<BaseContentWrapper> content = [];
-
-            return content;
+            yield break;
         }
         public override IEnumerable<BaseDrawableElement> GetDrawableElements()
         {

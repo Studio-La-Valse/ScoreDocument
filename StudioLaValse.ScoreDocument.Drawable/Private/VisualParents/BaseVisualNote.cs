@@ -9,7 +9,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         private readonly double scoreScale;
         private readonly double instrumentScale;
         private readonly double noteScale;
-        private readonly ISelection<IUniqueScoreElement> selection;
+        private readonly IScoreDocumentLayout scoreDocumentLayout;
+        private readonly IUnitToPixelConverter unitToPixelConverter;
 
         public abstract DrawableScoreGlyph Glyph { get; }
         public abstract bool OffsetDots { get; }
@@ -25,7 +26,6 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
         public RythmicDuration DisplayDuration =>
             measureElement.RythmicDuration;
-        public ColorARGB DisplayColor { get; }
         public IEnumerable<DrawableCircle> Dots
         {
             get
@@ -45,7 +45,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                     DrawableCircle circle = new(
                         new XY(startLeft, heightOnCanvas),
                         0.3 * Scale,
-                        DisplayColor);
+                        scoreDocumentLayout.PageForegroundColor.FromPrimitive());
 
                     yield return circle;
 
@@ -57,31 +57,45 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
 
 
-        public BaseVisualNote(INoteReader measureElement, double canvasLeft, double canvasTop, double lineSpacing, double scoreScale, double instrumentScale, double noteScale, ColorARGB defaultColor, ISelection<IUniqueScoreElement> selection) : base(measureElement, selection)
+        public BaseVisualNote(INoteReader measureElement,
+                              double canvasLeft,
+                              double canvasTop,
+                              double lineSpacing,
+                              double scoreScale,
+                              double instrumentScale,
+                              double noteScale,
+                              IScoreDocumentLayout scoreDocumentLayout,
+                              ISelection<IUniqueScoreElement> selection,
+                              IUnitToPixelConverter unitToPixelConverter) : base(measureElement, selection)
         {
             this.measureElement = measureElement;
-            this.selection = selection;
-
             this.lineSpacing = lineSpacing;
             this.scoreScale = scoreScale;
             this.instrumentScale = instrumentScale;
             this.noteScale = noteScale;
-
-            DisplayColor = defaultColor;
+            this.scoreDocumentLayout = scoreDocumentLayout;
+            this.unitToPixelConverter = unitToPixelConverter;
             CanvasLeft = canvasLeft;
             HeightOnCanvas = canvasTop;
         }
-        public BaseVisualNote(IChordReader measureElement, double canvasLeft, double canvasTop, double lineSpacing, double scoreScale, double instrumentScale, double noteScale, ColorARGB defaultColor, ISelection<IUniqueScoreElement> selection) : base(measureElement, selection)
+        public BaseVisualNote(IChordReader measureElement,
+                              double canvasLeft,
+                              double canvasTop,
+                              double lineSpacing,
+                              double scoreScale,
+                              double instrumentScale,
+                              double noteScale,
+                              IScoreDocumentLayout scoreDocumentLayout,
+                              ISelection<IUniqueScoreElement> selection,
+                              IUnitToPixelConverter unitToPixelConverter) : base(measureElement, selection)
         {
             this.measureElement = measureElement;
-            this.selection = selection;
-
             this.lineSpacing = lineSpacing;
             this.scoreScale = scoreScale;
             this.instrumentScale = instrumentScale;
             this.noteScale = noteScale;
-
-            DisplayColor = defaultColor;
+            this.scoreDocumentLayout = scoreDocumentLayout;
+            this.unitToPixelConverter = unitToPixelConverter;
             CanvasLeft = canvasLeft;
             HeightOnCanvas = canvasTop;
         }
@@ -106,7 +120,11 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         }
         public override BoundingBox BoundingBox()
         {
-            return new BoundingBox(XPosition - (lineSpacing * Scale / 2), XPosition + (lineSpacing * Scale / 2), HeightOnCanvas - (lineSpacing * Scale / 2), HeightOnCanvas + (lineSpacing * Scale / 2));
+            return new BoundingBox(
+                XPosition - unitToPixelConverter.UnitsToPixels(lineSpacing * Scale / 2), 
+                XPosition + unitToPixelConverter.UnitsToPixels(lineSpacing * Scale / 2), 
+                HeightOnCanvas - unitToPixelConverter.UnitsToPixels(lineSpacing * Scale / 2), 
+                HeightOnCanvas + unitToPixelConverter.UnitsToPixels(lineSpacing * Scale / 2));
         }
     }
 }

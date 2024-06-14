@@ -238,25 +238,5 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                 }
             }
         }
-
-        private static void GetInformationFromMeasureElement(XElement measureElement,
-            out bool chord, out bool rest, out int? staff, out bool forward, out bool backup, out Pitch? pitch, out bool stemUp)
-        {
-            pitch = null;
-            chord = measureElement.Element("chord") != null;
-            rest = measureElement.Element("rest") != null;
-            stemUp = measureElement.Descendants().SingleOrDefault(d => d.Name == "stem")?.Value == "up";
-
-            forward = measureElement.Name == "forward";
-            backup = measureElement.Name == "backup";
-
-            staff = measureElement.Descendants().SingleOrDefault(d => d.Name == "staff")?.Value.ToIntOrThrow() - 1;
-            if (forward || backup || rest)
-            {
-                return;
-            }
-
-            pitch = measureElement.ParsePitch();
-        }
     }
 }

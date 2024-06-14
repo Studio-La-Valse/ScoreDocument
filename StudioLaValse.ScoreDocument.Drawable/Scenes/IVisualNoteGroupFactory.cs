@@ -16,14 +16,12 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// <param name="positionDictionary"></param>
         /// <param name="canvasTopStaffGroup"></param>
         /// <param name="lineSpacing"></param>
-        /// <param name="colorARGB"></param>
         /// <returns></returns>
         BaseContentWrapper Build(IMeasureBlockReader noteGroup,
                                  IStaffGroupReader staffGroup,
                                  IInstrumentMeasureReader instrumentMeasure,
                                  IReadOnlyDictionary<Position, double> positionDictionary,
                                  double canvasTopStaffGroup,
-                                 double lineSpacing,
-                                 ColorARGB colorARGB);
+                                 double lineSpacing);
     }
 }

@@ -18,8 +18,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// <param name="instrumentScale"></param>
         /// <param name="offsetDots"></param>
         /// <param name="accidental"></param>
-        /// <param name="color"></param>
         /// <returns></returns>
-        BaseContentWrapper Build(INoteReader note, double canvasLeft, double canvasTop, double lineSpacing, double scoreScale, double instrumentScale, bool offsetDots, Accidental? accidental, ColorARGB color);
+        BaseContentWrapper Build(INoteReader note, double canvasLeft, double canvasTop, double lineSpacing, double scoreScale, double instrumentScale, bool offsetDots, Accidental? accidental);
     }
 }

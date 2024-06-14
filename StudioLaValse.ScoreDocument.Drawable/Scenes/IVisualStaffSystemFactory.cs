@@ -15,8 +15,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// <param name="canvasTop"></param>
         /// <param name="length"></param>
         /// <param name="lineSpacing"></param>
-        /// <param name="color"></param>
         /// <returns></returns>
-        BaseContentWrapper CreateContent(IStaffSystemReader staffSystem, double canvasLeft, double canvasTop, double length, double lineSpacing, ColorARGB color);
+        BaseContentWrapper CreateContent(IStaffSystemReader staffSystem, double canvasLeft, double canvasTop, double length, double lineSpacing);
     }
 }

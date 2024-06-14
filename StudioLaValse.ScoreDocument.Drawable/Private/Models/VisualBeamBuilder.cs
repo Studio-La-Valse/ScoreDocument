@@ -6,9 +6,11 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
 {
     internal sealed class VisualBeamBuilder : IVisualBeamBuilder
     {
-        public VisualBeamBuilder()
-        {
+        private readonly IScoreDocumentLayout scoreDocumentLayout;
 
+        public VisualBeamBuilder(IScoreDocumentLayout scoreDocumentLayout)
+        {
+            this.scoreDocumentLayout = scoreDocumentLayout;
         }
 
 
@@ -18,7 +20,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
         }
 
 
-        public IEnumerable<BaseDrawableElement> Build(IEnumerable<VisualStem> stems, Ruler beamDefinition, double beamThickness, double beamSpacing, double scale, ColorARGB color)
+        public IEnumerable<BaseDrawableElement> Build(IEnumerable<VisualStem> stems, Ruler beamDefinition, double beamThickness, double beamSpacing, double scale)
         {
             if (!stems.Any())
             {
@@ -37,8 +39,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
             var _beamSpacing = beamSpacing * scale;
 
             return stems.Count() == 1
-                ? ([AsFlag(stems.First(), scale, color)])
-                : AsGroup(stems, beamDefinition, _beamSpacing, _beamThickness, drawBeamCanvasUp, color);
+                ? ([AsFlag(stems.First(), scale, scoreDocumentLayout.PageForegroundColor.FromPrimitive())])
+                : AsGroup(stems, beamDefinition, _beamSpacing, _beamThickness, drawBeamCanvasUp, scoreDocumentLayout.PageForegroundColor.FromPrimitive());
         }
 
         public DrawableScoreGlyph AsFlag(VisualStem stem, double scale, ColorARGB color)
@@ -122,13 +124,13 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
 
                         if (beamType == BeamType.HookStart)
                         {
-                            beams.Add(AsHookStart(stem, 1, beamIndex, beamDefinition, beamSpacing, beamThickness, crossGroup, color));
+                            beams.Add(AsHookStart(stem, 5, beamIndex, beamDefinition, beamSpacing, beamThickness, crossGroup, color));
                             continue;
                         }
 
                         if (beamType == BeamType.HookEnd)
                         {
-                            beams.Add(AsHookEnd(stem, 1, beamIndex, beamDefinition, beamSpacing, beamThickness, crossGroup, color));
+                            beams.Add(AsHookEnd(stem, 5, beamIndex, beamDefinition, beamSpacing, beamThickness, crossGroup, color));
                             continue;
                         }
 

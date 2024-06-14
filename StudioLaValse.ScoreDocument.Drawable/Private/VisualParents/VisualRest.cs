@@ -4,6 +4,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
     internal sealed class VisualRest : BaseVisualNote
     {
+        private readonly IScoreDocumentLayout scoreDocumentLayout;
+
         public Glyph GlyphPrototype
         {
             get
@@ -45,17 +47,34 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                     glyph,
                     HorizontalTextOrigin.Center,
                     VerticalTextOrigin.Center,
-                    DisplayColor);
+                    scoreDocumentLayout.PageForegroundColor.FromPrimitive());
             }
         }
 
         public override bool OffsetDots => false;
         public override double XOffset => 0;
 
-        public VisualRest(IChordReader note, double canvasLeft, double canvasTop, double lineSpacing, double scoreScale, double instrumentScale, ColorARGB color, ISelection<IUniqueScoreElement> selection) :
-            base(note, canvasLeft, canvasTop, lineSpacing, scoreScale, instrumentScale, 1, color, selection)
+        public VisualRest(IChordReader note,
+                          double canvasLeft,
+                          double canvasTop,
+                          double lineSpacing,
+                          double scoreScale,
+                          double instrumentScale,
+                          IScoreDocumentLayout scoreDocumentLayout,
+                          ISelection<IUniqueScoreElement> selection,
+                          IUnitToPixelConverter unitToPixelConverter) :
+            base(note,
+                 canvasLeft,
+                 canvasTop,
+                 lineSpacing,
+                 scoreScale,
+                 instrumentScale,
+                 1,
+                 scoreDocumentLayout,
+                 selection,
+                 unitToPixelConverter)
         {
-
+            this.scoreDocumentLayout = scoreDocumentLayout;
         }
     }
 }

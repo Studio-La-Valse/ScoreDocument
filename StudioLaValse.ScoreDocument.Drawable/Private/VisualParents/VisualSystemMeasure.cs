@@ -8,11 +8,10 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         private readonly IScoreMeasureReader scoreMeasure;
         private readonly IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory;
         private readonly IScoreDocumentLayout scoreLayoutDictionary;
+        private readonly IUnitToPixelConverter unitToPixelConverter;
         private readonly IStaffSystemReader staffSystem;
         private readonly double width;
         private readonly double lineSpacing;
-        private readonly ColorARGB color;
-        private readonly ISelection<IUniqueScoreElement> selection;
         private readonly double canvasLeft;
         private readonly double canvasTop;
 
@@ -21,6 +20,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             scoreMeasure.ReadLayout();
         public double PaddingRight =>
             Layout.PaddingRight + NextMeasureKeyPadding;
+        public double Height =>
+            unitToPixelConverter.UnitsToPixels(staffSystem.CalculateHeight(lineSpacing, scoreLayoutDictionary));
         public double PaddingLeft
         {
             get
@@ -66,17 +67,25 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
 
 
-        public VisualSystemMeasure(IScoreMeasureReader scoreMeasure, IStaffSystemReader staffSystem, double canvasLeft, double canvasTop, double width, double lineSpacing, ColorARGB color, ISelection<IUniqueScoreElement> selection, IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory, IScoreDocumentLayout scoreLayoutDictionary) : base(scoreMeasure, selection)
+        public VisualSystemMeasure(IScoreMeasureReader scoreMeasure,
+                                   IStaffSystemReader staffSystem,
+                                   double canvasLeft,
+                                   double canvasTop,
+                                   double width,
+                                   double lineSpacing,
+                                   ISelection<IUniqueScoreElement> selection,
+                                   IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory,
+                                   IScoreDocumentLayout scoreLayoutDictionary,
+                                   IUnitToPixelConverter unitToPixelConverter) : base(scoreMeasure, selection)
         {
             this.scoreMeasure = scoreMeasure;
             this.visualInstrumentMeasureFactory = visualInstrumentMeasureFactory;
             this.scoreLayoutDictionary = scoreLayoutDictionary;
+            this.unitToPixelConverter = unitToPixelConverter;
             this.canvasTop = canvasTop;
             this.staffSystem = staffSystem;
             this.width = width;
             this.lineSpacing = lineSpacing;
-            this.color = color;
-            this.selection = selection;
             this.canvasLeft = canvasLeft;
         }
 
@@ -87,32 +96,30 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         {
             var _canvasTop = canvasTop;
             var positions = scoreMeasure
-                .EnumeratePositions()
+                .EnumeratePositions(scoreLayoutDictionary.Scale)
                 .Remap(canvasLeft + PaddingLeft, canvasLeft + width - PaddingRight)
                 .PositionsOnly();
 
             foreach (var staffGroup in staffSystem.EnumerateStaffGroups())
             {
                 var ribbonMesaure = scoreMeasure.ReadMeasure(staffGroup.IndexInSystem);
-                var wrapper = visualInstrumentMeasureFactory.CreateContent(ribbonMesaure, staffGroup, positions, _canvasTop, canvasLeft, width, PaddingLeft, PaddingRight, lineSpacing, color);
+                var wrapper = visualInstrumentMeasureFactory.CreateContent(ribbonMesaure, staffGroup, positions, _canvasTop, canvasLeft, width, PaddingLeft, PaddingRight, lineSpacing);
                 yield return wrapper;
 
                 var staffGroupLayout = staffGroup.ReadLayout();
-                _canvasTop += staffGroup.CalculateHeight(lineSpacing, scoreLayoutDictionary);
-                _canvasTop += staffGroupLayout.DistanceToNext;
+                _canvasTop += unitToPixelConverter.UnitsToPixels(staffGroup.CalculateHeight(lineSpacing, scoreLayoutDictionary));
+                _canvasTop += unitToPixelConverter.UnitsToPixels(staffGroupLayout.DistanceToNext);
             }
         }
 
 
         public override BoundingBox BoundingBox()
         {
-            return new BoundingBox(canvasLeft + PaddingLeft, canvasLeft + width - PaddingRight, canvasTop, canvasTop + staffSystem.CalculateHeight(lineSpacing, scoreLayoutDictionary));
+            return new BoundingBox(canvasLeft + PaddingLeft, canvasLeft + width - PaddingRight, canvasTop, canvasTop + Height);
         }
         public override IEnumerable<BaseDrawableElement> GetDrawableElements()
         {
-            List<BaseDrawableElement> list = [];
-
-            return list;
+            yield break;
         }
         public override IEnumerable<BaseContentWrapper> GetContentWrappers()
         {

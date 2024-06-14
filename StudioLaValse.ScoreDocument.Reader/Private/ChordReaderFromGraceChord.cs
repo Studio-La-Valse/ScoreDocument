@@ -61,5 +61,15 @@ namespace StudioLaValse.ScoreDocument.Reader.Private
         {
             return graceChordReader.ReadNotes().Select(n => new NoteReaderFromGraceChord(n, this));
         }
+
+        public bool Equals(IUniqueScoreElement? other)
+        {
+            if (other is null)
+            {
+                return false;
+            }
+
+            return other.Id == Id;
+        }
     }
 }

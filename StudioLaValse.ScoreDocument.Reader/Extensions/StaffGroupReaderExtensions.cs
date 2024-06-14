@@ -40,9 +40,9 @@ namespace StudioLaValse.ScoreDocument.Reader.Extensions
         /// <param name="scoreScale"></param>
         /// <param name="instrumentScale"></param>
         /// <returns></returns>
-        public static double HeightFromLineIndex(this IStaffReader staff, double staffCanvasTop, int line, double globalLineSpacing, double scoreScale, double instrumentScale)
+        public static double DistanceFromTop(this IStaffReader staff, int line, double globalLineSpacing, double scoreScale, double instrumentScale)
         {
-            return staffCanvasTop + (line * (globalLineSpacing * (scoreScale * instrumentScale) / 2));
+            return line * (globalLineSpacing * (scoreScale * instrumentScale) / 2);
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace StudioLaValse.ScoreDocument.Reader.Extensions
         /// <returns></returns>
         public static double CalculateHeight(this IStaffReader staff, double globalLineSpacing, double scoreScale, double instrumentScale)
         {
-            var staffHeight = 4 * (globalLineSpacing * (scoreScale * instrumentScale));
+            var staffHeight = 4 * globalLineSpacing * scoreScale * instrumentScale;
 
             return staffHeight;
         }
@@ -73,12 +73,13 @@ namespace StudioLaValse.ScoreDocument.Reader.Extensions
         /// <param name="scoreLayout"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public static double HeightOnCanvas(this IStaffGroupReader staffGroup, double canvasTopStaffGroup, int staffIndex, int lineIndex, double globalLineSpacing, IScoreDocumentLayout scoreLayout)
+        public static double DistanceFromTop(this IStaffGroupReader staffGroup, int staffIndex, int lineIndex, double globalLineSpacing, IScoreDocumentLayout scoreLayout)
         {
             ArgumentOutOfRangeException.ThrowIfNegative(staffIndex, nameof(staffIndex));
 
             var scoreScale = scoreLayout.Scale;
             var instrumentScale = staffGroup.InstrumentRibbon.ReadLayout().Scale;
+            var canvasTopStaffGroup = 0d;
 
             foreach (var staff in staffGroup.EnumerateStaves().Take(staffIndex))
             {
@@ -88,7 +89,7 @@ namespace StudioLaValse.ScoreDocument.Reader.Extensions
             }
 
             var _staff = staffGroup.EnumerateStaves().ElementAt(staffIndex);
-            var canvasTop = _staff.HeightFromLineIndex(canvasTopStaffGroup, lineIndex, globalLineSpacing, scoreScale, instrumentScale);
+            var canvasTop = canvasTopStaffGroup + _staff.DistanceFromTop(lineIndex, globalLineSpacing, scoreScale, instrumentScale);
             return canvasTop;
         }
 

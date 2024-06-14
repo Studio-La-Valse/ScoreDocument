@@ -1,15 +1,16 @@
-﻿using StudioLaValse.ScoreDocument.Layout.Templates;
+﻿using StudioLaValse.ScoreDocument.Layout;
+using StudioLaValse.ScoreDocument.Layout.Templates;
 using StudioLaValse.ScoreDocument.Primitives;
 using StudioLaValse.ScoreDocument.Reader.Private;
-using System.Diagnostics.CodeAnalysis;
 
 namespace StudioLaValse.ScoreDocument.Reader.Extensions
 {
     public static class ScoreDocumentReaderExtensions
     {
-        public static IEnumerable<IPageReader> ReadPages(this IScoreDocumentReader scoreDocument)
+        public static IEnumerable<IPageReader> ReadPages(this IScoreDocumentReader scoreDocument, double lineSpacing)
         {
             var scoreDocumentLayout = scoreDocument.ReadLayout();
+            var scoreScale = scoreDocumentLayout.Scale;
 
             var currentpage = new Page(0, scoreDocumentLayout);
             currentpage.StaffSystems.Clear();
@@ -24,14 +25,14 @@ namespace StudioLaValse.ScoreDocument.Reader.Extensions
             var systemIndex = 1;
             var pageIndex = 1;
             var currentSystemCanvasTop = pageLayout.MarginTop;
-            var lineSpacing = 1.2;
 
             foreach (var measure in scoreDocument.ReadScoreMeasures())
             {
                 currentSystem.ScoreMeasures.Add(measure);
 
-                var currentSystemLength = currentSystem.ScoreMeasures.Select(m => m.ApproximateWidth()).Sum();
+                var currentSystemLength = currentSystem.ScoreMeasures.Select(m => m.ApproximateWidth(scoreScale)).Sum();
                 var currentAvailableWidth = pageWidth - pageLayout.MarginLeft - pageLayout.MarginRight;
+
                 // Need to add a new system.
                 if (currentSystemLength > currentAvailableWidth && currentSystem.ScoreMeasures.Any())
                 {
@@ -42,6 +43,7 @@ namespace StudioLaValse.ScoreDocument.Reader.Extensions
 
                     var currentSystemCanvasBottom = currentSystemCanvasTop + currentSystem.CalculateHeight(lineSpacing, scoreDocumentLayout);
                     var currentLowestAllowedPoint = pageHeight - pageMarginBottom;
+
                     // Need to add a new page.
                     if (currentSystemCanvasBottom > currentLowestAllowedPoint)
                     {
@@ -51,7 +53,6 @@ namespace StudioLaValse.ScoreDocument.Reader.Extensions
                         pageWidth = pageLayout.PageWidth;
                         pageHeight = pageLayout.PageHeight;
                         pageMarginBottom = pageLayout.MarginBottom;
-
                         currentSystemCanvasTop = pageLayout.MarginTop;
                         pageIndex++;
                     }

@@ -49,10 +49,10 @@ namespace StudioLaValse.ScoreDocument.Layout.Templates
         {
             return new ScoreDocumentStyleTemplate()
             {
-                Scale = 1,
+                Scale = 2.5,
                 HorizontalStaffLineThickness = 0.075,
                 VerticalStaffLineThickness = 0.25,
-                FirstSystemIndent = 15,
+                FirstSystemIndent = 50,
                 StemLineThickness = 0.1,
                 ChordPositionFactor = 0.5,
                 InstrumentScales = [],

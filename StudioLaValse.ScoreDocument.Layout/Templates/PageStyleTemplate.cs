@@ -18,12 +18,12 @@
             {
                 PageHeight = PageSize.A4.Height,
                 PageWidth = PageSize.A4.Width,
-                MarginTop = 20,
-                MarginRight = 5,
-                MarginLeft = 10,
-                MarginBottom = 10,
+                MarginTop = 15,
+                MarginRight = 20,
+                MarginLeft = 15,
+                MarginBottom = 15,
                 PageColor = new ColorARGB() { A = 255, R = 214, G = 187, B = 137 },
-                ForegroundColor = new ColorARGB() { A = 255, R = 0, G = 0, B = 0 }
+                ForegroundColor = new ColorARGB() { A = 255, R = 18, G = 79, B = 89 }
             };
         }
 

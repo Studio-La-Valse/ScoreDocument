@@ -8,26 +8,26 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
     public class VisualStaffSystemFactory : IVisualStaffSystemFactory
     {
         private readonly IVisualSystemMeasureFactory systemMeasureFactory;
-        private readonly ISelection<IUniqueScoreElement> selection;
         private readonly IScoreDocumentLayout scoreLayoutDictionary;
+        private readonly IUnitToPixelConverter unitToPixelConverter;
 
         /// <summary>
         /// The default constructor.
         /// </summary>
         /// <param name="systemMeasureFactory"></param>
-        /// <param name="selection"></param>
         /// <param name="scoreLayoutDictionary"></param>
-        public VisualStaffSystemFactory(IVisualSystemMeasureFactory systemMeasureFactory, ISelection<IUniqueScoreElement> selection, IScoreDocumentLayout scoreLayoutDictionary)
+        /// <param name="unitToPixelConverter"></param>
+        public VisualStaffSystemFactory(IVisualSystemMeasureFactory systemMeasureFactory, IScoreDocumentLayout scoreLayoutDictionary, IUnitToPixelConverter unitToPixelConverter)
         {
             this.systemMeasureFactory = systemMeasureFactory;
-            this.selection = selection;
             this.scoreLayoutDictionary = scoreLayoutDictionary;
+            this.unitToPixelConverter = unitToPixelConverter;
         }
 
         /// <inheritdoc/>
-        public BaseContentWrapper CreateContent(IStaffSystemReader staffSystem, double canvasLeft, double canvasTop, double length, double lineSpacing, ColorARGB color)
+        public BaseContentWrapper CreateContent(IStaffSystemReader staffSystem, double canvasLeft, double canvasTop, double length, double lineSpacing)
         {
-            return new VisualStaffSystem(staffSystem, canvasLeft, canvasTop, length, lineSpacing, systemMeasureFactory, color, selection, scoreLayoutDictionary);
+            return new VisualStaffSystem(staffSystem, canvasLeft, canvasTop, length, lineSpacing, systemMeasureFactory, scoreLayoutDictionary, unitToPixelConverter);
         }
     }
 }

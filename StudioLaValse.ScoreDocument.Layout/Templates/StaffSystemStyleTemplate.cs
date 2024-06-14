@@ -8,7 +8,7 @@
         {
             return new StaffSystemStyleTemplate()
             {
-                DistanceToNext = 30,
+                DistanceToNext = 20,
             };
         }
 

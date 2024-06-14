@@ -10,6 +10,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         private readonly ISelection<IUniqueScoreElement> selection;
         private readonly IVisualNoteGroupFactory noteGroupFactory;
         private readonly IScoreDocumentLayout scoreLayoutDictionary;
+        private readonly IUnitToPixelConverter unitToPixelConverter;
 
         /// <summary>
         /// The default constructor.
@@ -17,34 +18,37 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// <param name="selection"></param>
         /// <param name="noteGroupFactory"></param>
         /// <param name="scoreLayoutDictionary"></param>
-        public VisualInstrumentMeasureFactory(ISelection<IUniqueScoreElement> selection, IVisualNoteGroupFactory noteGroupFactory, IScoreDocumentLayout scoreLayoutDictionary)
+        /// <param name="unitToPixelConverter"></param>
+        public VisualInstrumentMeasureFactory(ISelection<IUniqueScoreElement> selection, IVisualNoteGroupFactory noteGroupFactory, IScoreDocumentLayout scoreLayoutDictionary, IUnitToPixelConverter unitToPixelConverter)
         {
             this.selection = selection;
             this.noteGroupFactory = noteGroupFactory;
             this.scoreLayoutDictionary = scoreLayoutDictionary;
+            this.unitToPixelConverter = unitToPixelConverter;
         }
 
         /// <inheritdoc/>
-        public BaseContentWrapper CreateContent(IInstrumentMeasureReader source, IStaffGroupReader staffGroup, IReadOnlyDictionary<Position, double> positions, double canvasTop, double canvasLeft, double width, double paddingLeft, double paddingRight, double lineSpacing, ColorARGB color)
+        public BaseContentWrapper CreateContent(IInstrumentMeasureReader source, IStaffGroupReader staffGroup, IReadOnlyDictionary<Position, double> positions, double canvasTop, double canvasLeft, double width, double paddingLeft, double paddingRight, double lineSpacing)
         {
             var scoreLayout = scoreLayoutDictionary;
             var scoreScale = scoreLayout.Scale;
             var instrumentScale = staffGroup.InstrumentRibbon.ReadLayout().Scale;
-            return new VisualStaffGroupMeasure(source,
-                                               staffGroup,
-                                               positions,
-                                               canvasTop,
-                                               canvasLeft,
-                                               width,
-                                               paddingLeft,
-                                               paddingRight,
-                                               lineSpacing,
-                                               scoreScale,
-                                               instrumentScale,
-                                               color,
-                                               noteGroupFactory,
-                                               selection,
-                                               scoreLayoutDictionary);
+            return new VisualStaffGroupMeasure(
+                source,
+                staffGroup,
+                positions,
+                canvasTop,
+                canvasLeft,
+                width,
+                paddingLeft,
+                paddingRight,
+                lineSpacing,
+                scoreScale,
+                instrumentScale,
+                noteGroupFactory,
+                selection,
+                scoreLayoutDictionary,
+                unitToPixelConverter);
         }
     }
 }

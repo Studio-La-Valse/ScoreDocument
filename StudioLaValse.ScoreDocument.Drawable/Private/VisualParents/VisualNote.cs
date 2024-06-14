@@ -5,11 +5,10 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
     internal sealed class VisualNote : BaseVisualNote
     {
         private readonly INoteReader note;
-        private readonly ColorARGB color;
         private readonly double canvasTop;
         private readonly bool offsetDots;
         private readonly Accidental? accidental;
-        private readonly ISelection<IUniqueScoreElement> selection;
+        private readonly IScoreDocumentLayout scoreDocumentLayout;
 
 
         public INoteLayout NoteLayout => note.ReadLayout();
@@ -25,7 +24,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                 };
                 glyph.Scale = Scale;
 
-                return new DrawableScoreGlyph(XPosition, canvasTop, glyph, HorizontalTextOrigin.Center, VerticalTextOrigin.Center, color);
+                return new DrawableScoreGlyph(XPosition, canvasTop, glyph, HorizontalTextOrigin.Center, VerticalTextOrigin.Center, scoreDocumentLayout.PageForegroundColor.FromPrimitive());
             }
         }
         public DrawableScoreGlyph? AccidentalGlyph
@@ -52,7 +51,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                         glyph,
                         HorizontalTextOrigin.Center,
                         VerticalTextOrigin.Center,
-                        DisplayColor);
+                        scoreDocumentLayout.PageForegroundColor.FromPrimitive());
                 }
                 return null;
             }
@@ -61,15 +60,34 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         public override bool OffsetDots => offsetDots;
         public override double XOffset => NoteLayout.XOffset;
 
-        public VisualNote(INoteReader note, ColorARGB color, double canvasLeft, double canvasTop, double lineSpacing, double scoreScale, double instrumentScale, double noteScale, bool offsetDots, Accidental? accidental, ISelection<IUniqueScoreElement> selection) :
-            base(note, canvasLeft, canvasTop, lineSpacing, scoreScale, instrumentScale, noteScale, color, selection)
+        public VisualNote(INoteReader note,
+                          double canvasLeft,
+                          double canvasTop,
+                          double lineSpacing,
+                          double scoreScale,
+                          double instrumentScale,
+                          double noteScale,
+                          bool offsetDots,
+                          Accidental? accidental,
+                          IScoreDocumentLayout scoreDocumentLayout,
+                          ISelection<IUniqueScoreElement> selection,
+                          IUnitToPixelConverter unitToPixelConverter) :
+            base(note,
+                 canvasLeft,
+                 canvasTop,
+                 lineSpacing,
+                 scoreScale,
+                 instrumentScale,
+                 noteScale,
+                 scoreDocumentLayout,
+                 selection,
+                 unitToPixelConverter)
         {
             this.note = note;
-            this.color = color;
             this.canvasTop = canvasTop;
             this.offsetDots = offsetDots;
             this.accidental = accidental;
-            this.selection = selection;
+            this.scoreDocumentLayout = scoreDocumentLayout;
         }
 
 

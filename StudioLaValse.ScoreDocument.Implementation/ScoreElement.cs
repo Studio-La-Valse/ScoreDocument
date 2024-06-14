@@ -19,5 +19,15 @@ namespace StudioLaValse.ScoreDocument.Implementation
             Id = id;
             Guid = guid;
         }
+
+        public bool Equals(IUniqueScoreElement? other)
+        {
+            if (other is null)
+            {
+                return false;
+            }
+
+            return other.Id == Id;
+        }
     }
 }

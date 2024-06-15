@@ -10,6 +10,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         private readonly double canvasLeft;
         private readonly double canvasTopStaffGroup;
         private readonly double lineSpacing;
+        private readonly double positionSpacing;
         private readonly double scoreScale;
         private readonly double instrumentScale;
         private readonly IStaffGroupReader staffGroup;
@@ -28,6 +29,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                            double canvasLeft,
                            double canvasTopStaffGroup,
                            double lineSpacing,
+                           double positionSpacing,
                            double scoreScale,
                            double instrumentScale,
                            IStaffGroupReader staffGroup,
@@ -41,6 +43,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
             this.canvasLeft = canvasLeft;
             this.canvasTopStaffGroup = canvasTopStaffGroup;
             this.lineSpacing = lineSpacing;
+            this.positionSpacing = positionSpacing;
             this.scoreScale = scoreScale;
             this.instrumentScale = instrumentScale;
             this.staffGroup = staffGroup;
@@ -133,7 +136,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                     var highestNote = notesOnStaff.Last();
                     foreach (var note in new[] { highestNote, lowestNote })
                     {
-                        var overflowLines = OverflowLinesFromNote(note, 2.5 * scoreScale * instrumentScale, canvasTopStaff, staff);
+                        var lineLength = positionSpacing * 0.85;
+                        var overflowLines = OverflowLinesFromNote(note, lineLength, canvasTopStaff, staff);
 
                         foreach (var line in overflowLines)
                         {
@@ -148,7 +152,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                 }
 
                 canvasTopStaff += unitToPixelConverter.UnitsToPixels(staff.CalculateHeight(lineSpacing, scoreScale, instrumentScale));
-                canvasTopStaff += unitToPixelConverter.UnitsToPixels(staffLayout.DistanceToNext);
+                canvasTopStaff += unitToPixelConverter.UnitsToPixels(staffLayout.DistanceToNext * scoreScale);
             }
 
             return linesFromChord;
@@ -205,7 +209,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                 return new DrawableLineHorizontal(l.Start.Y,
                                                   l.Start.X,
                                                   l.Start.DistanceTo(l.End),
-                                                  scoreDocumentLayout.HorizontalStaffLineThickness * scoreScale * instrumentScale,
+                                                  unitToPixelConverter.UnitsToPixels(scoreDocumentLayout.HorizontalStaffLineThickness * scoreScale * instrumentScale),
                                                   scoreDocumentLayout.PageForegroundColor.FromPrimitive());
             });
         }

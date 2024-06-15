@@ -11,7 +11,6 @@ namespace StudioLaValse.ScoreDocument.Layout
         double Scale { get; }
         double StemLineThickness { get; }
         double VerticalStaffLineThickness { get; }
-        double ChordPositionFactor { get; }
 
         ColorARGB PageColor { get; }
         ColorARGB PageForegroundColor { get; }

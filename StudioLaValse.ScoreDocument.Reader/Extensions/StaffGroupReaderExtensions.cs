@@ -6,7 +6,6 @@ using StudioLaValse.ScoreDocument.Reader.Private;
 
 namespace StudioLaValse.ScoreDocument.Reader.Extensions
 {
-
     /// <summary>
     /// Extensions to staff (-group and -system) readers.
     /// </summary>
@@ -85,7 +84,7 @@ namespace StudioLaValse.ScoreDocument.Reader.Extensions
             {
                 var staffLayout = staff.ReadLayout();
                 canvasTopStaffGroup += staff.CalculateHeight(globalLineSpacing, scoreScale, instrumentScale);
-                canvasTopStaffGroup += staffLayout.DistanceToNext;
+                canvasTopStaffGroup += staffLayout.DistanceToNext * scoreScale;
             }
 
             var _staff = staffGroup.EnumerateStaves().ElementAt(staffIndex);
@@ -118,7 +117,7 @@ namespace StudioLaValse.ScoreDocument.Reader.Extensions
             foreach (var staff in staffGroup.EnumerateStaves())
             {
                 var staffHeight = staff.CalculateHeight(globalLineSpacing, scoreScale, instrumentScale);
-                var staffSpacing = staff.ReadLayout().DistanceToNext;
+                var staffSpacing = staff.ReadLayout().DistanceToNext * scoreScale;
                 height += staffHeight;
                 height += staffSpacing;
                 lastStaffSpacing = staffSpacing;
@@ -140,13 +139,14 @@ namespace StudioLaValse.ScoreDocument.Reader.Extensions
         {
             var height = 0d;
             var lastStafGroupSpacing = 0d;
+            var scoreScale = scoreLayoutDictionary.Scale;
             foreach (var staffGroup in staffSystem.EnumerateStaffGroups())
             {
                 var staffGroupLayout = staffGroup.ReadLayout();
                 var staffGroupHeight = staffGroup.CalculateHeight(lineSpacing, scoreLayoutDictionary);
                 height += staffGroupHeight;
 
-                lastStafGroupSpacing = staffGroupLayout.DistanceToNext;
+                lastStafGroupSpacing = staffGroupLayout.DistanceToNext * scoreScale;
                 height += lastStafGroupSpacing;
             }
             height -= lastStafGroupSpacing;

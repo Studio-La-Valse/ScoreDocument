@@ -61,11 +61,16 @@ namespace StudioLaValse.ScoreDocument.Reader.Extensions
         {
             var originalMin = positions.Min(e => e.Value.Item1);
             var originalMax = positions.Max(e => e.Value.Item1 + e.Value.Item2);
-
+            var originalMinSpace = positions.Min(e => e.Value.Item2);
+            var originalMaxSpace = positions.Max(e => e.Value.Item2);
+            var originalWidth = originalMax - originalMin;
+            var newWidth = canvasRight - canvasLeft;
             foreach (var kv in positions)
             {
                 var position = kv.Value.Item1.Map(originalMin, originalMax, canvasLeft, canvasRight);
-                var spaceRight = kv.Value.Item2.Map(originalMin, originalMax, canvasLeft, canvasRight);
+                var spaceRight = originalMinSpace == originalMaxSpace ? 
+                    newWidth / originalWidth * originalMinSpace : 
+                    kv.Value.Item2.Map(originalMinSpace, originalMaxSpace, originalWidth, newWidth);
                 positions[kv.Key] = (position, spaceRight);
             }
 
@@ -73,8 +78,9 @@ namespace StudioLaValse.ScoreDocument.Reader.Extensions
         }
 
 
-        public static Dictionary<Position, double> PositionsOnly(this Dictionary<Position, (double position, double spaceRight)> dictionary)
+        public static Dictionary<Position, double> PositionsOnly(this Dictionary<Position, (double position, double spaceRight)> dictionary, out double positionSpace)
         {
+            positionSpace = dictionary.FirstOrDefault().Value.spaceRight;
             return dictionary.OrderBy(e => e.Key.Decimal).ToDictionary(e => e.Key, e => e.Value.position, dictionary.Comparer);
         }
 
@@ -87,7 +93,7 @@ namespace StudioLaValse.ScoreDocument.Reader.Extensions
         {
             var (position, spaceRight) = scoreMeasure.EnumeratePositions(scoreScale).LastOrDefault().Value;
             var measureLayout = scoreMeasure.ReadLayout();
-            var measurePadding = measureLayout.PaddingLeft + measureLayout.PaddingRight;
+            var measurePadding = measureLayout.PaddingLeft * scoreScale + measureLayout.PaddingRight * scoreScale;
             return position + spaceRight + measurePadding;
         }
 

@@ -30,7 +30,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
             {
                 var braceLeft = Brace?.TopLeftX ?? canvasLeft;
                 var text = FirstMeasure.MeasureIndex == 0 ? ContextLayout.DisplayName : ContextLayout.AbbreviatedName;
-                DrawableText id = new(braceLeft - 2, canvasTop + (Height / 2), text, 2 * scoreScale, scoreLayoutDictionary.PageForegroundColor.FromPrimitive(), HorizontalTextOrigin.Right, VerticalTextOrigin.Center);
+                var id = new DrawableText(braceLeft - 2, canvasTop + (Height / 2), text, Glyph.Em /2 * scoreScale, scoreLayoutDictionary.PageForegroundColor.FromPrimitive(), HorizontalTextOrigin.Right, VerticalTextOrigin.Center);
 
                 return id;
             }
@@ -49,7 +49,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                     return null;
                 }
 
-                double knownHeightOfTheBrace = 6;
+                var knownHeightOfTheBrace = Glyph.Em;
                 var scale = Height / knownHeightOfTheBrace;
 
                 var glyph = GlyphLibrary.Brace;
@@ -112,7 +112,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                 yield return newStaff;
 
                 _canvasTop += unitToPixelConverter.UnitsToPixels(staff.CalculateHeight(globalLineSpacing, scoreScale, instrumentScale));
-                _canvasTop += unitToPixelConverter.UnitsToPixels(staffLayout.DistanceToNext);
+                _canvasTop += unitToPixelConverter.UnitsToPixels(staffLayout.DistanceToNext * scoreScale);
             }
         }
 

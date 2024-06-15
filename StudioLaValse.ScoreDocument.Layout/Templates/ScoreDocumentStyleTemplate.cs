@@ -14,8 +14,6 @@ namespace StudioLaValse.ScoreDocument.Layout.Templates
 
         public required double FirstSystemIndent { get; set; }
 
-        public required double ChordPositionFactor { get; set; }
-
         public required Dictionary<Guid, double> InstrumentScales { get; init; }
 
 
@@ -49,12 +47,11 @@ namespace StudioLaValse.ScoreDocument.Layout.Templates
         {
             return new ScoreDocumentStyleTemplate()
             {
-                Scale = 2.5,
+                Scale = 1.5,
                 HorizontalStaffLineThickness = 0.075,
                 VerticalStaffLineThickness = 0.25,
                 FirstSystemIndent = 50,
                 StemLineThickness = 0.1,
-                ChordPositionFactor = 0.5,
                 InstrumentScales = [],
                 PageStyleTemplate = PageStyleTemplate.Create(),
                 ScoreMeasureStyleTemplate = ScoreMeasureStyleTemplate.Create(),
@@ -77,7 +74,6 @@ namespace StudioLaValse.ScoreDocument.Layout.Templates
             VerticalStaffLineThickness = styleTemplate.VerticalStaffLineThickness;
             StemLineThickness = styleTemplate.StemLineThickness;
             FirstSystemIndent = styleTemplate.FirstSystemIndent;
-            ChordPositionFactor = styleTemplate.ChordPositionFactor;
 
             InstrumentScales.Clear();
             foreach (var kv in styleTemplate.InstrumentScales)

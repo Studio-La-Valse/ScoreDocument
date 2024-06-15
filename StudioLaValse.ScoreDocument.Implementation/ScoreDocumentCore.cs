@@ -158,7 +158,6 @@ namespace StudioLaValse.ScoreDocument.Implementation
                 Layout = UserLayout.GetMemento(),
                 InstrumentRibbons = EnumerateRibbonsCore().Select(e => e.GetMemento()).ToList(),
                 ScoreMeasures = EnumerateMeasuresCore().Select(e => e.GetMemento()).ToList(),
-                ChordPositionFactor = AuthorLayout._ChordPositionFactor.Field,
                 FirstSystemIndent = AuthorLayout._FirstSystemIndent.Field,
                 ForegroundColor = AuthorLayout._PageForegroundColor.Field?.Convert(),
                 PageColor = AuthorLayout._PageColor.Field?.Convert(),

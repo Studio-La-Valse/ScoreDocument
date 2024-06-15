@@ -9,7 +9,7 @@
         {
             return new ScoreMeasureStyleTemplate()
             {
-                PaddingLeft = 15,
+                PaddingLeft = 5,
                 PaddingRight = 0,
             };
         }

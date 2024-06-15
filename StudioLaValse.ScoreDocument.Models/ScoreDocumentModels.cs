@@ -27,7 +27,6 @@ namespace StudioLaValse.ScoreDocument.Models
                 Id = Guid.NewGuid(),
                 InstrumentRibbons = [],
                 ScoreMeasures = [],
-                ChordPositionFactor = null,
                 FirstSystemIndent = null,
                 ForegroundColor = null,
                 HorizontalStaffLineThickness = null,

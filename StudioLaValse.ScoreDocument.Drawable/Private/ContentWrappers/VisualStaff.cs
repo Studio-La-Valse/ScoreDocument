@@ -19,12 +19,12 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         private readonly IScoreDocumentLayout scoreDocumentLayout;
         private readonly IUnitToPixelConverter unitToPixelConverter;
 
-        public static double SpaceUntilClef { get; } = 0.5;
-        public static double ClefSpacing { get; } = 5.5;
-        public static double KeySignatureGlyphSpacing { get; } = 0.9;
-        public static double TimeSignatureSpacing { get; } = 4.0;
+        public static double SpaceUntilClef { get; } = 1;
+        public static double ClefSpacing { get; } = 11;
+        public static double KeySignatureGlyphSpacing { get; } = 1.8;
+        public static double TimeSignatureSpacing { get; } = 8;
         public double Scale => scoreScale * instrumentScale;
-        public double LineThickness => lineThickness * Scale;
+        public double LineThickness => unitToPixelConverter.UnitsToPixels(lineThickness * Scale);
 
 
         public VisualStaff(IStaffReader staff,

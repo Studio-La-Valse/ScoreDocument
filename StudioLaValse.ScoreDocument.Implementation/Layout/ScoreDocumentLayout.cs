@@ -13,7 +13,6 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
         public abstract ValueTemplateProperty<double> _FirstSystemIndent { get; }
         public abstract ValueTemplateProperty<ColorARGB> _PageColor { get; }
         public abstract ValueTemplateProperty<ColorARGB> _PageForegroundColor { get; }
-        public abstract ValueTemplateProperty<double> _ChordPositionFactor { get; }
 
 
         public double Scale
@@ -71,17 +70,6 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
                 _FirstSystemIndent.Value = value;
             }
         }
-        public double ChordPositionFactor
-        {
-            get
-            {
-                return _ChordPositionFactor.Value;
-            }
-            set
-            {
-                _ChordPositionFactor.Value = value;
-            }
-        }
         public ColorARGB PageColor
         {
             get
@@ -116,7 +104,6 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
             _FirstSystemIndent.Reset();
             _PageColor.Reset();
             _PageForegroundColor.Reset();
-            _ChordPositionFactor.Reset();
         }
         public void ApplyMemento(ScoreDocumentLayoutMembers? memento)
         {
@@ -131,7 +118,6 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
             _VerticalStaffLineThickness.Field = memento.HorizontalStaffLineThickness;
             _StemLineThickness.Field = memento.StemLineThickness;
             _FirstSystemIndent.Field = memento.FirstSystemIndent;
-            _ChordPositionFactor.Field = memento.ChordPositionFactor;
             _PageColor.Field = memento.PageColor?.Convert();
             _PageForegroundColor.Field = memento.ForegroundColor?.Convert();
         }
@@ -150,7 +136,6 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
         public override ValueTemplateProperty<double> _VerticalStaffLineThickness { get; }
         public override ValueTemplateProperty<double> _StemLineThickness { get; }
         public override ValueTemplateProperty<double> _FirstSystemIndent { get; }
-        public override ValueTemplateProperty<double> _ChordPositionFactor { get; }
         public override ValueTemplateProperty<ColorARGB> _PageColor { get; }
         public override ValueTemplateProperty<ColorARGB> _PageForegroundColor { get; }
 
@@ -176,7 +161,6 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
             _VerticalStaffLineThickness = new ValueTemplateProperty<double>(() => styleTemplate.VerticalStaffLineThickness);
             _StemLineThickness = new ValueTemplateProperty<double>(() => styleTemplate.StemLineThickness);
             _FirstSystemIndent = new ValueTemplateProperty<double>(() => styleTemplate.FirstSystemIndent);
-            _ChordPositionFactor = new ValueTemplateProperty<double>(() => styleTemplate.ChordPositionFactor);
             _PageForegroundColor = new ValueTemplateProperty<ColorARGB>(() => styleTemplate.PageStyleTemplate.ForegroundColor);
             _PageColor = new ValueTemplateProperty<ColorARGB>(() => styleTemplate.PageStyleTemplate.PageColor);
         }
@@ -190,7 +174,6 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
                 VerticalStaffLineThickness = _VerticalStaffLineThickness.Field,
                 StemLineThickness = _StemLineThickness.Field,
                 FirstSystemIndent = _FirstSystemIndent.Field,
-                ChordPositionFactor = _ChordPositionFactor.Field,
                 PageColor = _PageColor.Field?.Convert(),
                 ForegroundColor = _PageForegroundColor.Field?.Convert()
             };
@@ -206,7 +189,6 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
         public override ValueTemplateProperty<double> _VerticalStaffLineThickness { get; }
         public override ValueTemplateProperty<double> _StemLineThickness { get; }
         public override ValueTemplateProperty<double> _FirstSystemIndent { get; }
-        public override ValueTemplateProperty<double> _ChordPositionFactor { get; }
         public override ValueTemplateProperty<ColorARGB> _PageColor { get; }
         public override ValueTemplateProperty<ColorARGB> _PageForegroundColor { get; }
 
@@ -233,7 +215,6 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
             _VerticalStaffLineThickness = new ValueTemplateProperty<double>(() => authorLayout.VerticalStaffLineThickness);
             _StemLineThickness = new ValueTemplateProperty<double>(() => authorLayout.StemLineThickness);
             _FirstSystemIndent = new ValueTemplateProperty<double>(() => authorLayout.FirstSystemIndent);
-            _ChordPositionFactor = new ValueTemplateProperty<double>(() => authorLayout.ChordPositionFactor);
             _PageForegroundColor = new ValueTemplateProperty<ColorARGB>(() => authorLayout.PageForegroundColor);
             _PageColor = new ValueTemplateProperty<ColorARGB>(() => authorLayout.PageColor);
 
@@ -252,7 +233,6 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
                 VerticalStaffLineThickness = _VerticalStaffLineThickness.Field,
                 StemLineThickness = _StemLineThickness.Field,
                 FirstSystemIndent = _FirstSystemIndent.Field,
-                ChordPositionFactor = _ChordPositionFactor.Field,
                 PageColor = _PageColor.Field?.Convert(),
                 ForegroundColor = _PageForegroundColor.Field?.Convert()
             };

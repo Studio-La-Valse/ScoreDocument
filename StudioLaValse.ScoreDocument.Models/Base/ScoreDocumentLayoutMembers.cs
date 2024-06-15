@@ -23,9 +23,6 @@ public class ScoreDocumentLayoutMembers
     [Range(Constants.GreaterThanZero, double.MaxValue)]
     public required double? StemLineThickness { get; set; }
 
-    [Range(0, 1)]
-    public required double? ChordPositionFactor { get; set; }
-
     [Column(TypeName = "jsonb")]
     public required ColorARGBClass? PageColor { get; set; }
 

@@ -12,6 +12,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         private readonly double paddingLeft;
         private readonly double paddingRight;
         private readonly double globalLineSpacing;
+        private readonly double positionSpace;
         private readonly double scoreScale;
         private readonly double instrumentScale;
         private readonly IVisualNoteGroupFactory visualNoteGroupFactory;
@@ -21,13 +22,14 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
 
         public double MeasureDividerLineThickness =>
-            scoreLayoutDictionary.VerticalStaffLineThickness * scoreScale * instrumentScale;
+            unitToPixelConverter.UnitsToPixels(scoreLayoutDictionary.VerticalStaffLineThickness * scoreScale * instrumentScale);
+        public double Height =>
+           unitToPixelConverter.UnitsToPixels(staffGroup.CalculateHeight(globalLineSpacing, scoreLayoutDictionary)); 
         public IStaffGroupLayout Layout =>
             staffGroup.ReadLayout();
         public KeySignature KeySignature =>
             source.ReadLayout().KeySignature;
-        public double Height => 
-            unitToPixelConverter.UnitsToPixels(staffGroup.CalculateHeight(globalLineSpacing, scoreLayoutDictionary));
+       
 
         public KeySignature? InvalidatesNext
         {
@@ -60,6 +62,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                                        double paddingLeft,
                                        double paddingRight,
                                        double globalLineSpacing,
+                                       double positionSpace,
                                        double scoreScale,
                                        double instrumentScale,
                                        IVisualNoteGroupFactory visualNoteGroupFactory,
@@ -75,6 +78,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             this.paddingLeft = paddingLeft;
             this.paddingRight = paddingRight;
             this.globalLineSpacing = globalLineSpacing;
+            this.positionSpace = positionSpace;
             this.scoreScale = scoreScale;
             this.instrumentScale = instrumentScale;
             this.visualNoteGroupFactory = visualNoteGroupFactory;
@@ -114,7 +118,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                     continue;
                 }
 
-                var visualNoteGroup = visualNoteGroupFactory.Build(chordGroup, staffGroup, source, positions, canvasTop, globalLineSpacing);
+                var visualNoteGroup = visualNoteGroupFactory.Build(chordGroup, staffGroup, source, positions, canvasTop, globalLineSpacing, positionSpace);
                 yield return visualNoteGroup;
             }
         }

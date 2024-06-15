@@ -30,7 +30,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
             visualBeamBuilder = new VisualBeamBuilder(scoreLayoutDictionary, unitToPixelConverter);
         }
         /// <inheritdoc/>
-        public BaseContentWrapper Build(IMeasureBlockReader noteGroup, IStaffGroupReader staffGroup, IInstrumentMeasureReader instrumentMeasure, IReadOnlyDictionary<Position, double> positionDictionary, double canvasTopStaffGroup, double lineSpacing)
+        public BaseContentWrapper Build(IMeasureBlockReader noteGroup, IStaffGroupReader staffGroup, IInstrumentMeasureReader instrumentMeasure, IReadOnlyDictionary<Position, double> positionDictionary, double canvasTopStaffGroup, double lineSpacing, double positionSpacing)
         {
             var scoreLayout = scoreLayoutDictionary;
             var scoreScale = scoreLayout.Scale;
@@ -42,6 +42,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
                 positionDictionary,
                 canvasTopStaffGroup,
                 lineSpacing,
+                positionSpacing,
                 scoreScale,
                 instrumentScale,
                 noteFactory,

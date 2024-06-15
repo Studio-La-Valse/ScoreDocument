@@ -11,10 +11,10 @@
         {
             return new MeasureBlockStyleTemplate()
             {
-                StemLength = 5,
+                StemLength = 10,
                 BeamAngle = 0,
-                BeamThickness = 0.25,
-                BeamSpacing = 0.1
+                BeamThickness = 0.5,
+                BeamSpacing = 0.2
             };
         }
 

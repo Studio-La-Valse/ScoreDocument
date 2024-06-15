@@ -16,9 +16,9 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
 
         public double VerticalLineThickness =>
-            scoreLayoutDictionary.VerticalStaffLineThickness * ScoreScale;
+            unitToPixelConverter.UnitsToPixels(scoreLayoutDictionary.VerticalStaffLineThickness * ScoreScale);
         public double HorizontalLineThickness =>
-            scoreLayoutDictionary.HorizontalStaffLineThickness * ScoreScale;
+            unitToPixelConverter.UnitsToPixels(scoreLayoutDictionary.HorizontalStaffLineThickness * ScoreScale);
         public double Height =>
             unitToPixelConverter.UnitsToPixels(staffSystem.CalculateHeight(globalLineSpacing, scoreLayoutDictionary));
         public DrawableLineVertical OpeningLine =>

@@ -37,7 +37,7 @@ namespace StudioLaValse.ScoreDocument.Reader.Extensions
                 if (currentSystemLength > currentAvailableWidth && currentSystem.ScoreMeasures.Any())
                 {
                     var previousSystemHeight = currentSystem.CalculateHeight(lineSpacing, scoreDocumentLayout);
-                    var previousSystemMarginBottom = currentSystem.ReadLayout().PaddingBottom;
+                    var previousSystemMarginBottom = currentSystem.ReadLayout().PaddingBottom * scoreScale;
                     currentSystem = new StaffSystem(scoreDocument);
                     currentSystemCanvasTop += previousSystemHeight + previousSystemMarginBottom;
 

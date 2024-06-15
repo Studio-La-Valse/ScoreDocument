@@ -30,21 +30,21 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         {
             get
             {
-                var lineSpacingOnStaff = lineSpacing * scoreScale * instrumentScale;
+                var lineSpacingOnStaff = unitToPixelConverter.UnitsToPixels(lineSpacing * scoreScale * instrumentScale);
                 var heightOnCanvas = HeightOnCanvas;
                 if (OffsetDots)
                 {
                     heightOnCanvas -= lineSpacingOnStaff / 2;
                 }
 
-                var spacing = 1.5 * Scale;
+                var spacing = 3.5 * (Models.Glyph.Em / 12) * scoreScale * instrumentScale;
                 var startLeft = XPosition + spacing;
 
                 for (var i = 0; i < measureElement.RythmicDuration.Dots; i++)
                 {
                     DrawableCircle circle = new(
                         new XY(startLeft, heightOnCanvas),
-                        0.3 * Scale,
+                        lineSpacingOnStaff / 6,
                         scoreDocumentLayout.PageForegroundColor.FromPrimitive());
 
                     yield return circle;

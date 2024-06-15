@@ -19,7 +19,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// <param name="paddingLeft"></param>
         /// <param name="paddingRight"></param>
         /// <param name="lineSpacing"></param>
+        /// <param name="positionSpace"></param>
         /// <returns></returns>
-        BaseContentWrapper CreateContent(IInstrumentMeasureReader source, IStaffGroupReader staffGroup, IReadOnlyDictionary<Position, double> positionDictionary, double canvasTop, double canvasLeft, double width, double paddingLeft, double paddingRight, double lineSpacing);
+        BaseContentWrapper CreateContent(IInstrumentMeasureReader source, IStaffGroupReader staffGroup, IReadOnlyDictionary<Position, double> positionDictionary, double canvasTop, double canvasLeft, double width, double paddingLeft, double paddingRight, double lineSpacing, double positionSpace);
     }
 }

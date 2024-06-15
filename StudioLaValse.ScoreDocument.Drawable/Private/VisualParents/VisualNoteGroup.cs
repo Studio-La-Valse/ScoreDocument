@@ -15,6 +15,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         private readonly IReadOnlyDictionary<Position, double> positionDictionary;
         private readonly double canvasTopStaffGroup;
         private readonly double globalLineSpacing;
+        private readonly double positionSpaceing;
         private readonly double scoreScale;
         private readonly double instrumentScale;
         private readonly IVisualNoteFactory noteFactory;
@@ -27,24 +28,25 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         public IMeasureBlockLayout Layout =>
             measureBlock.ReadLayout();
         public double StemThickness =>
-            scoreLayoutDictionary.StemLineThickness * Scale;
+            unitToPixelConverter.UnitsToPixels(scoreLayoutDictionary.StemLineThickness * Scale);
         public double Scale => scoreScale * instrumentScale;
 
 
         public VisualNoteGroup(IMeasureBlockReader measureBlock,
-            IStaffGroupReader staffGroup,
-            IInstrumentMeasureReader instrumentMeasure,
-            IReadOnlyDictionary<Position, double> positionDictionary,
-            double canvasTopStaffGroup,
-            double globalLineSpacing,
-            double scoreScale,
-            double instrumentScale,
-            IVisualNoteFactory noteFactory,
-            IVisualRestFactory restFactory,
-            IVisualBeamBuilder visualBeamBuilder,
-            IScoreDocumentLayout scoreLayoutDictionary, 
-            IVisualNoteGroupFactory visualNoteGroupFactory,
-            IUnitToPixelConverter unitToPixelConverter)
+                               IStaffGroupReader staffGroup,
+                               IInstrumentMeasureReader instrumentMeasure,
+                               IReadOnlyDictionary<Position, double> positionDictionary,
+                               double canvasTopStaffGroup,
+                               double globalLineSpacing,
+                               double positionSpaceing,
+                               double scoreScale,
+                               double instrumentScale,
+                               IVisualNoteFactory noteFactory,
+                               IVisualRestFactory restFactory,
+                               IVisualBeamBuilder visualBeamBuilder,
+                               IScoreDocumentLayout scoreLayoutDictionary,
+                               IVisualNoteGroupFactory visualNoteGroupFactory,
+                               IUnitToPixelConverter unitToPixelConverter)
         {
             this.measureBlock = measureBlock;
             this.staffGroup = staffGroup;
@@ -52,6 +54,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             this.positionDictionary = positionDictionary;
             this.canvasTopStaffGroup = canvasTopStaffGroup;
             this.globalLineSpacing = globalLineSpacing;
+            this.positionSpaceing = positionSpaceing;
             this.scoreScale = scoreScale;
             this.instrumentScale = instrumentScale;
             this.noteFactory = noteFactory;
@@ -92,6 +95,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                     canvasLeft,
                     canvasTopStaffGroup,
                     globalLineSpacing,
+                    positionSpaceing,
                     scoreScale,
                     instrumentScale,
                     staffGroup,
@@ -108,7 +112,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                 }
 
                 var gracePositions = CreateDictionary(_graceGroup, canvasLeft);
-                var graceGroup = visualNoteGroupFactory.Build(_graceGroup.Cast(), staffGroup, instrumentMeasure, gracePositions, canvasTopStaffGroup, globalLineSpacing);
+                var graceGroup = visualNoteGroupFactory.Build(_graceGroup.Cast(), staffGroup, instrumentMeasure, gracePositions, canvasTopStaffGroup, globalLineSpacing, positionSpaceing);
                 yield return graceGroup;
             }
         }
@@ -139,7 +143,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                 .Select(c => c.Equals(principalChord) ? principalStem : CreateStem(c, principalNoteWidth, beamDefinition))
                 .ToArray();
 
-            yield return new VisualBeamGroup(stems, beamDefinition, Layout.BeamThickness, Layout.BeamSpacing, Scale, visualBeamBuilder);
+            yield return new VisualBeamGroup(stems, beamDefinition, Layout.BeamThickness, Layout.BeamSpacing, Scale, positionSpaceing, visualBeamBuilder);
         }
         public VisualStem CreateStem(IChordReader chord, double firstNoteWidth, Ruler beamDefinition)
         {

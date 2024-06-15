@@ -89,7 +89,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                 yield return visualSystem;
 
                 canvasTop += unitToPixelConverter.UnitsToPixels(staffSystem.CalculateHeight(globalLineSpacing, scoreDocumentLayout));
-                canvasTop += unitToPixelConverter.UnitsToPixels(staffSystemLayout.PaddingBottom);
+                canvasTop += unitToPixelConverter.UnitsToPixels(staffSystemLayout.PaddingBottom * scoreScale);
             }
         }
     }

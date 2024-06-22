@@ -1,4 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.Layout.Templates;
+﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
+using StudioLaValse.ScoreDocument.Layout.Templates;
 using StudioLaValse.ScoreDocument.Reader;
 using StudioLaValse.ScoreDocument.Reader.Extensions;
 

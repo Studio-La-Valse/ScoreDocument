@@ -1,9 +1,11 @@
-﻿using StudioLaValse.ScoreDocument.Primitives;
+﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
+using StudioLaValse.ScoreDocument.Primitives;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
     internal sealed class VisualRest : BaseVisualNote
     {
+        private readonly IGlyphLibrary glyphLibrary;
         private readonly IScoreDocumentLayout scoreDocumentLayout;
 
         public Glyph GlyphPrototype
@@ -14,12 +16,12 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
                 var glyphs = new[]
                 {
-                    GlyphLibrary.RestWhole,
-                    GlyphLibrary.RestHalf,
-                    GlyphLibrary.RestQuarter,
-                    GlyphLibrary.RestEighth,
-                    GlyphLibrary.RestSixteenth,
-                    GlyphLibrary.RestThirtySecond,
+                    glyphLibrary.RestWhole(Scale),
+                    glyphLibrary.RestHalf(Scale),
+                    glyphLibrary.RestQuarter(Scale),
+                    glyphLibrary.RestEighth(Scale),
+                    glyphLibrary.RestSixteenth(Scale),
+                    glyphLibrary.RestThirtySecond(Scale),
                 };
 
                 for (var i = 0; i < 6; i++)
@@ -32,7 +34,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                     duration /= 2;
                 }
 
-                return GlyphLibrary.RestEighth;
+                return glyphs[3];
             }
         }
         public override DrawableScoreGlyph Glyph
@@ -60,6 +62,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                           double lineSpacing,
                           double scoreScale,
                           double instrumentScale,
+                          IGlyphLibrary glyphLibrary,
                           IScoreDocumentLayout scoreDocumentLayout,
                           ISelection<IUniqueScoreElement> selection,
                           IUnitToPixelConverter unitToPixelConverter) :
@@ -74,6 +77,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                  selection,
                  unitToPixelConverter)
         {
+            this.glyphLibrary = glyphLibrary;
             this.scoreDocumentLayout = scoreDocumentLayout;
         }
     }

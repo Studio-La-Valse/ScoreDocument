@@ -1,4 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.Reader;
+﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
+using StudioLaValse.ScoreDocument.Reader;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {

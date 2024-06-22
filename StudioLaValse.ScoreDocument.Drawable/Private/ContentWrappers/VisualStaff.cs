@@ -1,4 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.Reader;
+﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
+using StudioLaValse.ScoreDocument.Reader;
 using StudioLaValse.ScoreDocument.Reader.Extensions;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
@@ -16,6 +17,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         private readonly Clef openingClef;
         private readonly KeySignature openingKeySignature;
         private readonly TimeSignature? timeSignature;
+        private readonly IGlyphLibrary glyphLibrary;
         private readonly IScoreDocumentLayout scoreDocumentLayout;
         private readonly IUnitToPixelConverter unitToPixelConverter;
 
@@ -38,6 +40,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                            Clef openingClef,
                            KeySignature openingKeySignature,
                            TimeSignature? timeSignature,
+                           IGlyphLibrary glyphLibrary,
                            IScoreDocumentLayout scoreDocumentLayout,
                            IUnitToPixelConverter unitToPixelConverter)
         {
@@ -52,6 +55,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
             this.openingClef = openingClef;
             this.openingKeySignature = openingKeySignature;
             this.timeSignature = timeSignature;
+            this.glyphLibrary = glyphLibrary;
             this.scoreDocumentLayout = scoreDocumentLayout;
             this.unitToPixelConverter = unitToPixelConverter;
         }
@@ -61,14 +65,12 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         {
             var glyph = openingClef.ClefSpecies switch
             {
-                ClefSpecies.G => GlyphLibrary.ClefG,
-                ClefSpecies.F => GlyphLibrary.ClefF,
-                ClefSpecies.C => GlyphLibrary.ClefC,
-                ClefSpecies.Percussion => GlyphLibrary.ClefPercussion,
+                ClefSpecies.G => glyphLibrary.ClefG(Scale),
+                ClefSpecies.F => glyphLibrary.ClefF(Scale),
+                ClefSpecies.C => glyphLibrary.ClefC(Scale),
+                ClefSpecies.Percussion => glyphLibrary.ClefPercussion(Scale),
                 _ => throw new NotImplementedException()
             };
-
-            glyph.Scale = scoreScale * instrumentScale;
 
             var lineIndex = openingClef.ClefSpecies switch
             {
@@ -96,10 +98,10 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
             }
 
             var _glyph = openingKeySignature.DefaultFlats ?
-                GlyphLibrary.Flat :
-                GlyphLibrary.Sharp;
+                glyphLibrary.Flat(Scale) :
+                glyphLibrary.Sharp(Scale);
 
-            var glyphWidth = _glyph.Width;
+            var glyphWidth = _glyph.Width();
 
             var flats = openingKeySignature.DefaultFlats;
             var accidentalLines = flats ?
@@ -130,27 +132,25 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 
             var topGlyph = timeSignature.Numerator switch
             {
-                1 => GlyphLibrary.NumberOne,
-                2 => GlyphLibrary.NumberTwo,
-                3 => GlyphLibrary.NumberThree,
-                4 => GlyphLibrary.NumberFour,
-                5 => GlyphLibrary.NumberFive,
-                6 => GlyphLibrary.NumberSix,
-                7 => GlyphLibrary.NumberSeven,
-                8 => GlyphLibrary.NumberEight,
-                9 => GlyphLibrary.NumberNine,
+                1 => glyphLibrary.NumberOne(Scale),
+                2 => glyphLibrary.NumberTwo(Scale),
+                3 => glyphLibrary.NumberThree(Scale),
+                4 => glyphLibrary.NumberFour(Scale),
+                5 => glyphLibrary.NumberFive(Scale),
+                6 => glyphLibrary.NumberSix(Scale),
+                7 => glyphLibrary.NumberSeven(Scale),
+                8 => glyphLibrary.NumberEight(Scale),
+                9 => glyphLibrary.NumberNine(Scale),
                 _ => throw new NotSupportedException()
             };
-            topGlyph.Scale = scoreScale * instrumentScale;
 
             var bottomGlyph = timeSignature.Denominator.Value switch
             {
-                2 => GlyphLibrary.NumberTwo,
-                4 => GlyphLibrary.NumberFour,
-                8 => GlyphLibrary.NumberEight,
+                2 => glyphLibrary.NumberTwo(Scale),
+                4 => glyphLibrary.NumberFour(Scale),
+                8 => glyphLibrary.NumberEight(Scale),
                 _ => throw new NotSupportedException()
             };
-            bottomGlyph.Scale = scoreScale * instrumentScale;
 
             var list = new List<DrawableScoreGlyph>()
             {

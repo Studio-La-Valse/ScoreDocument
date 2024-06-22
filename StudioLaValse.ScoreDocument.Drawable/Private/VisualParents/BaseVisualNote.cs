@@ -1,4 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Primitives;
+using StudioLaValse.ScoreDocument.GlyphLibrary;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
@@ -37,7 +38,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                     heightOnCanvas -= lineSpacingOnStaff / 2;
                 }
 
-                var spacing = 3.5 * (Models.Glyph.Em / 12) * scoreScale * instrumentScale;
+                var spacing = 3.5 * (GlyphLibrary.Glyph.Em / 12) * scoreScale * instrumentScale;
                 var startLeft = XPosition + spacing;
 
                 for (var i = 0; i < measureElement.RythmicDuration.Dots; i++)

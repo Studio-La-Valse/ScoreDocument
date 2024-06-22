@@ -1,4 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.Primitives;
+﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
+using StudioLaValse.ScoreDocument.Primitives;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
@@ -11,6 +12,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         private readonly IVisualNoteGroupFactory noteGroupFactory;
         private readonly IScoreDocumentLayout scoreLayoutDictionary;
         private readonly IUnitToPixelConverter unitToPixelConverter;
+        private readonly IGlyphLibrary glyphLibrary;
 
         /// <summary>
         /// The default constructor.
@@ -19,12 +21,14 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// <param name="noteGroupFactory"></param>
         /// <param name="scoreLayoutDictionary"></param>
         /// <param name="unitToPixelConverter"></param>
-        public VisualInstrumentMeasureFactory(ISelection<IUniqueScoreElement> selection, IVisualNoteGroupFactory noteGroupFactory, IScoreDocumentLayout scoreLayoutDictionary, IUnitToPixelConverter unitToPixelConverter)
+        /// <param name="glyphLibrary"></param>
+        public VisualInstrumentMeasureFactory(ISelection<IUniqueScoreElement> selection, IVisualNoteGroupFactory noteGroupFactory, IScoreDocumentLayout scoreLayoutDictionary, IUnitToPixelConverter unitToPixelConverter, IGlyphLibrary glyphLibrary)
         {
             this.selection = selection;
             this.noteGroupFactory = noteGroupFactory;
             this.scoreLayoutDictionary = scoreLayoutDictionary;
             this.unitToPixelConverter = unitToPixelConverter;
+            this.glyphLibrary = glyphLibrary;
         }
 
         /// <inheritdoc/>
@@ -46,6 +50,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
                 positionSpace,
                 scoreScale,
                 instrumentScale,
+                glyphLibrary,
                 noteGroupFactory,
                 selection,
                 scoreLayoutDictionary,

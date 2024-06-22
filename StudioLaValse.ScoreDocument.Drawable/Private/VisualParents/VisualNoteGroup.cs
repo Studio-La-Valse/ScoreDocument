@@ -1,6 +1,7 @@
 ﻿using StudioLaValse.ScoreDocument.Core;
 using StudioLaValse.ScoreDocument.Drawable.Private.Interfaces;
 using StudioLaValse.ScoreDocument.Drawable.Scenes;
+using StudioLaValse.ScoreDocument.GlyphLibrary;
 using StudioLaValse.ScoreDocument.Reader.Extensions;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
@@ -18,6 +19,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         private readonly double positionSpaceing;
         private readonly double scoreScale;
         private readonly double instrumentScale;
+        private readonly IGlyphLibrary glyphLibrary;
         private readonly IVisualNoteFactory noteFactory;
         private readonly IVisualRestFactory restFactory;
         private readonly IVisualBeamBuilder visualBeamBuilder;
@@ -41,6 +43,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                                double positionSpaceing,
                                double scoreScale,
                                double instrumentScale,
+                               IGlyphLibrary glyphLibrary,
                                IVisualNoteFactory noteFactory,
                                IVisualRestFactory restFactory,
                                IVisualBeamBuilder visualBeamBuilder,
@@ -57,6 +60,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             this.positionSpaceing = positionSpaceing;
             this.scoreScale = scoreScale;
             this.instrumentScale = instrumentScale;
+            this.glyphLibrary = glyphLibrary;
             this.noteFactory = noteFactory;
             this.restFactory = restFactory;
             this.visualBeamBuilder = visualBeamBuilder;
@@ -123,12 +127,11 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                 yield break;
             }
 
-            var principalNote = GlyphLibrary.NoteHeadBlack;
-            principalNote.Scale = Scale;
+            var principalNote = glyphLibrary.NoteHeadBlack(Scale);
             var principalStemDirection = measureBlock.ReadLayout().StemDirection;
             var principalChord = PickAChordForStem(chords, principalStemDirection);
 
-            var principalNoteWidth = principalNote.Width;
+            var principalNoteWidth = principalNote.Width();
             var principalStemLength = Layout.StemLength * (principalStemDirection == StemDirection.Down ? -1 : 1);
             var principalStemUp = principalStemLength > 0;
             var principalChordCanvasLeft = positionDictionary[principalChord.Position];

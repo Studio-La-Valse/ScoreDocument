@@ -1,4 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.Primitives;
+﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
+using StudioLaValse.ScoreDocument.Primitives;
 using StudioLaValse.ScoreDocument.Reader.Extensions;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
@@ -12,6 +13,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         private readonly double canvasLeft;
         private readonly double length;
         private readonly double globalLineSpacing;
+        private readonly IGlyphLibrary glyphLibrary;
         private readonly double canvasTop;
 
 
@@ -77,6 +79,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                                  double canvasTop,
                                  double length,
                                  double globalLineSpacing,
+                                 IGlyphLibrary glyphLibrary,
                                  IVisualSystemMeasureFactory systemMeasureFactory,
                                  IScoreDocumentLayout scoreLayoutDictionary,
                                  IUnitToPixelConverter unitToPixelConverter)
@@ -87,6 +90,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             this.unitToPixelConverter = unitToPixelConverter;
             this.length = length;
             this.globalLineSpacing = globalLineSpacing;
+            this.glyphLibrary = glyphLibrary;
             this.canvasLeft = canvasLeft;
             this.canvasTop = canvasTop;
         }
@@ -144,6 +148,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                     globalLineSpacing,
                     ScoreScale,
                     instrumentScale,
+                    glyphLibrary,
                     scoreLayoutDictionary,
                     unitToPixelConverter);
                 yield return _staffGroup;

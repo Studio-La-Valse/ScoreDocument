@@ -93,6 +93,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
             }
         }
 
+        public string GlyphFamily => "Bravura";
 
 
         public void Restore()

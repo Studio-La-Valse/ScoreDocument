@@ -1,4 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Drawable.Private.Interfaces;
+using StudioLaValse.ScoreDocument.GlyphLibrary;
 using StudioLaValse.ScoreDocument.Reader;
 using System.Text.RegularExpressions;
 
@@ -8,11 +9,13 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
     {
         private readonly IScoreDocumentLayout scoreDocumentLayout;
         private readonly IUnitToPixelConverter unitToPixelConverter;
+        private readonly IGlyphLibrary glyphLibrary;
 
-        public VisualBeamBuilder(IScoreDocumentLayout scoreDocumentLayout, IUnitToPixelConverter unitToPixelConverter)
+        public VisualBeamBuilder(IScoreDocumentLayout scoreDocumentLayout, IUnitToPixelConverter unitToPixelConverter, IGlyphLibrary glyphLibrary)
         {
             this.scoreDocumentLayout = scoreDocumentLayout;
             this.unitToPixelConverter = unitToPixelConverter;
+            this.glyphLibrary = glyphLibrary;
         }
 
 
@@ -52,17 +55,17 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
             var flags = stem.VisuallyUp ?
                 new[]
                 {
-                    GlyphLibrary.FlagEighthUp,
-                    GlyphLibrary.FlagSixteenthUp,
-                    GlyphLibrary.FlagThirtySecondUp,
-                    GlyphLibrary.FlagSixtyFourthUp,
+                    glyphLibrary.FlagEighthUp(scale),
+                    glyphLibrary.FlagSixteenthUp(scale),
+                    glyphLibrary.FlagThirtySecondUp(scale),
+                    glyphLibrary.FlagSixtyFourthUp(scale),
                 } :
                 new[]
                 {
-                    GlyphLibrary.FlagEighthDown,
-                    GlyphLibrary.FlagSixteenthDown,
-                    GlyphLibrary.FlagThirtySecondDown,
-                    GlyphLibrary.FlagSixtyFourthDown,
+                    glyphLibrary.FlagEighthDown(scale),
+                    glyphLibrary.FlagSixteenthDown(scale),
+                    glyphLibrary.FlagThirtySecondDown(scale),
+                    glyphLibrary.FlagSixtyFourthDown(scale),
                 };
 
             DrawableScoreGlyph flag = null!;
@@ -75,8 +78,6 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
                 if (beam is not null and BeamType.Flag)
                 {
                     var glyph = flags[flagIndex];
-
-                    glyph.Scale = scale;
 
                     flag = new DrawableScoreGlyph(
                         stem.Origin.X - stem.Thickness / 2,

@@ -1,4 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.Reader;
+﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
+using StudioLaValse.ScoreDocument.Reader;
 using StudioLaValse.ScoreDocument.Reader.Extensions;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
@@ -11,6 +12,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         private readonly double globalLineSpacing;
         private readonly double scoreScale;
         private readonly double instrumentScale;
+        private readonly IGlyphLibrary glyphLibrary;
         private readonly IScoreDocumentLayout scoreLayoutDictionary;
         private readonly IUnitToPixelConverter unitToPixelConverter;
         private readonly double canvasTop;
@@ -51,9 +53,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 
                 var knownHeightOfTheBrace = Glyph.Em;
                 var scale = Height / knownHeightOfTheBrace;
-
-                var glyph = GlyphLibrary.Brace;
-                glyph.Scale = scale;
+                var glyph = glyphLibrary.Brace(scale);
 
                 return new DrawableScoreGlyph(canvasLeft, canvasTop + Height, glyph, HorizontalTextOrigin.Right, VerticalTextOrigin.Center, scoreLayoutDictionary.PageForegroundColor.FromPrimitive());
             }
@@ -69,6 +69,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                                 double globalLineSpacing,
                                 double scoreScale,
                                 double instrumentScale,
+                                IGlyphLibrary glyphLibrary,
                                 IScoreDocumentLayout scoreLayoutDictionary,
                                 IUnitToPixelConverter unitToPixelConverter)
         {
@@ -78,6 +79,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
             this.globalLineSpacing = globalLineSpacing;
             this.scoreScale = scoreScale;
             this.instrumentScale = instrumentScale;
+            this.glyphLibrary = glyphLibrary;
             this.scoreLayoutDictionary = scoreLayoutDictionary;
             this.unitToPixelConverter = unitToPixelConverter;
             this.canvasTop = canvasTop;
@@ -106,6 +108,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                     clef,
                     keySignature,
                     timeSignature,
+                    glyphLibrary,
                     scoreLayoutDictionary,
                     unitToPixelConverter);
 

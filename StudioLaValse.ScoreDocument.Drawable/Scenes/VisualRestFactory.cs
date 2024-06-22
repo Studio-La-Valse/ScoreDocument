@@ -1,4 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.Primitives;
+﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
+using StudioLaValse.ScoreDocument.Primitives;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
@@ -10,6 +11,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         private readonly ISelection<IUniqueScoreElement> selection;
         private readonly IScoreDocumentLayout scoreDocumentLayout;
         private readonly IUnitToPixelConverter unitToPixelConverter;
+        private readonly IGlyphLibrary glyphLibrary;
 
         /// <summary>
         /// The default constructor.
@@ -17,16 +19,18 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// <param name="selection"></param>
         /// <param name="scoreDocumentLayout"></param>
         /// <param name="unitToPixelConverter"></param>
-        public VisualRestFactory(ISelection<IUniqueScoreElement> selection, IScoreDocumentLayout scoreDocumentLayout,IUnitToPixelConverter unitToPixelConverter)
+        /// <param name="glyphLibrary"></param>
+        public VisualRestFactory(ISelection<IUniqueScoreElement> selection, IScoreDocumentLayout scoreDocumentLayout,IUnitToPixelConverter unitToPixelConverter, IGlyphLibrary glyphLibrary)
         {
             this.selection = selection;
             this.scoreDocumentLayout = scoreDocumentLayout;
             this.unitToPixelConverter = unitToPixelConverter;
+            this.glyphLibrary = glyphLibrary;
         }
         /// <inheritdoc/>
         public BaseContentWrapper Build(IChordReader note, double canvasLeft, double canvasTop, double lineSpacing, double scoreScale, double instrumentScale)
         {
-            return new VisualRest(note, canvasLeft, canvasTop, lineSpacing, scoreScale, instrumentScale, scoreDocumentLayout, selection, unitToPixelConverter);
+            return new VisualRest(note, canvasLeft, canvasTop, lineSpacing, scoreScale, instrumentScale, glyphLibrary, scoreDocumentLayout, selection, unitToPixelConverter);
         }
     }
 }

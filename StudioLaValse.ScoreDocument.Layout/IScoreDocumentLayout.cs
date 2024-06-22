@@ -6,6 +6,8 @@ namespace StudioLaValse.ScoreDocument.Layout
 {
     public interface IScoreDocumentLayout
     {
+        string GlyphFamily { get; }
+
         double FirstSystemIndent { get; }
         double HorizontalStaffLineThickness { get; }
         double Scale { get; }

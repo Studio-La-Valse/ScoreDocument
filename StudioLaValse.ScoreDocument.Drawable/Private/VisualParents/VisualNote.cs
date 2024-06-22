@@ -1,4 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.Primitives;
+﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
+using StudioLaValse.ScoreDocument.Primitives;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
@@ -8,6 +9,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         private readonly double canvasTop;
         private readonly bool offsetDots;
         private readonly Accidental? accidental;
+        private readonly IGlyphLibrary glyphLibrary;
         private readonly IScoreDocumentLayout scoreDocumentLayout;
 
 
@@ -18,11 +20,10 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             {
                 var glyph = DisplayDuration.PowerOfTwo.Value switch
                 {
-                    1 => GlyphLibrary.NoteHeadWhole,
-                    2 => GlyphLibrary.NoteHeadWhite,
-                    _ => GlyphLibrary.NoteHeadBlack
+                    1 => glyphLibrary.NoteHeadWhole(Scale),
+                    2 => glyphLibrary.NoteHeadWhite(Scale),
+                    _ => glyphLibrary.NoteHeadBlack(Scale)
                 };
-                glyph.Scale = Scale;
 
                 return new DrawableScoreGlyph(XPosition, canvasTop, glyph, HorizontalTextOrigin.Center, VerticalTextOrigin.Center, scoreDocumentLayout.PageForegroundColor.FromPrimitive());
             }
@@ -33,20 +34,19 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             {
                 var glyph = accidental switch
                 {
-                    Accidental.DoubleFlat => GlyphLibrary.DoubleFlat,
-                    Accidental.Flat => GlyphLibrary.Flat,
-                    Accidental.Natural => GlyphLibrary.Natural,
-                    Accidental.Sharp => GlyphLibrary.Sharp,
-                    Accidental.DoubleSharp => GlyphLibrary.DoubleSharp,
+                    Accidental.DoubleFlat => glyphLibrary.DoubleFlat(Scale),
+                    Accidental.Flat => glyphLibrary.Flat(Scale),
+                    Accidental.Natural => glyphLibrary.Natural(Scale),
+                    Accidental.Sharp => glyphLibrary.Sharp(Scale),
+                    Accidental.DoubleSharp => glyphLibrary.DoubleSharp(Scale),
                     null => null,
                     _ => throw new NotImplementedException(),
                 };
 
                 if (glyph is not null)
                 {
-                    glyph.Scale = Scale;
                     return new DrawableScoreGlyph(
-                        XPosition - (glyph.Width * 2),
+                        XPosition - (glyph.Width() * 2),
                         canvasTop,
                         glyph,
                         HorizontalTextOrigin.Center,
@@ -69,6 +69,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                           double noteScale,
                           bool offsetDots,
                           Accidental? accidental,
+                          IGlyphLibrary glyphLibrary,
                           IScoreDocumentLayout scoreDocumentLayout,
                           ISelection<IUniqueScoreElement> selection,
                           IUnitToPixelConverter unitToPixelConverter) :
@@ -87,6 +88,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             this.canvasTop = canvasTop;
             this.offsetDots = offsetDots;
             this.accidental = accidental;
+            this.glyphLibrary = glyphLibrary;
             this.scoreDocumentLayout = scoreDocumentLayout;
         }
 

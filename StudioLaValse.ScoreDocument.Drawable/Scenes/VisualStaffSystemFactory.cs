@@ -1,4 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.Primitives;
+﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
+using StudioLaValse.ScoreDocument.Primitives;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
@@ -10,6 +11,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         private readonly IVisualSystemMeasureFactory systemMeasureFactory;
         private readonly IScoreDocumentLayout scoreLayoutDictionary;
         private readonly IUnitToPixelConverter unitToPixelConverter;
+        private readonly IGlyphLibrary glyphLibrary;
 
         /// <summary>
         /// The default constructor.
@@ -17,17 +19,19 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// <param name="systemMeasureFactory"></param>
         /// <param name="scoreLayoutDictionary"></param>
         /// <param name="unitToPixelConverter"></param>
-        public VisualStaffSystemFactory(IVisualSystemMeasureFactory systemMeasureFactory, IScoreDocumentLayout scoreLayoutDictionary, IUnitToPixelConverter unitToPixelConverter)
+        /// <param name="glyphLibrary"></param>
+        public VisualStaffSystemFactory(IVisualSystemMeasureFactory systemMeasureFactory, IScoreDocumentLayout scoreLayoutDictionary, IUnitToPixelConverter unitToPixelConverter, IGlyphLibrary glyphLibrary)
         {
             this.systemMeasureFactory = systemMeasureFactory;
             this.scoreLayoutDictionary = scoreLayoutDictionary;
             this.unitToPixelConverter = unitToPixelConverter;
+            this.glyphLibrary = glyphLibrary;
         }
 
         /// <inheritdoc/>
         public BaseContentWrapper CreateContent(IStaffSystemReader staffSystem, double canvasLeft, double canvasTop, double length, double lineSpacing)
         {
-            return new VisualStaffSystem(staffSystem, canvasLeft, canvasTop, length, lineSpacing, systemMeasureFactory, scoreLayoutDictionary, unitToPixelConverter);
+            return new VisualStaffSystem(staffSystem, canvasLeft, canvasTop, length, lineSpacing, glyphLibrary, systemMeasureFactory, scoreLayoutDictionary, unitToPixelConverter);
         }
     }
 }

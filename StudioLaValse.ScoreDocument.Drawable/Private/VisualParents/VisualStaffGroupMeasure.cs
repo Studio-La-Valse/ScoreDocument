@@ -1,4 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.Reader.Extensions;
+﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
+using StudioLaValse.ScoreDocument.Reader.Extensions;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
@@ -15,6 +16,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         private readonly double positionSpace;
         private readonly double scoreScale;
         private readonly double instrumentScale;
+        private readonly IGlyphLibrary glyphLibrary;
         private readonly IVisualNoteGroupFactory visualNoteGroupFactory;
         private readonly IScoreDocumentLayout scoreLayoutDictionary;
         private readonly IUnitToPixelConverter unitToPixelConverter;
@@ -65,6 +67,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                                        double positionSpace,
                                        double scoreScale,
                                        double instrumentScale,
+                                       IGlyphLibrary glyphLibrary,
                                        IVisualNoteGroupFactory visualNoteGroupFactory,
                                        ISelection<IUniqueScoreElement> selection,
                                        IScoreDocumentLayout scoreLayoutDictionary,
@@ -81,6 +84,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             this.positionSpace = positionSpace;
             this.scoreScale = scoreScale;
             this.instrumentScale = instrumentScale;
+            this.glyphLibrary = glyphLibrary;
             this.visualNoteGroupFactory = visualNoteGroupFactory;
             this.scoreLayoutDictionary = scoreLayoutDictionary;
             this.unitToPixelConverter = unitToPixelConverter;
@@ -145,20 +149,24 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                         null :
                         nextClefLayout;
 
-                VisualStaffMeasure el = new(
+                var clefChanges = instrumentMeasureLayout.ClefChanges
+                    .Where(c => c.StaffIndex == staff.IndexInStaffGroup)
+                    .ToArray();
+
+                var el = new VisualStaffMeasure(
                     staff,
                     measureClef,
                     InvalidatesNext,
                     invalidatingNextClef,
-                    instrumentMeasureLayout.ClefChanges.Where(c => c.StaffIndex == staff.IndexInStaffGroup),
+                    clefChanges,
+                    positions,
                     canvasLeft,
                     width,
-                    paddingLeft,
-                    DrawableWidth,
                     _canvasTop,
                     globalLineSpacing,
                     scoreScale,
                     instrumentScale,
+                    glyphLibrary,
                     unitToPixelConverter);
 
                 yield return el;

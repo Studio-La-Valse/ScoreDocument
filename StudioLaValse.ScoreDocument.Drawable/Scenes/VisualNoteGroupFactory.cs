@@ -1,4 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Drawable.Private.Interfaces;
+using StudioLaValse.ScoreDocument.GlyphLibrary;
 using StudioLaValse.ScoreDocument.Reader;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Scenes
@@ -12,6 +13,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         private readonly IVisualRestFactory restFactory;
         private readonly IScoreDocumentLayout scoreLayoutDictionary;
         private readonly IUnitToPixelConverter unitToPixelConverter;
+        private readonly IGlyphLibrary glyphLibrary;
         private readonly IVisualBeamBuilder visualBeamBuilder;
 
         /// <summary>
@@ -21,13 +23,15 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// <param name="restFactory"></param>
         /// <param name="scoreLayoutDictionary"></param>
         /// <param name="unitToPixelConverter"></param>
-        public VisualNoteGroupFactory(IVisualNoteFactory noteFactory, IVisualRestFactory restFactory, IScoreDocumentLayout scoreLayoutDictionary, IUnitToPixelConverter unitToPixelConverter)
+        /// <param name="glyphLibrary"></param>
+        public VisualNoteGroupFactory(IVisualNoteFactory noteFactory, IVisualRestFactory restFactory, IScoreDocumentLayout scoreLayoutDictionary, IUnitToPixelConverter unitToPixelConverter, IGlyphLibrary glyphLibrary)
         {
             this.noteFactory = noteFactory;
             this.restFactory = restFactory;
             this.scoreLayoutDictionary = scoreLayoutDictionary;
             this.unitToPixelConverter = unitToPixelConverter;
-            visualBeamBuilder = new VisualBeamBuilder(scoreLayoutDictionary, unitToPixelConverter);
+            this.glyphLibrary = glyphLibrary;
+            visualBeamBuilder = new VisualBeamBuilder(scoreLayoutDictionary, unitToPixelConverter, glyphLibrary);
         }
         /// <inheritdoc/>
         public BaseContentWrapper Build(IMeasureBlockReader noteGroup, IStaffGroupReader staffGroup, IInstrumentMeasureReader instrumentMeasure, IReadOnlyDictionary<Position, double> positionDictionary, double canvasTopStaffGroup, double lineSpacing, double positionSpacing)
@@ -45,6 +49,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
                 positionSpacing,
                 scoreScale,
                 instrumentScale,
+                glyphLibrary,
                 noteFactory,
                 restFactory,
                 visualBeamBuilder,

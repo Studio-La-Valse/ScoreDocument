@@ -1,5 +1,4 @@
 ﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
-using StudioLaValse.ScoreDocument.Primitives;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
@@ -56,7 +55,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         public override bool OffsetDots => false;
         public override double XOffset => 0;
 
-        public VisualRest(IChordReader note,
+        public VisualRest(IChord note,
                           double canvasLeft,
                           double canvasTop,
                           double lineSpacing,

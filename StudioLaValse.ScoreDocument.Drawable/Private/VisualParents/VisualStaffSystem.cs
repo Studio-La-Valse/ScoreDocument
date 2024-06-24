@@ -1,12 +1,11 @@
-﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
-using StudioLaValse.ScoreDocument.Primitives;
-using StudioLaValse.ScoreDocument.Reader.Extensions;
+﻿using StudioLaValse.ScoreDocument.Extensions;
+using StudioLaValse.ScoreDocument.GlyphLibrary;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
     internal sealed class VisualStaffSystem : BaseContentWrapper
     {
-        private readonly IStaffSystemReader staffSystem;
+        private readonly IStaffSystem staffSystem;
         private readonly IVisualSystemMeasureFactory systemMeasureFactory;
         private readonly IScoreDocumentLayout scoreLayoutDictionary;
         private readonly IUnitToPixelConverter unitToPixelConverter;
@@ -74,7 +73,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
 
 
-        public VisualStaffSystem(IStaffSystemReader staffSystem,
+        public VisualStaffSystem(IStaffSystem staffSystem,
                                  double canvasLeft,
                                  double canvasTop,
                                  double length,

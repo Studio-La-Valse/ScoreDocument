@@ -1,7 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Drawable.Private.Interfaces;
 using StudioLaValse.ScoreDocument.GlyphLibrary;
-using StudioLaValse.ScoreDocument.Reader;
-using System.Text.RegularExpressions;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
 {
@@ -19,7 +17,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
         }
 
 
-        public IChordReader GetLayout(VisualStem stem)
+        public IChord GetLayout(VisualStem stem)
         {
             return stem.Chord;
         }

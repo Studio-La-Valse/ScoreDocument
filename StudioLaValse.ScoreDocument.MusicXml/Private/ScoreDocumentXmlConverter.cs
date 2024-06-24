@@ -12,7 +12,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             this.scorePartXmlConverter = scorePartXmlConverter;
         }
 
-        public void Create(XDocument xDocument, IScoreDocumentEditor scoreEditor)
+        public void Create(XDocument xDocument, IScoreDocument scoreEditor)
         {
             scoreEditor.Clear();
 
@@ -28,7 +28,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             throw new Exception("No score-partwise found in music xml.");
         }
 
-        private void ProcessScorePartWise(XElement scorePartwise, IScoreDocumentEditor scoreEditor)
+        private void ProcessScorePartWise(XElement scorePartwise, IScoreDocument scoreEditor)
         {
             foreach (var element in scorePartwise.Elements())
             {
@@ -58,7 +58,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             }
         }
 
-        private void PrepareParts(XElement partList, IScoreDocumentEditor scoreEditor)
+        private void PrepareParts(XElement partList, IScoreDocument scoreEditor)
         {
             var partNodes = partList.Elements().Where(d => d.Name == "score-part");
 
@@ -76,7 +76,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             }
         }
 
-        private void PrepareMeasures(XElement part, IScoreDocumentEditor scoreEditor)
+        private void PrepareMeasures(XElement part, IScoreDocument scoreEditor)
         {
             var lastKeySignature = 0;
             var lastBeats = 4;

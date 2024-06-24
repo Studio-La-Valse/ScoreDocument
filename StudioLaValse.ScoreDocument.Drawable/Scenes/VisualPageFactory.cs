@@ -1,5 +1,4 @@
 ﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
-using StudioLaValse.ScoreDocument.Reader;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
@@ -19,7 +18,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         }
 
         /// <inheritdoc/>
-        public BaseContentWrapper CreateContent(IPageReader page, double canvasLeft, double canvasTop)
+        public BaseContentWrapper CreateContent(IPage page, double canvasLeft, double canvasTop)
         {
             var lineSpacing = Glyph.LineSpacingMm;
             var visualPage = new VisualPage(page, canvasLeft, canvasTop, lineSpacing, staffSystemContentFactory, scoreLayoutDictionary, unitToPixelConverter);

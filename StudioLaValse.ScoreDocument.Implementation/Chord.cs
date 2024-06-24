@@ -1,5 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Core;
-using StudioLaValse.ScoreDocument.Primitives;
+using StudioLaValse.ScoreDocument.Extensions;
 using System.ComponentModel.DataAnnotations;
 
 namespace StudioLaValse.ScoreDocument.Implementation

@@ -1,7 +1,4 @@
-﻿using StudioLaValse.Key;
-using StudioLaValse.ScoreDocument.Primitives;
-
-namespace StudioLaValse.ScoreDocument.Implementation
+﻿namespace StudioLaValse.ScoreDocument.Implementation
 {
     public abstract class ScoreElement : IUniqueScoreElement
     {

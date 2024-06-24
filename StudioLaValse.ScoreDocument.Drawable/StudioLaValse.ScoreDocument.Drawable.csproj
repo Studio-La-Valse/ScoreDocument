@@ -61,7 +61,6 @@
 	  <ProjectReference Include="..\StudioLaValse.ScoreDocument.Core\StudioLaValse.ScoreDocument.Core.csproj" />
 	  <ProjectReference Include="..\StudioLaValse.ScoreDocument.GlyphLibrary\StudioLaValse.ScoreDocument.GlyphLibrary.csproj" />
 	  <ProjectReference Include="..\StudioLaValse.ScoreDocument.Layout\StudioLaValse.ScoreDocument.Layout.csproj" />
-	  <ProjectReference Include="..\StudioLaValse.ScoreDocument.Reader\StudioLaValse.ScoreDocument.Reader.csproj" />
 	  <ProjectReference Include="..\StudioLaValse.ScoreDocument\StudioLaValse.ScoreDocument.csproj" />
 	</ItemGroup>
 

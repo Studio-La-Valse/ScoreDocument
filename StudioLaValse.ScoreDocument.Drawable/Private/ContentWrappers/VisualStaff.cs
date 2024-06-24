@@ -1,12 +1,11 @@
 ﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
-using StudioLaValse.ScoreDocument.Reader;
-using StudioLaValse.ScoreDocument.Reader.Extensions;
+using StudioLaValse.ScoreDocument.Extensions;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
     internal sealed class VisualStaff : BaseContentWrapper
     {
-        private readonly IStaffReader staff;
+        private readonly IStaff staff;
         private readonly double canvasLeft;
         private readonly double canvasTop;
         private readonly double length;
@@ -29,7 +28,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         public double LineThickness => unitToPixelConverter.UnitsToPixels(lineThickness * Scale);
 
 
-        public VisualStaff(IStaffReader staff,
+        public VisualStaff(IStaff staff,
                            double canvasLeft,
                            double canvasTop,
                            double length,

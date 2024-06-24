@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a generic chord editor interface.
     /// </summary>
-    public interface INoteContainerEditor<TNote> : INoteContainer<TNote, IGraceGroupEditor>, IScoreElementEditor<IChordLayout>
+    public interface INoteContainerEditor<TNote> : IHasLayout<IChordLayout>
     {
         /// <summary>
         /// Clear the content of the chord.

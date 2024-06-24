@@ -1,11 +1,11 @@
 ﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
-using StudioLaValse.ScoreDocument.Reader.Extensions;
+using StudioLaValse.ScoreDocument.Extensions;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
     internal sealed class VisualStaffGroupMeasure : BaseSelectableParent<IUniqueScoreElement>
     {
-        private readonly IStaffGroupReader staffGroup;
+        private readonly IStaffGroup staffGroup;
         private readonly IReadOnlyDictionary<Position, double> positions;
         private readonly double canvasTop;
         private readonly double canvasLeft;
@@ -20,7 +20,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         private readonly IVisualNoteGroupFactory visualNoteGroupFactory;
         private readonly IScoreDocumentLayout scoreLayoutDictionary;
         private readonly IUnitToPixelConverter unitToPixelConverter;
-        private readonly IInstrumentMeasureReader source;
+        private readonly IInstrumentMeasure source;
 
 
         public double MeasureDividerLineThickness =>
@@ -55,8 +55,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
 
 
-        public VisualStaffGroupMeasure(IInstrumentMeasureReader source,
-                                       IStaffGroupReader staffGroup,
+        public VisualStaffGroupMeasure(IInstrumentMeasure source,
+                                       IStaffGroup staffGroup,
                                        IReadOnlyDictionary<Position, double> positions,
                                        double canvasTop,
                                        double canvasLeft,
@@ -105,7 +105,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             }
         }
 
-        public IEnumerable<BaseContentWrapper> ConstructNoteGroups(IMeasureBlockChainReader blockChain)
+        public IEnumerable<BaseContentWrapper> ConstructNoteGroups(IMeasureBlockChain blockChain)
         {
             var blocks = blockChain.ReadBlocks();
             

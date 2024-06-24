@@ -1,7 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Primitives;
-using StudioLaValse.ScoreDocument.GlyphLibrary;
-
-namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
+﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
     internal abstract class BaseVisualNote : BaseSelectableParent<IUniqueScoreElement>
     {
@@ -58,7 +55,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
 
 
-        public BaseVisualNote(INoteReader measureElement,
+        public BaseVisualNote(INote measureElement,
                               double canvasLeft,
                               double canvasTop,
                               double lineSpacing,
@@ -79,7 +76,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             CanvasLeft = canvasLeft;
             HeightOnCanvas = canvasTop;
         }
-        public BaseVisualNote(IChordReader measureElement,
+        public BaseVisualNote(IChord measureElement,
                               double canvasLeft,
                               double canvasTop,
                               double lineSpacing,

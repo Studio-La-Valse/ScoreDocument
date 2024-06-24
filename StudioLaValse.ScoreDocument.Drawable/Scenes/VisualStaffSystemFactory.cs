@@ -1,5 +1,4 @@
 ﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
-using StudioLaValse.ScoreDocument.Primitives;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
@@ -29,7 +28,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         }
 
         /// <inheritdoc/>
-        public BaseContentWrapper CreateContent(IStaffSystemReader staffSystem, double canvasLeft, double canvasTop, double length, double lineSpacing)
+        public BaseContentWrapper CreateContent(IStaffSystem staffSystem, double canvasLeft, double canvasTop, double length, double lineSpacing)
         {
             return new VisualStaffSystem(staffSystem, canvasLeft, canvasTop, length, lineSpacing, glyphLibrary, systemMeasureFactory, scoreLayoutDictionary, unitToPixelConverter);
         }

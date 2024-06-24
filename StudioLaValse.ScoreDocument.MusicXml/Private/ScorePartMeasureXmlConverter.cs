@@ -12,7 +12,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             this.blockChainXmlConverter = blockChainXmlConverter;
         }
 
-        public void Create(XElement measure, IInstrumentMeasureEditor measureEditor, ref int durationOfOneQuarter)
+        public void Create(XElement measure, IInstrumentMeasure measureEditor, ref int durationOfOneQuarter)
         {
             measureEditor.Clear();
 

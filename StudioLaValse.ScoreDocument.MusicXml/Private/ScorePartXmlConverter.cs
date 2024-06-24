@@ -12,7 +12,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             this.measureConverter = measureConverter;
         }
 
-        public void Create(XElement scorePart, IInstrumentRibbonEditor ribbonEditor)
+        public void Create(XElement scorePart, IInstrumentRibbon ribbonEditor)
         {
             var durationOfOneQuarter = 4;
             foreach (var element in scorePart.Elements())

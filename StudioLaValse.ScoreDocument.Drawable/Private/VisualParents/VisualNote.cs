@@ -1,11 +1,10 @@
 ﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
-using StudioLaValse.ScoreDocument.Primitives;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
     internal sealed class VisualNote : BaseVisualNote
     {
-        private readonly INoteReader note;
+        private readonly INote note;
         private readonly double canvasTop;
         private readonly bool offsetDots;
         private readonly Accidental? accidental;
@@ -60,7 +59,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         public override bool OffsetDots => offsetDots;
         public override double XOffset => NoteLayout.XOffset;
 
-        public VisualNote(INoteReader note,
+        public VisualNote(INote note,
                           double canvasLeft,
                           double canvasTop,
                           double lineSpacing,

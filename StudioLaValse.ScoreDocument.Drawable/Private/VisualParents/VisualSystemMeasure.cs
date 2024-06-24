@@ -1,15 +1,14 @@
-﻿using StudioLaValse.ScoreDocument.Primitives;
-using StudioLaValse.ScoreDocument.Reader.Extensions;
+﻿using StudioLaValse.ScoreDocument.Extensions;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
     internal sealed class VisualSystemMeasure : BaseSelectableParent<IUniqueScoreElement>
     {
-        private readonly IScoreMeasureReader scoreMeasure;
+        private readonly IScoreMeasure scoreMeasure;
         private readonly IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory;
         private readonly IScoreDocumentLayout scoreLayoutDictionary;
         private readonly IUnitToPixelConverter unitToPixelConverter;
-        private readonly IStaffSystemReader staffSystem;
+        private readonly IStaffSystem staffSystem;
         private readonly double width;
         private readonly double lineSpacing;
         private readonly double canvasLeft;
@@ -62,8 +61,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
 
 
-        public VisualSystemMeasure(IScoreMeasureReader scoreMeasure,
-                                   IStaffSystemReader staffSystem,
+        public VisualSystemMeasure(IScoreMeasure scoreMeasure,
+                                   IStaffSystem staffSystem,
                                    double canvasLeft,
                                    double canvasTop,
                                    double width,

@@ -1,8 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Core;
-using StudioLaValse.ScoreDocument.Primitives;
-using System;
-using System.Diagnostics;
-using System.Linq.Expressions;
+﻿using System.Diagnostics;
 using System.Xml.Linq;
 
 namespace StudioLaValse.ScoreDocument.MusicXml.Private
@@ -35,7 +31,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
 
         internal static readonly string[] beamTypesThatIndicateAGroupIsNotClosedYet = ["hook start", "continue", "begin"];
 
-        public void ProcessElements(IEnumerable<XElement> elements, IMeasureBlockChainEditor editor, int divisionsOfOneQuarter)
+        public void ProcessElements(IEnumerable<XElement> elements, IMeasureBlockChain editor, int divisionsOfOneQuarter)
         {
             editor.Clear();
 
@@ -144,7 +140,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             return blocks;
         }
 
-        private void FillBlock(MeasureBlock block, IMeasureBlockEditor measureBlock)
+        private void FillBlock(MeasureBlock block, IMeasureBlock measureBlock)
         {
             foreach(var chord in block.Chords)
             {
@@ -162,7 +158,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             }
         }
         
-        private void FillGrace(GraceBlock? chord, IGraceableEditor<IGraceGroupEditor> targetChord)
+        private void FillGrace(GraceBlock? chord, IGraceable targetChord)
         {
             if(chord is null)
             {

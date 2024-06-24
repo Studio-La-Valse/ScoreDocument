@@ -1,6 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Reader;
-
-namespace StudioLaValse.ScoreDocument.Drawable.Scenes
+﻿namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
     /// <summary>
     /// A factory interface for creating a visual staff system.
@@ -16,6 +14,6 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// <param name="length"></param>
         /// <param name="lineSpacing"></param>
         /// <returns></returns>
-        BaseContentWrapper CreateContent(IStaffSystemReader staffSystem, double canvasLeft, double canvasTop, double length, double lineSpacing);
+        BaseContentWrapper CreateContent(IStaffSystem staffSystem, double canvasLeft, double canvasTop, double length, double lineSpacing);
     }
 }

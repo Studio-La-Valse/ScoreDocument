@@ -1,6 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Reader;
-
-namespace StudioLaValse.ScoreDocument.Drawable.Scenes
+﻿namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
     /// <summary>
     /// A factory interface for creating a visual note group.
@@ -18,9 +16,9 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// <param name="lineSpacing"></param>
         /// <param name="positionSpace"></param>
         /// <returns></returns>
-        BaseContentWrapper Build(IMeasureBlockReader noteGroup,
-                                 IStaffGroupReader staffGroup,
-                                 IInstrumentMeasureReader instrumentMeasure,
+        BaseContentWrapper Build(IMeasureBlock noteGroup,
+                                 IStaffGroup staffGroup,
+                                 IInstrumentMeasure instrumentMeasure,
                                  IReadOnlyDictionary<Position, double> positionDictionary,
                                  double canvasTopStaffGroup,
                                  double lineSpacing,

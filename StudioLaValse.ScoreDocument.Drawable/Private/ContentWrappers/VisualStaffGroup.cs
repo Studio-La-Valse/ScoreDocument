@@ -1,12 +1,11 @@
 ﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
-using StudioLaValse.ScoreDocument.Reader;
-using StudioLaValse.ScoreDocument.Reader.Extensions;
+using StudioLaValse.ScoreDocument.Extensions;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
     internal sealed class VisualStaffGroup : BaseContentWrapper
     {
-        private readonly IStaffGroupReader staffGroup;
+        private readonly IStaffGroup staffGroup;
         private readonly double canvasLeft;
         private readonly double length;
         private readonly double globalLineSpacing;
@@ -18,7 +17,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         private readonly double canvasTop;
 
 
-        public IInstrumentRibbonReader Context =>
+        public IInstrumentRibbon Context =>
             staffGroup.InstrumentRibbon;
         public IInstrumentRibbonLayout ContextLayout =>
             Context.ReadLayout();
@@ -58,11 +57,11 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                 return new DrawableScoreGlyph(canvasLeft, canvasTop + Height, glyph, HorizontalTextOrigin.Right, VerticalTextOrigin.Center, scoreLayoutDictionary.PageForegroundColor.FromPrimitive());
             }
         }
-        public IInstrumentMeasureReader FirstMeasure =>
+        public IInstrumentMeasure FirstMeasure =>
             staffGroup.EnumerateMeasures().First();
 
 
-        public VisualStaffGroup(IStaffGroupReader staffGroup,
+        public VisualStaffGroup(IStaffGroup staffGroup,
                                 double canvasLeft,
                                 double canvasTop,
                                 double length,

@@ -1,20 +1,18 @@
-﻿using StudioLaValse.ScoreDocument.Primitives;
-using StudioLaValse.ScoreDocument.Reader;
-using StudioLaValse.ScoreDocument.Reader.Extensions;
+﻿using StudioLaValse.ScoreDocument.Extensions;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
     internal sealed class VisualChord : BaseContentWrapper
     {
-        private readonly IChordReader chord;
+        private readonly IChord chord;
         private readonly double canvasLeft;
         private readonly double canvasTopStaffGroup;
         private readonly double lineSpacing;
         private readonly double positionSpacing;
         private readonly double scoreScale;
         private readonly double instrumentScale;
-        private readonly IStaffGroupReader staffGroup;
-        private readonly IInstrumentMeasureReader instrumentMeasureReader;
+        private readonly IStaffGroup staffGroup;
+        private readonly IInstrumentMeasure instrumentMeasureReader;
         private readonly IVisualNoteFactory noteFactory;
         private readonly IVisualRestFactory restFactory;
         private readonly IScoreDocumentLayout scoreDocumentLayout;
@@ -25,15 +23,15 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         public double XOffset => Layout.XOffset;
 
 
-        public VisualChord(IChordReader chord,
+        public VisualChord(IChord chord,
                            double canvasLeft,
                            double canvasTopStaffGroup,
                            double lineSpacing,
                            double positionSpacing,
                            double scoreScale,
                            double instrumentScale,
-                           IStaffGroupReader staffGroup,
-                           IInstrumentMeasureReader instrumentMeasureReader,
+                           IStaffGroup staffGroup,
+                           IInstrumentMeasure instrumentMeasureReader,
                            IVisualNoteFactory noteFactory,
                            IVisualRestFactory restFactory,
                            IScoreDocumentLayout scoreDocumentLayout,
@@ -88,7 +86,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         }
 
 
-        public Accidental? GetAccidental(INoteReader note)
+        public Accidental? GetAccidental(INote note)
         {
             var noteLayout = note.ReadLayout();
             var forceAccidental = noteLayout.ForceAccidental;
@@ -157,7 +155,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 
             return linesFromChord;
         }
-        public IEnumerable<Line> OverflowLinesFromNote(INoteReader note, double width, double canvasTopStaff, IStaffReader staff)
+        public IEnumerable<Line> OverflowLinesFromNote(INote note, double width, double canvasTopStaff, IStaff staff)
         {
             Line fromHeight(double height)
             {

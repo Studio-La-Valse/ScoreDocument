@@ -1,6 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Drawable.Private.Interfaces;
 using StudioLaValse.ScoreDocument.GlyphLibrary;
-using StudioLaValse.ScoreDocument.Reader;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
@@ -34,7 +33,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
             visualBeamBuilder = new VisualBeamBuilder(scoreLayoutDictionary, unitToPixelConverter, glyphLibrary);
         }
         /// <inheritdoc/>
-        public BaseContentWrapper Build(IMeasureBlockReader noteGroup, IStaffGroupReader staffGroup, IInstrumentMeasureReader instrumentMeasure, IReadOnlyDictionary<Position, double> positionDictionary, double canvasTopStaffGroup, double lineSpacing, double positionSpacing)
+        public BaseContentWrapper Build(IMeasureBlock noteGroup, IStaffGroup staffGroup, IInstrumentMeasure instrumentMeasure, IReadOnlyDictionary<Position, double> positionDictionary, double canvasTopStaffGroup, double lineSpacing, double positionSpacing)
         {
             var scoreLayout = scoreLayoutDictionary;
             var scoreScale = scoreLayout.Scale;

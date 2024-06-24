@@ -2,7 +2,7 @@
 using StudioLaValse.ScoreDocument.Drawable.Private.Interfaces;
 using StudioLaValse.ScoreDocument.Drawable.Scenes;
 using StudioLaValse.ScoreDocument.GlyphLibrary;
-using StudioLaValse.ScoreDocument.Reader.Extensions;
+using StudioLaValse.ScoreDocument.Extensions;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 
@@ -10,9 +10,9 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
     internal class VisualNoteGroup : BaseContentWrapper
     {
-        private readonly IMeasureBlockReader measureBlock;
-        private readonly IStaffGroupReader staffGroup;
-        private readonly IInstrumentMeasureReader instrumentMeasure;
+        private readonly IMeasureBlock measureBlock;
+        private readonly IStaffGroup staffGroup;
+        private readonly IInstrumentMeasure instrumentMeasure;
         private readonly IReadOnlyDictionary<Position, double> positionDictionary;
         private readonly double canvasTopStaffGroup;
         private readonly double globalLineSpacing;
@@ -34,9 +34,9 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         public double Scale => scoreScale * instrumentScale;
 
 
-        public VisualNoteGroup(IMeasureBlockReader measureBlock,
-                               IStaffGroupReader staffGroup,
-                               IInstrumentMeasureReader instrumentMeasure,
+        public VisualNoteGroup(IMeasureBlock measureBlock,
+                               IStaffGroup staffGroup,
+                               IInstrumentMeasure instrumentMeasure,
                                IReadOnlyDictionary<Position, double> positionDictionary,
                                double canvasTopStaffGroup,
                                double globalLineSpacing,
@@ -89,7 +89,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                 yield return stemOrBeam;
             }
         }
-        public IEnumerable<BaseContentWrapper> CreateVisualChords(IEnumerable<IChordReader> chords)
+        public IEnumerable<BaseContentWrapper> CreateVisualChords(IEnumerable<IChord> chords)
         {
             foreach (var chord in chords)
             {
@@ -120,7 +120,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                 yield return graceGroup;
             }
         }
-        public IEnumerable<BaseContentWrapper> CreateVisualBeamGroup(IEnumerable<IChordReader> chords)
+        public IEnumerable<BaseContentWrapper> CreateVisualBeamGroup(IEnumerable<IChord> chords)
         {
             if (!chords.Any() || chords.First().RythmicDuration.Decimal >= 1)
             {
@@ -148,7 +148,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
             yield return new VisualBeamGroup(stems, beamDefinition, Layout.BeamThickness, Layout.BeamSpacing, Scale, positionSpaceing, visualBeamBuilder);
         }
-        public VisualStem CreateStem(IChordReader chord, double firstNoteWidth, Ruler beamDefinition)
+        public VisualStem CreateStem(IChord chord, double firstNoteWidth, Ruler beamDefinition)
         {
             var canvasLeft = positionDictionary[chord.Position];
             var chordOrigin = ConstructStemOrigin(chord, staffGroup, canvasTopStaffGroup, canvasLeft, true, firstNoteWidth);
@@ -161,7 +161,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             var visualStem = new VisualStem(stemOrigin, stemIntersection, StemThickness, chord, scoreLayoutDictionary);
             return visualStem;
         }
-        public IChordReader PickAChordForStem(IEnumerable<IChordReader> chords, StemDirection stemDirection)
+        public IChord PickAChordForStem(IEnumerable<IChord> chords, StemDirection stemDirection)
         {
             return stemDirection switch
             {
@@ -177,7 +177,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                 _ => throw new NotImplementedException()
             };
         }
-        public XY ConstructStemOrigin(IChordReader chord, IStaffGroupReader staffGroup, double staffGroupCanvasTop, double chordCanvasLeft, bool stemUp, double noteWidth)
+        public XY ConstructStemOrigin(IChord chord, IStaffGroup staffGroup, double staffGroupCanvasTop, double chordCanvasLeft, bool stemUp, double noteWidth)
         {
             var (highestNote, lowestNote) = ConstructChordCanvasY(chord, staffGroup, staffGroupCanvasTop);
             var canvasY = stemUp ? lowestNote : highestNote;
@@ -187,7 +187,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             var offsetToNeatlyFitNoteHead = unitToPixelConverter.UnitsToPixels((globalLineSpacing * scoreScale * instrumentScale * 0.17 * (stemUp ? -1 : 1)));
             return new XY(chordCanvasLeft + offset, canvasY + offsetToNeatlyFitNoteHead);
         }
-        public (double highestNote, double lowestNote) ConstructChordCanvasY(IChordReader chord, IStaffGroupReader staffGroup, double staffGroupCanvasTop)
+        public (double highestNote, double lowestNote) ConstructChordCanvasY(IChord chord, IStaffGroup staffGroup, double staffGroupCanvasTop)
         {
             var staffGroupLayout = staffGroup.ReadLayout();
 
@@ -215,7 +215,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
             return (highestNoteCanvasY, lowestNoteCanvasY);
         }
-        public double CreateNoteCanvasY(INoteReader noteReader, double staffGroupCanvasTop)
+        public double CreateNoteCanvasY(INote noteReader, double staffGroupCanvasTop)
         {
             var noteLayout = noteReader.ReadLayout();
             var noteStaffIndex = noteLayout.StaffIndex;
@@ -224,7 +224,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             var heightOriginOnCanvas = staffGroupCanvasTop + unitToPixelConverter.UnitsToPixels(staffGroup.DistanceFromTop(noteStaffIndex, lineIndex, globalLineSpacing, scoreLayoutDictionary));
             return heightOriginOnCanvas;
         }
-        public Dictionary<Position, double> CreateDictionary(IGraceGroupReader graceGroup, double target)
+        public Dictionary<Position, double> CreateDictionary(IGraceGroup graceGroup, double target)
         {
             var dictionary = new Dictionary<Position, double>(new PositionComparer());
             var layout = graceGroup.ReadLayout();

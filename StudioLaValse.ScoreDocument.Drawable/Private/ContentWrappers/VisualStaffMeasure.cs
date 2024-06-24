@@ -1,12 +1,11 @@
 ﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
-using StudioLaValse.ScoreDocument.Reader;
-using StudioLaValse.ScoreDocument.Reader.Extensions;
+using StudioLaValse.ScoreDocument.Extensions;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
     internal sealed class VisualStaffMeasure : BaseContentWrapper
     {
-        private readonly IStaffReader staff;
+        private readonly IStaff staff;
         private readonly Clef openingClef;
         private readonly Clef? invalidatingNextClef;
         private readonly IReadOnlyDictionary<Position, double> positionPositions;
@@ -153,7 +152,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 
 
         public VisualStaffMeasure(
-            IStaffReader staff,
+            IStaff staff,
             Clef openingClef,
             KeySignature? prepareNext,
             Clef? invalidatingNextClef,

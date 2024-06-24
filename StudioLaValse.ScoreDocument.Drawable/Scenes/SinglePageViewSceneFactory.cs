@@ -1,7 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
-using StudioLaValse.ScoreDocument.Layout.Templates;
-using StudioLaValse.ScoreDocument.Reader;
-using StudioLaValse.ScoreDocument.Reader.Extensions;
+using StudioLaValse.ScoreDocument.Extensions;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
@@ -24,7 +22,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
             this.visualPageFactory = visualPageFactory;
         }
         /// <inheritdoc/>
-        public BaseContentWrapper CreateContent(IScoreDocumentReader scoreDocument)
+        public BaseContentWrapper CreateContent(IScoreDocument scoreDocument)
         {
             var page = scoreDocument.ReadPages(Glyph.LineSpacingMm).ElementAt(pageIndex);
             return visualPageFactory.CreateContent(page, 0, 0);

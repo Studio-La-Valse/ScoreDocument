@@ -1,4 +1,6 @@
-﻿namespace StudioLaValse.ScoreDocument.Reader.Extensions
+﻿using StudioLaValse.ScoreDocument.Extensions;
+
+namespace StudioLaValse.ScoreDocument.Reader.Extensions
 {
     /// <summary>
     /// <see cref="IInstrumentMeasureReader"/> extensions.

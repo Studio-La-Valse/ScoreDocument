@@ -15,7 +15,7 @@ public static class ScoreEditorExtensions
     /// <param name="builder"></param>
     /// <param name="document"></param>
     /// <returns></returns>
-    public static IScoreDocumentEditor BuildFromXml(this IScoreDocumentEditor builder, XDocument document)
+    public static IScoreDocument BuildFromXml(this IScoreDocument builder, XDocument document)
     {
         return builder.EditFromXml(document);
     }
@@ -27,7 +27,7 @@ public static class ScoreEditorExtensions
     /// <param name="builder"></param>
     /// <param name="document"></param>
     /// <returns></returns>
-    public static IScoreDocumentEditor EditFromXml(this IScoreDocumentEditor builder, XDocument document)
+    public static IScoreDocument EditFromXml(this IScoreDocument builder, XDocument document)
     {
         builder.Clear();
 

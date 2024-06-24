@@ -1,6 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Primitives;
-
-namespace StudioLaValse.ScoreDocument.Drawable.Scenes
+﻿namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
     /// <summary>
     /// The default implementation of the visual system measure factory.
@@ -28,7 +26,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         }
 
         /// <inheritdoc/>
-        public BaseContentWrapper CreateContent(IScoreMeasureReader scoreMeasure, IStaffSystemReader staffSystem, double canvasLeft, double canvasTop, double width, double lineSpacing)
+        public BaseContentWrapper CreateContent(IScoreMeasure scoreMeasure, IStaffSystem staffSystem, double canvasLeft, double canvasTop, double width, double lineSpacing)
         {
             return new VisualSystemMeasure(
                 scoreMeasure,

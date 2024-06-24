@@ -1,6 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Primitives;
-
-namespace StudioLaValse.ScoreDocument.Implementation
+﻿namespace StudioLaValse.ScoreDocument.Implementation
 {
     public sealed class GraceNote : ScoreElement
     {

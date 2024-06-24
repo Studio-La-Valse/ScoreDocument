@@ -1,6 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Reader;
-
-namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
+﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
     internal sealed class VisualStem : BaseContentWrapper
     {
@@ -10,12 +8,12 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 
         public XY Origin { get; }
         public XY End { get; }
-        public IChordReader Chord { get; }
+        public IChord Chord { get; }
 
         public double Thickness => this.thickness;
         public bool VisuallyUp => End.Y < Origin.Y;
 
-        public VisualStem(XY origin, XY end, double thickness, IChordReader chord, IScoreDocumentLayout scoreDocumentLayout)
+        public VisualStem(XY origin, XY end, double thickness, IChord chord, IScoreDocumentLayout scoreDocumentLayout)
         {
             this.thickness = thickness;
             this.scoreDocumentLayout = scoreDocumentLayout;

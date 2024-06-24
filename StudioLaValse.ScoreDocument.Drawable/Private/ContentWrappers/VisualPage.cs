@@ -1,11 +1,11 @@
 ﻿using StudioLaValse.ScoreDocument.Layout;
-using StudioLaValse.ScoreDocument.Reader.Extensions;
+using StudioLaValse.ScoreDocument.Extensions;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
     internal sealed class VisualPage : BaseContentWrapper
     {
-        private readonly IPageReader page;
+        private readonly IPage page;
         private readonly double canvasLeft;
         private readonly double canvasTop;
         private readonly double globalLineSpacing;
@@ -23,7 +23,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         public double PageHeight => unitToPixelConverter.UnitsToPixels(Layout.PageHeight);
 
 
-        public VisualPage(IPageReader page,
+        public VisualPage(IPage page,
                           double canvasLeft,
                           double canvasTop,
                           double globalLineSpacing,

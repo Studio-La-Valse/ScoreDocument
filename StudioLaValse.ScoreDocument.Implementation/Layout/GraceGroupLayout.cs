@@ -1,8 +1,8 @@
 ﻿using StudioLaValse.ScoreDocument.Models.Base;
 
-namespace StudioLaValse.ScoreDocument.Implementation
+namespace StudioLaValse.ScoreDocument.Implementation.Layout
 {
-    public abstract class GraceGroupLayout 
+    public abstract class GraceGroupLayout
     {
         public abstract ValueTemplateProperty<bool> _OccupySpace { get; }
         public abstract ValueTemplateProperty<double> _ChordSpacing { get; }
@@ -24,6 +24,7 @@ namespace StudioLaValse.ScoreDocument.Implementation
             get => _ChordSpacing.Value;
             set => _ChordSpacing.Value = value;
         }
+        [AllowNull]
         public RythmicDuration ChordDuration
         {
             get => _ChordDuration.Value;
@@ -43,10 +44,10 @@ namespace StudioLaValse.ScoreDocument.Implementation
             get => _BeamAngle.Value;
             set => _BeamAngle.Value = value;
         }
-        public StemDirection StemDirection 
-        { 
-            get => _StemDirection.Value; 
-            set => _StemDirection.Value = value; 
+        public StemDirection StemDirection
+        {
+            get => _StemDirection.Value;
+            set => _StemDirection.Value = value;
         }
 
         public double BeamThickness
@@ -105,7 +106,7 @@ namespace StudioLaValse.ScoreDocument.Implementation
         public override ValueTemplateProperty<StemDirection> _StemDirection { get; }
 
         public AuthorGraceGroupLayout(GraceGroupStyleTemplate graceGroupStyleTemplate, int voice)
-        {          
+        {
             _OccupySpace = new ValueTemplateProperty<bool>(() => graceGroupStyleTemplate.OccupySpace);
             _ChordSpacing = new ValueTemplateProperty<double>(() => graceGroupStyleTemplate.ChordSpaceRight);
             _ChordDuration = new ReferenceTemplateProperty<RythmicDuration>(() => new(graceGroupStyleTemplate.ChordDuration));

@@ -1,5 +1,4 @@
 ﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
-using StudioLaValse.ScoreDocument.Primitives;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
@@ -28,7 +27,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
             this.glyphLibrary = glyphLibrary;
         }
         /// <inheritdoc/>
-        public BaseContentWrapper Build(IChordReader note, double canvasLeft, double canvasTop, double lineSpacing, double scoreScale, double instrumentScale)
+        public BaseContentWrapper Build(IChord note, double canvasLeft, double canvasTop, double lineSpacing, double scoreScale, double instrumentScale)
         {
             return new VisualRest(note, canvasLeft, canvasTop, lineSpacing, scoreScale, instrumentScale, glyphLibrary, scoreDocumentLayout, selection, unitToPixelConverter);
         }

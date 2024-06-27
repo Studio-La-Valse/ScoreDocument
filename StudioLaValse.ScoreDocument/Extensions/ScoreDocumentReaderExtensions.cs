@@ -1,5 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Extensions;
-using StudioLaValse.ScoreDocument.Private;
+﻿using StudioLaValse.ScoreDocument.Private;
 
 namespace StudioLaValse.ScoreDocument.Extensions
 {
@@ -16,10 +15,9 @@ namespace StudioLaValse.ScoreDocument.Extensions
         /// <returns></returns>
         public static IEnumerable<IPage> ReadPages(this IScoreDocument scoreDocument, double lineSpacing)
         {
-            var scoreDocumentLayout = scoreDocument.ReadLayout();
-            var scoreScale = scoreDocumentLayout.Scale;
+            var scoreScale = scoreDocument.Scale;
 
-            var currentpage = new Page(0, scoreDocumentLayout);
+            var currentpage = new Page(0, scoreDocument);
             currentpage.StaffSystems.Clear();
             var currentSystem = new StaffSystem(scoreDocument);
             currentpage.StaffSystems.Add(currentSystem);
@@ -43,19 +41,19 @@ namespace StudioLaValse.ScoreDocument.Extensions
                 // Need to add a new system.
                 if (currentSystemLength > currentAvailableWidth && currentSystem.ScoreMeasures.Any())
                 {
-                    var previousSystemHeight = currentSystem.CalculateHeight(lineSpacing, scoreDocumentLayout);
+                    var previousSystemHeight = currentSystem.CalculateHeight(lineSpacing, scoreDocument);
                     var previousSystemMarginBottom = currentSystem.ReadLayout().PaddingBottom * scoreScale;
                     currentSystem = new StaffSystem(scoreDocument);
                     currentSystemCanvasTop += previousSystemHeight + previousSystemMarginBottom;
 
-                    var currentSystemCanvasBottom = currentSystemCanvasTop + currentSystem.CalculateHeight(lineSpacing, scoreDocumentLayout);
+                    var currentSystemCanvasBottom = currentSystemCanvasTop + currentSystem.CalculateHeight(lineSpacing, scoreDocument);
                     var currentLowestAllowedPoint = pageHeight - pageMarginBottom;
 
                     // Need to add a new page.
                     if (currentSystemCanvasBottom > currentLowestAllowedPoint)
                     {
                         yield return currentpage;
-                        currentpage = new Page(pageIndex, scoreDocumentLayout);
+                        currentpage = new Page(pageIndex, scoreDocument);
                         pageLayout = currentpage.Layout;
                         pageWidth = pageLayout.PageWidth;
                         pageHeight = pageLayout.PageHeight;
@@ -80,7 +78,4 @@ namespace StudioLaValse.ScoreDocument.Extensions
             }
         }
     }
-
-
-
 }

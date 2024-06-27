@@ -1,9 +1,13 @@
-﻿using StudioLaValse.ScoreDocument.Models.Base;
+﻿using StudioLaValse.ScoreDocument.Core;
+using StudioLaValse.ScoreDocument.Models.Base;
+using StudioLaValse.ScoreDocument.Templates;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Layout
 {
-    public abstract class ChordLayout
+    public abstract class ChordLayout : IChordLayout
     {
+        private readonly Dictionary<PowerOfTwo, BeamType> beamTypes;
+
         public abstract ValueTemplateProperty<double> _XOffset { get; }
         public abstract ValueTemplateProperty<double> _SpaceRight { get; }
 
@@ -16,6 +20,22 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
         {
             get => _SpaceRight.Value;
             set => _SpaceRight.Value = value;
+        }
+
+        protected ChordLayout(Dictionary<PowerOfTwo, BeamType> beamTypes)
+        {
+            this.beamTypes = beamTypes;
+        }
+
+
+
+        public BeamType? ReadBeamType(PowerOfTwo i)
+        {
+            return beamTypes.TryGetValue(i, out var value) ? value : null;
+        }
+        public IEnumerable<KeyValuePair<PowerOfTwo, BeamType>> ReadBeamTypes()
+        {
+            return beamTypes;
         }
 
         public void Restore()
@@ -39,18 +59,29 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
         {
             ApplyMemento(memento as ChordLayoutMembers);
         }
+
+        public void ResetXOffset()
+        {
+            _XOffset.Reset();
+        }
+
+        public void ResetSpaceRight()
+        {
+            _SpaceRight.Reset();
+        }
     }
 
-    public class AuthorChordLayout : ChordLayout, IChordLayout, ILayout<ChordLayoutMembers>
+    public class AuthorChordLayout : ChordLayout, ILayout<ChordLayoutMembers>
     {
         public override ValueTemplateProperty<double> _XOffset { get; }
         public override ValueTemplateProperty<double> _SpaceRight { get; }
 
-        public AuthorChordLayout(ChordStyleTemplate chordStyleTemplate)
+        public AuthorChordLayout(ChordStyleTemplate chordStyleTemplate, Dictionary<PowerOfTwo, BeamType> beamTypes) : base(beamTypes)
         {
             _XOffset = new ValueTemplateProperty<double>(() => 0);
             _SpaceRight = new ValueTemplateProperty<double>(() => chordStyleTemplate.SpaceRight);
         }
+
 
         public ChordLayoutMembers GetMemento()
         {
@@ -62,13 +93,13 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
         }
     }
 
-    public class UserChordLayout : ChordLayout, IChordLayout, ILayout<ChordLayoutModel>
+    public class UserChordLayout : ChordLayout, ILayout<ChordLayoutModel>
     {
         public Guid Id { get; }
         public override ValueTemplateProperty<double> _XOffset { get; }
         public override ValueTemplateProperty<double> _SpaceRight { get; }
 
-        public UserChordLayout(AuthorChordLayout source, Guid id)
+        public UserChordLayout(AuthorChordLayout source, Guid id, Dictionary<PowerOfTwo, BeamType> beamTypes) : base(beamTypes)
         {
             Id = id;
 

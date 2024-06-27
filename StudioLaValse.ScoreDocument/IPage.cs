@@ -5,7 +5,7 @@ namespace StudioLaValse.ScoreDocument
     /// <summary>
     /// A page in a score doccument.
     /// </summary>
-    public interface IPage : IHasLayout<IPageLayout>
+    public interface IPage : IPageLayout, IScoreElement
     {
         /// <summary>
         /// The index in the score.

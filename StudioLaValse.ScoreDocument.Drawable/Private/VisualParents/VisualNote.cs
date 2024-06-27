@@ -9,10 +9,10 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         private readonly bool offsetDots;
         private readonly Accidental? accidental;
         private readonly IGlyphLibrary glyphLibrary;
-        private readonly IScoreDocumentLayout scoreDocumentLayout;
+        private readonly IScoreDocument scoreDocumentLayout;
 
 
-        public INoteLayout NoteLayout => note.ReadLayout();
+        public INote NoteLayout => note;
         public override DrawableScoreGlyph Glyph
         {
             get
@@ -69,7 +69,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                           bool offsetDots,
                           Accidental? accidental,
                           IGlyphLibrary glyphLibrary,
-                          IScoreDocumentLayout scoreDocumentLayout,
+                          IScoreDocument scoreDocumentLayout,
                           ISelection<IUniqueScoreElement> selection,
                           IUnitToPixelConverter unitToPixelConverter) :
             base(note,

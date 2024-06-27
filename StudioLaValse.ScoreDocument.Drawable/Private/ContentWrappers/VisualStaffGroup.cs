@@ -1,5 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
-using StudioLaValse.ScoreDocument.Extensions;
+﻿using StudioLaValse.ScoreDocument.Extensions;
+using StudioLaValse.ScoreDocument.GlyphLibrary;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
@@ -12,17 +12,17 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         private readonly double scoreScale;
         private readonly double instrumentScale;
         private readonly IGlyphLibrary glyphLibrary;
-        private readonly IScoreDocumentLayout scoreLayoutDictionary;
+        private readonly IScoreDocument scoreLayoutDictionary;
         private readonly IUnitToPixelConverter unitToPixelConverter;
         private readonly double canvasTop;
 
 
         public IInstrumentRibbon Context =>
             staffGroup.InstrumentRibbon;
-        public IInstrumentRibbonLayout ContextLayout =>
-            Context.ReadLayout();
+        public IInstrumentRibbon ContextLayout =>
+            Context;
         public IStaffGroupLayout Layout =>
-            staffGroup.ReadLayout();
+            staffGroup;
         public double Height =>
             unitToPixelConverter.UnitsToPixels(staffGroup.CalculateHeight(globalLineSpacing, scoreLayoutDictionary));
         public DrawableText ID
@@ -69,7 +69,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                                 double scoreScale,
                                 double instrumentScale,
                                 IGlyphLibrary glyphLibrary,
-                                IScoreDocumentLayout scoreLayoutDictionary,
+                                IScoreDocument scoreLayoutDictionary,
                                 IUnitToPixelConverter unitToPixelConverter)
         {
             this.staffGroup = staffGroup;
@@ -91,9 +91,9 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
             var _canvasTop = canvasTop;
             foreach (var staff in staffGroup.EnumerateStaves())
             {
-                var staffLayout = staff.ReadLayout();
+                var staffLayout = staff;
                 var clef = FirstMeasure.OpeningClefAtOrDefault(staff.IndexInStaffGroup);
-                var keySignature = FirstMeasure.ReadLayout().KeySignature;
+                var keySignature = FirstMeasure.KeySignature;
                 var timeSignature = FirstMeasure.MeasureIndex == 0 ? FirstMeasure.TimeSignature : null;
                 VisualStaff newStaff = new(
                     staff,

@@ -6,17 +6,13 @@
     public interface IMeasureBlockChain : IScoreElement
     {        
         /// <summary>
-        /// The voice of the block chain.
-        /// </summary>
-        int Voice { get; }
-
-        /// <summary>
-        /// The time signature of the chain.
+        /// The time signature of this block chain.
+        /// Passed down by the owner instrument measure.
         /// </summary>
         TimeSignature TimeSignature { get; }
 
         /// <summary>
-        /// Enumerates the measure blocks.
+        /// Read the measure blocks in this chain.
         /// </summary>
         /// <returns></returns>
         IEnumerable<IMeasureBlock> ReadBlocks();
@@ -25,6 +21,7 @@
         /// Clear all content from the block chain.
         /// </summary>
         void Clear();
+
         /// <summary>
         /// Divide the block chain in intervals with the specified stepsizes. 
         /// Note that the sum of the steps has to be equal to the numinator of the parent measure.
@@ -35,12 +32,14 @@
         /// </summary>
         /// <param name="steps"></param>
         void Divide(params int[] steps);
+
         /// <summary>
         /// Divide the block chain in intervals with the specified rythmic durations. 
         /// If this block chain already has blocks that contain measure elements, an exception will be thrown.
         /// </summary>
         /// <param name="steps"></param>
         void Divide(params RythmicDuration[] steps);
+
         /// <summary>
         /// Divide the block chain into equal lenght segments. Note that all the rules of <see cref="Divide(int[])"/> will be taken into account.
         /// </summary>

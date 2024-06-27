@@ -3,18 +3,30 @@ using System;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Layout
 {
-    public abstract class GraceChordLayout : IChordLayout
+    public abstract class GraceChordLayout : IGraceChordLayout
     {
         private readonly IGraceGroupLayout graceGroupLayout;
+        private readonly Dictionary<PowerOfTwo, BeamType> beamTypes;
 
         public double XOffset => 0;
 
         public double SpaceRight => graceGroupLayout.ChordSpacing;
 
-        public GraceChordLayout(IGraceGroupLayout graceGroupLayout)
+        public GraceChordLayout(IGraceGroupLayout graceGroupLayout, Dictionary<PowerOfTwo, BeamType> beamTypes)
         {
             this.graceGroupLayout = graceGroupLayout;
+            this.beamTypes = beamTypes;
         }
+
+        public BeamType? ReadBeamType(PowerOfTwo i)
+        {
+            return beamTypes.TryGetValue(i, out var value) ? value : null;
+        }
+        public IEnumerable<KeyValuePair<PowerOfTwo, BeamType>> ReadBeamTypes()
+        {
+            return beamTypes;
+        }
+
 
         public void ApplyMemento(GraceChordLayoutMembers? memento)
         {
@@ -38,7 +50,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
 
     public class AuthorGraceChordLayout : GraceChordLayout, ILayout<GraceChordLayoutMembers>
     {
-        public AuthorGraceChordLayout(IGraceGroupLayout graceGroupLayout) : base(graceGroupLayout) 
+        public AuthorGraceChordLayout(IGraceGroupLayout graceGroupLayout, Dictionary<PowerOfTwo, BeamType> beamTypes) : base(graceGroupLayout, beamTypes) 
         {
             
         }
@@ -56,7 +68,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
     {
         private readonly Guid guid;
 
-        public UserGraceChordLayout(Guid guid, IGraceGroupLayout graceGroupLayout) : base(graceGroupLayout)
+        public UserGraceChordLayout(Guid guid, IGraceGroupLayout graceGroupLayout, Dictionary<PowerOfTwo, BeamType> beamTypes) : base(graceGroupLayout, beamTypes)
         {
             this.guid = guid;
         }

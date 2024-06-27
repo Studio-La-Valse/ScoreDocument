@@ -1,8 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Layout.Templates;
-using StudioLaValse.ScoreDocument.Implementation.Layout;
-using StudioLaValse.ScoreDocument.Implementation.Interfaces;
-
-namespace StudioLaValse.ScoreDocument.Implementation
+﻿namespace StudioLaValse.ScoreDocument.Implementation
 {
     public class InstrumentRibbon : ScoreElement, IMementoElement<InstrumentRibbonModel>
     {

@@ -9,7 +9,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
     {
         private readonly ISelection<IUniqueScoreElement> selection;
         private readonly IVisualNoteGroupFactory noteGroupFactory;
-        private readonly IScoreDocumentLayout scoreLayoutDictionary;
+        private readonly IScoreDocument scoreLayoutDictionary;
         private readonly IUnitToPixelConverter unitToPixelConverter;
         private readonly IGlyphLibrary glyphLibrary;
 
@@ -21,7 +21,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// <param name="scoreLayoutDictionary"></param>
         /// <param name="unitToPixelConverter"></param>
         /// <param name="glyphLibrary"></param>
-        public VisualInstrumentMeasureFactory(ISelection<IUniqueScoreElement> selection, IVisualNoteGroupFactory noteGroupFactory, IScoreDocumentLayout scoreLayoutDictionary, IUnitToPixelConverter unitToPixelConverter, IGlyphLibrary glyphLibrary)
+        public VisualInstrumentMeasureFactory(ISelection<IUniqueScoreElement> selection, IVisualNoteGroupFactory noteGroupFactory, IScoreDocument scoreLayoutDictionary, IUnitToPixelConverter unitToPixelConverter, IGlyphLibrary glyphLibrary)
         {
             this.selection = selection;
             this.noteGroupFactory = noteGroupFactory;
@@ -35,7 +35,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         {
             var scoreLayout = scoreLayoutDictionary;
             var scoreScale = scoreLayout.Scale;
-            var instrumentScale = staffGroup.InstrumentRibbon.ReadLayout().Scale;
+            var instrumentScale = staffGroup.InstrumentRibbon.Scale;
             return new VisualStaffGroupMeasure(
                 source,
                 staffGroup,

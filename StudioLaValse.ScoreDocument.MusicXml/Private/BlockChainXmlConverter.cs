@@ -19,6 +19,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
 
     internal class GraceBlock
     {
+        public required RythmicDuration RythmicDuration { get; set; }
         public List<Chord> Chords { get; } = [];
     }
 
@@ -82,7 +83,21 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
 
                 if (element.IsGrace())
                 {
-                    pendingGrace ??= new GraceBlock();
+                    if(pendingGrace is null)
+                    {
+                        var _displayDuration = displayDuration;
+                        if(_displayDuration is null)
+                        {
+                            if (!RythmicDuration.TryConstruct(actualDuration, out _displayDuration))
+                            {
+                                throw new Exception("A valid rythmic duration is required for a note or measure element with a duration, but could not be found.");
+                            }
+                        }
+                        pendingGrace = new GraceBlock
+                        {
+                            RythmicDuration = _displayDuration,
+                        };
+                    }
 
                     if (!element.IsChord())
                     {
@@ -152,7 +167,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                     var staffIndex = note.StaffIndex() ?? 0;
                     addedChord.Add(note.ParsePitch());
                     var addedNote = addedChord.ReadNotes().Last();
-                    addedNote.SetStaffIndex(staffIndex);
+                    addedNote.StaffIndex = staffIndex;
                 }
                 FillGrace(chord.Grace, addedChord);
             }
@@ -165,7 +180,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                 return;
             }
 
-            targetChord.Grace();
+            targetChord.Grace(chord.RythmicDuration);
             var addedGrace = targetChord.ReadGraceGroup() ?? throw new UnreachableException();
             foreach (var graceChord in chord.Chords)
             {
@@ -176,7 +191,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                     var staffIndex = note.StaffIndex() ?? 0;
                     addedGraceChord.Add(note.ParsePitch());
                     var addedNote = addedGraceChord.ReadNotes().Last();
-                    addedNote.SetStaffIndex(staffIndex);
+                    addedNote.StaffIndex = staffIndex;
                 }
                 
                 FillGrace(graceChord.Grace, addedGraceChord);

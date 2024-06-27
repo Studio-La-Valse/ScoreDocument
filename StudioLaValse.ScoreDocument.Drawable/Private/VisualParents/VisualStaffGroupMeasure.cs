@@ -1,5 +1,6 @@
-﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
+﻿using StudioLaValse.ScoreDocument.Drawable.Extensions;
 using StudioLaValse.ScoreDocument.Extensions;
+using StudioLaValse.ScoreDocument.GlyphLibrary;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
@@ -18,7 +19,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         private readonly double instrumentScale;
         private readonly IGlyphLibrary glyphLibrary;
         private readonly IVisualNoteGroupFactory visualNoteGroupFactory;
-        private readonly IScoreDocumentLayout scoreLayoutDictionary;
+        private readonly IScoreDocument scoreLayoutDictionary;
         private readonly IUnitToPixelConverter unitToPixelConverter;
         private readonly IInstrumentMeasure source;
 
@@ -28,9 +29,9 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         public double Height =>
            unitToPixelConverter.UnitsToPixels(staffGroup.CalculateHeight(globalLineSpacing, scoreLayoutDictionary)); 
         public IStaffGroupLayout Layout =>
-            staffGroup.ReadLayout();
+            staffGroup;
         public KeySignature KeySignature =>
-            source.ReadLayout().KeySignature;
+            source.KeySignature;
        
 
         public KeySignature? InvalidatesNext
@@ -39,7 +40,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             {
                 if (source.TryReadNext(out var next))
                 {
-                    var nextKeySignature = next.ReadLayout().KeySignature;
+                    var nextKeySignature = next.KeySignature;
                     if (nextKeySignature != KeySignature)
                     {
                         return nextKeySignature;
@@ -70,7 +71,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                                        IGlyphLibrary glyphLibrary,
                                        IVisualNoteGroupFactory visualNoteGroupFactory,
                                        ISelection<IUniqueScoreElement> selection,
-                                       IScoreDocumentLayout scoreLayoutDictionary,
+                                       IScoreDocument scoreLayoutDictionary,
                                        IUnitToPixelConverter unitToPixelConverter) : base(source, selection)
         {
             this.staffGroup = staffGroup;
@@ -111,10 +112,10 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             
             foreach (var chordGroup in blocks)
             {
-                var elements = chordGroup.ReadChords().SelectMany(c => c.ReadNotes());
+                var elements = chordGroup.ReadNotes();
                 var anyOnStaff = elements.Any(ele =>
                 {
-                    var eleLayout = ele.ReadLayout();
+                    var eleLayout = ele;
                     return eleLayout.StaffIndex < Layout.NumberOfStaves;
                 });
                 if (!anyOnStaff)
@@ -131,13 +132,13 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         {
             var scoreLayout = scoreLayoutDictionary;
             var scoreScale = scoreLayout.Scale;
-            var instrumentScale = staffGroup.InstrumentRibbon.ReadLayout().Scale;
+            var instrumentScale = staffGroup.InstrumentRibbon.Scale;
 
             var _canvasTop = canvasTop;
             foreach (var staff in staffGroup.EnumerateStaves())
             {
-                var staffLayout = staff.ReadLayout();
-                var instrumentMeasureLayout = source.ReadLayout();
+                var staffLayout = staff;
+                var instrumentMeasureLayout = source;
                 var measureClef = source.OpeningClefAtOrDefault(staff.IndexInStaffGroup);
                 var lastClefChange = instrumentMeasureLayout.ClefChanges.LastOrDefault(c => c.StaffIndex == staff.IndexInStaffGroup)?.Clef ?? measureClef;
 

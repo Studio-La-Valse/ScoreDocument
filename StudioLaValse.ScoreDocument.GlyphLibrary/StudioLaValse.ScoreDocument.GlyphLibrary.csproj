@@ -4,6 +4,51 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	  <PackageVersion>2.0.1</PackageVersion>
   </PropertyGroup>
+
+	<!--build-->
+	<PropertyGroup>
+		<EnablePackageValidation>true</EnablePackageValidation>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="DotNet.ReproducibleBuilds" Version="1.1.1">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<PropertyGroup>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+	</PropertyGroup>
+
+	<!--meta data-->
+	<PropertyGroup>
+		<Authors>Studio La Valse</Authors>
+		<Description>Provides extensions to the score document reader so that it may be drawn to a canvas.</Description>
+		<PackageProjectUrl>github.com/Studio-La-Valse/scoredocument</PackageProjectUrl>
+		<PackageTags>score, sheet music, editor, builder</PackageTags>
+	</PropertyGroup>
+
+	<!--License-->
+	<PropertyGroup>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="../LICENSE" Pack="true" PackagePath="" />
+	</ItemGroup>
+
+
+	<!--Readme-->
+	<PropertyGroup>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="../README.md" Pack="true" PackagePath="" />
+	</ItemGroup>
 
 </Project>

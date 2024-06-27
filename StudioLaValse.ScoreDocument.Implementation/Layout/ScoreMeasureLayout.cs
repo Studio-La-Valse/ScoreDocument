@@ -2,7 +2,7 @@
 
 namespace StudioLaValse.ScoreDocument.Implementation.Layout
 {
-    public abstract class ScoreMeasureLayout
+    public abstract class ScoreMeasureLayout : IScoreMeasureLayout
     {
         public abstract ValueTemplateProperty<KeySignature> _KeySignature { get; }
         public abstract ValueTemplateProperty<double> _PaddingLeft { get; }
@@ -11,47 +11,23 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
 
         public KeySignature KeySignature
         {
-            get
-            {
-                return _KeySignature.Value;
-            }
-            set
-            {
-                _KeySignature.Value = value;
-            }
+            get => _KeySignature.Value;
+            set => _KeySignature.Value = value;
         }
         public double PaddingLeft
         {
-            get
-            {
-                return _PaddingLeft.Value;
-            }
-            set
-            {
-                _PaddingLeft.Value = value;
-            }
+            get => _PaddingLeft.Value;
+            set => _PaddingLeft.Value = value;
         }
         public double PaddingRight
         {
-            get
-            {
-                return _PaddingRight.Value;
-            }
-            set
-            {
-                _PaddingRight.Value = value;
-            }
+            get => _PaddingRight.Value;
+            set => _PaddingRight.Value = value;
         }
         public double? PaddingBottom
         {
-            get
-            {
-                return _PaddingBottom.Value;
-            }
-            set
-            {
-                _PaddingBottom.Value = value;
-            }
+            get => _PaddingBottom.Value;
+            set => _PaddingBottom.Value = value;
         }
 
 
@@ -80,9 +56,24 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
             _PaddingLeft.Field = memento.PaddingLeft;
             _PaddingRight.Field = memento.PaddingRight;
         }
+
+        public void ResetKeySignature()
+        {
+            _KeySignature.Reset();
+        }
+
+        public void ResetPaddingLeft()
+        {
+            _PaddingLeft.Reset();
+        }
+
+        public void ResetPaddingRight()
+        {
+            _PaddingRight.Reset();
+        }
     }
 
-    public class AuthorScoreMeasureLayout : ScoreMeasureLayout, IScoreMeasureLayout, ILayout<ScoreMeasureLayoutMembers>
+    public class AuthorScoreMeasureLayout : ScoreMeasureLayout, ILayout<ScoreMeasureLayoutMembers>
     {
         public override ValueTemplateProperty<KeySignature> _KeySignature { get; }
         public override ValueTemplateProperty<double> _PaddingLeft { get; }
@@ -109,7 +100,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
         }
     }
 
-    public class UserScoreMeasureLayout : ScoreMeasureLayout, IScoreMeasureLayout, ILayout<ScoreMeasureLayoutModel>
+    public class UserScoreMeasureLayout : ScoreMeasureLayout, ILayout<ScoreMeasureLayoutModel>
     {
         private readonly Guid id;
 

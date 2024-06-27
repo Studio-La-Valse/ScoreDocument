@@ -8,7 +8,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
     public class VisualStaffSystemFactory : IVisualStaffSystemFactory
     {
         private readonly IVisualSystemMeasureFactory systemMeasureFactory;
-        private readonly IScoreDocumentLayout scoreLayoutDictionary;
+        private readonly IScoreDocument scoreLayoutDictionary;
         private readonly IUnitToPixelConverter unitToPixelConverter;
         private readonly IGlyphLibrary glyphLibrary;
 
@@ -19,7 +19,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// <param name="scoreLayoutDictionary"></param>
         /// <param name="unitToPixelConverter"></param>
         /// <param name="glyphLibrary"></param>
-        public VisualStaffSystemFactory(IVisualSystemMeasureFactory systemMeasureFactory, IScoreDocumentLayout scoreLayoutDictionary, IUnitToPixelConverter unitToPixelConverter, IGlyphLibrary glyphLibrary)
+        public VisualStaffSystemFactory(IVisualSystemMeasureFactory systemMeasureFactory, IScoreDocument scoreLayoutDictionary, IUnitToPixelConverter unitToPixelConverter, IGlyphLibrary glyphLibrary)
         {
             this.systemMeasureFactory = systemMeasureFactory;
             this.scoreLayoutDictionary = scoreLayoutDictionary;

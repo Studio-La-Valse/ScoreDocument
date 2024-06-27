@@ -5,7 +5,7 @@ namespace StudioLaValse.ScoreDocument
     /// <summary>
     /// The base interface for staves.
     /// </summary>
-    public interface IStaff : IScoreElement, IHasLayout<IStaffLayout>
+    public interface IStaff : IScoreElement, IStaffLayout
     {
         /// <summary>
         /// The index in the staff group.

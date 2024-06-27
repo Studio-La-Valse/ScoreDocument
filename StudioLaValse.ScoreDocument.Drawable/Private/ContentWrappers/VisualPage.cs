@@ -1,5 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Layout;
-using StudioLaValse.ScoreDocument.Extensions;
+﻿using StudioLaValse.ScoreDocument.Extensions;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
@@ -10,12 +9,12 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         private readonly double canvasTop;
         private readonly double globalLineSpacing;
         private readonly IVisualStaffSystemFactory staffSystemContentFactory;
-        private readonly IScoreDocumentLayout scoreDocumentLayout;
+        private readonly IScoreDocument scoreDocumentLayout;
         private readonly IUnitToPixelConverter unitToPixelConverter;
 
-        public ColorARGB PageColor => page.ReadLayout().PageColor.FromPrimitive();
-        public ColorARGB ForegroundColor => page.ReadLayout().ForegroundColor.FromPrimitive();
-        public IPageLayout Layout => page.ReadLayout();
+        public ColorARGB PageColor => page.PageColor.FromPrimitive();
+        public ColorARGB ForegroundColor => page.ForegroundColor.FromPrimitive();
+        public IPageLayout Layout => page;
         public double MarginLeft => unitToPixelConverter.UnitsToPixels(Layout.MarginLeft);
         public double MarginRight => unitToPixelConverter.UnitsToPixels(Layout.MarginRight);
         public double MarginTop => unitToPixelConverter.UnitsToPixels(Layout.MarginTop);
@@ -28,7 +27,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                           double canvasTop,
                           double globalLineSpacing,
                           IVisualStaffSystemFactory staffSystemContentFactory,
-                          IScoreDocumentLayout scoreDocumentLayout,
+                          IScoreDocument scoreDocumentLayout,
                           IUnitToPixelConverter unitToPixelConverter)
         {
             this.page = page;
@@ -84,7 +83,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                 measureLengthSum = unitToPixelConverter.UnitsToPixels(measureLengthSum);
                 length = Math.Min(length, measureLengthSum);
 
-                var staffSystemLayout = staffSystem.ReadLayout();
+                var staffSystemLayout = staffSystem;
                 var visualSystem = staffSystemContentFactory.CreateContent(staffSystem, canvasLeft, canvasTop, length, globalLineSpacing);
                 yield return visualSystem;
 

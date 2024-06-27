@@ -1,10 +1,11 @@
 ﻿using StudioLaValse.ScoreDocument.Core;
 using StudioLaValse.ScoreDocument.Models.Base;
+using StudioLaValse.ScoreDocument.Templates;
 using System;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Layout
 {
-    public abstract class GraceNoteLayout : INoteLayout
+    public abstract class GraceNoteLayout : IGraceNoteLayout
     {
         private readonly IGraceGroupLayout graceGroupLayout;
         private readonly NoteStyleTemplate noteStyleTemplate;
@@ -57,6 +58,16 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
         {
             _StaffIndex.Reset();
             _ForceAccidental.Reset();
+        }
+
+        public void ResetAccidental()
+        {
+            _ForceAccidental.Reset();
+        }
+
+        public void ResetStaffIndex()
+        {
+            _StaffIndex.Reset();
         }
     }
 

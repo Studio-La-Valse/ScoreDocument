@@ -4,12 +4,14 @@ namespace StudioLaValse.ScoreDocument.Private
 {
     internal class Staff : IStaff
     {
-        private readonly IScoreDocumentLayout staffStyleTemplate;
+        private readonly IScoreDocument staffStyleTemplate;
         private readonly IEnumerable<IInstrumentMeasure> measures;
 
         public int IndexInStaffGroup { get; }
 
-        public Staff(int indexInStaffGroup, IScoreDocumentLayout staffStyleTemplate, IEnumerable<IInstrumentMeasure> measures)
+        public double DistanceToNext => ReadLayout().DistanceToNext;
+
+        public Staff(int indexInStaffGroup, IScoreDocument staffStyleTemplate, IEnumerable<IInstrumentMeasure> measures)
         {
             this.staffStyleTemplate = staffStyleTemplate;
             this.measures = measures;
@@ -19,7 +21,7 @@ namespace StudioLaValse.ScoreDocument.Private
 
         public IStaffLayout ReadLayout()
         {
-            var paddingBottom = measures.Max(m => m.ReadLayout().GetPaddingBottom(IndexInStaffGroup));
+            var paddingBottom = measures.Max(m => m.GetPaddingBottom(IndexInStaffGroup));
             paddingBottom ??= staffStyleTemplate.StaffPaddingBottom;
             var layout = new StaffLayout(paddingBottom.Value);
             return layout;
@@ -33,11 +35,6 @@ namespace StudioLaValse.ScoreDocument.Private
         public override string ToString()
         {
             return $"Staff {IndexInStaffGroup}";
-        }
-
-        public void RemoveLayout()
-        {
-            
         }
     }
 }

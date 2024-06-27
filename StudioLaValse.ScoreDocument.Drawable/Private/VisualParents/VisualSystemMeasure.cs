@@ -1,4 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.Extensions;
+﻿using StudioLaValse.ScoreDocument.Drawable.Extensions;
+using StudioLaValse.ScoreDocument.Extensions;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
@@ -6,7 +7,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
     {
         private readonly IScoreMeasure scoreMeasure;
         private readonly IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory;
-        private readonly IScoreDocumentLayout scoreLayoutDictionary;
+        private readonly IScoreDocument scoreLayoutDictionary;
         private readonly IUnitToPixelConverter unitToPixelConverter;
         private readonly IStaffSystem staffSystem;
         private readonly double width;
@@ -15,8 +16,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         private readonly double canvasTop;
 
 
-        public IScoreMeasureLayout Layout => 
-            scoreMeasure.ReadLayout();
+        public IScoreMeasure Layout => 
+            scoreMeasure;
         public double PaddingRight =>
             Layout.PaddingRight * ScoreScale + NextMeasureKeyPadding * ScoreScale;
         public double Height =>
@@ -34,7 +35,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                     return 0;
                 }
 
-                var keySignature = scoreMeasure.ReadLayout().KeySignature;
+                var keySignature = scoreMeasure.KeySignature;
                 var flats = keySignature.DefaultFlats;
                 var numberOfAccidentals = flats ?
                     keySignature.EnumerateFlats().Count() :
@@ -52,8 +53,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                     return null;
                 }
 
-                var nextKeySignature = nextMeasure.ReadLayout().KeySignature;
-                return nextKeySignature.Equals(scoreMeasure.ReadLayout().KeySignature) ? null : nextKeySignature;
+                var nextKeySignature = nextMeasure.KeySignature;
+                return nextKeySignature.Equals(scoreMeasure.KeySignature) ? null : nextKeySignature;
             }
         }
 
@@ -69,7 +70,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                                    double lineSpacing,
                                    ISelection<IUniqueScoreElement> selection,
                                    IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory,
-                                   IScoreDocumentLayout scoreLayoutDictionary,
+                                   IScoreDocument scoreLayoutDictionary,
                                    IUnitToPixelConverter unitToPixelConverter) : 
             base(scoreMeasure, selection)
         {
@@ -101,9 +102,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                 var wrapper = visualInstrumentMeasureFactory.CreateContent(ribbonMesaure, staffGroup, positions, canvasTop, canvasLeft, width, PaddingLeft, PaddingRight, lineSpacing, positionSpace);
                 yield return wrapper;
 
-                var staffGroupLayout = staffGroup.ReadLayout();
                 canvasTop += unitToPixelConverter.UnitsToPixels(staffGroup.CalculateHeight(lineSpacing, scoreLayoutDictionary));
-                canvasTop += unitToPixelConverter.UnitsToPixels(staffGroupLayout.DistanceToNext * scoreScale);
+                canvasTop += unitToPixelConverter.UnitsToPixels(staffGroup.DistanceToNext * scoreScale);
             }
         }
 

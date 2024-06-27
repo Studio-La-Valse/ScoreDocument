@@ -4,11 +4,13 @@ using StudioLaValse.ScoreDocument.Core;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Layout
 {
-    public abstract class InstrumentMeasureLayout
+    public abstract class InstrumentMeasureLayout : IInstrumentMeasureLayout
     {
+        private readonly ScoreMeasure scoreMeasure;
+
         public abstract NullableTemplateProperty<int> _NumberOfStaves { get; }
         public abstract NullableTemplateProperty<double> _PaddingBottom { get; }
-        public abstract ValueTemplateProperty<bool> _Collapsed { get; }
+        public abstract NullableTemplateProperty<bool> _Collapsed { get; }
         public abstract HashSet<ClefChange> _ClefChanges { get; }
         public abstract HashSet<ClefChange> _IgnoredClefChanges { get; }
         public abstract Dictionary<int, double> _PaddingBottomForStaves { get; }
@@ -19,7 +21,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
             get => _PaddingBottom.Value;
             set => _PaddingBottom.Value = value;
         }
-        public bool Collapsed
+        public bool? Collapsed
         {
             get => _Collapsed.Value;
             set => _Collapsed.Value = value;
@@ -29,6 +31,17 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
             get => _NumberOfStaves.Value;
             set => _NumberOfStaves.Value = value;
         }
+
+        public KeySignature KeySignature => scoreMeasure.UserLayout.KeySignature;
+
+        public abstract IEnumerable<ClefChange> ClefChanges { get; }
+
+
+        protected InstrumentMeasureLayout(ScoreMeasure scoreMeasure)
+        {
+            this.scoreMeasure = scoreMeasure;
+        }
+
 
         public void Restore()
         {
@@ -76,50 +89,63 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
                 _IgnoredClefChanges.Add(clefChange.Convert());
             }
         }
+
+        public void ClearClefChanges()
+        {
+            _ClefChanges.Clear();
+        }
+
+        public abstract void AddClefChange(ClefChange clefChange);
+
+        public abstract void RemoveClefChange(ClefChange clefChange);
+
+
+        public abstract double? GetPaddingBottom(int staffIndex);
+
+        public abstract void RequestPaddingBottom(int staffIndex, double? paddingBottom = null);
     }
 
-    public class AuthorInstrumentMeasureLayout : InstrumentMeasureLayout, IInstrumentMeasureLayout, ILayout<InstrumentMeasureLayoutMembers>
+    public class AuthorInstrumentMeasureLayout : InstrumentMeasureLayout, ILayout<InstrumentMeasureLayoutMembers>
     {
-        private readonly ScoreMeasure scoreMeasure;
-
-
         public override Dictionary<int, double> _PaddingBottomForStaves { get; } = [];
         public override HashSet<ClefChange> _ClefChanges { get; } = [];
         public override HashSet<ClefChange> _IgnoredClefChanges { get; } = [];
         public override NullableTemplateProperty<int> _NumberOfStaves { get; }
         public override NullableTemplateProperty<double> _PaddingBottom { get; }
-        public override ValueTemplateProperty<bool> _Collapsed { get; }
+        public override NullableTemplateProperty<bool> _Collapsed { get; }
 
 
-        public KeySignature KeySignature => scoreMeasure.AuthorLayout.KeySignature;
-        public IEnumerable<ClefChange> ClefChanges => _ClefChanges;
+        public override IEnumerable<ClefChange> ClefChanges => _ClefChanges;
 
 
-        public AuthorInstrumentMeasureLayout(Instrument instrument, ScoreMeasure scoreMeasure)
+        public AuthorInstrumentMeasureLayout(ScoreMeasure scoreMeasure) : base(scoreMeasure)
         {
-            this.scoreMeasure = scoreMeasure;
-
             _NumberOfStaves = new NullableTemplateProperty<int>(() => null);
-            _Collapsed = new ValueTemplateProperty<bool>(() => false);
+            _Collapsed = new NullableTemplateProperty<bool>(() => false);
             _PaddingBottom = new NullableTemplateProperty<double>(() => null);
         }
 
-        public void AddClefChange(ClefChange clefChange)
+        public override void AddClefChange(ClefChange clefChange)
         {
             _ = _ClefChanges.Add(clefChange);
         }
 
-        public void RemoveClefChange(ClefChange clefChange)
+        public override void RemoveClefChange(ClefChange clefChange)
         {
             _ = _ClefChanges.Remove(clefChange);
         }
 
-        public void RequestPaddingBottom(int staffIndex, double paddingBottom)
+        public override void RequestPaddingBottom(int staffIndex, double? paddingBottom)
         {
-            _PaddingBottomForStaves[staffIndex] = paddingBottom;
+            if(paddingBottom is null)
+            {
+                _PaddingBottomForStaves.Remove(staffIndex);
+                return;
+            }
+            _PaddingBottomForStaves[staffIndex] = paddingBottom.Value;
         }
 
-        public double? GetPaddingBottom(int staffIndex)
+        public override double? GetPaddingBottom(int staffIndex)
         {
             if (_PaddingBottomForStaves.TryGetValue(staffIndex, out var paddingBottom))
             {
@@ -165,45 +191,51 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
         public override HashSet<ClefChange> _ClefChanges { get; } = [];
         public override NullableTemplateProperty<int> _NumberOfStaves { get; }
         public override NullableTemplateProperty<double> _PaddingBottom { get; }
-        public override ValueTemplateProperty<bool> _Collapsed { get; }
+        public override NullableTemplateProperty<bool> _Collapsed { get; }
 
 
         public Guid Id { get; }
 
 
 
-        public IEnumerable<ClefChange> ClefChanges => _ClefChanges.Concat(layout.ClefChanges.Where(c => !_IgnoredClefChanges.Contains(c)));
-        public KeySignature KeySignature => layout.KeySignature;
+        public override IEnumerable<ClefChange> ClefChanges => _ClefChanges.Concat(layout.ClefChanges.Where(c => !_IgnoredClefChanges.Contains(c)));
 
 
-        public UserInstrumentMeasureLayout(AuthorInstrumentMeasureLayout layout, Guid id)
+
+        public UserInstrumentMeasureLayout(AuthorInstrumentMeasureLayout layout, Guid id, ScoreMeasure scoreMeasure) : base(scoreMeasure)
         {
             this.layout = layout;
+
             Id = id;
 
             _NumberOfStaves = new NullableTemplateProperty<int>(() => layout.NumberOfStaves);
             _PaddingBottom = new NullableTemplateProperty<double>(() => layout.PaddingBottom);
-            _Collapsed = new ValueTemplateProperty<bool>(() => layout.Collapsed);
+            _Collapsed = new NullableTemplateProperty<bool>(() => layout.Collapsed);
             paddingBottomForStavesSource = layout._PaddingBottomForStaves;
         }
 
-        public void AddClefChange(ClefChange clefChange)
+        public override void AddClefChange(ClefChange clefChange)
         {
             _ = _ClefChanges.Add(clefChange);
         }
 
-        public void RemoveClefChange(ClefChange clefChange)
+        public override void RemoveClefChange(ClefChange clefChange)
         {
             _ = _ClefChanges.Remove(clefChange);
             _IgnoredClefChanges.Add(clefChange);
         }
 
-        public void RequestPaddingBottom(int staffIndex, double paddingBottom)
+        public override void RequestPaddingBottom(int staffIndex, double? paddingBottom)
         {
-            _PaddingBottomForStaves[staffIndex] = paddingBottom;
+            if(paddingBottom is null)
+            {
+                _PaddingBottomForStaves.Remove(staffIndex);
+                return;
+            }
+            _PaddingBottomForStaves[staffIndex] = paddingBottom.Value;
         }
 
-        public double? GetPaddingBottom(int staffIndex)
+        public override double? GetPaddingBottom(int staffIndex)
         {
             if (paddingBottomForStavesSource.TryGetValue(staffIndex, out var _paddingBottom))
             {

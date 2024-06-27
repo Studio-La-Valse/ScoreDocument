@@ -1,8 +1,9 @@
 ﻿using StudioLaValse.ScoreDocument.Models.Base;
+using StudioLaValse.ScoreDocument.Templates;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Layout
 {
-    public abstract class InstrumentRibbonLayout
+    public abstract class InstrumentRibbonLayout : IInstrumentRibbonLayout
     {
         public abstract ReferenceTemplateProperty<string> _AbbreviatedName { get; }
         public abstract ReferenceTemplateProperty<string> _DisplayName { get; }
@@ -50,9 +51,34 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
         {
             ApplyMemento(memento as InstrumentRibbonLayoutMembers);
         }
+
+        public void ResetDisplayName()
+        {
+            _DisplayName.Reset();
+        }
+
+        public void ResetAbbreviatedName()
+        {
+            _AbbreviatedName.Reset();
+        }
+
+        public void ResetCollapsed()
+        {
+            _Collapsed.Reset();
+        }
+
+        public void ResetNumberOfStaves()
+        {
+            _NumberOfStaves.Reset();
+        }
+
+        public void ResetScale()
+        {
+            _Scale.Reset();
+        }
     }
 
-    public class AuthorInstrumentRibbonLayout : InstrumentRibbonLayout, IInstrumentRibbonLayout, ILayout<InstrumentRibbonLayoutMembers>
+    public class AuthorInstrumentRibbonLayout : InstrumentRibbonLayout, ILayout<InstrumentRibbonLayoutMembers>
     {
         public override ReferenceTemplateProperty<string> _AbbreviatedName { get; }
         public override ReferenceTemplateProperty<string> _DisplayName { get; }

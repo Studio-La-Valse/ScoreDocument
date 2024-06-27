@@ -100,6 +100,8 @@ namespace StudioLaValse.ScoreDocument.Models
         public required List<GraceNoteModel> Notes { get; set; }
 
         public required GraceChordLayoutModel? Layout { get; set; }
+
+        public required GraceGroupModel? GraceGroup { get; set; }
     }
 
     public class NoteModel : NoteMembers

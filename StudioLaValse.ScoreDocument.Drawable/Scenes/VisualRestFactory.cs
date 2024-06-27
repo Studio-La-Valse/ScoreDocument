@@ -8,7 +8,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
     public class VisualRestFactory : IVisualRestFactory
     {
         private readonly ISelection<IUniqueScoreElement> selection;
-        private readonly IScoreDocumentLayout scoreDocumentLayout;
+        private readonly IScoreDocument scoreDocumentLayout;
         private readonly IUnitToPixelConverter unitToPixelConverter;
         private readonly IGlyphLibrary glyphLibrary;
 
@@ -19,7 +19,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// <param name="scoreDocumentLayout"></param>
         /// <param name="unitToPixelConverter"></param>
         /// <param name="glyphLibrary"></param>
-        public VisualRestFactory(ISelection<IUniqueScoreElement> selection, IScoreDocumentLayout scoreDocumentLayout,IUnitToPixelConverter unitToPixelConverter, IGlyphLibrary glyphLibrary)
+        public VisualRestFactory(ISelection<IUniqueScoreElement> selection, IScoreDocument scoreDocumentLayout,IUnitToPixelConverter unitToPixelConverter, IGlyphLibrary glyphLibrary)
         {
             this.selection = selection;
             this.scoreDocumentLayout = scoreDocumentLayout;

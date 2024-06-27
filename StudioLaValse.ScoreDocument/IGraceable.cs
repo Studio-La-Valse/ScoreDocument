@@ -9,8 +9,9 @@
         /// <summary>
         /// Prepend a grace chord to this chord.
         /// </summary>
+        /// <param name="rythmicDuration"></param>
         /// <param name="pitches"></param>
-        void Grace(params Pitch[] pitches);
+        void Grace(RythmicDuration rythmicDuration, params Pitch[] pitches);
 
         /// <summary>
         /// Read the grace group preceding this chord.

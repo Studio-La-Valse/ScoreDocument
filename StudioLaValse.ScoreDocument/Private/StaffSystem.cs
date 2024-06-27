@@ -8,6 +8,8 @@ namespace StudioLaValse.ScoreDocument.Private
 
         public IList<IScoreMeasure> ScoreMeasures { get; } = [];
 
+        public double PaddingBottom => ReadLayout().PaddingBottom;
+
 
         public StaffSystem(IScoreDocument scoreDocument)
         {
@@ -22,13 +24,13 @@ namespace StudioLaValse.ScoreDocument.Private
 
         public IEnumerable<IStaffGroup> EnumerateStaffGroups()
         {
-            return scoreDocument.ReadInstrumentRibbons().Select(r => new StaffGroup(r, scoreDocument.ReadLayout(), ScoreMeasures));
+            return scoreDocument.ReadInstrumentRibbons().Select(r => new StaffGroup(r, scoreDocument, ScoreMeasures));
         }
 
         public IStaffSystemLayout ReadLayout()
         {
-            var paddingBottom = ScoreMeasures.Max(m => m.ReadLayout().PaddingBottom);
-            paddingBottom ??= scoreDocument.ReadLayout().StaffSystemPaddingBottom;
+            var paddingBottom = ScoreMeasures.Max(m => m.PaddingBottom);
+            paddingBottom ??= scoreDocument.StaffSystemPaddingBottom;
             return new StaffSystemLayout(paddingBottom.Value);
         }
 
@@ -40,11 +42,6 @@ namespace StudioLaValse.ScoreDocument.Private
         public override string ToString()
         {
             return $"Staff System";
-        }
-
-        public void RemoveLayout()
-        {
-            
         }
     }
 }

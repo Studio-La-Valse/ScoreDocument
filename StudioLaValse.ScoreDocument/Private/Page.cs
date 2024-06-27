@@ -1,4 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Layout;
+using ColorARGB = StudioLaValse.ScoreDocument.Templates.ColorARGB;
 
 namespace StudioLaValse.ScoreDocument.Private
 {
@@ -8,10 +9,17 @@ namespace StudioLaValse.ScoreDocument.Private
         public IPageLayout Layout { get; }
         public int IndexInScore { get; }
 
+        public double MarginBottom => Layout.MarginBottom;
+        public double MarginLeft => Layout.MarginLeft;
+        public double MarginRight => Layout.MarginRight;
+        public double MarginTop => Layout.MarginTop;
+        public int PageHeight => Layout.PageHeight;
+        public int PageWidth => Layout.PageWidth;
+        public ColorARGB PageColor => Layout.PageColor;
+        public ColorARGB ForegroundColor => Layout.ForegroundColor;
 
 
-
-        public Page(int indexInScore, IScoreDocumentLayout scoreDocumentLayout)
+        public Page(int indexInScore, IScoreDocument scoreDocumentLayout)
         {
             IndexInScore = indexInScore;
 
@@ -23,11 +31,6 @@ namespace StudioLaValse.ScoreDocument.Private
             return StaffSystems;
         }
 
-        public IPageLayout ReadLayout()
-        {
-            return Layout;
-        }
-
         public IEnumerable<IScoreElement> EnumerateChildren()
         {
             return EnumerateStaffSystems();
@@ -36,11 +39,6 @@ namespace StudioLaValse.ScoreDocument.Private
         public override string ToString()
         {
             return $"Page {IndexInScore}";
-        }
-
-        public void RemoveLayout()
-        {
-            
         }
     }
 }

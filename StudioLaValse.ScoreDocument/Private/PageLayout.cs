@@ -1,11 +1,11 @@
 ﻿using StudioLaValse.ScoreDocument.Layout;
-using StudioLaValse.ScoreDocument.Layout.Templates;
+using ColorARGB = StudioLaValse.ScoreDocument.Templates.ColorARGB;
 
 namespace StudioLaValse.ScoreDocument.Private
 {
     internal class PageLayout : IPageLayout
     {
-        private readonly IScoreDocumentLayout documentLayout;
+        private readonly IScoreDocument documentLayout;
 
         public int PageWidth => documentLayout.PageWidth;
         public int PageHeight => documentLayout.PageHeight;
@@ -17,7 +17,7 @@ namespace StudioLaValse.ScoreDocument.Private
         public ColorARGB ForegroundColor => documentLayout.PageForegroundColor;
 
 
-        public PageLayout(IScoreDocumentLayout documentLayout)
+        public PageLayout(IScoreDocument documentLayout)
         {
             this.documentLayout = documentLayout;
         }

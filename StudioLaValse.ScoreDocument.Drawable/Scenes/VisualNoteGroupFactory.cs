@@ -10,7 +10,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
     {
         private readonly IVisualNoteFactory noteFactory;
         private readonly IVisualRestFactory restFactory;
-        private readonly IScoreDocumentLayout scoreLayoutDictionary;
+        private readonly IScoreDocument scoreLayoutDictionary;
         private readonly IUnitToPixelConverter unitToPixelConverter;
         private readonly IGlyphLibrary glyphLibrary;
         private readonly IVisualBeamBuilder visualBeamBuilder;
@@ -23,7 +23,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// <param name="scoreLayoutDictionary"></param>
         /// <param name="unitToPixelConverter"></param>
         /// <param name="glyphLibrary"></param>
-        public VisualNoteGroupFactory(IVisualNoteFactory noteFactory, IVisualRestFactory restFactory, IScoreDocumentLayout scoreLayoutDictionary, IUnitToPixelConverter unitToPixelConverter, IGlyphLibrary glyphLibrary)
+        public VisualNoteGroupFactory(IVisualNoteFactory noteFactory, IVisualRestFactory restFactory, IScoreDocument scoreLayoutDictionary, IUnitToPixelConverter unitToPixelConverter, IGlyphLibrary glyphLibrary)
         {
             this.noteFactory = noteFactory;
             this.restFactory = restFactory;
@@ -37,7 +37,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         {
             var scoreLayout = scoreLayoutDictionary;
             var scoreScale = scoreLayout.Scale;
-            var instrumentScale = staffGroup.InstrumentRibbon.ReadLayout().Scale;
+            var instrumentScale = staffGroup.InstrumentRibbon.Scale;
             return new VisualNoteGroup(
                 noteGroup,
                 staffGroup,

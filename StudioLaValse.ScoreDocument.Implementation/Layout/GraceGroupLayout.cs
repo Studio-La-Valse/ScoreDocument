@@ -2,7 +2,7 @@
 
 namespace StudioLaValse.ScoreDocument.Implementation.Layout
 {
-    public abstract class GraceGroupLayout
+    public abstract class GraceGroupLayout : IGraceGroupLayout
     {
         public abstract ValueTemplateProperty<bool> _OccupySpace { get; }
         public abstract ValueTemplateProperty<double> _ChordSpacing { get; }
@@ -14,6 +14,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
         public abstract ValueTemplateProperty<double> _BeamSpacing { get; }
         public abstract ValueTemplateProperty<StemDirection> _StemDirection { get; }
 
+
         public bool OccupySpace
         {
             get => _OccupySpace.Value;
@@ -24,7 +25,6 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
             get => _ChordSpacing.Value;
             set => _ChordSpacing.Value = value;
         }
-        [AllowNull]
         public RythmicDuration ChordDuration
         {
             get => _ChordDuration.Value;
@@ -33,6 +33,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
         public double Scale
         {
             get => _Scale.Value;
+            set => _Scale.Value = value;
         }
         public double StemLength
         {
@@ -53,10 +54,12 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
         public double BeamThickness
         {
             get => _BeamThickness.Value;
+            set => _BeamThickness.Value = value;
         }
         public double BeamSpacing
         {
-            get => _BeamSpacing.Value;
+            get => _BeamSpacing.Value; 
+            set => _BeamSpacing.Value = value;
         }
 
 
@@ -79,6 +82,52 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
         {
             ApplyMemento(memento as GraceGroupLayoutMembers);
         }
+
+        public void ResetBeamAngle()
+        {
+            _BeamAngle.Reset();
+        }
+
+        public void ResetBeamSpacing()
+        {
+            _BeamSpacing.Reset();
+        }
+
+        public void ResetBeamThickness()
+        {
+            _BeamThickness.Reset();
+        }
+
+        public void ResetChordDuration()
+        {
+            _ChordDuration.Reset();
+        }
+
+        public void ResetChordSpacing()
+        {
+            _ChordSpacing.Reset();
+        }
+
+        public void ResetOccupySpace()
+        {
+            _OccupySpace.Reset();   
+        }
+
+        public void ResetScale()
+        {
+            _Scale.Reset();
+        }
+
+        public void ResetStemDirection()
+        {
+            _StemDirection.Reset();
+        }
+
+        public void ResetStemLength()
+        {
+            _StemLength.Reset();
+        }
+
         public void Restore()
         {
             _OccupySpace.Reset();
@@ -93,7 +142,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
         }
     }
 
-    public class AuthorGraceGroupLayout : GraceGroupLayout, IGraceGroupLayout, ILayout<GraceGroupLayoutMembers>
+    public class AuthorGraceGroupLayout : GraceGroupLayout, ILayout<GraceGroupLayoutMembers>
     {
         public override ValueTemplateProperty<bool> _OccupySpace { get; }
         public override ValueTemplateProperty<double> _ChordSpacing { get; }
@@ -132,7 +181,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
         }
     }
 
-    public class UserGraceGroupLayout : GraceGroupLayout, IGraceGroupLayout
+    public class UserGraceGroupLayout : GraceGroupLayout
     {
         private readonly Guid guid;
 
@@ -146,6 +195,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
         public override ValueTemplateProperty<double> _BeamThickness { get; }
         public override ValueTemplateProperty<double> _BeamSpacing { get; }
         public override ValueTemplateProperty<StemDirection> _StemDirection { get; }
+
 
         public UserGraceGroupLayout(AuthorGraceGroupLayout authorGraceGroupLayout, Guid guid)
         {

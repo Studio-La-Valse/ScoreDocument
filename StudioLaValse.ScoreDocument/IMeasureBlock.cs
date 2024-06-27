@@ -5,7 +5,7 @@ namespace StudioLaValse.ScoreDocument
     /// <summary>
     /// Represents a measure block editor.
     /// </summary>
-    public interface IMeasureBlock : IChordContainer<IChord, IMeasureBlockLayout>, IPositionElement, IScoreElement, IUniqueScoreElement
+    public interface IMeasureBlock : IMeasureBlockLayout, IChordContainer<IChord, INote>, IPositionElement, IScoreElement, IUniqueScoreElement
     {
         /// <summary>
         /// Append a chord to the end of the measure block.

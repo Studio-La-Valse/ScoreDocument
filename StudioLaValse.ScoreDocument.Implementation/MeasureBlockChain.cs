@@ -1,4 +1,6 @@
-﻿namespace StudioLaValse.ScoreDocument.Implementation
+﻿using StudioLaValse.ScoreDocument.Templates;
+
+namespace StudioLaValse.ScoreDocument.Implementation
 {
     public class MeasureBlockChain : ScoreElement
     {
@@ -80,7 +82,7 @@
 
             var layout = new AuthorMeasureBlockLayout(scoreDocumentStyle.MeasureBlockStyleTemplate, Voice);
             var secondaryLayout = new UserMeasureBlockLayout(secondaryLayoutGuid, layout);
-            var newBlock = new MeasureBlock(rythmicDuration, this, scoreDocumentStyle, layout, secondaryLayout, false, keyGenerator, blockGuid);
+            var newBlock = new MeasureBlock(rythmicDuration, this, scoreDocumentStyle, layout, secondaryLayout, keyGenerator, blockGuid);
             blocks.Add(newBlock);
             return newBlock;
         }

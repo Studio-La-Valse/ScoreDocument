@@ -1,8 +1,6 @@
-﻿using StudioLaValse.ScoreDocument.Extensions;
-using StudioLaValse.ScoreDocument.Layout;
-
-namespace StudioLaValse.ScoreDocument.Extensions
+﻿namespace StudioLaValse.ScoreDocument.Extensions
 {
+
     /// <summary>
     /// Extensions to staff (-group and -system) readers.
     /// </summary>
@@ -67,19 +65,18 @@ namespace StudioLaValse.ScoreDocument.Extensions
         /// <param name="scoreLayout"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public static double DistanceFromTop(this IStaffGroup staffGroup, int staffIndex, int lineIndex, double globalLineSpacing, IScoreDocumentLayout scoreLayout)
+        public static double DistanceFromTop(this IStaffGroup staffGroup, int staffIndex, int lineIndex, double globalLineSpacing, IScoreDocument scoreLayout)
         {
             ArgumentOutOfRangeException.ThrowIfNegative(staffIndex, nameof(staffIndex));
 
             var scoreScale = scoreLayout.Scale;
-            var instrumentScale = staffGroup.InstrumentRibbon.ReadLayout().Scale;
+            var instrumentScale = staffGroup.InstrumentRibbon.Scale;
             var canvasTopStaffGroup = 0d;
 
             foreach (var staff in staffGroup.EnumerateStaves().Take(staffIndex))
             {
-                var staffLayout = staff.ReadLayout();
                 canvasTopStaffGroup += staff.CalculateHeight(globalLineSpacing, scoreScale, instrumentScale);
-                canvasTopStaffGroup += staffLayout.DistanceToNext * scoreScale;
+                canvasTopStaffGroup += staff.DistanceToNext * scoreScale;
             }
 
             var _staff = staffGroup.EnumerateStaves().ElementAt(staffIndex);
@@ -96,23 +93,22 @@ namespace StudioLaValse.ScoreDocument.Extensions
         /// <param name="globalLineSpacing"></param>
         /// <param name="scoreLayout"></param>
         /// <returns></returns>
-        public static double CalculateHeight(this IStaffGroup staffGroup, double globalLineSpacing, IScoreDocumentLayout scoreLayout)
+        public static double CalculateHeight(this IStaffGroup staffGroup, double globalLineSpacing, IScoreDocument scoreLayout)
         {
             var height = 0d;
-            var groupLayout = staffGroup.ReadLayout();
-            if (groupLayout.Collapsed)
+            if (staffGroup.Collapsed)
             {
                 return height;
             }
 
             var scoreScale = scoreLayout.Scale;
-            var instrumentScale = staffGroup.InstrumentRibbon.ReadLayout().Scale;
+            var instrumentScale = staffGroup.InstrumentRibbon.Scale;
 
             var lastStaffSpacing = 0d;
             foreach (var staff in staffGroup.EnumerateStaves())
             {
                 var staffHeight = staff.CalculateHeight(globalLineSpacing, scoreScale, instrumentScale);
-                var staffSpacing = staff.ReadLayout().DistanceToNext * scoreScale;
+                var staffSpacing = staff.DistanceToNext * scoreScale;
                 height += staffHeight;
                 height += staffSpacing;
                 lastStaffSpacing = staffSpacing;
@@ -130,18 +126,17 @@ namespace StudioLaValse.ScoreDocument.Extensions
         /// <param name="lineSpacing"></param>
         /// <param name="scoreLayoutDictionary"></param>
         /// <returns></returns>
-        public static double CalculateHeight(this IStaffSystem staffSystem, double lineSpacing, IScoreDocumentLayout scoreLayoutDictionary)
+        public static double CalculateHeight(this IStaffSystem staffSystem, double lineSpacing, IScoreDocument scoreLayoutDictionary)
         {
             var height = 0d;
             var lastStafGroupSpacing = 0d;
             var scoreScale = scoreLayoutDictionary.Scale;
             foreach (var staffGroup in staffSystem.EnumerateStaffGroups())
             {
-                var staffGroupLayout = staffGroup.ReadLayout();
                 var staffGroupHeight = staffGroup.CalculateHeight(lineSpacing, scoreLayoutDictionary);
                 height += staffGroupHeight;
 
-                lastStafGroupSpacing = staffGroupLayout.DistanceToNext * scoreScale;
+                lastStafGroupSpacing = staffGroup.DistanceToNext * scoreScale;
                 height += lastStafGroupSpacing;
             }
             height -= lastStafGroupSpacing;

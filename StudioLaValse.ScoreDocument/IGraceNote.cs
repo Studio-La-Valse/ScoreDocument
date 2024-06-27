@@ -5,7 +5,7 @@ namespace StudioLaValse.ScoreDocument
     /// <summary>
     /// Represents an editable grace note.
     /// </summary>
-    public interface IGraceNote : INoteBase
+    public interface IGraceNote : IGraceNoteLayout, IHasPitch, IScoreElement, IUniqueScoreElement
     {
 
     }

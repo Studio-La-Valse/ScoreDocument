@@ -1,25 +1,26 @@
-﻿using StudioLaValse.ScoreDocument.Extensions;
+﻿using StudioLaValse.ScoreDocument.Drawable.Extensions;
+using StudioLaValse.ScoreDocument.Extensions;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
     internal sealed class VisualChord : BaseContentWrapper
     {
-        private readonly IChord chord;
         private readonly double canvasLeft;
         private readonly double canvasTopStaffGroup;
         private readonly double lineSpacing;
         private readonly double positionSpacing;
         private readonly double scoreScale;
-        private readonly double instrumentScale;
+        private readonly double instrumentScale; 
+        private readonly IChord chord;
         private readonly IStaffGroup staffGroup;
         private readonly IInstrumentMeasure instrumentMeasureReader;
         private readonly IVisualNoteFactory noteFactory;
         private readonly IVisualRestFactory restFactory;
-        private readonly IScoreDocumentLayout scoreDocumentLayout;
+        private readonly IScoreDocument scoreDocumentLayout;
         private readonly IUnitToPixelConverter unitToPixelConverter;
         private readonly List<Line> overFlowLines;
 
-        public IChordLayout Layout => chord.ReadLayout();
+        public IChord Layout => chord;
         public double XOffset => Layout.XOffset;
 
 
@@ -34,7 +35,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                            IInstrumentMeasure instrumentMeasureReader,
                            IVisualNoteFactory noteFactory,
                            IVisualRestFactory restFactory,
-                           IScoreDocumentLayout scoreDocumentLayout,
+                           IScoreDocument scoreDocumentLayout,
                            IUnitToPixelConverter unitToPixelConverter)
         {
             this.chord = chord;
@@ -58,9 +59,9 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         public IEnumerable<BaseContentWrapper> GetNotes()
         {
             var scoreScale = scoreDocumentLayout.Scale;
-            var instrumentScale = staffGroup.InstrumentRibbon.ReadLayout().Scale;
+            var instrumentScale = staffGroup.InstrumentRibbon.Scale;
 
-            var notes = chord.ReadNotes();
+            var notes = this.chord.ReadNotes();
             if (!notes.Any())
             {
                 var canvasTop = canvasTopStaffGroup + unitToPixelConverter.UnitsToPixels(staffGroup.EnumerateStaves().First().DistanceFromTop(4, lineSpacing, scoreScale, instrumentScale));
@@ -70,8 +71,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 
             foreach (var note in notes)
             {
-                var staffIndex = note.ReadLayout().StaffIndex;
-                if (staffIndex >= staffGroup.ReadLayout().NumberOfStaves)
+                var staffIndex = note.StaffIndex;
+                if (staffIndex >= staffGroup.NumberOfStaves)
                 {
                     continue;
                 }
@@ -88,7 +89,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 
         public Accidental? GetAccidental(INote note)
         {
-            var noteLayout = note.ReadLayout();
+            var noteLayout = note;
             var forceAccidental = noteLayout.ForceAccidental;
 
             if (forceAccidental == AccidentalDisplay.ForceOff)
@@ -112,7 +113,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 
         public List<Line> GetOverflowLines()
         {
-            var notes = chord.ReadNotes();
+            var notes = this.chord.ReadNotes();
             if (!notes.Any())
             {
                 return [];
@@ -120,12 +121,12 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 
             var canvasTopStaff = canvasTopStaffGroup;
             List<Line> linesFromChord = [];
-            var staffGroupLayout = staffGroup.ReadLayout();
+            var staffGroupLayout = staffGroup;
             foreach (var staff in staffGroup.EnumerateStaves())
             {
-                var staffLayout = staff.ReadLayout();
+                var staffLayout = staff;
                 var notesOnStaff = notes
-                    .Where(c => c.ReadLayout().StaffIndex == staff.IndexInStaffGroup)
+                    .Where(c => c.StaffIndex == staff.IndexInStaffGroup)
                     .OrderBy(c => c.Pitch.IndexOnKlavier);
 
                 if (notesOnStaff.Any())

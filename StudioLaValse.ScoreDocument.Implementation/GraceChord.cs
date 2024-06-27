@@ -1,4 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Core;
+using StudioLaValse.ScoreDocument.Templates;
 
 namespace StudioLaValse.ScoreDocument.Implementation
 {
@@ -115,7 +116,8 @@ namespace StudioLaValse.ScoreDocument.Implementation
                 Id = Guid,
                 Notes = notes.Select(n => n.GetMemento()).ToList(),
                 IndexInGroup = IndexInGroup,
-                Layout = UserChordLayout.GetMemento()
+                Layout = UserChordLayout.GetMemento(),
+                GraceGroup = GraceGroup?.GetMemento()
             };
         }
         public void ApplyMemento(GraceChordModel memento)
@@ -131,6 +133,16 @@ namespace StudioLaValse.ScoreDocument.Implementation
                 Append(graceNote);
 
                 graceNote.ApplyMemento(note);
+            }
+
+            GraceGroup = null;
+            if (memento.GraceGroup is not null)
+            {
+                var _authorLayout = new AuthorGraceGroupLayout(scoreDocumentStyleTemplate.GraceGroupStyleTemplate, Voice);
+                var _userLayout = new UserGraceGroupLayout(_authorLayout, memento.Layout?.Id ?? Guid.NewGuid());
+                var graceGroup = new GraceGroup(this, HostMeasure, scoreDocumentStyleTemplate, _authorLayout, _userLayout, keyGenerator, memento.GraceGroup.Id);
+                GraceGroup = graceGroup; ;
+                graceGroup.ApplyMemento(memento.GraceGroup);
             }
         }
     }

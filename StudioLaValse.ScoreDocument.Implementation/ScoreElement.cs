@@ -1,6 +1,6 @@
 ﻿namespace StudioLaValse.ScoreDocument.Implementation
 {
-    public abstract class ScoreElement : IUniqueScoreElement
+    public abstract class ScoreElement 
     {
         public int Id { get; }
         public Guid Guid { get; }
@@ -15,16 +15,6 @@
         {
             Id = id;
             Guid = guid;
-        }
-
-        public bool Equals(IUniqueScoreElement? other)
-        {
-            if (other is null)
-            {
-                return false;
-            }
-
-            return other.Id == Id;
         }
     }
 }

@@ -1,9 +1,6 @@
-﻿using StudioLaValse.ScoreDocument.Implementation.Interfaces;
-using StudioLaValse.ScoreDocument.Implementation.Layout;
-
-namespace StudioLaValse.ScoreDocument.Implementation
+﻿namespace StudioLaValse.ScoreDocument.Implementation
 {
-    public class ScoreDocumentCore : ScoreElement, IMementoElement<ScoreDocumentModel>
+    public class ScoreDocumentCore : ScoreElement, IUniqueScoreElement, IMementoElement<ScoreDocumentModel>
     {
         private readonly ScoreContentTable contentTable;
         private readonly ScoreDocumentStyleTemplate styleTemplate;
@@ -189,6 +186,11 @@ namespace StudioLaValse.ScoreDocument.Implementation
 
                 scoreMeasure.ApplyMemento(scoreMeasureMemento);
             }
+        }
+
+        public bool Equals(IUniqueScoreElement? other)
+        {
+            return other is null ? false : other.Id == Id;
         }
     }
 }

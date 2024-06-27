@@ -7,7 +7,7 @@
         private readonly double scoreScale;
         private readonly double instrumentScale;
         private readonly double noteScale;
-        private readonly IScoreDocumentLayout scoreDocumentLayout;
+        private readonly IScoreDocument scoreDocumentLayout;
         private readonly IUnitToPixelConverter unitToPixelConverter;
 
         public abstract DrawableScoreGlyph Glyph { get; }
@@ -62,7 +62,7 @@
                               double scoreScale,
                               double instrumentScale,
                               double noteScale,
-                              IScoreDocumentLayout scoreDocumentLayout,
+                              IScoreDocument scoreDocumentLayout,
                               ISelection<IUniqueScoreElement> selection,
                               IUnitToPixelConverter unitToPixelConverter) : base(measureElement, selection)
         {
@@ -83,7 +83,7 @@
                               double scoreScale,
                               double instrumentScale,
                               double noteScale,
-                              IScoreDocumentLayout scoreDocumentLayout,
+                              IScoreDocument scoreDocumentLayout,
                               ISelection<IUniqueScoreElement> selection,
                               IUnitToPixelConverter unitToPixelConverter) : base(measureElement, selection)
         {

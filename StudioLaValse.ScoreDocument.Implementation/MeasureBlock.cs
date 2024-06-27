@@ -1,4 +1,6 @@
-﻿namespace StudioLaValse.ScoreDocument.Implementation
+﻿using StudioLaValse.ScoreDocument.Templates;
+
+namespace StudioLaValse.ScoreDocument.Implementation
 {
     public class MeasureBlock : ScoreElement, IPositionElement, IMementoElement<MeasureBlockModel>
     {
@@ -48,7 +50,6 @@
                             ScoreDocumentStyleTemplate documentStyleTemplate,
                             AuthorMeasureBlockLayout layout,
                             UserMeasureBlockLayout secondaryLayout,
-                            bool grace,
                             IKeyGenerator<int> keyGenerator,
                             Guid guid) : base(keyGenerator, guid)
         {
@@ -113,9 +114,10 @@
         {
             var guid = Guid.NewGuid();
             var layoutGuid = Guid.NewGuid();
-            var chordLayout = new AuthorChordLayout(documentStyleTemplate.ChordStyleTemplate);
-            var secondaryChordLayout = new UserChordLayout(chordLayout, layoutGuid);
-            var chord = new Chord(this, rythmicDuration, documentStyleTemplate, chordLayout, secondaryChordLayout, keyGenerator, guid);
+            var beamtypes = new Dictionary<PowerOfTwo, BeamType>();
+            var chordLayout = new AuthorChordLayout(documentStyleTemplate.ChordStyleTemplate, beamtypes);
+            var secondaryChordLayout = new UserChordLayout(chordLayout, layoutGuid, beamtypes);
+            var chord = new Chord(this, rythmicDuration, documentStyleTemplate, chordLayout, secondaryChordLayout, beamtypes, keyGenerator, guid);
             chord.Add(pitches);
             chords.Add(chord);
             if (rebeam)
@@ -188,9 +190,10 @@
 
             foreach (var chordMemento in memento.Chords)
             {
-                var chordLayout = new AuthorChordLayout(documentStyleTemplate.ChordStyleTemplate);
-                var secondaryChordLayout = new UserChordLayout(chordLayout, chordMemento.Layout?.Id ?? Guid.NewGuid());
-                var chord = new Chord(this, chordMemento.RythmicDuration.Convert(), documentStyleTemplate, chordLayout, secondaryChordLayout, keyGenerator, chordMemento.Id);
+                var beamtypes = new Dictionary<PowerOfTwo, BeamType>();
+                var chordLayout = new AuthorChordLayout(documentStyleTemplate.ChordStyleTemplate, beamtypes);
+                var secondaryChordLayout = new UserChordLayout(chordLayout, chordMemento.Layout?.Id ?? Guid.NewGuid(), beamtypes);
+                var chord = new Chord(this, chordMemento.RythmicDuration.Convert(), documentStyleTemplate, chordLayout, secondaryChordLayout, beamtypes, keyGenerator, chordMemento.Id);
                 chords.Add(chord);
                 chord.ApplyMemento(chordMemento);
             }

@@ -6,11 +6,11 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
     public class VisualPageFactory : IVisualPageFactory
     {
         private readonly IVisualStaffSystemFactory staffSystemContentFactory;
-        private readonly IScoreDocumentLayout scoreLayoutDictionary;
+        private readonly IScoreDocument scoreLayoutDictionary;
         private readonly IUnitToPixelConverter unitToPixelConverter;
 
         /// <inheritdoc/>
-        public VisualPageFactory(IVisualStaffSystemFactory staffSystemContentFactory, IScoreDocumentLayout scoreLayoutDictionary, IUnitToPixelConverter unitToPixelConverter)
+        public VisualPageFactory(IVisualStaffSystemFactory staffSystemContentFactory, IScoreDocument scoreLayoutDictionary, IUnitToPixelConverter unitToPixelConverter)
         {
             this.staffSystemContentFactory = staffSystemContentFactory;
             this.scoreLayoutDictionary = scoreLayoutDictionary;

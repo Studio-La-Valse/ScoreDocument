@@ -22,6 +22,27 @@ namespace StudioLaValse.ScoreDocument.Private
 
         public int Id => noteReader.Id;
 
+        public AccidentalDisplay ForceAccidental
+        {
+            get => noteReader.ForceAccidental;
+            set => noteReader.ForceAccidental = value;
+        }
+        public double Scale
+        {
+            get => noteReader.Scale;
+            set => throw new NotImplementedException();
+        }
+        public int StaffIndex
+        {
+            get => noteReader.StaffIndex;
+            set => noteReader.StaffIndex = value;
+        }
+        public double XOffset
+        {
+            get => noteReader.XOffset;
+            set => throw new NotImplementedException();
+        }
+
         public NoteReaderFromGraceChord(IGraceNote noteReader, ChordReaderFromGraceChord graceChordReader)
         {
             this.noteReader = noteReader;
@@ -31,11 +52,6 @@ namespace StudioLaValse.ScoreDocument.Private
         public IEnumerable<IScoreElement> EnumerateChildren()
         {
             yield break;
-        }
-
-        public INoteLayout ReadLayout()
-        {
-            return noteReader.ReadLayout();
         }
 
         public bool Equals(IUniqueScoreElement? other)
@@ -48,27 +64,22 @@ namespace StudioLaValse.ScoreDocument.Private
             return other.Id == Id;
         }
 
-        public void SetStaffIndex(int staffIndex)
+        public void ResetAccidental()
+        {
+            noteReader.ResetAccidental();
+        }
+
+        public void ResetScale()
         {
             throw new NotImplementedException();
         }
 
-        public void SetXOffset(double offset)
+        public void ResetStaffIndex()
         {
-            throw new NotImplementedException();
+            noteReader.ResetStaffIndex();
         }
 
-        public void SetForceAccidental(AccidentalDisplay display)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SetScale(double scale)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void RemoveLayout()
+        public void ResetXOffset()
         {
             throw new NotImplementedException();
         }

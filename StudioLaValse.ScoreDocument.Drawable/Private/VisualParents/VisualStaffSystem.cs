@@ -1,5 +1,6 @@
-﻿using StudioLaValse.ScoreDocument.Extensions;
-using StudioLaValse.ScoreDocument.GlyphLibrary;
+﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
+using StudioLaValse.ScoreDocument.Drawable.Extensions;
+using StudioLaValse.ScoreDocument.Extensions;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
@@ -7,7 +8,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
     {
         private readonly IStaffSystem staffSystem;
         private readonly IVisualSystemMeasureFactory systemMeasureFactory;
-        private readonly IScoreDocumentLayout scoreLayoutDictionary;
+        private readonly IScoreDocument scoreLayoutDictionary;
         private readonly IUnitToPixelConverter unitToPixelConverter;
         private readonly double canvasLeft;
         private readonly double length;
@@ -80,7 +81,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                                  double globalLineSpacing,
                                  IGlyphLibrary glyphLibrary,
                                  IVisualSystemMeasureFactory systemMeasureFactory,
-                                 IScoreDocumentLayout scoreLayoutDictionary,
+                                 IScoreDocument scoreLayoutDictionary,
                                  IUnitToPixelConverter unitToPixelConverter)
         {
             this.staffSystem = staffSystem;
@@ -104,7 +105,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             }
 
             var firstMeasure = staffSystem.EnumerateMeasures().First();
-            var keySignature = firstMeasure.ReadLayout().KeySignature;
+            var keySignature = firstMeasure.KeySignature;
             var spaceForClef = (VisualStaff.SpaceUntilClef * ScoreScale) + (VisualStaff.ClefSpacing * ScoreScale);
             var spaceForKeySignature = (keySignature.DefaultFlats ? keySignature.NumberOfFlats() : keySignature.NumberOfSharps()) * VisualStaff.KeySignatureGlyphSpacing * ScoreScale;
             var spaceForTimeSignature = firstMeasure.IndexInScore == 0 ? VisualStaff.TimeSignatureSpacing * ScoreScale : 0;
@@ -137,7 +138,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
             foreach (var staffGroup in staffSystem.EnumerateStaffGroups())
             {
-                var instrumentScale = staffGroup.InstrumentRibbon.ReadLayout().Scale;
+                var instrumentScale = staffGroup.InstrumentRibbon.Scale;
 
                 VisualStaffGroup _staffGroup = new(
                     staffGroup,
@@ -153,7 +154,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                 yield return _staffGroup;
 
                 heightOnCanvas += unitToPixelConverter.UnitsToPixels(staffGroup.CalculateHeight(globalLineSpacing, scoreLayoutDictionary));
-                heightOnCanvas += unitToPixelConverter.UnitsToPixels(staffGroup.ReadLayout().DistanceToNext);
+                heightOnCanvas += unitToPixelConverter.UnitsToPixels(staffGroup.DistanceToNext);
             }
         }
 

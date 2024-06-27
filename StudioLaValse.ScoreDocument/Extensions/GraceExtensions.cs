@@ -12,19 +12,9 @@ namespace StudioLaValse.ScoreDocument.Extensions
         /// </summary>
         /// <param name="graceGroupReader"></param>
         /// <returns></returns>
-        public static IMeasureBlock Cast(this IGraceGroup graceGroupReader)
+        public static IMeasureBlock Imply(this IGraceGroup graceGroupReader)
         {
             return new MeasureBlockReaderFromGraceGroup(graceGroupReader);
-        }
-
-        internal static IChord Cast(this IGraceChord graceChordReader, MeasureBlockReaderFromGraceGroup measureBlockReaderFromGraceGroup)
-        {
-            return new ChordReaderFromGraceChord(graceChordReader, measureBlockReaderFromGraceGroup);
-        }
-
-        internal static INote Cast(this IGraceNote noteReader, ChordReaderFromGraceChord chordReaderFromGraceChord)
-        {
-            return new NoteReaderFromGraceChord(noteReader, chordReaderFromGraceChord);
         }
 
         /// <summary>
@@ -35,7 +25,7 @@ namespace StudioLaValse.ScoreDocument.Extensions
         public static Tuplet CreateTuplet(this IGraceGroup graceGroupReader)
         {
             var fallback = RythmicDuration.QuarterNote;
-            return new(graceGroupReader.ImplyRythmicDuration(fallback), graceGroupReader.ReadChords().Select(c => graceGroupReader.ReadLayout().ChordDuration).ToArray());
+            return new(graceGroupReader.ImplyRythmicDuration(fallback), graceGroupReader.ReadChords().Select(c => graceGroupReader.BlockDuration).ToArray());
         }
 
         /// <summary>
@@ -62,7 +52,7 @@ namespace StudioLaValse.ScoreDocument.Extensions
         /// <returns></returns>
         public static Duration ImplyDuration(this IGraceGroup graceGroupReader)
         {
-            var duration = graceGroupReader.ReadLayout().ChordDuration * graceGroupReader.ReadChords().Count();
+            var duration = graceGroupReader.BlockDuration * graceGroupReader.Length;
             return duration;
         }
     }

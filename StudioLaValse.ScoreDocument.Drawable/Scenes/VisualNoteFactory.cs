@@ -8,7 +8,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
     public class VisualNoteFactory : IVisualNoteFactory
     {
         private readonly ISelection<IUniqueScoreElement> selection;
-        private readonly IScoreDocumentLayout scoreDocumentLayout;
+        private readonly IScoreDocument scoreDocumentLayout;
         private readonly IUnitToPixelConverter unitToPixelConverter;
         private readonly IGlyphLibrary glyphLibrary;
 
@@ -19,7 +19,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// <param name="scoreDocumentLayout"></param>
         /// <param name="unitToPixelConverter"></param>
         /// <param name="glyphLibrary"></param>
-        public VisualNoteFactory(ISelection<IUniqueScoreElement> selection, IScoreDocumentLayout scoreDocumentLayout, IUnitToPixelConverter unitToPixelConverter, IGlyphLibrary glyphLibrary)
+        public VisualNoteFactory(ISelection<IUniqueScoreElement> selection, IScoreDocument scoreDocumentLayout, IUnitToPixelConverter unitToPixelConverter, IGlyphLibrary glyphLibrary)
         {
             this.selection = selection;
             this.scoreDocumentLayout = scoreDocumentLayout;
@@ -30,7 +30,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// <inheritdoc/>
         public BaseContentWrapper Build(INote note, double canvasLeft, double canvasTop, double lineSpacing, double scoreScale, double instrumentScale, bool offsetDots, Accidental? accidental)
         {
-            var noteScale = note.ReadLayout().Scale;
+            var noteScale = note.Scale;
             return new VisualNote(note, canvasLeft, canvasTop, lineSpacing, scoreScale, instrumentScale, noteScale, offsetDots, accidental, glyphLibrary, scoreDocumentLayout, selection, unitToPixelConverter);
         }
     }

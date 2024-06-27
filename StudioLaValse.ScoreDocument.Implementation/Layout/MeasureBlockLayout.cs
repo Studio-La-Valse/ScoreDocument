@@ -1,10 +1,8 @@
-﻿using StudioLaValse.ScoreDocument.Layout.Templates;
-using StudioLaValse.ScoreDocument.Models;
-using StudioLaValse.ScoreDocument.Models.Base;
+﻿using StudioLaValse.ScoreDocument.Models.Base;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Layout
 {
-    public abstract class MeasureBlockLayout
+    public abstract class MeasureBlockLayout : IMeasureBlockLayout
     {
         public abstract ValueTemplateProperty<double> _StemLength { get; }
         public abstract ValueTemplateProperty<double> _BeamAngle { get; }
@@ -12,12 +10,34 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
         public abstract ValueTemplateProperty<double> _BeamSpacing { get; }
         public abstract ValueTemplateProperty<StemDirection> _StemDirection { get; }
 
-        public double StemLength { get => _StemLength.Value; set => _StemLength.Value = value; }
-        public double BeamAngle { get => _BeamAngle.Value; set => _BeamAngle.Value = value; }
-        public StemDirection StemDirection { get => _StemDirection.Value; set => _StemDirection.Value = value; }
 
-        public double BeamThickness { get => _BeamThickness.Value; }
-        public double BeamSpacing { get => _BeamSpacing.Value; }
+        public double StemLength 
+        { 
+            get => _StemLength.Value; 
+            set => _StemLength.Value = value; 
+        }
+        public double BeamAngle 
+        { 
+            get => _BeamAngle.Value; 
+            set => _BeamAngle.Value = value; 
+        }
+        public StemDirection StemDirection 
+        { 
+            get => _StemDirection.Value; 
+            set => _StemDirection.Value = value; 
+        }
+        public double BeamThickness 
+        {
+            get => _BeamThickness.Value; 
+            set => _BeamThickness.Value = value; 
+        }
+        public double BeamSpacing 
+        { 
+            get => _BeamSpacing.Value; 
+            set => _BeamSpacing.Value = value; 
+        }
+
+
         public void Restore()
         {
             _StemLength.Reset();
@@ -39,9 +59,34 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
         {
             ApplyMemento(memento as MeasureBlockLayoutMembers);
         }
+
+        public void ResetStemDirection()
+        {
+            _StemDirection.Reset();
+        }
+
+        public void ResetStemLength()
+        {
+            _StemLength.Reset();
+        }
+
+        public void ResetBeamAngle()
+        {
+            _BeamAngle.Reset();
+        }
+
+        public void ResetBeamThickness()
+        {
+            _BeamThickness.Reset();
+        }
+
+        public void ResetBeamSpacing()
+        {
+            _BeamSpacing.Reset();
+        }
     }
 
-    public class AuthorMeasureBlockLayout : MeasureBlockLayout, IMeasureBlockLayout, ILayout<MeasureBlockLayoutMembers>
+    public class AuthorMeasureBlockLayout : MeasureBlockLayout, ILayout<MeasureBlockLayoutMembers>
     {
         public override ValueTemplateProperty<double> _StemLength { get; }
         public override ValueTemplateProperty<double> _BeamAngle { get; }

@@ -5,11 +5,11 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
 {
     internal sealed class VisualBeamBuilder : IVisualBeamBuilder
     {
-        private readonly IScoreDocumentLayout scoreDocumentLayout;
+        private readonly IScoreDocument scoreDocumentLayout;
         private readonly IUnitToPixelConverter unitToPixelConverter;
         private readonly IGlyphLibrary glyphLibrary;
 
-        public VisualBeamBuilder(IScoreDocumentLayout scoreDocumentLayout, IUnitToPixelConverter unitToPixelConverter, IGlyphLibrary glyphLibrary)
+        public VisualBeamBuilder(IScoreDocument scoreDocumentLayout, IUnitToPixelConverter unitToPixelConverter, IGlyphLibrary glyphLibrary)
         {
             this.scoreDocumentLayout = scoreDocumentLayout;
             this.unitToPixelConverter = unitToPixelConverter;
@@ -30,7 +30,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
                 return [];
             }
 
-            if(stems.Count() == 1 && !stems.First().Chord.ReadBeamTypes().Any())
+            if(stems.Count() == 1 && !GetLayout(stems.First()).ReadBeamTypes().Any())
             {
                 return [];
             }

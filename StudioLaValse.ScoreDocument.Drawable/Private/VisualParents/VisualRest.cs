@@ -5,7 +5,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
     internal sealed class VisualRest : BaseVisualNote
     {
         private readonly IGlyphLibrary glyphLibrary;
-        private readonly IScoreDocumentLayout scoreDocumentLayout;
+        private readonly IScoreDocument scoreDocumentLayout;
 
         public Glyph GlyphPrototype
         {
@@ -62,7 +62,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                           double scoreScale,
                           double instrumentScale,
                           IGlyphLibrary glyphLibrary,
-                          IScoreDocumentLayout scoreDocumentLayout,
+                          IScoreDocument scoreDocumentLayout,
                           ISelection<IUniqueScoreElement> selection,
                           IUnitToPixelConverter unitToPixelConverter) :
             base(note,

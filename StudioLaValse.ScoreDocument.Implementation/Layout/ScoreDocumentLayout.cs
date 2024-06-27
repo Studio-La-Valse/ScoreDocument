@@ -1,6 +1,6 @@
-﻿using StudioLaValse.ScoreDocument.Layout.Templates;
-using ColorARGB = StudioLaValse.ScoreDocument.Layout.Templates.ColorARGB;
+﻿using ColorARGB = StudioLaValse.ScoreDocument.Templates.ColorARGB;
 using StudioLaValse.ScoreDocument.Models.Base;
+using StudioLaValse.ScoreDocument.Templates;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Layout
 {

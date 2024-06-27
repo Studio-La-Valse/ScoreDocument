@@ -1,4 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Extensions;
+using StudioLaValse.ScoreDocument.Extensions.Private;
 using StudioLaValse.ScoreDocument.Layout;
 
 namespace StudioLaValse.ScoreDocument.Private
@@ -8,12 +9,11 @@ namespace StudioLaValse.ScoreDocument.Private
         private readonly IGraceGroup graceGroupReader;
 
 
-
         public Position Position => graceGroupReader.Target - graceGroupReader.ImplyDuration();
 
         public RythmicDuration RythmicDuration => graceGroupReader.ImplyRythmicDuration(RythmicDuration.QuarterNote);
 
-        public Tuplet Tuplet => new(RythmicDuration, graceGroupReader.ReadChords().Select(c => graceGroupReader.ReadLayout().ChordDuration).ToArray());
+        public Tuplet Tuplet => new(RythmicDuration, graceGroupReader.ReadChords().Select(c => graceGroupReader.BlockDuration).ToArray());
 
         public int Id => graceGroupReader.Id;
 
@@ -21,9 +21,37 @@ namespace StudioLaValse.ScoreDocument.Private
 
         public Position Target => graceGroupReader.Target;
 
-        public RythmicDuration ChordDuration => graceGroupReader.ReadLayout().ChordDuration;
+        public RythmicDuration ChordDuration => graceGroupReader.BlockDuration;
 
+        public StemDirection StemDirection
+        {
+            get => graceGroupReader.StemDirection;
+            set => graceGroupReader.StemDirection = value;
+        }
 
+        public double StemLength
+        {
+            get => graceGroupReader.StemLength;
+            set => graceGroupReader.StemLength = value;
+        }
+
+        public double BeamAngle
+        {
+            get => graceGroupReader.BeamAngle;
+            set => graceGroupReader.BeamAngle = value;
+        }
+
+        public double BeamThickness
+        {
+            get => graceGroupReader.BeamThickness;
+            set => graceGroupReader.BeamThickness = value;
+        }
+
+        public double BeamSpacing
+        {
+            get => graceGroupReader.BeamSpacing;
+            set => graceGroupReader.BeamSpacing = value;
+        }
 
         public MeasureBlockReaderFromGraceGroup(IGraceGroup graceGroupReader)
         {
@@ -37,12 +65,7 @@ namespace StudioLaValse.ScoreDocument.Private
 
         public IEnumerable<IChord> ReadChords()
         {
-            return graceGroupReader.ReadChords().Select(c => c.Cast(this));
-        }
-
-        public IMeasureBlockLayout ReadLayout()
-        {
-            return graceGroupReader.ReadLayout();
+            return graceGroupReader.ReadChords().Select(c => c.Imply(this));
         }
 
         public bool Equals(IUniqueScoreElement? other)
@@ -57,32 +80,42 @@ namespace StudioLaValse.ScoreDocument.Private
 
         public void AppendChord(RythmicDuration rythmicDuration, params Pitch[] pitches)
         {
-            throw new NotImplementedException();
+            graceGroupReader.AppendChord(pitches);
         }
 
         public void Clear()
         {
-            throw new NotImplementedException();
+            graceGroupReader.Clear();
         }
 
         public void Splice(int index)
         {
-            throw new NotImplementedException();
+            graceGroupReader.Splice(index);
         }
 
-        public void SetStemLength(double stemLength)
+        public void ResetStemDirection()
         {
-            throw new NotImplementedException();
+            graceGroupReader.ResetStemDirection();
         }
 
-        public void SetBeamAngle(double angle)
+        public void ResetStemLength()
         {
-            throw new NotImplementedException();
+            graceGroupReader.ResetStemLength();
         }
 
-        public void RemoveLayout()
+        public void ResetBeamAngle()
         {
-            throw new NotImplementedException();
+            graceGroupReader.ResetBeamAngle();
+        }
+
+        public void ResetBeamThickness()
+        {
+            graceGroupReader.ResetBeamThickness();
+        }
+
+        public void ResetBeamSpacing()
+        {
+            graceGroupReader.ResetBeamSpacing();
         }
     }
 }

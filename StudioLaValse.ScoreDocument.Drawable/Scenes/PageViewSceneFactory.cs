@@ -1,5 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
-using StudioLaValse.ScoreDocument.Extensions;
+﻿using StudioLaValse.ScoreDocument.Extensions;
+using StudioLaValse.ScoreDocument.GlyphLibrary;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
@@ -27,7 +27,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
             var pageCanvasLeft = 0d;
             foreach (var page in scoreDocument.ReadPages(Glyph.LineSpacingMm))
             {
-                var pageLayout = page.ReadLayout();
+                var pageLayout = page;
                 var visualPage = pageFactory.CreateContent(page, pageCanvasLeft, 0);
                 pages.Add(visualPage);
                 pageCanvasLeft += visualPage.BoundingBox().Width;

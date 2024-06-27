@@ -1,5 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
-using StudioLaValse.ScoreDocument.Extensions;
+﻿using StudioLaValse.ScoreDocument.Extensions;
+using StudioLaValse.ScoreDocument.GlyphLibrary;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
@@ -17,7 +17,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         private readonly KeySignature openingKeySignature;
         private readonly TimeSignature? timeSignature;
         private readonly IGlyphLibrary glyphLibrary;
-        private readonly IScoreDocumentLayout scoreDocumentLayout;
+        private readonly IScoreDocument scoreDocumentLayout;
         private readonly IUnitToPixelConverter unitToPixelConverter;
 
         public static double SpaceUntilClef { get; } = 1;
@@ -40,7 +40,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                            KeySignature openingKeySignature,
                            TimeSignature? timeSignature,
                            IGlyphLibrary glyphLibrary,
-                           IScoreDocumentLayout scoreDocumentLayout,
+                           IScoreDocument scoreDocumentLayout,
                            IUnitToPixelConverter unitToPixelConverter)
         {
             this.staff = staff;

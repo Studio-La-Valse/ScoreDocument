@@ -48,7 +48,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                     glyph,
                     HorizontalTextOrigin.Center,
                     VerticalTextOrigin.Center,
-                    scoreDocumentLayout.PageForegroundColor.FromPrimitive());
+                    scoreDocumentLayout.PageForegroundColor.Value.FromPrimitive());
             }
         }
 

@@ -8,6 +8,6 @@
         /// <summary>
         /// The distance to the next staff.
         /// </summary>
-        double DistanceToNext { get; }
+        ReadonlyTemplateProperty<double> DistanceToNext { get; }
     }
 }

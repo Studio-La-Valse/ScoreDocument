@@ -11,16 +11,9 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
         public abstract ValueTemplateProperty<double> _XOffset { get; }
         public abstract ValueTemplateProperty<double> _SpaceRight { get; }
 
-        public double XOffset
-        {
-            get => _XOffset.Value;
-            set => _XOffset.Value = value;
-        }
-        public double SpaceRight
-        {
-            get => _SpaceRight.Value;
-            set => _SpaceRight.Value = value;
-        }
+        public TemplateProperty<double> XOffset => _XOffset;
+        public TemplateProperty<double> SpaceRight => _SpaceRight;
+
 
         protected ChordLayout(Dictionary<PowerOfTwo, BeamType> beamTypes)
         {

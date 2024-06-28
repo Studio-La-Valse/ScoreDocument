@@ -1,5 +1,49 @@
-﻿namespace StudioLaValse.ScoreDocument.Private
+﻿using StudioLaValse.ScoreDocument.Layout;
+
+namespace StudioLaValse.ScoreDocument.Private
 {
+    internal class TemplatePropertyFromReadonlyTemplateProperty<T> : TemplateProperty<T>
+    {
+        private readonly ReadonlyTemplateProperty<T> readonlyTemplateProperty;
+
+        public override T Value 
+        {
+            get => readonlyTemplateProperty.Value;
+            set => throw new NotImplementedException(); 
+        }
+
+        public TemplatePropertyFromReadonlyTemplateProperty(ReadonlyTemplateProperty<T> readonlyTemplateProperty)
+        {
+            this.readonlyTemplateProperty = readonlyTemplateProperty;
+        }
+
+        public override void Reset()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    internal class TemplatePropertyFromValue<T> : TemplateProperty<T>
+    {
+        private readonly T value;
+
+        public override T Value
+        {
+            get => value;
+            set => throw new NotImplementedException();
+        }
+
+        public TemplatePropertyFromValue(T value)
+        {
+            this.value = value;
+        }
+
+        public override void Reset()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     internal class ChordReaderFromGraceChord : IChord
     {
         private readonly IGraceChord graceChordReader;
@@ -22,16 +66,8 @@
 
         public int Id => graceChordReader.Id;
 
-        public double XOffset
-        {
-            get => 0;
-            set => throw new NotImplementedException();
-        }
-        public double SpaceRight
-        {
-            get => graceChordReader.SpaceRight;
-            set => throw new NotImplementedException();
-        }
+        public TemplateProperty<double> XOffset => new TemplatePropertyFromValue<double>(0);
+        public TemplateProperty<double> SpaceRight => new TemplatePropertyFromReadonlyTemplateProperty<double>(graceChordReader.SpaceRight);
 
 
         public ChordReaderFromGraceChord(IGraceChord graceChordReader, MeasureBlockReaderFromGraceGroup measureBlockReaderFromGraceGroup)
@@ -93,16 +129,6 @@
             }
 
             return other.Id == Id;
-        }
-
-        public void ResetXOffset()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ResetSpaceRight()
-        {
-            throw new NotImplementedException();
         }
 
         public void Restore()

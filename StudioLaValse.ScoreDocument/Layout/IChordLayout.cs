@@ -10,21 +10,11 @@ namespace StudioLaValse.ScoreDocument.Layout
         /// <summary>
         /// The global offset of this chord.
         /// </summary>
-        double XOffset { get; set; }
-
-        /// <summary>
-        /// Reset the x offset to its unset value.
-        /// </summary>
-        void ResetXOffset();
+        TemplateProperty<double> XOffset { get; }
 
         /// <summary>
         /// The available space to the right of the chord.
         /// </summary>
-        double SpaceRight { get; set; }
-
-        /// <summary>
-        /// Reset the space right to its unset value.
-        /// </summary>
-        void ResetSpaceRight();
+        TemplateProperty<double> SpaceRight { get;  }
     }
 }

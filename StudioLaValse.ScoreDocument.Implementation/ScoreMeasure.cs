@@ -94,8 +94,6 @@
                 IndexInScore = IndexInScore,
                 KeySignature = AuthorLayout._KeySignature.Field?.Convert(),
                 PaddingBottom = AuthorLayout._PaddingBottom.Field,
-                PaddingLeft = AuthorLayout._PaddingLeft.Field,
-                PaddingRight = AuthorLayout._PaddingRight.Field,
             };
         }
         public void ApplyMemento(ScoreMeasureModel memento)

@@ -10,56 +10,33 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
         public abstract ValueTemplateProperty<double> _Scale { get; }
         public abstract ValueTemplateProperty<double> _StemLength { get; }
         public abstract ValueTemplateProperty<double> _BeamAngle { get; }
-        public abstract ValueTemplateProperty<double> _BeamThickness { get; }
-        public abstract ValueTemplateProperty<double> _BeamSpacing { get; }
         public abstract ValueTemplateProperty<StemDirection> _StemDirection { get; }
 
+        public TemplateProperty<bool> OccupySpace => _OccupySpace;
 
-        public bool OccupySpace
-        {
-            get => _OccupySpace.Value;
-            set => _OccupySpace.Value = value;
-        }
-        public double ChordSpacing
-        {
-            get => _ChordSpacing.Value;
-            set => _ChordSpacing.Value = value;
-        }
-        public RythmicDuration ChordDuration
-        {
-            get => _ChordDuration.Value;
-            set => _ChordDuration.Value = value;
-        }
-        public double Scale
-        {
-            get => _Scale.Value;
-            set => _Scale.Value = value;
-        }
-        public double StemLength
-        {
-            get => _StemLength.Value;
-            set => _StemLength.Value = value;
-        }
-        public double BeamAngle
-        {
-            get => _BeamAngle.Value;
-            set => _BeamAngle.Value = value;
-        }
-        public StemDirection StemDirection
-        {
-            get => _StemDirection.Value;
-            set => _StemDirection.Value = value;
-        }
+        public TemplateProperty<double> ChordSpacing => _ChordSpacing;
 
-        public double BeamThickness
+        public TemplateProperty<RythmicDuration> ChordDuration => _ChordDuration;
+
+        public TemplateProperty<double> Scale => _Scale;
+
+        public TemplateProperty<StemDirection> StemDirection => _StemDirection;
+
+        public TemplateProperty<double> StemLength => _StemLength;
+
+        public TemplateProperty<double> BeamAngle => _BeamAngle;
+
+        public TemplateProperty<RythmicDuration> BlockDuration => _ChordDuration;
+
+        public ReadonlyTemplateProperty<double> BeamThickness { get; }
+
+        public ReadonlyTemplateProperty<double> BeamSpacing { get; }
+
+
+        protected GraceGroupLayout(GraceGroupStyleTemplate graceGroupStyleTemplate)
         {
-            get => _BeamThickness.Value;
-            set => _BeamThickness.Value = value;
-        }
-        public double BeamSpacing
-        {
-            get => _BeamSpacing.Value; 
-            set => _BeamSpacing.Value = value;
+            BeamThickness = new ReadonlyTemplatePropertyFromFunc<double>(() => graceGroupStyleTemplate.BeamThickness);
+            BeamSpacing = new ReadonlyTemplatePropertyFromFunc<double>(() => graceGroupStyleTemplate.BeamSpacing);
         }
 
 
@@ -83,50 +60,6 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
             ApplyMemento(memento as GraceGroupLayoutMembers);
         }
 
-        public void ResetBeamAngle()
-        {
-            _BeamAngle.Reset();
-        }
-
-        public void ResetBeamSpacing()
-        {
-            _BeamSpacing.Reset();
-        }
-
-        public void ResetBeamThickness()
-        {
-            _BeamThickness.Reset();
-        }
-
-        public void ResetChordDuration()
-        {
-            _ChordDuration.Reset();
-        }
-
-        public void ResetChordSpacing()
-        {
-            _ChordSpacing.Reset();
-        }
-
-        public void ResetOccupySpace()
-        {
-            _OccupySpace.Reset();   
-        }
-
-        public void ResetScale()
-        {
-            _Scale.Reset();
-        }
-
-        public void ResetStemDirection()
-        {
-            _StemDirection.Reset();
-        }
-
-        public void ResetStemLength()
-        {
-            _StemLength.Reset();
-        }
 
         public void Restore()
         {
@@ -136,8 +69,6 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
             _Scale.Reset();
             _StemLength.Reset();
             _BeamAngle.Reset();
-            _BeamThickness.Reset();
-            _BeamSpacing.Reset();
             _StemDirection.Reset();
         }
     }
@@ -150,11 +81,9 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
         public override ValueTemplateProperty<double> _Scale { get; }
         public override ValueTemplateProperty<double> _StemLength { get; }
         public override ValueTemplateProperty<double> _BeamAngle { get; }
-        public override ValueTemplateProperty<double> _BeamThickness { get; }
-        public override ValueTemplateProperty<double> _BeamSpacing { get; }
         public override ValueTemplateProperty<StemDirection> _StemDirection { get; }
 
-        public AuthorGraceGroupLayout(GraceGroupStyleTemplate graceGroupStyleTemplate, int voice)
+        public AuthorGraceGroupLayout(GraceGroupStyleTemplate graceGroupStyleTemplate, int voice) : base(graceGroupStyleTemplate)
         {
             _OccupySpace = new ValueTemplateProperty<bool>(() => graceGroupStyleTemplate.OccupySpace);
             _ChordSpacing = new ValueTemplateProperty<double>(() => graceGroupStyleTemplate.ChordSpaceRight);
@@ -162,9 +91,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
             _Scale = new ValueTemplateProperty<double>(() => graceGroupStyleTemplate.Scale);
             _StemLength = new ValueTemplateProperty<double>(() => graceGroupStyleTemplate.StemLength);
             _BeamAngle = new ValueTemplateProperty<double>(() => graceGroupStyleTemplate.BeamAngle);
-            _BeamThickness = new ValueTemplateProperty<double>(() => graceGroupStyleTemplate.BeamThickness);
-            _BeamSpacing = new ValueTemplateProperty<double>(() => graceGroupStyleTemplate.BeamSpacing);
-            _StemDirection = new ValueTemplateProperty<StemDirection>(() => voice % 2 == 0 ? StemDirection.Up : StemDirection.Down);
+            _StemDirection = new ValueTemplateProperty<StemDirection>(() => voice % 2 == 0 ? ScoreDocument.Layout.StemDirection.Up : ScoreDocument.Layout.StemDirection.Down);
         }
 
         public GraceGroupLayoutMembers GetMemento()
@@ -192,12 +119,10 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
         public override ValueTemplateProperty<double> _Scale { get; }
         public override ValueTemplateProperty<double> _StemLength { get; }
         public override ValueTemplateProperty<double> _BeamAngle { get; }
-        public override ValueTemplateProperty<double> _BeamThickness { get; }
-        public override ValueTemplateProperty<double> _BeamSpacing { get; }
         public override ValueTemplateProperty<StemDirection> _StemDirection { get; }
 
 
-        public UserGraceGroupLayout(AuthorGraceGroupLayout authorGraceGroupLayout, Guid guid)
+        public UserGraceGroupLayout(AuthorGraceGroupLayout authorGraceGroupLayout, Guid guid, GraceGroupStyleTemplate graceGroupStyleTemplate) : base(graceGroupStyleTemplate)
         {
             this.guid = guid;
 
@@ -207,8 +132,6 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
             _Scale = new ValueTemplateProperty<double>(() => authorGraceGroupLayout.Scale);
             _StemLength = new ValueTemplateProperty<double>(() => authorGraceGroupLayout.StemLength);
             _BeamAngle = new ValueTemplateProperty<double>(() => authorGraceGroupLayout.BeamAngle);
-            _BeamThickness = new ValueTemplateProperty<double>(() => authorGraceGroupLayout.BeamThickness);
-            _BeamSpacing = new ValueTemplateProperty<double>(() => authorGraceGroupLayout.BeamSpacing);
             _StemDirection = new ValueTemplateProperty<StemDirection>(() => authorGraceGroupLayout.StemDirection);
         }
 

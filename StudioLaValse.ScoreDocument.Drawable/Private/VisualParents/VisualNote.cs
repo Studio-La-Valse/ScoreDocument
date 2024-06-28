@@ -24,7 +24,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                     _ => glyphLibrary.NoteHeadBlack(Scale)
                 };
 
-                return new DrawableScoreGlyph(XPosition, canvasTop, glyph, HorizontalTextOrigin.Center, VerticalTextOrigin.Center, scoreDocumentLayout.PageForegroundColor.FromPrimitive());
+                return new DrawableScoreGlyph(XPosition, canvasTop, glyph, HorizontalTextOrigin.Center, VerticalTextOrigin.Center, scoreDocumentLayout.PageForegroundColor.Value.FromPrimitive());
             }
         }
         public DrawableScoreGlyph? AccidentalGlyph
@@ -50,7 +50,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                         glyph,
                         HorizontalTextOrigin.Center,
                         VerticalTextOrigin.Center,
-                        scoreDocumentLayout.PageForegroundColor.FromPrimitive());
+                        scoreDocumentLayout.PageForegroundColor.Value.FromPrimitive());
                 }
                 return null;
             }

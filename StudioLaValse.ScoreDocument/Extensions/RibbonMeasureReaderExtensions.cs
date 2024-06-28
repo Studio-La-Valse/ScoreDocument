@@ -129,7 +129,7 @@
         /// <returns></returns>
         public static Clef OpeningClefAtOrDefault(this IInstrumentMeasure ribbonMeasure, int staffIndex)
         {
-            foreach (var clefChange in ribbonMeasure.ClefChanges.Where(c => c.Position.Decimal == 0))
+            foreach (var clefChange in ribbonMeasure.EnumerateClefChanges().Where(c => c.Position.Decimal == 0))
             {
                 if (clefChange.StaffIndex == staffIndex)
                 {
@@ -140,7 +140,7 @@
             var previousMeasure = ribbonMeasure;
             while (previousMeasure.TryReadPrevious(out previousMeasure))
             {
-                foreach (var clefChange in previousMeasure.ClefChanges.Reverse())
+                foreach (var clefChange in previousMeasure.EnumerateClefChanges().Reverse())
                 {
                     if (clefChange.StaffIndex == staffIndex)
                     {
@@ -165,7 +165,7 @@
         /// <returns></returns>
         public static Clef GetClef(this IInstrumentMeasure ribbonMeasure, int staffIndex, Position position)
         {
-            var lastClefChangeInMeasure = ribbonMeasure.ClefChanges
+            var lastClefChangeInMeasure = ribbonMeasure.EnumerateClefChanges()
                 .Where(c => c.StaffIndex == staffIndex)
                 .Where(c => c.Position <= position)
                 .OrderByDescending(c => c.Position.Decimal)
@@ -215,7 +215,7 @@
             }
 
             var keySignature = ribbonMeasure.KeySignature;
-            var systemSays = keySignature.GetAccidentalForPitch(Pitch.Step);
+            var systemSays = keySignature.Value.GetAccidentalForPitch(Pitch.Step);
             return systemSays;
         }
     }

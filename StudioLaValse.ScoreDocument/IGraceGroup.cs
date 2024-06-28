@@ -13,11 +13,6 @@ namespace StudioLaValse.ScoreDocument
         Position Target { get; }
 
         /// <summary>
-        /// Get or set the block duration. This does not affect the druation of the containing measure whatsoever.
-        /// </summary>
-        RythmicDuration BlockDuration { get; set; }
-
-        /// <summary>
         /// The number of grace chords in the group.
         /// </summary>
         int Length { get; }

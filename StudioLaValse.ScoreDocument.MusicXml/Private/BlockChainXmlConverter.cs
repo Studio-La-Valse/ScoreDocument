@@ -167,7 +167,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                     var staffIndex = note.StaffIndex() ?? 0;
                     addedChord.Add(note.ParsePitch());
                     var addedNote = addedChord.ReadNotes().Last();
-                    addedNote.StaffIndex = staffIndex;
+                    addedNote.StaffIndex.Value = staffIndex;
                 }
                 FillGrace(chord.Grace, addedChord);
             }
@@ -191,7 +191,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                     var staffIndex = note.StaffIndex() ?? 0;
                     addedGraceChord.Add(note.ParsePitch());
                     var addedNote = addedGraceChord.ReadNotes().Last();
-                    addedNote.StaffIndex = staffIndex;
+                    addedNote.StaffIndex.Value = staffIndex;
                 }
                 
                 FillGrace(graceChord.Grace, addedGraceChord);

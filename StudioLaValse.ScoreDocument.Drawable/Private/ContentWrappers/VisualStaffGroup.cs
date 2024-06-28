@@ -31,7 +31,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
             {
                 var braceLeft = Brace?.TopLeftX ?? canvasLeft;
                 var text = FirstMeasure.MeasureIndex == 0 ? ContextLayout.DisplayName : ContextLayout.AbbreviatedName;
-                var id = new DrawableText(braceLeft - 2, canvasTop + (Height / 2), text, Glyph.Em /2 * scoreScale, scoreLayoutDictionary.PageForegroundColor.FromPrimitive(), HorizontalTextOrigin.Right, VerticalTextOrigin.Center);
+                var id = new DrawableText(braceLeft - 2, canvasTop + (Height / 2), text, Glyph.Em /2 * scoreScale, scoreLayoutDictionary.PageForegroundColor.Value.FromPrimitive(), HorizontalTextOrigin.Right, VerticalTextOrigin.Center);
 
                 return id;
             }
@@ -54,7 +54,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                 var scale = Height / knownHeightOfTheBrace;
                 var glyph = glyphLibrary.Brace(scale);
 
-                return new DrawableScoreGlyph(canvasLeft, canvasTop + Height, glyph, HorizontalTextOrigin.Right, VerticalTextOrigin.Center, scoreLayoutDictionary.PageForegroundColor.FromPrimitive());
+                return new DrawableScoreGlyph(canvasLeft, canvasTop + Height, glyph, HorizontalTextOrigin.Right, VerticalTextOrigin.Center, scoreLayoutDictionary.PageForegroundColor.Value.FromPrimitive());
             }
         }
         public IInstrumentMeasure FirstMeasure =>
@@ -125,7 +125,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         {
             if (ContextLayout.Collapsed)
             {
-                yield return new DrawableLineHorizontal(canvasTop, canvasLeft, length, 0.1, scoreLayoutDictionary.PageForegroundColor.FromPrimitive());
+                yield return new DrawableLineHorizontal(canvasTop, canvasLeft, length, 0.1, scoreLayoutDictionary.PageForegroundColor.Value.FromPrimitive());
             }
             else
             {

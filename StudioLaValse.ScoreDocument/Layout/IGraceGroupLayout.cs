@@ -13,41 +13,26 @@ namespace StudioLaValse.ScoreDocument.Layout
         /// If true, non grace elements will be spaced such that this grace group fits in between.
         /// If false, the positions of regular elements are note altered.
         /// </summary>
-        bool OccupySpace { get; set; }
-
-        /// <summary>
-        /// Reset the occupy space property to its unset value.
-        /// </summary>
-        void ResetOccupySpace();
+        TemplateProperty<bool> OccupySpace { get; }
 
         /// <summary>
         /// The space between chords.
         /// </summary>
-        double ChordSpacing { get; set; }
-
-        /// <summary>
-        /// Reset the chord spacing to its default unset value.
-        /// </summary>
-        void ResetChordSpacing();
+        TemplateProperty<double> ChordSpacing { get;  }
 
         /// <summary>
         /// The duration of the chords.
         /// </summary>
-        RythmicDuration ChordDuration { get; set; }
-
-        /// <summary>
-        /// Reset the chord duration to its default unset value.
-        /// </summary>
-        void ResetChordDuration();
+        TemplateProperty<RythmicDuration> ChordDuration { get; }
 
         /// <summary>
         /// The scale of this grace group.
         /// </summary>
-        double Scale { get; set; }
+        TemplateProperty<double> Scale { get; }
 
         /// <summary>
-        /// Reset the scale to its default unset value.
+        /// Get or set the block duration. This does not affect the druation of the containing measure whatsoever.
         /// </summary>
-        void ResetScale();
+        TemplateProperty<RythmicDuration> BlockDuration { get; }
     }
 }

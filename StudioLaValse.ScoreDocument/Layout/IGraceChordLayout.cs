@@ -8,6 +8,6 @@
         /// <summary>
         /// The available space to the right of the chord.
         /// </summary>
-        double SpaceRight { get; }
+        ReadonlyTemplateProperty<double> SpaceRight { get; }
     }
 }

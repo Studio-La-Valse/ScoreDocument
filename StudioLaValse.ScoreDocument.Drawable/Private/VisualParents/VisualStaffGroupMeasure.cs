@@ -50,7 +50,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             }
         }
         public BaseDrawableElement LineRight =>
-            new DrawableLineVertical(canvasLeft + width, canvasTop, Height, MeasureDividerLineThickness, scoreLayoutDictionary.PageForegroundColor.FromPrimitive());
+            new DrawableLineVertical(canvasLeft + width, canvasTop, Height, MeasureDividerLineThickness, scoreLayoutDictionary.PageForegroundColor.Value.FromPrimitive());
         public double DrawableWidth =>
             width - paddingLeft - paddingRight;
 
@@ -139,8 +139,9 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             {
                 var staffLayout = staff;
                 var instrumentMeasureLayout = source;
+                var clefChanges = instrumentMeasureLayout.EnumerateClefChanges().ToArray();
                 var measureClef = source.OpeningClefAtOrDefault(staff.IndexInStaffGroup);
-                var lastClefChange = instrumentMeasureLayout.ClefChanges.LastOrDefault(c => c.StaffIndex == staff.IndexInStaffGroup)?.Clef ?? measureClef;
+                var lastClefChange = clefChanges.LastOrDefault(c => c.StaffIndex == staff.IndexInStaffGroup)?.Clef ?? measureClef;
 
                 _ = source.TryReadNext(out var nextMeasure);
                 var nextClefLayout = nextMeasure?.OpeningClefAtOrDefault(staff.IndexInStaffGroup);
@@ -150,7 +151,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                         null :
                         nextClefLayout;
 
-                var clefChanges = instrumentMeasureLayout.ClefChanges
+                clefChanges = clefChanges
                     .Where(c => c.StaffIndex == staff.IndexInStaffGroup)
                     .ToArray();
 

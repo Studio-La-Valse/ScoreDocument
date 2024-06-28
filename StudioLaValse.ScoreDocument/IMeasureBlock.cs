@@ -1,4 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Layout;
+using System.Diagnostics.CodeAnalysis;
 
 namespace StudioLaValse.ScoreDocument
 {
@@ -13,5 +14,19 @@ namespace StudioLaValse.ScoreDocument
         /// <param name="rythmicDuration"></param>
         /// <param name="pitches"></param>
         void AppendChord(RythmicDuration rythmicDuration, params Pitch[] pitches);
+
+        /// <summary>
+        /// Try to read the next block in the <see cref="IMeasureBlockChain"/>.
+        /// </summary>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        bool TryReadNext([NotNullWhen(true)] out IMeasureBlock? right);
+
+        /// <summary>
+        /// Try to read the previous block in the <see cref="IMeasureBlockChain"/>.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <returns></returns>
+        bool TryReadPrevious([NotNullWhen(true)] out IMeasureBlock? left);
     }
 }

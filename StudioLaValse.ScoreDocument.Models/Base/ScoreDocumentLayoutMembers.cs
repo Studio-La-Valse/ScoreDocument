@@ -8,36 +8,11 @@ namespace StudioLaValse.ScoreDocument.Models.Base;
 
 public class ScoreDocumentLayoutMembers
 {   
-    [Range(0, double.MaxValue)]
-    public required double? FirstSystemIndent { get; set; }
 
-    [Range(Constants.GreaterThanZero, double.MaxValue)]
-    public required double? HorizontalStaffLineThickness { get; set; }
-
-    [Range(Constants.GreaterThanZero, double.MaxValue)]
-    public required double? VerticalStaffLineThickness { get; set; }
-
-    [Range(Constants.GreaterThanZero, double.MaxValue)]
-    public required double? Scale { get; set; }
-
-    [Range(Constants.GreaterThanZero, double.MaxValue)]
-    public required double? StemLineThickness { get; set; }
-
-    [Column(TypeName = "jsonb")]
-    public required ColorARGBClass? PageColor { get; set; }
-
-    [Column(TypeName = "jsonb")]
-    public required ColorARGBClass? ForegroundColor { get; set; }
 }
 
 public class ScoreMeasureLayoutMembers
 {   
-    [Range(0, double.MaxValue)]
-    public required double? PaddingRight { get; set; }
-
-    [Range(0, double.MaxValue)]
-    public required double? PaddingLeft { get; set; }
-
     [Range(0, double.MaxValue)]
     public required double? PaddingBottom { get; set; }
 

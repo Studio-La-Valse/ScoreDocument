@@ -24,7 +24,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         public double Height =>
             unitToPixelConverter.UnitsToPixels(staffSystem.CalculateHeight(globalLineSpacing, scoreLayoutDictionary));
         public DrawableLineVertical OpeningLine =>
-            new(canvasLeft, canvasTop, Height, VerticalLineThickness, scoreLayoutDictionary.PageForegroundColor.FromPrimitive());
+            new(canvasLeft, canvasTop, Height, VerticalLineThickness, scoreLayoutDictionary.PageForegroundColor.Value.FromPrimitive());
         public DrawableLineVertical ClosingLine
         {
             get
@@ -32,7 +32,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                 var isLast = staffSystem.EnumerateMeasures().Last().IsLastInScore;
                 var x = isLast ? canvasLeft + length - 1 : canvasLeft + length;
 
-                return new DrawableLineVertical(x, canvasTop, Height, VerticalLineThickness, color: scoreLayoutDictionary.PageForegroundColor.FromPrimitive());
+                return new DrawableLineVertical(x, canvasTop, Height, VerticalLineThickness, color: scoreLayoutDictionary.PageForegroundColor.Value.FromPrimitive());
             }
         }
         public DrawableLineVertical? EndOfPiece
@@ -47,7 +47,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
                 var thickness = isLast ? 0.5 : 0.1;
 
-                return new DrawableLineVertical(canvasLeft + length, canvasTop - (HorizontalLineThickness / 2), Height + HorizontalLineThickness, thickness: thickness, color: scoreLayoutDictionary.PageForegroundColor.FromPrimitive());
+                return new DrawableLineVertical(canvasLeft + length, canvasTop - (HorizontalLineThickness / 2), Height + HorizontalLineThickness, thickness: thickness, color: scoreLayoutDictionary.PageForegroundColor.Value.FromPrimitive());
             }
         }
         public DrawableText? MeasureCounter
@@ -66,7 +66,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
                 var index = staffSystem.EnumerateMeasures().First().IndexInScore + 1;
 
-                return new DrawableText(canvasLeft, canvasTop - 1, index.ToString(), 2, verticalAlignment: VerticalTextOrigin.Bottom, color: scoreLayoutDictionary.PageForegroundColor.FromPrimitive());
+                return new DrawableText(canvasLeft, canvasTop - 1, index.ToString(), 2, verticalAlignment: VerticalTextOrigin.Bottom, color: scoreLayoutDictionary.PageForegroundColor.Value.FromPrimitive());
             }
         }
         public double ScoreScale =>
@@ -105,7 +105,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             }
 
             var firstMeasure = staffSystem.EnumerateMeasures().First();
-            var keySignature = firstMeasure.KeySignature;
+            var keySignature = firstMeasure.KeySignature.Value;
             var spaceForClef = (VisualStaff.SpaceUntilClef * ScoreScale) + (VisualStaff.ClefSpacing * ScoreScale);
             var spaceForKeySignature = (keySignature.DefaultFlats ? keySignature.NumberOfFlats() : keySignature.NumberOfSharps()) * VisualStaff.KeySignatureGlyphSpacing * ScoreScale;
             var spaceForTimeSignature = firstMeasure.IndexInScore == 0 ? VisualStaff.TimeSignatureSpacing * ScoreScale : 0;

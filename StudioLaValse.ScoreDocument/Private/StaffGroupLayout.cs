@@ -4,12 +4,12 @@ namespace StudioLaValse.ScoreDocument.Private
 {
     internal class StaffGroupLayout : IStaffGroupLayout
     {
-        public bool Collapsed { get; }
-        public int NumberOfStaves { get; }
-        public double DistanceToNext { get; }
+        public ReadonlyTemplateProperty<bool> Collapsed { get; }
+        public ReadonlyTemplateProperty<int> NumberOfStaves { get; }
+        public ReadonlyTemplateProperty<double> DistanceToNext { get; }
 
 
-        public StaffGroupLayout(int numberOfStaves, double distanceToNext, bool collapsed)
+        public StaffGroupLayout(ReadonlyTemplateProperty<int> numberOfStaves, ReadonlyTemplateProperty<double> distanceToNext, ReadonlyTemplateProperty<bool> collapsed)
         {
             NumberOfStaves = numberOfStaves;
             DistanceToNext = distanceToNext;

@@ -81,7 +81,7 @@ namespace StudioLaValse.ScoreDocument.Implementation
             ThrowIfWillCauseOverflow(rythmicDuration);
 
             var layout = new AuthorMeasureBlockLayout(scoreDocumentStyle.MeasureBlockStyleTemplate, Voice);
-            var secondaryLayout = new UserMeasureBlockLayout(secondaryLayoutGuid, layout);
+            var secondaryLayout = new UserMeasureBlockLayout(secondaryLayoutGuid, layout, scoreDocumentStyle.MeasureBlockStyleTemplate);
             var newBlock = new MeasureBlock(rythmicDuration, this, scoreDocumentStyle, layout, secondaryLayout, keyGenerator, blockGuid);
             blocks.Add(newBlock);
             return newBlock;

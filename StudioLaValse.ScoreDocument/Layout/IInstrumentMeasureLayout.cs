@@ -6,15 +6,9 @@
     public interface IInstrumentMeasureLayout : ILayout
     {
         /// <summary>
-        /// The key signature.
-        /// Provided by the host score measure.
-        /// </summary>
-        KeySignature KeySignature { get; }
-
-        /// <summary>
         /// Enumerate the clef changes in the instrument measure.
         /// </summary>
-        IEnumerable<ClefChange> ClefChanges { get; }
+        IEnumerable<ClefChange> EnumerateClefChanges();
 
         /// <summary>
         /// Add a clefchange to this instrument measure.
@@ -52,15 +46,21 @@
         void RequestPaddingBottom(int staffIndex, double? paddingBottom = null);
 
         /// <summary>
+        /// The key signature.
+        /// Provided by the host score measure.
+        /// </summary>
+        ReadonlyTemplateProperty<KeySignature> KeySignature { get; }
+
+        /// <summary>
         /// The distance to the next staff gruop.
         /// </summary>
-        double? PaddingBottom { get; set; }
+        TemplateProperty<double?> PaddingBottom { get; }
 
         /// <summary>
         /// Request the staff group containing this measure to be collapsed. 
         /// To reset this request, set this value to null.
         /// </summary>
-        bool? Collapsed { get; set; }
+        TemplateProperty<bool?> Collapsed { get; }
 
         /// <summary>
         /// Request the staff group containing to display the specified amount of saves.
@@ -69,6 +69,6 @@
         /// If no requests have been made in the same staff group, the default amount of staves will be displayed.
         /// Specify null to restore the requested number of staves.
         /// </summary>
-        int? NumberOfStaves { get; set; }
+        TemplateProperty<int?> NumberOfStaves { get; }
     }
 }

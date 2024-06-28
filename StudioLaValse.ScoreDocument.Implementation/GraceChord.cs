@@ -23,7 +23,7 @@ namespace StudioLaValse.ScoreDocument.Implementation
             {
                 var groupTarget = graceGroup.Target;
                 var nRemaining = graceGroup.Length - graceGroup.IndexOfOrThrow(this);
-                var timeRemainingInGroup = graceGroup.UserLayout.ChordDuration * nRemaining;
+                var timeRemainingInGroup = graceGroup.UserLayout.ChordDuration.Value * nRemaining;
                 var thisPosition = groupTarget - timeRemainingInGroup;
                 return thisPosition;
             }
@@ -69,10 +69,11 @@ namespace StudioLaValse.ScoreDocument.Implementation
                 Append(graceNote);
             }
         }
-        public void Grace(params Pitch[] pitches)
+        public void Grace(RythmicDuration rythmicDuration, params Pitch[] pitches)
         {
             var authorLayout = new AuthorGraceGroupLayout(scoreDocumentStyleTemplate.GraceGroupStyleTemplate, Voice);
-            var userLayout = new UserGraceGroupLayout(authorLayout, Guid.NewGuid());
+            authorLayout.ChordDuration.Value = rythmicDuration;
+            var userLayout = new UserGraceGroupLayout(authorLayout, Guid.NewGuid(), scoreDocumentStyleTemplate.GraceGroupStyleTemplate);
             var graceGroup = new GraceGroup(this, HostMeasure, scoreDocumentStyleTemplate, authorLayout, userLayout, keyGenerator, Guid.NewGuid());
             graceGroup.Append(pitches);
             ApplyGrace(graceGroup);
@@ -139,7 +140,7 @@ namespace StudioLaValse.ScoreDocument.Implementation
             if (memento.GraceGroup is not null)
             {
                 var _authorLayout = new AuthorGraceGroupLayout(scoreDocumentStyleTemplate.GraceGroupStyleTemplate, Voice);
-                var _userLayout = new UserGraceGroupLayout(_authorLayout, memento.Layout?.Id ?? Guid.NewGuid());
+                var _userLayout = new UserGraceGroupLayout(_authorLayout, memento.Layout?.Id ?? Guid.NewGuid(), scoreDocumentStyleTemplate.GraceGroupStyleTemplate);
                 var graceGroup = new GraceGroup(this, HostMeasure, scoreDocumentStyleTemplate, _authorLayout, _userLayout, keyGenerator, memento.GraceGroup.Id);
                 GraceGroup = graceGroup; ;
                 graceGroup.ApplyMemento(memento.GraceGroup);

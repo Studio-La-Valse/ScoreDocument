@@ -17,11 +17,11 @@ namespace StudioLaValse.ScoreDocument.Private
         public int IndexInSystem =>
             InstrumentRibbon.IndexInScore;
 
-        public bool Collapsed => ReadLayout().Collapsed;
+        public ReadonlyTemplateProperty<bool> Collapsed => ReadLayout().Collapsed;
 
-        public double DistanceToNext => ReadLayout().DistanceToNext;
+        public ReadonlyTemplateProperty<double> DistanceToNext => ReadLayout().DistanceToNext;
 
-        public int NumberOfStaves => ReadLayout().NumberOfStaves;
+        public ReadonlyTemplateProperty<int> NumberOfStaves => ReadLayout().NumberOfStaves;
 
 
 
@@ -59,25 +59,38 @@ namespace StudioLaValse.ScoreDocument.Private
 
         public IStaffGroupLayout ReadLayout()
         {
-            var numberOfStaves = EnumerateMeasures().Max(m => m.NumberOfStaves);
-            if (numberOfStaves is null)
+            var numberOfStaves = new ReadonlyTemplatePropertyFromFunc<int>(() =>
             {
-                var highestStaffIndex = 1;
-                foreach (var measure in EnumerateMeasures())
+                var numberOfStaves = EnumerateMeasures().Max(m => m.NumberOfStaves.Value);
+                if (numberOfStaves is null)
                 {
-                    foreach (var note in measure.ReadNotes())
+                    var highestStaffIndex = 1;
+                    foreach (var measure in EnumerateMeasures())
                     {
-                        highestStaffIndex = Math.Max(highestStaffIndex, note.StaffIndex + 1);
+                        foreach (var note in measure.ReadNotes())
+                        {
+                            highestStaffIndex = Math.Max(highestStaffIndex, note.StaffIndex + 1);
+                        }
                     }
+                    numberOfStaves = Math.Max(Instrument.NumberOfStaves, highestStaffIndex);
                 }
-                numberOfStaves = Math.Max(Instrument.NumberOfStaves, highestStaffIndex);
-            }
+                return numberOfStaves.Value;
+            });
 
-            var distanceToNext = EnumerateMeasures().Max(m => m.PaddingBottom) ??
-                documentStyleTemplate.StaffGroupPaddingBottom;
-            var collapsed = EnumerateMeasures().Any(m => m.Collapsed ?? false);
+            var distanceToNext = new ReadonlyTemplatePropertyFromFunc<double>(() =>
+            {
+                var distanceToNext = EnumerateMeasures().Max(m => m.PaddingBottom.Value) ??
+                    documentStyleTemplate.StaffGroupPaddingBottom.Value;
+                return distanceToNext;
+            });
 
-            var layout = new StaffGroupLayout(numberOfStaves.Value, distanceToNext, collapsed);
+            var collapsed = new ReadonlyTemplatePropertyFromFunc<bool>(() =>
+            {
+                var collapsed = EnumerateMeasures().Any(m => m.Collapsed.Value ?? false);
+                return collapsed;
+            });
+            
+            var layout = new StaffGroupLayout(numberOfStaves, distanceToNext, collapsed);
             return layout;
         }
 

@@ -25,7 +25,7 @@ namespace StudioLaValse.ScoreDocument.Extensions
         public static Tuplet CreateTuplet(this IGraceGroup graceGroupReader)
         {
             var fallback = RythmicDuration.QuarterNote;
-            return new(graceGroupReader.ImplyRythmicDuration(fallback), graceGroupReader.ReadChords().Select(c => graceGroupReader.BlockDuration).ToArray());
+            return new(graceGroupReader.ImplyRythmicDuration(fallback), graceGroupReader.ReadChords().Select(c => graceGroupReader.BlockDuration.Value).ToArray());
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace StudioLaValse.ScoreDocument.Extensions
         /// <returns></returns>
         public static Duration ImplyDuration(this IGraceGroup graceGroupReader)
         {
-            var duration = graceGroupReader.BlockDuration * graceGroupReader.Length;
+            var duration = graceGroupReader.BlockDuration.Value * graceGroupReader.Length;
             return duration;
         }
     }

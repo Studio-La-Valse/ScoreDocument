@@ -139,7 +139,7 @@ namespace StudioLaValse.ScoreDocument.Implementation
             if(memento.GraceGroup is not null)
             {
                 var authorLayout = new AuthorGraceGroupLayout(documentStyleTemplate.GraceGroupStyleTemplate, Voice);
-                var userLayout = new UserGraceGroupLayout(authorLayout, memento.Layout?.Id ?? Guid.NewGuid());
+                var userLayout = new UserGraceGroupLayout(authorLayout, memento.Layout?.Id ?? Guid.NewGuid(), documentStyleTemplate.GraceGroupStyleTemplate);
                 var graceGroup = new GraceGroup(this, HostMeasure, documentStyleTemplate, authorLayout, userLayout, keyGenerator, memento.GraceGroup.Id);
                 GraceGroup = graceGroup; ;
                 graceGroup.ApplyMemento(memento.GraceGroup);
@@ -147,10 +147,12 @@ namespace StudioLaValse.ScoreDocument.Implementation
         }
 
 
-        public void ApplyGrace(params Pitch[] pitches)
+        public void ApplyGrace(RythmicDuration rythmicDuration, params Pitch[] pitches)
         {
+            // TODO: leave duration unset?
             var authorLayout = new AuthorGraceGroupLayout(documentStyleTemplate.GraceGroupStyleTemplate, Voice);
-            var userLayout = new UserGraceGroupLayout(authorLayout, Guid.NewGuid());
+            authorLayout.ChordDuration.Value = rythmicDuration;
+            var userLayout = new UserGraceGroupLayout(authorLayout, Guid.NewGuid(), documentStyleTemplate.GraceGroupStyleTemplate);
             var graceGroup = new GraceGroup(this, HostMeasure, documentStyleTemplate, authorLayout, userLayout, keyGenerator, Guid.NewGuid());
             graceGroup.Append(pitches);
             ApplyGrace(graceGroup);

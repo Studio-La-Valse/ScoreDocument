@@ -10,41 +10,41 @@ namespace StudioLaValse.ScoreDocument.Layout
         /// <summary>
         /// The margin at the bottom of the page.
         /// </summary>
-        double MarginBottom { get; }
+        ReadonlyTemplateProperty<double> MarginBottom { get; }
 
         /// <summary>
         /// The margin on the left side of the page.
         /// </summary>
-        double MarginLeft { get; }
+        ReadonlyTemplateProperty<double> MarginLeft { get; }
 
         /// <summary>
         /// The margin on the right of the page.
         /// </summary>
-        double MarginRight { get; }
+        ReadonlyTemplateProperty<double> MarginRight { get; }
 
         /// <summary>
         /// The margin at the top of the page.
         /// </summary>
-        double MarginTop { get; }
+        ReadonlyTemplateProperty<double> MarginTop { get; }
 
         /// <summary>
         /// The height of the page (in mm).
         /// </summary>
-        int PageHeight { get; }
+        ReadonlyTemplateProperty<int> PageHeight { get; }
 
         /// <summary>
         /// The width of the page (in mm).
         /// </summary>
-        int PageWidth { get; }
+        ReadonlyTemplateProperty<int> PageWidth { get; }
 
         /// <summary>
         /// The color of the page.
         /// </summary>
-        ColorARGB PageColor { get; }
+        ReadonlyTemplateProperty<ColorARGB> PageColor { get; }
 
         /// <summary>
         /// The content color of the page.
         /// </summary>
-        ColorARGB ForegroundColor { get; }
+        ReadonlyTemplateProperty<ColorARGB> ForegroundColor { get; }
     }
 }

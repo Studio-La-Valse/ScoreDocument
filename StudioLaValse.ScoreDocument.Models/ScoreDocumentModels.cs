@@ -1,5 +1,4 @@
 ﻿using StudioLaValse.ScoreDocument.Models.Base;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace StudioLaValse.ScoreDocument.Models
 {
@@ -27,13 +26,6 @@ namespace StudioLaValse.ScoreDocument.Models
                 Id = Guid.NewGuid(),
                 InstrumentRibbons = [],
                 ScoreMeasures = [],
-                FirstSystemIndent = null,
-                ForegroundColor = null,
-                HorizontalStaffLineThickness = null,
-                PageColor = null,
-                Scale = null,
-                StemLineThickness = null,
-                VerticalStaffLineThickness = null,
                 Layout = null
             };
         }

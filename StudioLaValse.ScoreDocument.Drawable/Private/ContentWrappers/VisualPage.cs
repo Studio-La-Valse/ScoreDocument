@@ -12,8 +12,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         private readonly IScoreDocument scoreDocumentLayout;
         private readonly IUnitToPixelConverter unitToPixelConverter;
 
-        public ColorARGB PageColor => page.PageColor.FromPrimitive();
-        public ColorARGB ForegroundColor => page.ForegroundColor.FromPrimitive();
+        public ColorARGB PageColor => page.PageColor.Value.FromPrimitive();
+        public ColorARGB ForegroundColor => page.ForegroundColor.Value.FromPrimitive();
         public IPageLayout Layout => page;
         public double MarginLeft => unitToPixelConverter.UnitsToPixels(Layout.MarginLeft);
         public double MarginRight => unitToPixelConverter.UnitsToPixels(Layout.MarginRight);

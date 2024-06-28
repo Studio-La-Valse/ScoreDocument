@@ -15,7 +15,7 @@ namespace StudioLaValse.ScoreDocument.Extensions
         public static string AbbreviateName(this IInstrumentRibbonLayout layout)
         {
             var name = layout.DisplayName;
-            return name.AbbreviateName();
+            return name.Value.AbbreviateName();
         }
 
         /// <summary>

@@ -6,8 +6,6 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
 {
     public abstract class InstrumentMeasureLayout : IInstrumentMeasureLayout
     {
-        private readonly ScoreMeasure scoreMeasure;
-
         public abstract NullableTemplateProperty<int> _NumberOfStaves { get; }
         public abstract NullableTemplateProperty<double> _PaddingBottom { get; }
         public abstract NullableTemplateProperty<bool> _Collapsed { get; }
@@ -16,31 +14,22 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
         public abstract Dictionary<int, double> _PaddingBottomForStaves { get; }
 
 
-        public double? PaddingBottom
-        {
-            get => _PaddingBottom.Value;
-            set => _PaddingBottom.Value = value;
-        }
-        public bool? Collapsed
-        {
-            get => _Collapsed.Value;
-            set => _Collapsed.Value = value;
-        }
-        public int? NumberOfStaves
-        {
-            get => _NumberOfStaves.Value;
-            set => _NumberOfStaves.Value = value;
-        }
 
-        public KeySignature KeySignature => scoreMeasure.UserLayout.KeySignature;
+        public ReadonlyTemplateProperty<KeySignature> KeySignature { get; }
+        public TemplateProperty<double?> PaddingBottom => _PaddingBottom;
+        public TemplateProperty<bool?> Collapsed => _Collapsed;
+        public TemplateProperty<int?> NumberOfStaves => _NumberOfStaves;
 
-        public abstract IEnumerable<ClefChange> ClefChanges { get; }
+
 
 
         protected InstrumentMeasureLayout(ScoreMeasure scoreMeasure)
         {
-            this.scoreMeasure = scoreMeasure;
+            KeySignature = new ReadonlyTemplatePropertyFromFunc<KeySignature>(() => scoreMeasure.UserLayout.KeySignature);
         }
+
+
+        public abstract IEnumerable<ClefChange> EnumerateClefChanges();
 
 
         public void Restore()
@@ -115,7 +104,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
         public override NullableTemplateProperty<bool> _Collapsed { get; }
 
 
-        public override IEnumerable<ClefChange> ClefChanges => _ClefChanges;
+        public override IEnumerable<ClefChange> EnumerateClefChanges() => _ClefChanges;
 
 
         public AuthorInstrumentMeasureLayout(ScoreMeasure scoreMeasure) : base(scoreMeasure)
@@ -198,7 +187,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
 
 
 
-        public override IEnumerable<ClefChange> ClefChanges => _ClefChanges.Concat(layout.ClefChanges.Where(c => !_IgnoredClefChanges.Contains(c)));
+        public override IEnumerable<ClefChange> EnumerateClefChanges() => _ClefChanges.Concat(layout.EnumerateClefChanges().Where(c => !_IgnoredClefChanges.Contains(c)));
 
 
 

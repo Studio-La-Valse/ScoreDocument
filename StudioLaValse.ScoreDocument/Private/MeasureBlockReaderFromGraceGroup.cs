@@ -1,6 +1,7 @@
 ﻿using StudioLaValse.ScoreDocument.Extensions;
 using StudioLaValse.ScoreDocument.Extensions.Private;
 using StudioLaValse.ScoreDocument.Layout;
+using System.Diagnostics.CodeAnalysis;
 
 namespace StudioLaValse.ScoreDocument.Private
 {
@@ -13,7 +14,7 @@ namespace StudioLaValse.ScoreDocument.Private
 
         public RythmicDuration RythmicDuration => graceGroupReader.ImplyRythmicDuration(RythmicDuration.QuarterNote);
 
-        public Tuplet Tuplet => new(RythmicDuration, graceGroupReader.ReadChords().Select(c => graceGroupReader.BlockDuration).ToArray());
+        public Tuplet Tuplet => new(RythmicDuration, graceGroupReader.ReadChords().Select(c => graceGroupReader.BlockDuration.Value).ToArray());
 
         public int Id => graceGroupReader.Id;
 
@@ -23,40 +24,26 @@ namespace StudioLaValse.ScoreDocument.Private
 
         public RythmicDuration ChordDuration => graceGroupReader.BlockDuration;
 
-        public StemDirection StemDirection
-        {
-            get => graceGroupReader.StemDirection;
-            set => graceGroupReader.StemDirection = value;
-        }
+        public TemplateProperty<StemDirection> StemDirection => graceGroupReader.StemDirection;
 
-        public double StemLength
-        {
-            get => graceGroupReader.StemLength;
-            set => graceGroupReader.StemLength = value;
-        }
+        public TemplateProperty<double> StemLength => graceGroupReader.StemLength;
 
-        public double BeamAngle
-        {
-            get => graceGroupReader.BeamAngle;
-            set => graceGroupReader.BeamAngle = value;
-        }
+        public TemplateProperty<double> BeamAngle => graceGroupReader.BeamAngle;
 
-        public double BeamThickness
-        {
-            get => graceGroupReader.BeamThickness;
-            set => graceGroupReader.BeamThickness = value;
-        }
+        public ReadonlyTemplateProperty<double> BeamSpacing => new ReadonlyTemplatePropertyFromFunc<double>(() => graceGroupReader.BeamSpacing.Value);
 
-        public double BeamSpacing
-        {
-            get => graceGroupReader.BeamSpacing;
-            set => graceGroupReader.BeamSpacing = value;
-        }
+        public ReadonlyTemplateProperty<double> BeamThickness => new ReadonlyTemplatePropertyFromFunc<double>(() => graceGroupReader.BeamThickness.Value);
+
+
+
 
         public MeasureBlockReaderFromGraceGroup(IGraceGroup graceGroupReader)
         {
             this.graceGroupReader = graceGroupReader;
         }
+
+
+
 
         public IEnumerable<IScoreElement> EnumerateChildren()
         {
@@ -93,29 +80,19 @@ namespace StudioLaValse.ScoreDocument.Private
             graceGroupReader.Splice(index);
         }
 
-        public void ResetStemDirection()
+        public bool TryReadNext([NotNullWhen(true)] out IMeasureBlock? right)
         {
-            graceGroupReader.ResetStemDirection();
+            throw new NotImplementedException();
         }
 
-        public void ResetStemLength()
+        public bool TryReadPrevious([NotNullWhen(true)] out IMeasureBlock? left)
         {
-            graceGroupReader.ResetStemLength();
+            throw new NotImplementedException();
         }
 
-        public void ResetBeamAngle()
+        public void Restore()
         {
-            graceGroupReader.ResetBeamAngle();
-        }
-
-        public void ResetBeamThickness()
-        {
-            graceGroupReader.ResetBeamThickness();
-        }
-
-        public void ResetBeamSpacing()
-        {
-            graceGroupReader.ResetBeamSpacing();
+            graceGroupReader.Restore();
         }
     }
 }

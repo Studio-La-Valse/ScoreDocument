@@ -8,7 +8,7 @@ namespace StudioLaValse.ScoreDocument.Private
 
         public IList<IScoreMeasure> ScoreMeasures { get; } = [];
 
-        public double PaddingBottom => ReadLayout().PaddingBottom;
+        public ReadonlyTemplateProperty<double> PaddingBottom => ReadLayout().PaddingBottom;
 
 
         public StaffSystem(IScoreDocument scoreDocument)
@@ -29,9 +29,14 @@ namespace StudioLaValse.ScoreDocument.Private
 
         public IStaffSystemLayout ReadLayout()
         {
-            var paddingBottom = ScoreMeasures.Max(m => m.PaddingBottom);
-            paddingBottom ??= scoreDocument.StaffSystemPaddingBottom;
-            return new StaffSystemLayout(paddingBottom.Value);
+            var property = new ReadonlyTemplatePropertyFromFunc<double>(() =>
+            {
+                var paddingBottom = ScoreMeasures.Max(m => m.PaddingBottom.Value);
+                paddingBottom ??= scoreDocument.StaffSystemPaddingBottom;
+                return paddingBottom.Value;
+            });
+            
+            return new StaffSystemLayout(property);
         }
 
         public IEnumerable<IScoreElement> EnumerateChildren()

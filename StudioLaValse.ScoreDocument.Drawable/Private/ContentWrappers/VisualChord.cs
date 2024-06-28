@@ -209,7 +209,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                                                   l.Start.X,
                                                   l.Start.DistanceTo(l.End),
                                                   unitToPixelConverter.UnitsToPixels(scoreDocumentLayout.HorizontalStaffLineThickness * scoreScale * instrumentScale),
-                                                  scoreDocumentLayout.PageForegroundColor.FromPrimitive());
+                                                  scoreDocumentLayout.PageForegroundColor.Value.FromPrimitive());
             });
         }
         public override IEnumerable<BaseContentWrapper> GetContentWrappers()

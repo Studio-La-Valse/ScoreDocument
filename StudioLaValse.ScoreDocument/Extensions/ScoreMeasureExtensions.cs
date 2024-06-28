@@ -30,7 +30,7 @@ namespace StudioLaValse.ScoreDocument.Extensions
             var positions = new Dictionary<Position, (double position, double spaceRight)>(comparer);
             foreach (var instrumentMeasure in scoreMeasureReader.ReadMeasures())
             {
-                if (instrumentMeasure.Collapsed ?? false)
+                if (instrumentMeasure.Collapsed.Value ?? false)
                 {
                     continue;
                 }

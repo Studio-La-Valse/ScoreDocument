@@ -12,12 +12,12 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
         public abstract ValueTemplateProperty<double> _Scale { get; }
 
 
-        public string AbbreviatedName { get => _AbbreviatedName.Value; set => _AbbreviatedName.Value = value; }
-        public string DisplayName { get => _DisplayName.Value; set => _DisplayName.Value = value; }
-        public int NumberOfStaves { get => _NumberOfStaves.Value; set => _NumberOfStaves.Value = value; }
-        public bool Collapsed { get => _Collapsed.Value; set => _Collapsed.Value = value; }
-        public string Name { get => _DisplayName.Value; set => _DisplayName.Value = value; }
-        public double Scale { get => _Scale.Value; set => _Scale.Value = value; }
+        public TemplateProperty<string> DisplayName => _DisplayName;
+        public TemplateProperty<string> AbbreviatedName => _AbbreviatedName;
+        public TemplateProperty<bool> Collapsed => _Collapsed;
+        public TemplateProperty<int> NumberOfStaves => _NumberOfStaves;
+        public TemplateProperty<double> Scale => _Scale;
+
 
         public InstrumentRibbonLayout()
         {
@@ -121,7 +121,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
         public SecondaryInstrumentRibbonLayout(AuthorInstrumentRibbonLayout layout, Guid id)
         {
             Id = id;
-            _DisplayName = new ReferenceTemplateProperty<string>(() => layout.Name);
+            _DisplayName = new ReferenceTemplateProperty<string>(() => layout.DisplayName);
             _NumberOfStaves = new ValueTemplateProperty<int>(() => layout.NumberOfStaves);
             _Collapsed = new ValueTemplateProperty<bool>(() => layout.Collapsed);
             _AbbreviatedName = new ReferenceTemplateProperty<string>(() => layout.AbbreviatedName);

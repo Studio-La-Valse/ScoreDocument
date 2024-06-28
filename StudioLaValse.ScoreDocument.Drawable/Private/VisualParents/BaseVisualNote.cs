@@ -43,7 +43,7 @@
                     DrawableCircle circle = new(
                         new XY(startLeft, heightOnCanvas),
                         lineSpacingOnStaff / 6,
-                        scoreDocumentLayout.PageForegroundColor.FromPrimitive());
+                        scoreDocumentLayout.PageForegroundColor.Value.FromPrimitive());
 
                     yield return circle;
 

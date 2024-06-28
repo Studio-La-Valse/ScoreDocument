@@ -9,7 +9,7 @@ namespace StudioLaValse.ScoreDocument.Private
 
         public int IndexInStaffGroup { get; }
 
-        public double DistanceToNext => ReadLayout().DistanceToNext;
+        public ReadonlyTemplateProperty<double> DistanceToNext => ReadLayout().DistanceToNext;
 
         public Staff(int indexInStaffGroup, IScoreDocument staffStyleTemplate, IEnumerable<IInstrumentMeasure> measures)
         {
@@ -21,9 +21,14 @@ namespace StudioLaValse.ScoreDocument.Private
 
         public IStaffLayout ReadLayout()
         {
-            var paddingBottom = measures.Max(m => m.GetPaddingBottom(IndexInStaffGroup));
-            paddingBottom ??= staffStyleTemplate.StaffPaddingBottom;
-            var layout = new StaffLayout(paddingBottom.Value);
+            var property = new ReadonlyTemplatePropertyFromFunc<double>(() =>
+            {
+                var paddingBottom = measures.Max(m => m.GetPaddingBottom(IndexInStaffGroup));
+                paddingBottom ??= staffStyleTemplate.StaffPaddingBottom;
+                return paddingBottom.Value;
+            });
+
+            var layout = new StaffLayout(property);
             return layout;
         }
 

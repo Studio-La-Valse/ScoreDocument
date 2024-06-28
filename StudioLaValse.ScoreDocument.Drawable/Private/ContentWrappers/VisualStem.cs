@@ -27,7 +27,7 @@
 
         public override IEnumerable<BaseDrawableElement> GetDrawableElements()
         {
-            yield return new DrawableLine(Origin, End, color: scoreDocumentLayout.PageForegroundColor.FromPrimitive(), Thickness);
+            yield return new DrawableLine(Origin, End, color: scoreDocumentLayout.PageForegroundColor.Value.FromPrimitive(), Thickness);
         }
         public override IEnumerable<BaseContentWrapper> GetContentWrappers()
         {

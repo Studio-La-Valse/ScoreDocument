@@ -9,14 +9,14 @@ namespace StudioLaValse.ScoreDocument.Private
         public IPageLayout Layout { get; }
         public int IndexInScore { get; }
 
-        public double MarginBottom => Layout.MarginBottom;
-        public double MarginLeft => Layout.MarginLeft;
-        public double MarginRight => Layout.MarginRight;
-        public double MarginTop => Layout.MarginTop;
-        public int PageHeight => Layout.PageHeight;
-        public int PageWidth => Layout.PageWidth;
-        public ColorARGB PageColor => Layout.PageColor;
-        public ColorARGB ForegroundColor => Layout.ForegroundColor;
+        public ReadonlyTemplateProperty<double> MarginBottom => Layout.MarginBottom;
+        public ReadonlyTemplateProperty<double> MarginLeft => Layout.MarginLeft;
+        public ReadonlyTemplateProperty<double> MarginRight => Layout.MarginRight;
+        public ReadonlyTemplateProperty<double> MarginTop => Layout.MarginTop;
+        public ReadonlyTemplateProperty<int> PageHeight => Layout.PageHeight;
+        public ReadonlyTemplateProperty<int> PageWidth => Layout.PageWidth;
+        public ReadonlyTemplateProperty<ColorARGB> PageColor => Layout.PageColor;
+        public ReadonlyTemplateProperty<ColorARGB> ForegroundColor => Layout.ForegroundColor;
 
 
         public Page(int indexInScore, IScoreDocument scoreDocumentLayout)

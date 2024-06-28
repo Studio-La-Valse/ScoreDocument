@@ -9,26 +9,13 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
         public abstract ValueTemplateProperty<int> _StaffIndex { get; }
         public abstract ValueTemplateProperty<double> _XOffset { get; }
 
-        public AccidentalDisplay ForceAccidental
-        {
-            get => _ForceAccidental.Value;
-            set => _ForceAccidental.Value = value;
-        }
-        public double Scale
-        {
-            get => _Scale.Value;
-            set => _Scale.Value = value;
-        }
-        public int StaffIndex
-        {
-            get => _StaffIndex.Value;
-            set => _StaffIndex.Value = value;
-        }
-        public double XOffset
-        {
-            get => _XOffset.Value;
-            set => _XOffset.Value = value;
-        }
+        public TemplateProperty<AccidentalDisplay> ForceAccidental => _ForceAccidental;
+
+        public TemplateProperty<double> Scale => _Scale;
+
+        public TemplateProperty<int> StaffIndex => _StaffIndex;
+
+        public TemplateProperty<double> XOffset => _XOffset;
 
 
         public void ApplyMemento(NoteLayoutMembers? memento)

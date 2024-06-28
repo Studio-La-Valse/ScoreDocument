@@ -73,7 +73,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                 scoreEditor.AddInstrumentRibbon(instrument);
 
                 var ribbon = scoreEditor.ReadInstrumentRibbon(scoreEditor.NumberOfInstruments - 1);
-                ribbon.DisplayName = partListNode.Attributes().Single(a => a.Name == "id").Value.AbbreviateName();
+                ribbon.DisplayName.Value = partListNode.Attributes().Single(a => a.Name == "id").Value;
             }
         }
 
@@ -97,7 +97,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
 
                 var appendedMeasure = scoreEditor.ReadScoreMeasure(scoreEditor.NumberOfMeasures - 1);
                 KeySignature keySignature = new(Step.C.MoveAlongCircleOfFifths(lastKeySignature), MajorOrMinor.Major);
-                appendedMeasure.KeySignature = keySignature;
+                appendedMeasure.KeySignature.Value = keySignature;
             }
         }
     }

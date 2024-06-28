@@ -4,10 +4,10 @@ namespace StudioLaValse.ScoreDocument.Private
 {
     internal class StaffSystemLayout : IStaffSystemLayout
     {
-        public double PaddingBottom { get; }
+        public ReadonlyTemplateProperty<double> PaddingBottom { get; }
 
 
-        public StaffSystemLayout(double paddingBottom)
+        public StaffSystemLayout(ReadonlyTemplateProperty<double> paddingBottom)
         {
             PaddingBottom = paddingBottom;
         }

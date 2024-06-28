@@ -44,8 +44,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
             beamSpacing = unitToPixelConverter.UnitsToPixels(beamSpacing);
 
             return stems.Count() == 1
-                ? ([AsFlag(stems.First(), scale, scoreDocumentLayout.PageForegroundColor.FromPrimitive())])
-                : AsGroup(stems, beamDefinition, beamSpacing, beamThickness, drawBeamCanvasUp, scoreDocumentLayout.PageForegroundColor.FromPrimitive(), positionSpace);
+                ? ([AsFlag(stems.First(), scale, scoreDocumentLayout.PageForegroundColor.Value.FromPrimitive())])
+                : AsGroup(stems, beamDefinition, beamSpacing, beamThickness, drawBeamCanvasUp, scoreDocumentLayout.PageForegroundColor.Value.FromPrimitive(), positionSpace);
         }
 
         public DrawableScoreGlyph AsFlag(VisualStem stem, double scale, ColorARGB color)

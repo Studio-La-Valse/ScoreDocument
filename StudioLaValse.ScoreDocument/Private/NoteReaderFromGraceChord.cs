@@ -22,32 +22,23 @@ namespace StudioLaValse.ScoreDocument.Private
 
         public int Id => noteReader.Id;
 
-        public AccidentalDisplay ForceAccidental
-        {
-            get => noteReader.ForceAccidental;
-            set => noteReader.ForceAccidental = value;
-        }
-        public double Scale
-        {
-            get => noteReader.Scale;
-            set => throw new NotImplementedException();
-        }
-        public int StaffIndex
-        {
-            get => noteReader.StaffIndex;
-            set => noteReader.StaffIndex = value;
-        }
-        public double XOffset
-        {
-            get => noteReader.XOffset;
-            set => throw new NotImplementedException();
-        }
+        public TemplateProperty<int> StaffIndex => noteReader.StaffIndex;
+
+        public TemplateProperty<AccidentalDisplay> ForceAccidental => noteReader.ForceAccidental;
+
+        public TemplateProperty<double> Scale => new TemplatePropertyFromReadonlyTemplateProperty<double>(noteReader.Scale);
+
+        public TemplateProperty<double> XOffset => new TemplatePropertyFromReadonlyTemplateProperty<double>(noteReader.XOffset);
+
+
 
         public NoteReaderFromGraceChord(IGraceNote noteReader, ChordReaderFromGraceChord graceChordReader)
         {
             this.noteReader = noteReader;
             this.graceChordReader = graceChordReader;
         }
+
+
 
         public IEnumerable<IScoreElement> EnumerateChildren()
         {
@@ -62,26 +53,6 @@ namespace StudioLaValse.ScoreDocument.Private
             }
 
             return other.Id == Id;
-        }
-
-        public void ResetAccidental()
-        {
-            noteReader.ResetAccidental();
-        }
-
-        public void ResetScale()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ResetStaffIndex()
-        {
-            noteReader.ResetStaffIndex();
-        }
-
-        public void ResetXOffset()
-        {
-            throw new NotImplementedException();
         }
     }
 }

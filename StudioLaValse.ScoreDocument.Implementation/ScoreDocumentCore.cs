@@ -80,7 +80,7 @@
                     new TimeSignature(4, 4);
 
             var layout = new AuthorScoreMeasureLayout(styleTemplate.ScoreMeasureStyleTemplate);
-            var secondaryLayout = new UserScoreMeasureLayout(layoutGuid, layout);
+            var secondaryLayout = new UserScoreMeasureLayout(layoutGuid, layout, styleTemplate.ScoreMeasureStyleTemplate);
             ScoreMeasure scoreMeasure = new(this, timeSignature, styleTemplate, layout, secondaryLayout, keyGenerator, guid);
             return scoreMeasure;
         }
@@ -155,13 +155,6 @@
                 Layout = UserLayout.GetMemento(),
                 InstrumentRibbons = EnumerateRibbonsCore().Select(e => e.GetMemento()).ToList(),
                 ScoreMeasures = EnumerateMeasuresCore().Select(e => e.GetMemento()).ToList(),
-                FirstSystemIndent = AuthorLayout._FirstSystemIndent.Field,
-                ForegroundColor = AuthorLayout._PageForegroundColor.Field?.Convert(),
-                PageColor = AuthorLayout._PageColor.Field?.Convert(),
-                HorizontalStaffLineThickness = AuthorLayout._HorizontalStaffLineThickness.Field,
-                Scale = AuthorLayout._Scale.Field,
-                StemLineThickness = AuthorLayout._StemLineThickness.Field,
-                VerticalStaffLineThickness = AuthorLayout._VerticalStaffLineThickness.Field,
             };
         }
         public void ApplyMemento(ScoreDocumentModel memento)

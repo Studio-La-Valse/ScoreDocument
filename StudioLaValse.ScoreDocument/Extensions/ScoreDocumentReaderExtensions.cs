@@ -1,4 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.Private;
+﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
+using StudioLaValse.ScoreDocument.Private;
 
 namespace StudioLaValse.ScoreDocument.Extensions
 {
@@ -11,12 +12,11 @@ namespace StudioLaValse.ScoreDocument.Extensions
         /// Read the pages of a score document.
         /// </summary>
         /// <param name="scoreDocument"></param>
-        /// <param name="lineSpacing"></param>
         /// <returns></returns>
-        public static IEnumerable<IPage> ReadPages(this IScoreDocument scoreDocument, double lineSpacing)
+        public static IEnumerable<IPage> ReadPages(this IScoreDocument scoreDocument)
         {
             var scoreScale = scoreDocument.Scale;
-
+            var lineSpacing = Glyph.LineSpacingMm;
             var currentpage = new Page(0, scoreDocument);
             currentpage.StaffSystems.Clear();
             var currentSystem = new StaffSystem(scoreDocument);
@@ -29,7 +29,7 @@ namespace StudioLaValse.ScoreDocument.Extensions
 
             var systemIndex = 1;
             var pageIndex = 1;
-            var currentSystemCanvasTop = pageLayout.MarginTop;
+            var currentSystemCanvasTop = pageLayout.MarginTop.Value;
 
             foreach (var measure in scoreDocument.ReadScoreMeasures())
             {

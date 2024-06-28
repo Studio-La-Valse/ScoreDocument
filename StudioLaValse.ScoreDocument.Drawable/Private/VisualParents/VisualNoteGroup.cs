@@ -125,7 +125,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             }
 
             var principalNote = glyphLibrary.NoteHeadBlack(Scale);
-            var principalStemDirection = measureBlock.StemDirection;
+            var principalStemDirection = measureBlock.StemDirection.Value;
             var principalChord = PickAChordForStem(chords, principalStemDirection);
 
             var principalNoteWidth = principalNote.Width();
@@ -164,11 +164,11 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             {
                 StemDirection.Cross => chords.First(),
                 StemDirection.Down => chords
-                    .OrderByDescending(c => c.ReadNotes().Select(n => n.StaffIndex).Max())
+                    .OrderByDescending(c => c.ReadNotes().Select(n => n.StaffIndex.Value).Max())
                     .ThenBy(c => c.ReadNotes().Select(n => n.Pitch.IndexOnKlavier).Max())
                     .First(),
                 StemDirection.Up => chords
-                    .OrderByDescending(c => c.ReadNotes().Select(n => n.StaffIndex).Max())
+                    .OrderByDescending(c => c.ReadNotes().Select(n => n.StaffIndex.Value).Max())
                     .ThenBy(c => c.ReadNotes().Select(n => n.Pitch.IndexOnKlavier).Max())
                     .Last(),
                 _ => throw new NotImplementedException()
@@ -197,13 +197,13 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
             var lowestNote = chord
                 .ReadNotes()
-                .OrderByDescending(note => note.StaffIndex)
+                .OrderByDescending(note => note.StaffIndex.Value)
                 .ThenBy(n => n.Pitch.IndexOnKlavier)
                 .First();
 
             var highestNote = chord
                 .ReadNotes()
-                .OrderBy(note => note.StaffIndex)
+                .OrderBy(note => note.StaffIndex.Value)
                 .ThenByDescending(n => n.Pitch.IndexOnKlavier)
                 .First();
 

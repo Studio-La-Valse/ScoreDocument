@@ -8,9 +8,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
         private readonly IGraceGroupLayout graceGroupLayout;
         private readonly Dictionary<PowerOfTwo, BeamType> beamTypes;
 
-        public double XOffset => 0;
-
-        public double SpaceRight => graceGroupLayout.ChordSpacing;
+        public ReadonlyTemplateProperty<double> SpaceRight => new ReadonlyTemplatePropertyFromFunc<double>(() => graceGroupLayout.ChordSpacing.Value);
 
         public GraceChordLayout(IGraceGroupLayout graceGroupLayout, Dictionary<PowerOfTwo, BeamType> beamTypes)
         {

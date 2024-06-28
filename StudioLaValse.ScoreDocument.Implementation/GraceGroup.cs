@@ -89,7 +89,7 @@ namespace StudioLaValse.ScoreDocument.Implementation
                 Id = Guid,
                 Chords = chords.Select(c => c.GetMemento()).ToList(),
                 BeamAngle = AuthorLayout.BeamAngle,
-                ChordDuration = AuthorLayout.ChordDuration.Convert(),
+                ChordDuration = AuthorLayout._ChordDuration.Field?.Convert(),
                 ChordSpacing = AuthorLayout._ChordSpacing.Field,
                 OccupySpace = AuthorLayout._OccupySpace.Field,
                 StemLength = AuthorLayout._StemLength.Field,

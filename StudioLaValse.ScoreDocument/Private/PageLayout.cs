@@ -7,14 +7,14 @@ namespace StudioLaValse.ScoreDocument.Private
     {
         private readonly IScoreDocument documentLayout;
 
-        public int PageWidth => documentLayout.PageWidth;
-        public int PageHeight => documentLayout.PageHeight;
-        public double MarginLeft => documentLayout.PageMarginLeft;
-        public double MarginTop => documentLayout.PageMarginTop;
-        public double MarginRight => documentLayout.PageMarginRight;
-        public double MarginBottom => documentLayout.PageMarginBottom;
-        public ColorARGB PageColor => documentLayout.PageColor;
-        public ColorARGB ForegroundColor => documentLayout.PageForegroundColor;
+        public ReadonlyTemplateProperty<int> PageWidth => documentLayout.PageWidth;
+        public ReadonlyTemplateProperty<int> PageHeight => documentLayout.PageHeight;
+        public ReadonlyTemplateProperty<double> MarginLeft => documentLayout.PageMarginLeft;
+        public ReadonlyTemplateProperty<double> MarginTop => documentLayout.PageMarginTop;
+        public ReadonlyTemplateProperty<double> MarginRight => documentLayout.PageMarginRight;
+        public ReadonlyTemplateProperty<double> MarginBottom => documentLayout.PageMarginBottom;
+        public ReadonlyTemplateProperty<ColorARGB> PageColor => documentLayout.PageColor;
+        public ReadonlyTemplateProperty<ColorARGB> ForegroundColor => documentLayout.PageForegroundColor;
 
 
         public PageLayout(IScoreDocument documentLayout)

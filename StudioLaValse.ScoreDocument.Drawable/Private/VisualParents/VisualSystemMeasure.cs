@@ -35,7 +35,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                     return 0;
                 }
 
-                var keySignature = scoreMeasure.KeySignature;
+                var keySignature = scoreMeasure.KeySignature.Value;
                 var flats = keySignature.DefaultFlats;
                 var numberOfAccidentals = flats ?
                     keySignature.EnumerateFlats().Count() :
@@ -53,7 +53,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                     return null;
                 }
 
-                var nextKeySignature = nextMeasure.KeySignature;
+                var nextKeySignature = nextMeasure.KeySignature.Value;
                 return nextKeySignature.Equals(scoreMeasure.KeySignature) ? null : nextKeySignature;
             }
         }

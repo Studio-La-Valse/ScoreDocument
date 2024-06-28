@@ -24,7 +24,7 @@
         }
         public override IEnumerable<BaseDrawableElement> GetDrawableElements()
         {
-            return [];
+            yield break;
         }
     }
 }

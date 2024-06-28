@@ -1,4 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Core;
+using System.Reflection.Metadata.Ecma335;
 using System.Xml.Linq;
 
 namespace StudioLaValse.ScoreDocument.MusicXml.Private
@@ -61,20 +62,6 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             return element.Name == "note";
         }
 
-        public static bool TryParsePitch(this XElement element, out Pitch pitch)
-        {
-            pitch = default;
-            try
-            {
-                pitch = ParsePitch(element);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
         public static int? StaffIndex(this XElement element)
         {
             return element.Descendants().SingleOrDefault(d => d.Name == "staff")?.Value.ToIntOrThrow() - 1;
@@ -127,13 +114,34 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             };
         }
 
-        public static Pitch ParsePitch(this XElement measureElement)
+        public static bool TryParsePitch(this XElement element, out Pitch pitch)
         {
-            var step = measureElement.Descendants().Single(d => d.Name == "step").Value;
-            var octave = measureElement.Descendants().Single(d => d.Name == "octave").Value;
-            var alter = measureElement.Descendants().SingleOrDefault(d => d.Name == "alter")?.Value;
+            pitch = default;
 
-            var octaveInt = octave.ToIntOrThrow();
+            var step = element.Descendants().FirstOrDefault(d => d.Name == "step")?.Value;
+            if(step == null)
+            {
+                return false;
+            }
+
+            var octave = element.Descendants().FirstOrDefault(d => d.Name == "octave")?.Value;
+            if(octave == null)
+            {
+                return false;
+            }
+
+            var alter = element.Descendants().FirstOrDefault(d => d.Name == "alter")?.Value;
+            var alterInt = alter is null ? 0 : alter.ToIntOrThrow();
+
+            var octaveInt =  0;
+            if(int.TryParse(octave, out var result))
+            {
+                octaveInt = result;
+            }
+            else
+            {
+                return false;
+            }
 
             var _step = step.ToLower() switch
             {
@@ -147,11 +155,20 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                 _ => throw new NotSupportedException()
             };
 
-            var alterInt = alter is null ? 0 : alter.ToIntOrThrow();
-
             Step stepAlter = new(_step.StepsFromC, alterInt);
 
-            return new Pitch(stepAlter, octaveInt);
+            pitch = new Pitch(stepAlter, octaveInt);
+            return true;
+        }
+
+        public static Pitch ParsePitch(this XElement measureElement)
+        {
+            if(measureElement.TryParsePitch(out var pitch))
+            {
+                return pitch;
+            }
+
+            throw new InvalidOperationException($"XEelemnt {measureElement} does not soom to have a pitch.");
         }
     }
 }

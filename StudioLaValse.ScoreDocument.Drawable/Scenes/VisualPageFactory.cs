@@ -1,4 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Reader;
+﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
@@ -6,20 +6,22 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
     public class VisualPageFactory : IVisualPageFactory
     {
         private readonly IVisualStaffSystemFactory staffSystemContentFactory;
-        private readonly IScoreDocumentLayout scoreLayoutDictionary;
+        private readonly IScoreDocument scoreLayoutDictionary;
+        private readonly IUnitToPixelConverter unitToPixelConverter;
 
         /// <inheritdoc/>
-        public VisualPageFactory(IVisualStaffSystemFactory staffSystemContentFactory, IScoreDocumentLayout scoreLayoutDictionary)
+        public VisualPageFactory(IVisualStaffSystemFactory staffSystemContentFactory, IScoreDocument scoreLayoutDictionary, IUnitToPixelConverter unitToPixelConverter)
         {
             this.staffSystemContentFactory = staffSystemContentFactory;
             this.scoreLayoutDictionary = scoreLayoutDictionary;
+            this.unitToPixelConverter = unitToPixelConverter;
         }
 
         /// <inheritdoc/>
-        public BaseContentWrapper CreateContent(IPageReader page, double canvasLeft, double canvasTop)
+        public BaseContentWrapper CreateContent(IPage page, double canvasLeft, double canvasTop)
         {
-            var lineSpacing = GlyphLibrary.LineSpacing;
-            var visualPage = new VisualPage(page, canvasLeft, canvasTop, lineSpacing, staffSystemContentFactory, scoreLayoutDictionary);
+            var lineSpacing = Glyph.LineSpacingMm;
+            var visualPage = new VisualPage(page, canvasLeft, canvasTop, lineSpacing, staffSystemContentFactory, scoreLayoutDictionary, unitToPixelConverter);
             return visualPage;
         }
     }

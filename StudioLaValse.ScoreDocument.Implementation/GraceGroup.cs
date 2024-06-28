@@ -1,12 +1,8 @@
 ﻿using System.Linq;
+using StudioLaValse.ScoreDocument.Templates;
 
 namespace StudioLaValse.ScoreDocument.Implementation
 {
-    public interface IGraceTarget
-    {
-        Position Position { get; }
-        int Voice { get; }
-    }
     public sealed class GraceGroup : ScoreElement, IMementoElement<GraceGroupModel>
     {
         private readonly List<GraceChord> chords = [];
@@ -44,8 +40,9 @@ namespace StudioLaValse.ScoreDocument.Implementation
         {
             var chords = pitches.Select(pitch =>
             {
-                var authorChordLayout = new AuthorGraceChordLayout(UserLayout);
-                var userChordLayout = new UserGraceChordLayout(Guid.NewGuid(), UserLayout);
+                var beamTypes = new Dictionary<PowerOfTwo, BeamType>();
+                var authorChordLayout = new AuthorGraceChordLayout(UserLayout, beamTypes);
+                var userChordLayout = new UserGraceChordLayout(Guid.NewGuid(), UserLayout, beamTypes);
                 var graceChord = new GraceChord(this, HostMeasure, authorChordLayout, userChordLayout, styleTemplate, keyGenerator, Guid.NewGuid());
                 return graceChord;
             }).ToArray();
@@ -92,7 +89,7 @@ namespace StudioLaValse.ScoreDocument.Implementation
                 Id = Guid,
                 Chords = chords.Select(c => c.GetMemento()).ToList(),
                 BeamAngle = AuthorLayout.BeamAngle,
-                ChordDuration = AuthorLayout.ChordDuration.Convert(),
+                ChordDuration = AuthorLayout._ChordDuration.Field?.Convert(),
                 ChordSpacing = AuthorLayout._ChordSpacing.Field,
                 OccupySpace = AuthorLayout._OccupySpace.Field,
                 StemLength = AuthorLayout._StemLength.Field,
@@ -109,8 +106,9 @@ namespace StudioLaValse.ScoreDocument.Implementation
 
             foreach (var chordMemento in memento.Chords)
             {
-                var authorChordLayout = new AuthorGraceChordLayout(UserLayout);
-                var userChordLayout = new UserGraceChordLayout(chordMemento.Layout?.Id ?? Guid.NewGuid(), UserLayout);
+                var beamTypes = new Dictionary<PowerOfTwo, BeamType>();
+                var authorChordLayout = new AuthorGraceChordLayout(UserLayout, beamTypes);
+                var userChordLayout = new UserGraceChordLayout(chordMemento.Layout?.Id ?? Guid.NewGuid(), UserLayout, beamTypes);
                 var graceChord = new GraceChord(this, HostMeasure, authorChordLayout, userChordLayout, styleTemplate, keyGenerator, chordMemento.Id);
                 chords.Add(graceChord);
                 graceChord.ApplyMemento(chordMemento);

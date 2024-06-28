@@ -1,4 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.Layout;
+﻿using StudioLaValse.ScoreDocument.Extensions;
+using StudioLaValse.ScoreDocument.Layout;
 using System.Xml.Linq;
 
 namespace StudioLaValse.ScoreDocument.MusicXml.Private
@@ -12,7 +13,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             this.scorePartXmlConverter = scorePartXmlConverter;
         }
 
-        public void Create(XDocument xDocument, IScoreDocumentEditor scoreEditor)
+        public void Create(XDocument xDocument, IScoreDocument scoreEditor)
         {
             scoreEditor.Clear();
 
@@ -28,7 +29,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             throw new Exception("No score-partwise found in music xml.");
         }
 
-        private void ProcessScorePartWise(XElement scorePartwise, IScoreDocumentEditor scoreEditor)
+        private void ProcessScorePartWise(XElement scorePartwise, IScoreDocument scoreEditor)
         {
             foreach (var element in scorePartwise.Elements())
             {
@@ -52,13 +53,13 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                 if (element.Name == "part")
                 {
                     var id = element.Attributes().Single(a => a.Name == "id").Value;
-                    var ribbon = scoreEditor.ReadInstrumentRibbons().First(r => r.ReadLayout().DisplayName == id);
+                    var ribbon = scoreEditor.ReadInstrumentRibbons().First(r => r.DisplayName == id);
                     scorePartXmlConverter.Create(element, ribbon);
                 }
             }
         }
 
-        private void PrepareParts(XElement partList, IScoreDocumentEditor scoreEditor)
+        private void PrepareParts(XElement partList, IScoreDocument scoreEditor)
         {
             var partNodes = partList.Elements().Where(d => d.Name == "score-part");
 
@@ -72,11 +73,11 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                 scoreEditor.AddInstrumentRibbon(instrument);
 
                 var ribbon = scoreEditor.ReadInstrumentRibbon(scoreEditor.NumberOfInstruments - 1);
-                ribbon.SetDisplayName(partListNode.Attributes().Single(a => a.Name == "id").Value);
+                ribbon.DisplayName.Value = partListNode.Attributes().Single(a => a.Name == "id").Value;
             }
         }
 
-        private void PrepareMeasures(XElement part, IScoreDocumentEditor scoreEditor)
+        private void PrepareMeasures(XElement part, IScoreDocument scoreEditor)
         {
             var lastKeySignature = 0;
             var lastBeats = 4;
@@ -96,7 +97,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
 
                 var appendedMeasure = scoreEditor.ReadScoreMeasure(scoreEditor.NumberOfMeasures - 1);
                 KeySignature keySignature = new(Step.C.MoveAlongCircleOfFifths(lastKeySignature), MajorOrMinor.Major);
-                appendedMeasure.SetKeySignature(keySignature);
+                appendedMeasure.KeySignature.Value = keySignature;
             }
         }
     }

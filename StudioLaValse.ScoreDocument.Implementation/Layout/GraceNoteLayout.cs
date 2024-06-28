@@ -1,10 +1,11 @@
 ﻿using StudioLaValse.ScoreDocument.Core;
 using StudioLaValse.ScoreDocument.Models.Base;
+using StudioLaValse.ScoreDocument.Templates;
 using System;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Layout
 {
-    public abstract class GraceNoteLayout : INoteLayout
+    public abstract class GraceNoteLayout : IGraceNoteLayout
     {
         private readonly IGraceGroupLayout graceGroupLayout;
         private readonly NoteStyleTemplate noteStyleTemplate;
@@ -12,22 +13,13 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
         protected abstract ValueTemplateProperty<int> _StaffIndex { get; }
         protected abstract ValueTemplateProperty<AccidentalDisplay> _ForceAccidental { get; }
 
-        
-        public double Scale => graceGroupLayout.Scale;
-        public double XOffset => 0;
+        public TemplateProperty<AccidentalDisplay> ForceAccidental => _ForceAccidental;
 
+        public ReadonlyTemplateProperty<double> Scale => new ReadonlyTemplatePropertyFromFunc<double>(() => noteStyleTemplate.Scale * graceGroupLayout.Scale);
 
-        public int StaffIndex
-        {
-            get => _StaffIndex.Value;
-            set => _StaffIndex.Value = value;
-        }
-        public AccidentalDisplay ForceAccidental
-        {
-            get => _ForceAccidental.Value;
-            set => _ForceAccidental.Value = value;
-        }
+        public TemplateProperty<int> StaffIndex => _StaffIndex;
 
+        public ReadonlyTemplateProperty<double> XOffset => new ReadonlyTemplatePropertyFromFunc<double>(() => 0);
 
 
         public GraceNoteLayout(IGraceGroupLayout graceGroupLayout, NoteStyleTemplate noteStyleTemplate )
@@ -57,6 +49,16 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
         {
             _StaffIndex.Reset();
             _ForceAccidental.Reset();
+        }
+
+        public void ResetAccidental()
+        {
+            _ForceAccidental.Reset();
+        }
+
+        public void ResetStaffIndex()
+        {
+            _StaffIndex.Reset();
         }
     }
 

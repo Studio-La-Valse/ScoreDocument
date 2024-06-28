@@ -1,4 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Primitives;
+﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
@@ -8,21 +8,30 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
     public class VisualNoteFactory : IVisualNoteFactory
     {
         private readonly ISelection<IUniqueScoreElement> selection;
+        private readonly IScoreDocument scoreDocumentLayout;
+        private readonly IUnitToPixelConverter unitToPixelConverter;
+        private readonly IGlyphLibrary glyphLibrary;
 
         /// <summary>
         /// The default constructor.
         /// </summary>
         /// <param name="selection"></param>
-        public VisualNoteFactory(ISelection<IUniqueScoreElement> selection)
+        /// <param name="scoreDocumentLayout"></param>
+        /// <param name="unitToPixelConverter"></param>
+        /// <param name="glyphLibrary"></param>
+        public VisualNoteFactory(ISelection<IUniqueScoreElement> selection, IScoreDocument scoreDocumentLayout, IUnitToPixelConverter unitToPixelConverter, IGlyphLibrary glyphLibrary)
         {
             this.selection = selection;
+            this.scoreDocumentLayout = scoreDocumentLayout;
+            this.unitToPixelConverter = unitToPixelConverter;
+            this.glyphLibrary = glyphLibrary;
         }
 
         /// <inheritdoc/>
-        public BaseContentWrapper Build(INoteReader note, double canvasLeft, double canvasTop, double lineSpacing, double scoreScale, double instrumentScale, bool offsetDots, Accidental? accidental, ColorARGB color)
+        public BaseContentWrapper Build(INote note, double canvasLeft, double canvasTop, double lineSpacing, double scoreScale, double instrumentScale, bool offsetDots, Accidental? accidental)
         {
-            var noteScale = note.ReadLayout().Scale;
-            return new VisualNote(note, color, canvasLeft, canvasTop, lineSpacing, scoreScale, instrumentScale, noteScale, offsetDots, accidental, selection);
+            var noteScale = note.Scale;
+            return new VisualNote(note, canvasLeft, canvasTop, lineSpacing, scoreScale, instrumentScale, noteScale, offsetDots, accidental, glyphLibrary, scoreDocumentLayout, selection, unitToPixelConverter);
         }
     }
 }

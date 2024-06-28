@@ -11,13 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\StudioLaValse.ScoreDocument.Builder\StudioLaValse.ScoreDocument.Builder.csproj" />
     <ProjectReference Include="..\StudioLaValse.ScoreDocument.Core\StudioLaValse.ScoreDocument.Core.csproj" />
     <ProjectReference Include="..\StudioLaValse.ScoreDocument.Drawable\StudioLaValse.ScoreDocument.Drawable.csproj" />
-    <ProjectReference Include="..\StudioLaValse.ScoreDocument.Layout\StudioLaValse.ScoreDocument.Layout.csproj" />
     <ProjectReference Include="..\StudioLaValse.ScoreDocument.Models\StudioLaValse.ScoreDocument.Models.csproj" />
-    <ProjectReference Include="..\StudioLaValse.ScoreDocument.MusicXml\StudioLaValse.ScoreDocument.MusicXml.csproj" />
-    <ProjectReference Include="..\StudioLaValse.ScoreDocument.Reader\StudioLaValse.ScoreDocument.Reader.csproj" />
     <ProjectReference Include="..\StudioLaValse.ScoreDocument\StudioLaValse.ScoreDocument.csproj" />
   </ItemGroup>
 

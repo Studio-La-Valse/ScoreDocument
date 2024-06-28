@@ -1,4 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Primitives;
+﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
@@ -8,26 +8,29 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
     public class VisualStaffSystemFactory : IVisualStaffSystemFactory
     {
         private readonly IVisualSystemMeasureFactory systemMeasureFactory;
-        private readonly ISelection<IUniqueScoreElement> selection;
-        private readonly IScoreDocumentLayout scoreLayoutDictionary;
+        private readonly IScoreDocument scoreLayoutDictionary;
+        private readonly IUnitToPixelConverter unitToPixelConverter;
+        private readonly IGlyphLibrary glyphLibrary;
 
         /// <summary>
         /// The default constructor.
         /// </summary>
         /// <param name="systemMeasureFactory"></param>
-        /// <param name="selection"></param>
         /// <param name="scoreLayoutDictionary"></param>
-        public VisualStaffSystemFactory(IVisualSystemMeasureFactory systemMeasureFactory, ISelection<IUniqueScoreElement> selection, IScoreDocumentLayout scoreLayoutDictionary)
+        /// <param name="unitToPixelConverter"></param>
+        /// <param name="glyphLibrary"></param>
+        public VisualStaffSystemFactory(IVisualSystemMeasureFactory systemMeasureFactory, IScoreDocument scoreLayoutDictionary, IUnitToPixelConverter unitToPixelConverter, IGlyphLibrary glyphLibrary)
         {
             this.systemMeasureFactory = systemMeasureFactory;
-            this.selection = selection;
             this.scoreLayoutDictionary = scoreLayoutDictionary;
+            this.unitToPixelConverter = unitToPixelConverter;
+            this.glyphLibrary = glyphLibrary;
         }
 
         /// <inheritdoc/>
-        public BaseContentWrapper CreateContent(IStaffSystemReader staffSystem, double canvasLeft, double canvasTop, double length, double lineSpacing, ColorARGB color)
+        public BaseContentWrapper CreateContent(IStaffSystem staffSystem, double canvasLeft, double canvasTop, double length, double lineSpacing)
         {
-            return new VisualStaffSystem(staffSystem, canvasLeft, canvasTop, length, lineSpacing, systemMeasureFactory, color, selection, scoreLayoutDictionary);
+            return new VisualStaffSystem(staffSystem, canvasLeft, canvasTop, length, lineSpacing, glyphLibrary, systemMeasureFactory, scoreLayoutDictionary, unitToPixelConverter);
         }
     }
 }

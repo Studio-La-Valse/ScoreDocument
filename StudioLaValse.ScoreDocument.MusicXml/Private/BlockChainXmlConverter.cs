@@ -1,8 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Core;
-using StudioLaValse.ScoreDocument.Primitives;
-using System;
-using System.Diagnostics;
-using System.Linq.Expressions;
+﻿using System.Diagnostics;
 using System.Xml.Linq;
 
 namespace StudioLaValse.ScoreDocument.MusicXml.Private
@@ -23,6 +19,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
 
     internal class GraceBlock
     {
+        public required RythmicDuration RythmicDuration { get; set; }
         public List<Chord> Chords { get; } = [];
     }
 
@@ -35,7 +32,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
 
         internal static readonly string[] beamTypesThatIndicateAGroupIsNotClosedYet = ["hook start", "continue", "begin"];
 
-        public void ProcessElements(IEnumerable<XElement> elements, IMeasureBlockChainEditor editor, int divisionsOfOneQuarter)
+        public void ProcessElements(IEnumerable<XElement> elements, IMeasureBlockChain editor, int divisionsOfOneQuarter)
         {
             editor.Clear();
 
@@ -86,7 +83,21 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
 
                 if (element.IsGrace())
                 {
-                    pendingGrace ??= new GraceBlock();
+                    if(pendingGrace is null)
+                    {
+                        var _displayDuration = displayDuration;
+                        if(_displayDuration is null)
+                        {
+                            if (!RythmicDuration.TryConstruct(actualDuration, out _displayDuration))
+                            {
+                                throw new Exception("A valid rythmic duration is required for a note or measure element with a duration, but could not be found.");
+                            }
+                        }
+                        pendingGrace = new GraceBlock
+                        {
+                            RythmicDuration = _displayDuration,
+                        };
+                    }
 
                     if (!element.IsChord())
                     {
@@ -144,7 +155,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             return blocks;
         }
 
-        private void FillBlock(MeasureBlock block, IMeasureBlockEditor measureBlock)
+        private void FillBlock(MeasureBlock block, IMeasureBlock measureBlock)
         {
             foreach(var chord in block.Chords)
             {
@@ -156,20 +167,20 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                     var staffIndex = note.StaffIndex() ?? 0;
                     addedChord.Add(note.ParsePitch());
                     var addedNote = addedChord.ReadNotes().Last();
-                    addedNote.SetStaffIndex(staffIndex);
+                    addedNote.StaffIndex.Value = staffIndex;
                 }
                 FillGrace(chord.Grace, addedChord);
             }
         }
         
-        private void FillGrace(GraceBlock? chord, IGraceableEditor<IGraceGroupEditor> targetChord)
+        private void FillGrace(GraceBlock? chord, IGraceable targetChord)
         {
             if(chord is null)
             {
                 return;
             }
 
-            targetChord.Grace();
+            targetChord.Grace(chord.RythmicDuration);
             var addedGrace = targetChord.ReadGraceGroup() ?? throw new UnreachableException();
             foreach (var graceChord in chord.Chords)
             {
@@ -180,7 +191,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                     var staffIndex = note.StaffIndex() ?? 0;
                     addedGraceChord.Add(note.ParsePitch());
                     var addedNote = addedGraceChord.ReadNotes().Last();
-                    addedNote.SetStaffIndex(staffIndex);
+                    addedNote.StaffIndex.Value = staffIndex;
                 }
                 
                 FillGrace(graceChord.Grace, addedGraceChord);
@@ -237,26 +248,6 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                     actualDuration = tupletInformation.ToActualDuration(displayDuration);
                 }
             }
-        }
-
-        private static void GetInformationFromMeasureElement(XElement measureElement,
-            out bool chord, out bool rest, out int? staff, out bool forward, out bool backup, out Pitch? pitch, out bool stemUp)
-        {
-            pitch = null;
-            chord = measureElement.Element("chord") != null;
-            rest = measureElement.Element("rest") != null;
-            stemUp = measureElement.Descendants().SingleOrDefault(d => d.Name == "stem")?.Value == "up";
-
-            forward = measureElement.Name == "forward";
-            backup = measureElement.Name == "backup";
-
-            staff = measureElement.Descendants().SingleOrDefault(d => d.Name == "staff")?.Value.ToIntOrThrow() - 1;
-            if (forward || backup || rest)
-            {
-                return;
-            }
-
-            pitch = measureElement.ParsePitch();
         }
     }
 }

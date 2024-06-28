@@ -1,6 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Reader;
-
-namespace StudioLaValse.ScoreDocument.Drawable.Scenes
+﻿namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
     /// <summary>
     /// A factory for a visual instrument measure.
@@ -19,8 +17,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// <param name="paddingLeft"></param>
         /// <param name="paddingRight"></param>
         /// <param name="lineSpacing"></param>
-        /// <param name="color"></param>
+        /// <param name="positionSpace"></param>
         /// <returns></returns>
-        BaseContentWrapper CreateContent(IInstrumentMeasureReader source, IStaffGroupReader staffGroup, IReadOnlyDictionary<Position, double> positionDictionary, double canvasTop, double canvasLeft, double width, double paddingLeft, double paddingRight, double lineSpacing, ColorARGB color);
+        BaseContentWrapper CreateContent(IInstrumentMeasure source, IStaffGroup staffGroup, IReadOnlyDictionary<Position, double> positionDictionary, double canvasTop, double canvasLeft, double width, double paddingLeft, double paddingRight, double lineSpacing, double positionSpace);
     }
 }

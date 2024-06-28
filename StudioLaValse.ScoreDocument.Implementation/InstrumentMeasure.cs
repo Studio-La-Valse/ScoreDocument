@@ -148,5 +148,10 @@
                 }
             }
         }
+
+        public bool Equals(IUniqueScoreElement? other)
+        {
+            return other is null ? false : other.Id == Id;
+        }
     }
 }

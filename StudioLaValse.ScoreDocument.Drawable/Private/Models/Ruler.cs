@@ -49,9 +49,7 @@
 
             var radians = Angle.ToRadians();
             var a = Origin.X - point.X;
-            // radians negative because I want rotation to move counter clockwise (for positive angles),
-            // and we need to take into account that a canvas has inverted Y.
-            var o = a * Math.Tan(-radians);
+            var o = a * Math.Tan(radians);
             var z = Origin.Y - point.Y - o;
             XY intersection = new(point.X, point.Y + z);
             return intersection;

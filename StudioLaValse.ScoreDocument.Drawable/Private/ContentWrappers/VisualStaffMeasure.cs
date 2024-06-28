@@ -1,22 +1,24 @@
-﻿using StudioLaValse.ScoreDocument.Reader;
-using StudioLaValse.ScoreDocument.Reader.Extensions;
+﻿using StudioLaValse.ScoreDocument.Extensions;
+using StudioLaValse.ScoreDocument.GlyphLibrary;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
     internal sealed class VisualStaffMeasure : BaseContentWrapper
     {
-        private readonly IStaffReader staff;
+        private readonly IStaff staff;
         private readonly Clef openingClef;
         private readonly Clef? invalidatingNextClef;
-        private readonly double paddingLeft;
-        private readonly double drawableWidth;
+        private readonly IReadOnlyDictionary<Position, double> positionPositions;
         private readonly double canvasTop;
         private readonly double globalLineSpacing;
         private readonly double scoreScale;
         private readonly double instrumentScale;
+        private readonly IGlyphLibrary glyphLibrary;
+        private readonly IUnitToPixelConverter unitToPixelConverter;
 
         public double CanvasLeft { get; }
         public double Width { get; }
+        public double Scale => scoreScale * instrumentScale;
         public KeySignature? NextMeasureKeySignature { get; }
         public IEnumerable<ClefChange> ClefChanges { get; }
 
@@ -33,10 +35,10 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                 }
 
                 var _glyph = NextMeasureKeySignature.Value.IndexInCircleOfFifths > 0 ?
-                    GlyphLibrary.Sharp :
-                    GlyphLibrary.Flat;
+                    glyphLibrary.Sharp(Scale) :
+                    glyphLibrary.Flat(Scale);
 
-                var glyphWidth = _glyph.Width;
+                var glyphWidth = _glyph.Width();
 
                 var newLines = NextMeasureKeySignature.Value.DefaultFlats ?
                     NextMeasureKeySignature.Value.EnumerateFlatLines(openingClef) :
@@ -58,7 +60,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                     DrawableScoreGlyph glyph = new(
                         xPosition,
                         yPosition,
-                        GlyphLibrary.Natural,
+                        glyphLibrary.Natural(Scale),
                         HorizontalTextOrigin.Center,
                         VerticalTextOrigin.Center,
                         color: ForegroundColor);
@@ -95,18 +97,16 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                         continue;
                     }
 
+                    var scale = scoreScale * instrumentScale * 0.8;
                     var glyph = clefchange.Clef.ClefSpecies switch
                     {
-                        ClefSpecies.C => GlyphLibrary.ClefC,
-                        ClefSpecies.F => GlyphLibrary.ClefF,
-                        ClefSpecies.G => GlyphLibrary.ClefG,
+                        ClefSpecies.C => glyphLibrary.ClefC(scale),
+                        ClefSpecies.F => glyphLibrary.ClefF(scale),
+                        ClefSpecies.G => glyphLibrary.ClefG(scale),
                         _ => throw new NotSupportedException()
                     };
-                    glyph.Scale = scoreScale * instrumentScale;
 
-                    var posX = XPositionFromParameter((double)clefchange.Position.Decimal) - (GlyphLibrary.NoteHeadBlack.Width / 2) - 0.1;
-
-                    glyph.Scale = 0.8;
+                    var posX = positionPositions[clefchange.Position] - 0.1;
 
                     yield return new DrawableScoreGlyph(
                         posX,
@@ -127,16 +127,16 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                     return null;
                 }
 
+                var scale = scoreScale * instrumentScale;
                 var glyph = invalidatingNextClef.ClefSpecies switch
                 {
-                    ClefSpecies.C => GlyphLibrary.ClefC,
-                    ClefSpecies.F => GlyphLibrary.ClefF,
-                    ClefSpecies.G => GlyphLibrary.ClefG,
+                    ClefSpecies.C => glyphLibrary.ClefC(scale),
+                    ClefSpecies.F => glyphLibrary.ClefF(scale),
+                    ClefSpecies.G => glyphLibrary.ClefG(scale),
                     _ => throw new NotSupportedException()
                 };
-                glyph.Scale = scoreScale * instrumentScale;
 
-                var posX = CanvasLeft + Width - 0.05 - glyph.Width;
+                var posX = CanvasLeft + Width - 0.05 - glyph.Width();
 
 
                 return new DrawableScoreGlyph(
@@ -152,29 +152,31 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 
 
         public VisualStaffMeasure(
-            IStaffReader staff,
+            IStaff staff,
             Clef openingClef,
             KeySignature? prepareNext,
             Clef? invalidatingNextClef,
-            IEnumerable<ClefChange> clefChanges,
+            ClefChange[] clefChanges,
+            IReadOnlyDictionary<Position, double> positionPositions,
             double canvasLeft,
             double width,
-            double paddingLeft,
-            double drawableWidth,
             double canvasTop,
             double globalLineSpacing,
             double scoreScale,
-            double instrumentScale)
+            double instrumentScale,
+            IGlyphLibrary glyphLibrary,
+            IUnitToPixelConverter unitToPixelConverter)
         {
             this.staff = staff;
             this.openingClef = openingClef;
             this.invalidatingNextClef = invalidatingNextClef;
-            this.paddingLeft = paddingLeft;
-            this.drawableWidth = drawableWidth;
             this.canvasTop = canvasTop;
             this.globalLineSpacing = globalLineSpacing;
             this.scoreScale = scoreScale;
             this.instrumentScale = instrumentScale;
+            this.glyphLibrary = glyphLibrary;
+            this.unitToPixelConverter = unitToPixelConverter;
+            this.positionPositions = positionPositions;
 
             NextMeasureKeySignature = prepareNext;
             ClefChanges = clefChanges;
@@ -184,21 +186,14 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 
 
 
-
-        public double XPositionFromParameter(double parameter)
-        {
-            return CanvasLeft + paddingLeft + (drawableWidth * parameter);
-        }
         public double HeightFromLineIndex(int line)
         {
-            return staff.HeightFromLineIndex(canvasTop, line, globalLineSpacing, scoreScale, instrumentScale);
+            return canvasTop + unitToPixelConverter.UnitsToPixels(staff.DistanceFromTop(line, globalLineSpacing, scoreScale, instrumentScale));
         }
 
         public override IEnumerable<BaseContentWrapper> GetContentWrappers()
         {
-            List<BaseContentWrapper> content = [];
-
-            return content;
+            yield break;
         }
         public override IEnumerable<BaseDrawableElement> GetDrawableElements()
         {

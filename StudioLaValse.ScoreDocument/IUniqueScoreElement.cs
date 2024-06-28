@@ -3,7 +3,7 @@
     /// <summary>
     /// Defines a score element that has an ID that can be queried to compare two score elements.
     /// </summary>
-    public interface IUniqueScoreElement
+    public interface IUniqueScoreElement : IEquatable<IUniqueScoreElement>
     {
         /// <summary>
         /// The element id of the element. 

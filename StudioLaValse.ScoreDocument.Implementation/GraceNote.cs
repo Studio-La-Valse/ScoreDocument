@@ -1,8 +1,6 @@
-﻿using StudioLaValse.ScoreDocument.Primitives;
-
-namespace StudioLaValse.ScoreDocument.Implementation
+﻿namespace StudioLaValse.ScoreDocument.Implementation
 {
-    public sealed class GraceNote : ScoreElement
+    public sealed class GraceNote : ScoreElement, IMementoElement<GraceNoteModel>
     {
         public AuthorGraceNoteLayout AuthorLayout { get; }
         public UserGraceNoteLayout UserLayout { get; }
@@ -27,7 +25,7 @@ namespace StudioLaValse.ScoreDocument.Implementation
             return new GraceNoteModel()
             {
                 Id = Guid,
-                ForceAccidental = (int)AuthorLayout.ForceAccidental,
+                ForceAccidental = (int)AuthorLayout.ForceAccidental.Value,
                 Pitch = Pitch.Convert(),
                 StaffIndex = AuthorLayout.StaffIndex,
                 Layout = UserLayout.GetMemento()

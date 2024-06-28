@@ -1,6 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.Layout.Templates;
-using StudioLaValse.ScoreDocument.Reader;
-using StudioLaValse.ScoreDocument.Reader.Extensions;
+﻿using StudioLaValse.ScoreDocument.Extensions;
+using StudioLaValse.ScoreDocument.GlyphLibrary;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
@@ -10,35 +9,29 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
     public class PageViewSceneFactory : IVisualScoreDocumentContentFactory
     {
         private readonly IVisualPageFactory pageFactory;
-        private readonly double smallPadding;
-        private readonly double largePadding;
 
         /// <summary>
         /// The default constructor.
         /// </summary>
         /// <param name="pageFactory"></param>
-        /// <param name="smallPadding"></param>
-        /// <param name="largePadding"></param>
-        public PageViewSceneFactory(IVisualPageFactory pageFactory, double smallPadding, double largePadding)
+        public PageViewSceneFactory(IVisualPageFactory pageFactory)
         {
             this.pageFactory = pageFactory;
-            this.smallPadding = smallPadding;
-            this.largePadding = largePadding;
         }
 
         /// <inheritdoc/>
-        public BaseContentWrapper CreateContent(IScoreDocumentReader scoreDocument)
+        public BaseContentWrapper CreateContent(IScoreDocument scoreDocument)
         {
             IList<BaseContentWrapper> pages = [];
 
             var pageCanvasLeft = 0d;
             foreach (var page in scoreDocument.ReadPages())
             {
-                var pageLayout = page.ReadLayout();
+                var pageLayout = page;
                 var visualPage = pageFactory.CreateContent(page, pageCanvasLeft, 0);
                 pages.Add(visualPage);
-                pageCanvasLeft += pageLayout.PageWidth;
-                pageCanvasLeft += pages.Count % 2 == 0 ? largePadding : smallPadding;
+                pageCanvasLeft += visualPage.BoundingBox().Width;
+                pageCanvasLeft += pages.Count % 2 == 0 ? 5 : 10;
             }
 
             return new VisualPageCollection(pages);

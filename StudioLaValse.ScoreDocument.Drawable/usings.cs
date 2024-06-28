@@ -13,4 +13,3 @@ global using StudioLaValse.ScoreDocument.Drawable.Private.VisualParents;
 global using StudioLaValse.ScoreDocument.Drawable.Scenes;
 global using StudioLaValse.ScoreDocument.Layout;
 global using System.Diagnostics;
-global using StudioLaValse.ScoreDocument.Reader;

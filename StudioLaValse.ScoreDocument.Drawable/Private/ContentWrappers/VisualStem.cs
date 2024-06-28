@@ -1,24 +1,22 @@
-﻿using StudioLaValse.ScoreDocument.Reader;
-
-namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
+﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
     internal sealed class VisualStem : BaseContentWrapper
     {
         private readonly double thickness;
-        private readonly ColorARGB color;
+        private readonly IScoreDocument scoreDocumentLayout;
 
-        public bool VisuallyUp => End.Y < Origin.Y;
 
         public XY Origin { get; }
         public XY End { get; }
-        public IChordReader Chord { get; }
+        public IChord Chord { get; }
 
         public double Thickness => this.thickness;
+        public bool VisuallyUp => End.Y < Origin.Y;
 
-        public VisualStem(XY origin, XY end, double thickness, IChordReader chord, ColorARGB color)
+        public VisualStem(XY origin, XY end, double thickness, IChord chord, IScoreDocument scoreDocumentLayout)
         {
-            this.color = color;
             this.thickness = thickness;
+            this.scoreDocumentLayout = scoreDocumentLayout;
 
             Origin = origin;
             End = end;
@@ -29,7 +27,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 
         public override IEnumerable<BaseDrawableElement> GetDrawableElements()
         {
-            yield return new DrawableLine(Origin, End, color: color, Thickness);
+            yield return new DrawableLine(Origin, End, color: scoreDocumentLayout.PageForegroundColor.Value.FromPrimitive(), Thickness);
         }
         public override IEnumerable<BaseContentWrapper> GetContentWrappers()
         {

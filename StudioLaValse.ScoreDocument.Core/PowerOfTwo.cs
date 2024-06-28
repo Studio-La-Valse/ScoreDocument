@@ -144,6 +144,12 @@ namespace StudioLaValse.ScoreDocument.Core
         {
             return Value.GetHashCode();
         }
+
+        /// <inheritdoc/>
+        public override bool Equals(object? obj)
+        {
+            return Equals(obj as PowerOfTwo);
+        }
     }
 
     /// <summary>

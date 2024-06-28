@@ -6,7 +6,7 @@
     public interface IScoreElement
     {
         /// <summary>
-        /// Enumerate the children of thie element.
+        /// Enumerate the children of this element.
         /// </summary>
         /// <returns></returns>
         IEnumerable<IScoreElement> EnumerateChildren();

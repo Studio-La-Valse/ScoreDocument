@@ -4,7 +4,7 @@
     /// Defines a template property that has a field and a value. When the value is assigned a value, this value will instead be assigned to the backing field. If the field has a value assigned, this value will be used. If not, the value will be retrieved by the provided value getter.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class ValueTemplateProperty<T> where T : struct
+    public class ValueTemplateProperty<T> : TemplateProperty<T> where T : struct
     {
         private readonly Func<T> getDefaultValue;
 
@@ -16,7 +16,7 @@
         /// <summary>
         /// The value of the property.
         /// </summary>
-        public T Value
+        public override T Value
         {
             get
             {
@@ -45,7 +45,7 @@
         /// <summary>
         /// Reset the backing field value to its default value.
         /// </summary>
-        public void Reset()
+        public override void Reset()
         {
             Field = null;
         }

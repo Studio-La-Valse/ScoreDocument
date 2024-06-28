@@ -1,6 +1,6 @@
 ﻿using StudioLaValse.ScoreDocument.Core;
 using StudioLaValse.ScoreDocument.Layout;
-using StudioLaValse.ScoreDocument.Layout.Templates;
+using StudioLaValse.ScoreDocument.Templates;
 
 namespace StudioLaValse.ScoreDocument.Models
 {

@@ -1,6 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Reader;
-
-namespace StudioLaValse.ScoreDocument.Drawable.Scenes
+﻿namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
     /// <summary>
     /// A factory to create visual score document pages.
@@ -14,6 +12,6 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// <param name="canvasLeft"></param>
         /// <param name="canvasTop"></param>
         /// <returns></returns>
-        BaseContentWrapper CreateContent(IPageReader page, double canvasLeft, double canvasTop);
+        BaseContentWrapper CreateContent(IPage page, double canvasLeft, double canvasTop);
     }
 }

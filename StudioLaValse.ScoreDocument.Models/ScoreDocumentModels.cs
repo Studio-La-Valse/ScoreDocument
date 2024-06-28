@@ -1,5 +1,4 @@
 ﻿using StudioLaValse.ScoreDocument.Models.Base;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace StudioLaValse.ScoreDocument.Models
 {
@@ -27,14 +26,6 @@ namespace StudioLaValse.ScoreDocument.Models
                 Id = Guid.NewGuid(),
                 InstrumentRibbons = [],
                 ScoreMeasures = [],
-                ChordPositionFactor = null,
-                FirstSystemIndent = null,
-                ForegroundColor = null,
-                HorizontalStaffLineThickness = null,
-                PageColor = null,
-                Scale = null,
-                StemLineThickness = null,
-                VerticalStaffLineThickness = null,
                 Layout = null
             };
         }
@@ -101,6 +92,8 @@ namespace StudioLaValse.ScoreDocument.Models
         public required List<GraceNoteModel> Notes { get; set; }
 
         public required GraceChordLayoutModel? Layout { get; set; }
+
+        public required GraceGroupModel? GraceGroup { get; set; }
     }
 
     public class NoteModel : NoteMembers

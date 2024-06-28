@@ -1,38 +1,21 @@
-﻿using StudioLaValse.ScoreDocument.Core;
-using StudioLaValse.ScoreDocument.Layout.Templates;
-using StudioLaValse.ScoreDocument.Models;
-using StudioLaValse.ScoreDocument.Models.Base;
-using System;
+﻿using StudioLaValse.ScoreDocument.Models.Base;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Layout
 {
-    public abstract class NoteLayout
+    public abstract class NoteLayout : INoteLayout
     {
         public abstract ValueTemplateProperty<AccidentalDisplay> _ForceAccidental { get; }
         public abstract ValueTemplateProperty<double> _Scale { get; }
         public abstract ValueTemplateProperty<int> _StaffIndex { get; }
         public abstract ValueTemplateProperty<double> _XOffset { get; }
 
-        public AccidentalDisplay ForceAccidental
-        {
-            get => _ForceAccidental.Value;
-            set => _ForceAccidental.Value = value;
-        }
-        public double Scale
-        {
-            get => _Scale.Value;
-            set => _Scale.Value = value;
-        }
-        public int StaffIndex
-        {
-            get => _StaffIndex.Value;
-            set => _StaffIndex.Value = value;
-        }
-        public double XOffset
-        {
-            get => _XOffset.Value;
-            set => _XOffset.Value = value;
-        }
+        public TemplateProperty<AccidentalDisplay> ForceAccidental => _ForceAccidental;
+
+        public TemplateProperty<double> Scale => _Scale;
+
+        public TemplateProperty<int> StaffIndex => _StaffIndex;
+
+        public TemplateProperty<double> XOffset => _XOffset;
 
 
         public void ApplyMemento(NoteLayoutMembers? memento)
@@ -53,6 +36,26 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
             ApplyMemento(memento as NoteLayoutMembers);
         }
 
+        public void ResetAccidental()
+        {
+            _ForceAccidental.Reset();
+        }
+
+        public void ResetScale()
+        {
+            _Scale.Reset();
+        }
+
+        public void ResetStaffIndex()
+        {
+            _StaffIndex.Reset();
+        }
+
+        public void ResetXOffset()
+        {
+            _XOffset.Reset();
+        }
+
         public void Restore()
         {
             _StaffIndex.Reset();
@@ -62,7 +65,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
         }
     }
 
-    public class AuthorNoteLayout : NoteLayout, INoteLayout, ILayout<NoteLayoutMembers>
+    public class AuthorNoteLayout : NoteLayout, ILayout<NoteLayoutMembers>
     {
         private readonly NoteStyleTemplate styleTemplate;
 
@@ -96,7 +99,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
         }
     }
 
-    public class UserNoteLayout : NoteLayout, INoteLayout, ILayout<NoteLayoutModel>
+    public class UserNoteLayout : NoteLayout, ILayout<NoteLayoutModel>
     {
         public Guid Id { get; }
         public override ValueTemplateProperty<AccidentalDisplay> _ForceAccidental { get; }

@@ -1,6 +1,6 @@
 ﻿namespace StudioLaValse.ScoreDocument.Implementation
 {
-    public class ScoreMeasure : ScoreElement, IMementoElement<ScoreMeasureModel>
+    public class ScoreMeasure : ScoreElement, IUniqueScoreElement, IMementoElement<ScoreMeasureModel>
     {
         private readonly ScoreDocumentCore score;
 
@@ -94,8 +94,6 @@
                 IndexInScore = IndexInScore,
                 KeySignature = AuthorLayout._KeySignature.Field?.Convert(),
                 PaddingBottom = AuthorLayout._PaddingBottom.Field,
-                PaddingLeft = AuthorLayout._PaddingLeft.Field,
-                PaddingRight = AuthorLayout._PaddingRight.Field,
             };
         }
         public void ApplyMemento(ScoreMeasureModel memento)
@@ -108,6 +106,11 @@
                 var measure = GetMeasureCore(measureMemento.InstrumentRibbonIndex);
                 measure.ApplyMemento(measureMemento);
             }
+        }
+
+        public bool Equals(IUniqueScoreElement? other)
+        {
+            return other is null ? false : other.Id == Id;
         }
     }
 }

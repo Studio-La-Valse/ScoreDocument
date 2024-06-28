@@ -54,6 +54,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\StudioLaValse.ScoreDocument.Core\StudioLaValse.ScoreDocument.Core.csproj" />
+	  <ProjectReference Include="..\StudioLaValse.ScoreDocument.GlyphLibrary\StudioLaValse.ScoreDocument.GlyphLibrary.csproj" />
 	</ItemGroup>
 	
 </Project>

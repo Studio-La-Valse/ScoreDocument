@@ -1,9 +1,6 @@
-﻿using StudioLaValse.ScoreDocument.Implementation.Interfaces;
-using StudioLaValse.ScoreDocument.Implementation.Layout;
-
-namespace StudioLaValse.ScoreDocument.Implementation
+﻿namespace StudioLaValse.ScoreDocument.Implementation
 {
-    public class ScoreDocumentCore : ScoreElement, IMementoElement<ScoreDocumentModel>
+    public class ScoreDocumentCore : ScoreElement, IUniqueScoreElement, IMementoElement<ScoreDocumentModel>
     {
         private readonly ScoreContentTable contentTable;
         private readonly ScoreDocumentStyleTemplate styleTemplate;
@@ -83,7 +80,7 @@ namespace StudioLaValse.ScoreDocument.Implementation
                     new TimeSignature(4, 4);
 
             var layout = new AuthorScoreMeasureLayout(styleTemplate.ScoreMeasureStyleTemplate);
-            var secondaryLayout = new UserScoreMeasureLayout(layoutGuid, layout);
+            var secondaryLayout = new UserScoreMeasureLayout(layoutGuid, layout, styleTemplate.ScoreMeasureStyleTemplate);
             ScoreMeasure scoreMeasure = new(this, timeSignature, styleTemplate, layout, secondaryLayout, keyGenerator, guid);
             return scoreMeasure;
         }
@@ -158,14 +155,6 @@ namespace StudioLaValse.ScoreDocument.Implementation
                 Layout = UserLayout.GetMemento(),
                 InstrumentRibbons = EnumerateRibbonsCore().Select(e => e.GetMemento()).ToList(),
                 ScoreMeasures = EnumerateMeasuresCore().Select(e => e.GetMemento()).ToList(),
-                ChordPositionFactor = AuthorLayout._ChordPositionFactor.Field,
-                FirstSystemIndent = AuthorLayout._FirstSystemIndent.Field,
-                ForegroundColor = AuthorLayout._PageForegroundColor.Field?.Convert(),
-                PageColor = AuthorLayout._PageColor.Field?.Convert(),
-                HorizontalStaffLineThickness = AuthorLayout._HorizontalStaffLineThickness.Field,
-                Scale = AuthorLayout._Scale.Field,
-                StemLineThickness = AuthorLayout._StemLineThickness.Field,
-                VerticalStaffLineThickness = AuthorLayout._VerticalStaffLineThickness.Field,
             };
         }
         public void ApplyMemento(ScoreDocumentModel memento)
@@ -190,6 +179,11 @@ namespace StudioLaValse.ScoreDocument.Implementation
 
                 scoreMeasure.ApplyMemento(scoreMeasureMemento);
             }
+        }
+
+        public bool Equals(IUniqueScoreElement? other)
+        {
+            return other is null ? false : other.Id == Id;
         }
     }
 }

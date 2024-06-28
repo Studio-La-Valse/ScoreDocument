@@ -13,15 +13,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudioLaValse.ScoreDocument
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudioLaValse.ScoreDocument.Core", "StudioLaValse.ScoreDocument.Core\StudioLaValse.ScoreDocument.Core.csproj", "{27D153AF-9E06-4F33-8E05-64E47388AC19}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudioLaValse.ScoreDocument.Builder", "StudioLaValse.ScoreDocument.Builder\StudioLaValse.ScoreDocument.Builder.csproj", "{5E820AB8-E001-4FF0-9A87-9C8DED938218}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudioLaValse.ScoreDocument.Layout", "StudioLaValse.ScoreDocument.Layout\StudioLaValse.ScoreDocument.Layout.csproj", "{F07CF37A-A9AA-40E0-9A30-477328A63830}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudioLaValse.ScoreDocument.Reader", "StudioLaValse.ScoreDocument.Reader\StudioLaValse.ScoreDocument.Reader.csproj", "{1C1B9D73-A40F-4BE0-B616-0EDF7529D64E}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudioLaValse.ScoreDocument.Models", "StudioLaValse.ScoreDocument.Models\StudioLaValse.ScoreDocument.Models.csproj", "{3B807BF2-94E1-48A0-BCA5-FE9DAC431C30}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudioLaValse.ScoreDocument.Implementation", "StudioLaValse.ScoreDocument.Implementation\StudioLaValse.ScoreDocument.Implementation.csproj", "{7EA9ACB8-7C68-498D-B257-EF220BD270BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudioLaValse.ScoreDocument.Implementation", "StudioLaValse.ScoreDocument.Implementation\StudioLaValse.ScoreDocument.Implementation.csproj", "{7EA9ACB8-7C68-498D-B257-EF220BD270BA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudioLaValse.ScoreDocument.GlyphLibrary", "StudioLaValse.ScoreDocument.GlyphLibrary\StudioLaValse.ScoreDocument.GlyphLibrary.csproj", "{2223591B-A261-44AD-9BB2-B8135BF17A09}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,18 +45,6 @@ Global
 		{27D153AF-9E06-4F33-8E05-64E47388AC19}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27D153AF-9E06-4F33-8E05-64E47388AC19}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27D153AF-9E06-4F33-8E05-64E47388AC19}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5E820AB8-E001-4FF0-9A87-9C8DED938218}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5E820AB8-E001-4FF0-9A87-9C8DED938218}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5E820AB8-E001-4FF0-9A87-9C8DED938218}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5E820AB8-E001-4FF0-9A87-9C8DED938218}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F07CF37A-A9AA-40E0-9A30-477328A63830}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F07CF37A-A9AA-40E0-9A30-477328A63830}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F07CF37A-A9AA-40E0-9A30-477328A63830}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F07CF37A-A9AA-40E0-9A30-477328A63830}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1C1B9D73-A40F-4BE0-B616-0EDF7529D64E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1C1B9D73-A40F-4BE0-B616-0EDF7529D64E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1C1B9D73-A40F-4BE0-B616-0EDF7529D64E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1C1B9D73-A40F-4BE0-B616-0EDF7529D64E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3B807BF2-94E1-48A0-BCA5-FE9DAC431C30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3B807BF2-94E1-48A0-BCA5-FE9DAC431C30}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B807BF2-94E1-48A0-BCA5-FE9DAC431C30}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -69,6 +53,10 @@ Global
 		{7EA9ACB8-7C68-498D-B257-EF220BD270BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7EA9ACB8-7C68-498D-B257-EF220BD270BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7EA9ACB8-7C68-498D-B257-EF220BD270BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2223591B-A261-44AD-9BB2-B8135BF17A09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2223591B-A261-44AD-9BB2-B8135BF17A09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2223591B-A261-44AD-9BB2-B8135BF17A09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2223591B-A261-44AD-9BB2-B8135BF17A09}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

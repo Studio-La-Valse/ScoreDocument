@@ -1,27 +1,36 @@
-﻿using StudioLaValse.ScoreDocument.Layout.Templates;
-using StudioLaValse.ScoreDocument.Models;
-using StudioLaValse.ScoreDocument.Models.Base;
+﻿using StudioLaValse.ScoreDocument.Models.Base;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Layout
 {
-    public abstract class MeasureBlockLayout
+    public abstract class MeasureBlockLayout : IMeasureBlockLayout
     {
         public abstract ValueTemplateProperty<double> _StemLength { get; }
         public abstract ValueTemplateProperty<double> _BeamAngle { get; }
-        public abstract ValueTemplateProperty<double> _BeamThickness { get; }
-        public abstract ValueTemplateProperty<double> _BeamSpacing { get; }
         public abstract ValueTemplateProperty<StemDirection> _StemDirection { get; }
 
-        public double StemLength { get => _StemLength.Value; set => _StemLength.Value = value; }
-        public double BeamAngle { get => _BeamAngle.Value; set => _BeamAngle.Value = value; }
-        public StemDirection StemDirection { get => _StemDirection.Value; set => _StemDirection.Value = value; }
+        public TemplateProperty<StemDirection> StemDirection => _StemDirection;
 
-        public double BeamThickness { get => _BeamThickness.Value; }
-        public double BeamSpacing { get => _BeamSpacing.Value; }
+        public TemplateProperty<double> StemLength => _StemLength;
+
+        public TemplateProperty<double> BeamAngle => _BeamAngle;
+
+        public ReadonlyTemplateProperty<double> BeamThickness { get; }
+
+        public ReadonlyTemplateProperty<double> BeamSpacing { get; }
+
+
+        protected MeasureBlockLayout(MeasureBlockStyleTemplate measureBlockStyleTemplate)
+        {
+            BeamThickness = new ReadonlyTemplatePropertyFromFunc<double>(() => measureBlockStyleTemplate.BeamThickness);
+            BeamSpacing = new ReadonlyTemplatePropertyFromFunc<double>(() => measureBlockStyleTemplate.BeamSpacing);
+        }
+
+
         public void Restore()
         {
             _StemLength.Reset();
             _BeamAngle.Reset();
+            _StemDirection.Reset();
         }
 
         public void ApplyMemento(MeasureBlockLayoutMembers? memento)
@@ -34,6 +43,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
 
             _StemLength.Field = memento.StemLength;
             _BeamAngle.Field = memento.BeamAngle;
+            _StemDirection.Field = memento.StemDirection;
         }
         public void ApplyMemento(MeasureBlockLayoutModel? memento)
         {
@@ -41,22 +51,18 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
         }
     }
 
-    public class AuthorMeasureBlockLayout : MeasureBlockLayout, IMeasureBlockLayout, ILayout<MeasureBlockLayoutMembers>
+    public class AuthorMeasureBlockLayout : MeasureBlockLayout, ILayout<MeasureBlockLayoutMembers>
     {
         public override ValueTemplateProperty<double> _StemLength { get; }
         public override ValueTemplateProperty<double> _BeamAngle { get; }
-        public override ValueTemplateProperty<double> _BeamThickness { get; }
-        public override ValueTemplateProperty<double> _BeamSpacing { get; }
         public override ValueTemplateProperty<StemDirection> _StemDirection { get; }
 
 
-        public AuthorMeasureBlockLayout(MeasureBlockStyleTemplate styleTemplate, int voice)
+        public AuthorMeasureBlockLayout(MeasureBlockStyleTemplate styleTemplate, int voice) : base(styleTemplate)
         {
             _StemLength = new ValueTemplateProperty<double>(() => styleTemplate.StemLength);
             _BeamAngle = new ValueTemplateProperty<double>(() => styleTemplate.BeamAngle);
-            _BeamThickness = new ValueTemplateProperty<double>(() => styleTemplate.BeamThickness);
-            _BeamSpacing = new ValueTemplateProperty<double>(() => styleTemplate.BeamSpacing);
-            _StemDirection = new ValueTemplateProperty<StemDirection>(() => voice % 2 == 0 ? StemDirection.Up : StemDirection.Down);
+            _StemDirection = new ValueTemplateProperty<StemDirection>(() => voice % 2 == 0 ? ScoreDocument.Layout.StemDirection.Up : ScoreDocument.Layout.StemDirection.Down);
         }
 
         public MeasureBlockLayoutMembers GetMemento()
@@ -76,19 +82,15 @@ namespace StudioLaValse.ScoreDocument.Implementation.Layout
 
         public override ValueTemplateProperty<double> _StemLength { get; }
         public override ValueTemplateProperty<double> _BeamAngle { get; }
-        public override ValueTemplateProperty<double> _BeamThickness { get; }
-        public override ValueTemplateProperty<double> _BeamSpacing { get; }
         public override ValueTemplateProperty<StemDirection> _StemDirection { get; }
 
 
-        public UserMeasureBlockLayout(Guid id, AuthorMeasureBlockLayout blockLayout)
+        public UserMeasureBlockLayout(Guid id, AuthorMeasureBlockLayout blockLayout, MeasureBlockStyleTemplate styleTemplate) : base(styleTemplate)
         {
             Id = id;
 
             _StemLength = new ValueTemplateProperty<double>(() => blockLayout.StemLength);
             _BeamAngle = new ValueTemplateProperty<double>(() => blockLayout.BeamAngle);
-            _BeamThickness = new ValueTemplateProperty<double>(() => blockLayout.BeamThickness);
-            _BeamSpacing = new ValueTemplateProperty<double>(() => blockLayout.BeamSpacing);
             _StemDirection = new ValueTemplateProperty<StemDirection>(() => blockLayout.StemDirection);
         }
 

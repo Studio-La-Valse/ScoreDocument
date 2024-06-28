@@ -1,6 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Core;
-using StudioLaValse.ScoreDocument.Primitives;
-using System.ComponentModel.DataAnnotations;
+﻿using StudioLaValse.ScoreDocument.Templates;
 
 namespace StudioLaValse.ScoreDocument.Implementation
 {
@@ -10,7 +8,7 @@ namespace StudioLaValse.ScoreDocument.Implementation
         private readonly MeasureBlock hostBlock;
         private readonly ScoreDocumentStyleTemplate documentStyleTemplate;
         private readonly IKeyGenerator<int> keyGenerator;
-        private readonly Dictionary<PowerOfTwo, BeamType> beamTypes = [];
+        private readonly Dictionary<PowerOfTwo, BeamType> beamTypes;
 
         public Dictionary<PowerOfTwo, BeamType> BeamTypes => beamTypes;
         public RythmicDuration RythmicDuration { get; }
@@ -46,6 +44,7 @@ namespace StudioLaValse.ScoreDocument.Implementation
                      ScoreDocumentStyleTemplate documentStyleTemplate,
                      AuthorChordLayout chordLayout,
                      UserChordLayout secondaryChordLayout,
+                     Dictionary<PowerOfTwo, BeamType> beamTypes,
                      IKeyGenerator<int> keyGenerator,
                      Guid guid) : base(keyGenerator, guid)
         {
@@ -60,6 +59,7 @@ namespace StudioLaValse.ScoreDocument.Implementation
             RythmicDuration = displayDuration;
             AuthorLayout = chordLayout;
             UserLayout = secondaryChordLayout;
+            this.beamTypes = beamTypes;
         }
 
 
@@ -139,7 +139,7 @@ namespace StudioLaValse.ScoreDocument.Implementation
             if(memento.GraceGroup is not null)
             {
                 var authorLayout = new AuthorGraceGroupLayout(documentStyleTemplate.GraceGroupStyleTemplate, Voice);
-                var userLayout = new UserGraceGroupLayout(authorLayout, memento.Layout?.Id ?? Guid.NewGuid());
+                var userLayout = new UserGraceGroupLayout(authorLayout, memento.Layout?.Id ?? Guid.NewGuid(), documentStyleTemplate.GraceGroupStyleTemplate);
                 var graceGroup = new GraceGroup(this, HostMeasure, documentStyleTemplate, authorLayout, userLayout, keyGenerator, memento.GraceGroup.Id);
                 GraceGroup = graceGroup; ;
                 graceGroup.ApplyMemento(memento.GraceGroup);
@@ -147,10 +147,12 @@ namespace StudioLaValse.ScoreDocument.Implementation
         }
 
 
-        public void ApplyGrace(params Pitch[] pitches)
+        public void ApplyGrace(RythmicDuration rythmicDuration, params Pitch[] pitches)
         {
+            // TODO: leave duration unset?
             var authorLayout = new AuthorGraceGroupLayout(documentStyleTemplate.GraceGroupStyleTemplate, Voice);
-            var userLayout = new UserGraceGroupLayout(authorLayout, Guid.NewGuid());
+            authorLayout.ChordDuration.Value = rythmicDuration;
+            var userLayout = new UserGraceGroupLayout(authorLayout, Guid.NewGuid(), documentStyleTemplate.GraceGroupStyleTemplate);
             var graceGroup = new GraceGroup(this, HostMeasure, documentStyleTemplate, authorLayout, userLayout, keyGenerator, Guid.NewGuid());
             graceGroup.Append(pitches);
             ApplyGrace(graceGroup);
@@ -158,16 +160,6 @@ namespace StudioLaValse.ScoreDocument.Implementation
         public void ApplyGrace(GraceGroup graceGroup)
         {
             GraceGroup = graceGroup;
-        }
-
-
-        public BeamType? GetBeamType(PowerOfTwo i)
-        {
-            return beamTypes.TryGetValue(i, out var value) ? value : null;
-        }
-        public IEnumerable<KeyValuePair<PowerOfTwo, BeamType>> GetBeamTypes()
-        {
-            return beamTypes;
         }
     }
 }

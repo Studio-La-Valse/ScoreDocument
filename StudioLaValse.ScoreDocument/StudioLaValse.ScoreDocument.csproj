@@ -4,7 +4,7 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<PackageVersion>2.0.1</PackageVersion>
+		<PackageVersion>2.1.1</PackageVersion>
 	</PropertyGroup>
 
 	<!--build-->
@@ -55,6 +55,7 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\StudioLaValse.ScoreDocument.Core\StudioLaValse.ScoreDocument.Core.csproj" />
 	  <ProjectReference Include="..\StudioLaValse.ScoreDocument.GlyphLibrary\StudioLaValse.ScoreDocument.GlyphLibrary.csproj" />
+	  <ProjectReference Include="..\StudioLaValse.ScoreDocument.Models\StudioLaValse.ScoreDocument.Models.csproj" />
 	</ItemGroup>
 	
 </Project>

@@ -1,5 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Layout;
-using StudioLaValse.ScoreDocument.Models.Classes;
+﻿using StudioLaValse.ScoreDocument.Models.Classes;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -58,17 +57,7 @@ public class MeasureBlockLayoutMembers
 
     public required double? StemLength { get; set; }
 
-    public required StemDirection? StemDirection { get; set; }
-}
-
-public class GraceGroupLayoutMembers : MeasureBlockLayoutMembers
-{
-    public required bool? OccupySpace { get; set; }
-
-    [Range(Constants.GreaterThanZero, double.MaxValue)]
-    public required double? ChordSpacing { get; set; }
-
-    public required RythmicDurationClass? ChordDuration { get; set; }
+    public required int? StemDirection { get; set; }
 }
 
 public class ChordLayoutMembers
@@ -77,11 +66,6 @@ public class ChordLayoutMembers
 
     [Range(Constants.GreaterThanZero, double.MaxValue)]
     public required double? SpaceRight { get; set; }
-}
-
-public class GraceChordLayoutMembers
-{
-
 }
 
 public class NoteLayoutMembers
@@ -95,6 +79,22 @@ public class NoteLayoutMembers
     public required double? Scale { get; set; }
 
     public required double? XOffset { get; set; }
+}
+
+public class GraceGroupLayoutMembers : MeasureBlockLayoutMembers
+{
+    public required bool? OccupySpace { get; set; }
+
+    [Range(Constants.GreaterThanZero, double.MaxValue)]
+    public required double? ChordSpacing { get; set; }
+
+    [Column(TypeName = "jsonb")]
+    public required RythmicDurationClass? ChordDuration { get; set; }
+}
+
+public class GraceChordLayoutMembers
+{
+
 }
 
 public class GraceNoteLayoutMembers

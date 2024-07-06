@@ -1,4 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Templates;
+﻿using StudioLaValse.ScoreDocument.StyleTemplates;
 
 namespace StudioLaValse.ScoreDocument.Layout
 {

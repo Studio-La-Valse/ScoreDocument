@@ -169,35 +169,28 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                     var addedNote = addedChord.ReadNotes().Last();
                     addedNote.StaffIndex.Value = staffIndex;
                 }
-                FillGrace(chord.Grace, addedChord);
-            }
-        }
-        
-        private void FillGrace(GraceBlock? chord, IGraceable targetChord)
-        {
-            if(chord is null)
-            {
-                return;
-            }
 
-            targetChord.Grace(chord.RythmicDuration);
-            var addedGrace = targetChord.ReadGraceGroup() ?? throw new UnreachableException();
-            foreach (var graceChord in chord.Chords)
-            {
-                addedGrace.AppendChord();
-                var addedGraceChord = addedGrace.ReadChords().Last();
-                foreach (var note in graceChord.Notes)
+                if (chord.Grace is null)
                 {
-                    var staffIndex = note.StaffIndex() ?? 0;
-                    addedGraceChord.Add(note.ParsePitch());
-                    var addedNote = addedGraceChord.ReadNotes().Last();
-                    addedNote.StaffIndex.Value = staffIndex;
+                    continue;
                 }
-                
-                FillGrace(graceChord.Grace, addedGraceChord);
+
+                addedChord.Grace(chord.RythmicDuration);
+                var addedGrace = addedChord.ReadGraceGroup() ?? throw new UnreachableException();
+                foreach (var graceChord in chord.Grace.Chords)
+                {
+                    addedGrace.AppendChord();
+                    var addedGraceChord = addedGrace.ReadChords().Last();
+                    foreach (var note in graceChord.Notes)
+                    {
+                        var staffIndex = note.StaffIndex() ?? 0;
+                        addedGraceChord.Add(note.ParsePitch());
+                        var addedNote = addedGraceChord.ReadNotes().Last();
+                        addedNote.StaffIndex.Value = staffIndex;
+                    }
+                }
             }
         }
-
 
         private static void GetRythmicInformationFromNode(XElement measureElement, int durationOfOneQuarter, out Fraction actualDuration, out RythmicDuration? displayDuration, out bool grace)
         {

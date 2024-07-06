@@ -7,12 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="StudioLaValse.CommandManager" Version="2.0.0" />
     <PackageReference Include="StudioLaValse.Key" Version="1.0.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\StudioLaValse.Drawable\StudioLaValse.Drawable\StudioLaValse.Drawable.csproj" />
+    <ProjectReference Include="..\..\StudioLaValse.Geometry\StudioLaValse.Geometry\StudioLaValse.Geometry.csproj" />
     <ProjectReference Include="..\StudioLaValse.ScoreDocument.Core\StudioLaValse.ScoreDocument.Core.csproj" />
-    <ProjectReference Include="..\StudioLaValse.ScoreDocument.Drawable\StudioLaValse.ScoreDocument.Drawable.csproj" />
     <ProjectReference Include="..\StudioLaValse.ScoreDocument.Models\StudioLaValse.ScoreDocument.Models.csproj" />
     <ProjectReference Include="..\StudioLaValse.ScoreDocument\StudioLaValse.ScoreDocument.csproj" />
   </ItemGroup>

@@ -1,5 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Layout;
-using ColorARGB = StudioLaValse.ScoreDocument.Templates.ColorARGB;
+using ColorARGB = StudioLaValse.ScoreDocument.StyleTemplates.ColorARGB;
 
 namespace StudioLaValse.ScoreDocument.Private
 {

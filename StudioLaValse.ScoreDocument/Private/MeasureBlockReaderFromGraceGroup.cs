@@ -89,10 +89,5 @@ namespace StudioLaValse.ScoreDocument.Private
         {
             throw new NotImplementedException();
         }
-
-        public void Restore()
-        {
-            graceGroupReader.Restore();
-        }
     }
 }

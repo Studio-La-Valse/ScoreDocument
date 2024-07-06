@@ -1,4 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Layout;
+using StudioLaValse.ScoreDocument.Models;
 
 namespace StudioLaValse.ScoreDocument
 {
@@ -85,5 +86,21 @@ namespace StudioLaValse.ScoreDocument
         /// </summary>
         /// <param name="indexInScore"></param>
         void RemoveScoreMeasure(int indexInScore);
+
+        /// <summary>
+        /// Freeze the current score document into a serializable object.
+        /// </summary>
+        /// <returns></returns>
+        ScoreDocumentModel Freeze();
+
+        /// <summary>
+        /// Freeze the current layout into a serializable object.
+        /// Note that the layout values may be different from the layout values in the current score document,
+        /// because an internal layout select may read layout values from the original author layout. 
+        /// The frozen layout model always reflects user layout values.
+        /// The model is trimmed, so that empty layout models are ommitted.
+        /// </summary>
+        /// <returns></returns>
+        ScoreDocumentLayoutDictionary FreezeLayout();
     }
 }

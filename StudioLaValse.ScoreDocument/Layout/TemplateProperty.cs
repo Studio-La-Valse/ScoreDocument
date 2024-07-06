@@ -1,4 +1,6 @@
-﻿namespace StudioLaValse.ScoreDocument.Layout
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace StudioLaValse.ScoreDocument.Layout
 {
     /// <summary>
     /// A property that has its value provided by a template.
@@ -7,6 +9,11 @@
     /// <typeparam name="T"></typeparam>
     public abstract class TemplateProperty<T>
     {
+        /// <summary>
+        /// A boolean value showing if the backing field has been set.
+        /// </summary>
+        public abstract bool FieldIsSet { get; }
+
         /// <summary>
         /// Get or set the value.
         /// </summary>

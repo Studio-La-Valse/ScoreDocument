@@ -5,9 +5,6 @@
     /// </summary>
     public interface ILayout
     {
-        /// <summary>
-        /// Reset all (eligable) fields to their default unset value.
-        /// </summary>
-        void Restore();
+
     }
 }

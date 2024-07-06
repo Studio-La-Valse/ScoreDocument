@@ -4,7 +4,7 @@
     /// Represents a generic chord editor interface.
     /// Can be implemented by a regular chord or a grace chord.
     /// </summary>
-    public interface INoteContainer<TNote> : IGraceable where TNote : IHasPitch
+    public interface INoteContainer<TNote> where TNote : IHasPitch
     {
         /// <summary>
         /// Enumerate the primitives in the chord.

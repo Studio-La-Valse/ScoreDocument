@@ -140,7 +140,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
             var beamDefinition = new Ruler(principalStemTip, -Layout.BeamAngle);
             var stems = chords
-                .Select(c => c.Equals(principalChord) ? principalStem : CreateStem(c, principalNoteWidth, beamDefinition))
+                .Select(c => c.Equals((IUniqueScoreElement)principalChord) ? principalStem : CreateStem(c, principalNoteWidth, beamDefinition))
                 .ToArray();
 
             yield return new VisualBeamGroup(stems, beamDefinition, Layout.BeamThickness, Layout.BeamSpacing, Scale, positionSpaceing, visualBeamBuilder);

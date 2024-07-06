@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace StudioLaValse.ScoreDocument.Drawable.Private.DrawableElements;
+﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.DrawableElements;
 internal class DrawableBeam : DrawablePolygon
 {
-    public DrawableBeam(XY bottomLeft, XY bottomRight, double thickness, bool canvasUp, ColorARGB fill) : base(ToPoints(bottomLeft, bottomRight, thickness, canvasUp), fill)
+    public DrawableBeam(XY bottomLeft, XY bottomRight, double thickness, bool canvasUp, Geometry.ColorARGB fill) : base(ToPoints(bottomLeft, bottomRight, thickness, canvasUp), fill)
     {
         
     }

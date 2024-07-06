@@ -11,7 +11,7 @@
         TemplateProperty<AccidentalDisplay> ForceAccidental { get; }
 
         /// <summary>
-        /// Define the scale of the note. Default 1.
+        /// Define the scale of the note.
         /// </summary>
         TemplateProperty<double> Scale { get; }
 

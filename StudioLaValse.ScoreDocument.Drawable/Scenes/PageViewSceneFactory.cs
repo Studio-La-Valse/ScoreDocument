@@ -1,6 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.Drawable.Extensions;
-using StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers;
-using StudioLaValse.ScoreDocument.Layout;
+﻿using StudioLaValse.ScoreDocument.Extensions;
+using StudioLaValse.ScoreDocument.GlyphLibrary;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
@@ -9,64 +8,30 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
     /// </summary>
     public class PageViewSceneFactory : IVisualScoreDocumentContentFactory
     {
-        private readonly IVisualStaffSystemFactory staffSystemContentFactory;
-        private readonly double smallPadding;
-        private readonly double largePadding;
-        private readonly ColorARGB foregroundColor;
-        private readonly ColorARGB pageColor;
-        private readonly IScoreLayoutProvider scoreLayoutDictionary;
+        private readonly IVisualPageFactory pageFactory;
 
         /// <summary>
         /// The default constructor.
         /// </summary>
-        /// <param name="staffSystemContentFactory"></param>
-        /// <param name="smallPadding"></param>
-        /// <param name="largePadding"></param>
-        /// <param name="foregroundColor"></param>
-        /// <param name="pageColor"></param>
-        /// <param name="scoreLayoutDictionary"></param>
-        public PageViewSceneFactory(IVisualStaffSystemFactory staffSystemContentFactory, double smallPadding, double largePadding, ColorARGB foregroundColor, ColorARGB pageColor, IScoreLayoutProvider scoreLayoutDictionary)
+        /// <param name="pageFactory"></param>
+        public PageViewSceneFactory(IVisualPageFactory pageFactory)
         {
-            this.staffSystemContentFactory = staffSystemContentFactory;
-            this.smallPadding = smallPadding;
-            this.largePadding = largePadding;
-            this.foregroundColor = foregroundColor;
-            this.pageColor = pageColor;
-            this.scoreLayoutDictionary = scoreLayoutDictionary;
+            this.pageFactory = pageFactory;
         }
 
         /// <inheritdoc/>
-        public BaseContentWrapper CreateContent(IScoreDocumentReader scoreDocument)
+        public BaseContentWrapper CreateContent(IScoreDocument scoreDocument)
         {
-            var scoreLayout = scoreLayoutDictionary.DocumentLayout(scoreDocument);
+            IList<BaseContentWrapper> pages = [];
 
-            var pageSize = scoreLayout.PageSize;
-
-            var pages = new List<VisualPage>()
-            {
-                new VisualPage(pageSize, 0, 0, staffSystemContentFactory, foregroundColor, pageColor, scoreLayoutDictionary)
-            };
-
-            var systemBottom = VisualPage.MarginTop;
             var pageCanvasLeft = 0d;
-
-            foreach (var system in scoreDocument.EnumerateStaffSystems())
+            foreach (var page in scoreDocument.ReadPages())
             {
-                var systemLayout = scoreLayoutDictionary.StaffSystemLayout(system);
-                systemBottom += systemLayout.PaddingTop + system.CalculateHeight(scoreLayoutDictionary);
-
-                if (systemBottom > pageSize.Height - VisualPage.MarginTop)
-                {
-                    pageCanvasLeft += pageSize.Width;
-                    pageCanvasLeft += pages.Count % 2 == 0 ? largePadding : smallPadding;
-
-                    var visualPage = new VisualPage(pageSize, pageCanvasLeft, 0, staffSystemContentFactory, foregroundColor, pageColor, scoreLayoutDictionary);
-                    pages.Add(visualPage);
-
-                    systemBottom = VisualPage.MarginTop + systemLayout.PaddingTop + system.CalculateHeight(scoreLayoutDictionary);
-                }
-
-                pages.Last().AddSystem(system);
+                var pageLayout = page;
+                var visualPage = pageFactory.CreateContent(page, pageCanvasLeft, 0);
+                pages.Add(visualPage);
+                pageCanvasLeft += visualPage.BoundingBox().Width;
+                pageCanvasLeft += pages.Count % 2 == 0 ? 5 : 10;
             }
 
             return new VisualPageCollection(pages);

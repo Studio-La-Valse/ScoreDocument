@@ -14,7 +14,24 @@ namespace StudioLaValse.ScoreDocument.Core
         /// <returns></returns>
         public static Duration Sum(this IEnumerable<Duration> durations)
         {
-            var sum = new Duration(0, 4);
+            Duration sum = new(0, 4);
+
+            foreach (var duration in durations)
+            {
+                sum += duration;
+            }
+
+            return sum;
+        }
+
+        /// <summary>
+        /// Calculate the total duration of the provided durations.
+        /// </summary>
+        /// <param name="durations"></param>
+        /// <returns></returns>
+        public static Fraction Sum(this IEnumerable<Fraction> durations)
+        {
+            Fraction sum = new(0, 4);
 
             foreach (var duration in durations)
             {
@@ -31,7 +48,7 @@ namespace StudioLaValse.ScoreDocument.Core
         /// <returns></returns>
         public static Position ToPosition(this Fraction fraction)
         {
-            return new Position(fraction.Numinator, fraction.Denominator);
+            return new Position(fraction.Numerator, fraction.Denominator);
         }
 
         /// <summary>
@@ -58,8 +75,8 @@ namespace StudioLaValse.ScoreDocument.Core
                 }
             }
 
-            var multiplier = timeSignature.Numinator;
-            for (int i = 0; i < steps.Length; i++)
+            var multiplier = timeSignature.Numerator;
+            for (var i = 0; i < steps.Length; i++)
             {
                 steps[i] *= multiplier;
             }
@@ -74,13 +91,10 @@ namespace StudioLaValse.ScoreDocument.Core
                 step /= gcd;
 
                 var denom = stepDenom / gcd;
-                var fraction = new Fraction(step, denom);
-                if (!RythmicDuration.TryConstruct(fraction, out var rythmicDuration))
-                {
-                    throw new InvalidOperationException("Not all of the specified steps can be resolved to valid rythmic durations.");
-                }
-
-                return rythmicDuration;
+                Fraction fraction = new(step, denom);
+                return !RythmicDuration.TryConstruct(fraction, out var rythmicDuration)
+                    ? throw new InvalidOperationException("Not all of the specified steps can be resolved to valid rythmic durations.")
+                    : rythmicDuration;
             });
 
             if (stepsAsRythmicDurations.Sum().Decimal != timeSignature.Decimal)

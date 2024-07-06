@@ -3,13 +3,13 @@
     /// <summary>
     /// Represents a musical pitch.
     /// </summary>
-    public class Pitch : IEquatable<Pitch>
+    public readonly struct Pitch : IEquatable<Pitch>
     {
-        private static readonly Dictionary<string, int> midiIndexForOctave0 = new Dictionary<string, int>
+        private static readonly Dictionary<string, int> midiIndexForOctave0 = new()
         {
             {"C", 12}, {"D", 14}, {"E", 16}, {"F", 17}, {"G", 19}, {"A", 21}, {"B", 23}
         };
-        private static readonly Dictionary<int, decimal> frequenciesOfBottomOctavePiano = new Dictionary<int, decimal>
+        private static readonly Dictionary<int, decimal> frequenciesOfBottomOctavePiano = new()
         {
             {0, 27.5M },
             {1, 29.135M },
@@ -76,14 +76,13 @@
                 var indexOfPitchAtOctave0 = midiIndexForOctave0
                     .ElementAt(Step.StepsFromC).Value;
 
-                var pitchInCorrectOctave = indexOfPitchAtOctave0 + Octave * 12;
+                var pitchInCorrectOctave = indexOfPitchAtOctave0 + (Octave * 12);
 
                 var pitchAfterShiftCorrection = pitchInCorrectOctave + Shift;
 
-                if (pitchAfterShiftCorrection < 21)
-                    throw new ArgumentOutOfRangeException(nameof(pitchAfterShiftCorrection));
-
-                return pitchAfterShiftCorrection;
+                return pitchAfterShiftCorrection < 21
+                    ? throw new ArgumentOutOfRangeException(nameof(pitchAfterShiftCorrection))
+                    : pitchAfterShiftCorrection;
             }
         }
         /// <summary>
@@ -106,7 +105,7 @@
             {
                 var frequency = frequenciesOfBottomOctavePiano[IndexOnKlavier % 12];
 
-                for (int i = 0; i < OctaveOnClavier; i++)
+                for (var i = 0; i < OctaveOnClavier; i++)
                 {
                     frequency *= 2;
                 }
@@ -125,8 +124,10 @@
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public Pitch(Step step, int octave)
         {
-            if (octave < 0 || octave > 8)
+            if (octave is < 0 or > 8)
+            {
                 throw new ArgumentOutOfRangeException(nameof(octave));
+            }
 
             Octave = octave;
 
@@ -184,33 +185,13 @@
         /// <inheritdoc/>
         public override bool Equals(object? obj)
         {
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
-
-            if (ReferenceEquals(obj, null))
-            {
-                return false;
-            }
-
-            if (obj is Pitch pitch)
-            {
-                return Equals(pitch);
-            }
-
-            return false;
+            return obj is Pitch pitch && Equals(pitch);
         }
 
         /// <inheritdoc/>
-        public bool Equals(Pitch? other)
+        public bool Equals(Pitch other)
         {
-            if (other is null)
-            {
-                return false;
-            }
-
-            return other == this;
+            return other.Step == Step && other.Octave == Octave;
         }
 
         /// <inheritdoc/>

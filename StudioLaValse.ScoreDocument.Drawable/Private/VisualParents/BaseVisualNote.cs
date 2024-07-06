@@ -1,18 +1,20 @@
-﻿using StudioLaValse.ScoreDocument.Drawable.Private.DrawableElements;
-
-namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
+﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
     internal abstract class BaseVisualNote : BaseSelectableParent<IUniqueScoreElement>
     {
         protected readonly IPositionElement measureElement;
-        private readonly ColorARGB defaultColor;
-
+        private readonly double lineSpacing;
+        private readonly double scoreScale;
+        private readonly double instrumentScale;
+        private readonly double noteScale;
+        private readonly IScoreDocument scoreDocumentLayout;
+        private readonly IUnitToPixelConverter unitToPixelConverter;
 
         public abstract DrawableScoreGlyph Glyph { get; }
         public abstract bool OffsetDots { get; }
 
 
-        public double Scale { get; }
+        public double Scale => scoreScale * instrumentScale * noteScale;
         public double XPosition => XOffset + CanvasLeft;
         public double CanvasLeft { get; }
         public abstract double XOffset { get; }
@@ -22,27 +24,26 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
         public RythmicDuration DisplayDuration =>
             measureElement.RythmicDuration;
-        public ColorARGB DisplayColor =>
-            defaultColor;
         public IEnumerable<DrawableCircle> Dots
         {
             get
             {
+                var lineSpacingOnStaff = unitToPixelConverter.UnitsToPixels(lineSpacing * scoreScale * instrumentScale);
                 var heightOnCanvas = HeightOnCanvas;
                 if (OffsetDots)
                 {
-                    heightOnCanvas -= 0.6;
+                    heightOnCanvas -= lineSpacingOnStaff / 2;
                 }
 
-                var spacing = 1.3;
+                var spacing = 3.5 * (GlyphLibrary.Glyph.Em / 12) * scoreScale * instrumentScale;
                 var startLeft = XPosition + spacing;
 
-                for (int i = 0; i < measureElement.RythmicDuration.Dots; i++)
+                for (var i = 0; i < measureElement.RythmicDuration.Dots; i++)
                 {
-                    var circle = new DrawableCircle(
+                    DrawableCircle circle = new(
                         new XY(startLeft, heightOnCanvas),
-                        0.3,
-                        defaultColor);
+                        lineSpacingOnStaff / 6,
+                        scoreDocumentLayout.PageForegroundColor.Value.FromPrimitive());
 
                     yield return circle;
 
@@ -54,23 +55,47 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
 
 
-        public BaseVisualNote(INoteReader measureElement, double canvasLeft, double canvasTop, double scale, ColorARGB defaultColor, ISelection<IUniqueScoreElement> selection) : base(measureElement, selection)
+        public BaseVisualNote(INote measureElement,
+                              double canvasLeft,
+                              double canvasTop,
+                              double lineSpacing,
+                              double scoreScale,
+                              double instrumentScale,
+                              double noteScale,
+                              IScoreDocument scoreDocumentLayout,
+                              ISelection<IUniqueScoreElement> selection,
+                              IUnitToPixelConverter unitToPixelConverter) : base(measureElement, selection)
         {
             this.measureElement = measureElement;
-            this.defaultColor = defaultColor ?? new ColorARGB(255, 0, 0, 0);
-
+            this.lineSpacing = lineSpacing;
+            this.scoreScale = scoreScale;
+            this.instrumentScale = instrumentScale;
+            this.noteScale = noteScale;
+            this.scoreDocumentLayout = scoreDocumentLayout;
+            this.unitToPixelConverter = unitToPixelConverter;
             CanvasLeft = canvasLeft;
             HeightOnCanvas = canvasTop;
-            Scale = scale;
         }
-        public BaseVisualNote(IChordReader measureElement, double canvasLeft, double canvasTop, double scale, ColorARGB defaultColor, ISelection<IUniqueScoreElement> selection) : base(measureElement, selection)
+        public BaseVisualNote(IChord measureElement,
+                              double canvasLeft,
+                              double canvasTop,
+                              double lineSpacing,
+                              double scoreScale,
+                              double instrumentScale,
+                              double noteScale,
+                              IScoreDocument scoreDocumentLayout,
+                              ISelection<IUniqueScoreElement> selection,
+                              IUnitToPixelConverter unitToPixelConverter) : base(measureElement, selection)
         {
             this.measureElement = measureElement;
-            this.defaultColor = defaultColor ?? new ColorARGB(255, 0, 0, 0);
-
+            this.lineSpacing = lineSpacing;
+            this.scoreScale = scoreScale;
+            this.instrumentScale = instrumentScale;
+            this.noteScale = noteScale;
+            this.scoreDocumentLayout = scoreDocumentLayout;
+            this.unitToPixelConverter = unitToPixelConverter;
             CanvasLeft = canvasLeft;
             HeightOnCanvas = canvasTop;
-            Scale = scale;
         }
 
 
@@ -93,7 +118,11 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         }
         public override BoundingBox BoundingBox()
         {
-            return new BoundingBox(XPosition - 0.5, XPosition + 0.5, HeightOnCanvas - 0.5, HeightOnCanvas + 0.5);
+            return new BoundingBox(
+                XPosition - unitToPixelConverter.UnitsToPixels(lineSpacing * Scale / 2), 
+                XPosition + unitToPixelConverter.UnitsToPixels(lineSpacing * Scale / 2), 
+                HeightOnCanvas - unitToPixelConverter.UnitsToPixels(lineSpacing * Scale / 2), 
+                HeightOnCanvas + unitToPixelConverter.UnitsToPixels(lineSpacing * Scale / 2));
         }
     }
 }

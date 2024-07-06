@@ -10,14 +10,15 @@
         /// </summary>
         /// <param name="source"></param>
         /// <param name="staffGroup"></param>
+        /// <param name="positionDictionary"></param>
         /// <param name="canvasTop"></param>
         /// <param name="canvasLeft"></param>
         /// <param name="width"></param>
         /// <param name="paddingLeft"></param>
         /// <param name="paddingRight"></param>
-        /// <param name="firstMeasure"></param>
-        /// <param name="color"></param>
+        /// <param name="lineSpacing"></param>
+        /// <param name="positionSpace"></param>
         /// <returns></returns>
-        BaseContentWrapper CreateContent(IInstrumentMeasureReader source, IStaffGroupReader staffGroup, double canvasTop, double canvasLeft, double width, double paddingLeft, double paddingRight, bool firstMeasure, ColorARGB color);
+        BaseContentWrapper CreateContent(IInstrumentMeasure source, IStaffGroup staffGroup, IReadOnlyDictionary<Position, double> positionDictionary, double canvasTop, double canvasLeft, double width, double paddingLeft, double paddingRight, double lineSpacing, double positionSpace);
     }
 }

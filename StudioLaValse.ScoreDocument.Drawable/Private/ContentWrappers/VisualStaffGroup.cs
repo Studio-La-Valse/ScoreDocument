@@ -1,33 +1,37 @@
-﻿using StudioLaValse.ScoreDocument.Drawable.Extensions;
-using StudioLaValse.ScoreDocument.Drawable.Private.DrawableElements;
-using StudioLaValse.ScoreDocument.Drawable.Private.Models;
-using StudioLaValse.ScoreDocument.Layout;
+﻿using StudioLaValse.ScoreDocument.Extensions;
+using StudioLaValse.ScoreDocument.GlyphLibrary;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
     internal sealed class VisualStaffGroup : BaseContentWrapper
     {
-        private readonly IStaffGroupReader staffGroup;
+        private readonly IStaffGroup staffGroup;
         private readonly double canvasLeft;
         private readonly double length;
-        private readonly ColorARGB color;
-        private readonly IScoreLayoutProvider scoreLayoutDictionary;
+        private readonly double globalLineSpacing;
+        private readonly double scoreScale;
+        private readonly double instrumentScale;
+        private readonly IGlyphLibrary glyphLibrary;
+        private readonly IScoreDocument scoreLayoutDictionary;
+        private readonly IUnitToPixelConverter unitToPixelConverter;
         private readonly double canvasTop;
 
 
-        public IInstrumentRibbonReader Context => staffGroup.InstrumentRibbon;
-        public InstrumentRibbonLayout ContextLayout => scoreLayoutDictionary.InstrumentRibbonLayout(Context);
-        public StaffGroupLayout Layout => scoreLayoutDictionary.StaffGroupLayout(staffGroup);
-
-
+        public IInstrumentRibbon Context =>
+            staffGroup.InstrumentRibbon;
+        public IInstrumentRibbon ContextLayout =>
+            Context;
+        public IStaffGroupLayout Layout =>
+            staffGroup;
+        public double Height =>
+            unitToPixelConverter.UnitsToPixels(staffGroup.CalculateHeight(globalLineSpacing, scoreLayoutDictionary));
         public DrawableText ID
         {
             get
             {
                 var braceLeft = Brace?.TopLeftX ?? canvasLeft;
                 var text = FirstMeasure.MeasureIndex == 0 ? ContextLayout.DisplayName : ContextLayout.AbbreviatedName;
-                var height = staffGroup.CalculateHeight(scoreLayoutDictionary);
-                var id = new DrawableText(braceLeft - 2, canvasTop + height / 2, text, 2, color, HorizontalTextOrigin.Right, VerticalTextOrigin.Center);
+                var id = new DrawableText(braceLeft - 2, canvasTop + (Height / 2), text, Glyph.Em /2 * scoreScale, scoreLayoutDictionary.PageForegroundColor.Value.FromPrimitive(), HorizontalTextOrigin.Right, VerticalTextOrigin.Center);
 
                 return id;
             }
@@ -46,28 +50,37 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                     return null;
                 }
 
-                var heightOfGroup = staffGroup.CalculateHeight(scoreLayoutDictionary);
-                var knownHeightOfTheBrace = 4.8;
-                var scale = heightOfGroup / knownHeightOfTheBrace;
+                var knownHeightOfTheBrace = Glyph.Em;
+                var scale = Height / knownHeightOfTheBrace;
+                var glyph = glyphLibrary.Brace(scale);
 
-                var glyph = GlyphLibrary.Brace;
-                glyph.Scale = scale;
-
-                return new DrawableScoreGlyph(canvasLeft - glyph.Width - 0.1, canvasTop, glyph, color);
+                return new DrawableScoreGlyph(canvasLeft, canvasTop + Height, glyph, HorizontalTextOrigin.Right, VerticalTextOrigin.Center, scoreLayoutDictionary.PageForegroundColor.Value.FromPrimitive());
             }
         }
-        public IInstrumentMeasureReader FirstMeasure =>
+        public IInstrumentMeasure FirstMeasure =>
             staffGroup.EnumerateMeasures().First();
 
 
-
-        public VisualStaffGroup(IStaffGroupReader staffGroup, double canvasLeft, double canvasTop, double length, ColorARGB color, IScoreLayoutProvider scoreLayoutDictionary)
+        public VisualStaffGroup(IStaffGroup staffGroup,
+                                double canvasLeft,
+                                double canvasTop,
+                                double length,
+                                double globalLineSpacing,
+                                double scoreScale,
+                                double instrumentScale,
+                                IGlyphLibrary glyphLibrary,
+                                IScoreDocument scoreLayoutDictionary,
+                                IUnitToPixelConverter unitToPixelConverter)
         {
             this.staffGroup = staffGroup;
             this.canvasLeft = canvasLeft;
             this.length = length;
-            this.color = color;
+            this.globalLineSpacing = globalLineSpacing;
+            this.scoreScale = scoreScale;
+            this.instrumentScale = instrumentScale;
+            this.glyphLibrary = glyphLibrary;
             this.scoreLayoutDictionary = scoreLayoutDictionary;
+            this.unitToPixelConverter = unitToPixelConverter;
             this.canvasTop = canvasTop;
         }
 
@@ -76,25 +89,32 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         public IEnumerable<VisualStaff> ConstructStaves()
         {
             var _canvasTop = canvasTop;
-            foreach (var staff in staffGroup.EnumerateStaves(Layout.NumberOfStaves))
+            foreach (var staff in staffGroup.EnumerateStaves())
             {
-                var staffLayout = scoreLayoutDictionary.StaffLayout(staff);
-                var clef = FirstMeasure.OpeningClefAtOrDefault(staff.IndexInStaffGroup, scoreLayoutDictionary);
+                var staffLayout = staff;
+                var clef = FirstMeasure.OpeningClefAtOrDefault(staff.IndexInStaffGroup);
                 var keySignature = FirstMeasure.KeySignature;
-                var newStaff = new VisualStaff(
+                var timeSignature = FirstMeasure.MeasureIndex == 0 ? FirstMeasure.TimeSignature : null;
+                VisualStaff newStaff = new(
                     staff,
                     canvasLeft,
                     _canvasTop,
                     length,
+                    globalLineSpacing,
+                    scoreScale,
+                    instrumentScale,
+                    scoreLayoutDictionary.HorizontalStaffLineThickness,
                     clef,
                     keySignature,
-                    color,
-                    scoreLayoutDictionary);
+                    timeSignature,
+                    glyphLibrary,
+                    scoreLayoutDictionary,
+                    unitToPixelConverter);
 
                 yield return newStaff;
 
-                _canvasTop += staff.CalculateHeight(scoreLayoutDictionary);
-                _canvasTop += staffLayout.DistanceToNext;
+                _canvasTop += unitToPixelConverter.UnitsToPixels(staff.CalculateHeight(globalLineSpacing, scoreScale, instrumentScale));
+                _canvasTop += unitToPixelConverter.UnitsToPixels(staffLayout.DistanceToNext * scoreScale);
             }
         }
 
@@ -105,7 +125,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         {
             if (ContextLayout.Collapsed)
             {
-                yield return new DrawableLineHorizontal(canvasTop, canvasLeft, length, 0.1, color);
+                yield return new DrawableLineHorizontal(canvasTop, canvasLeft, length, 0.1, scoreLayoutDictionary.PageForegroundColor.Value.FromPrimitive());
             }
             else
             {

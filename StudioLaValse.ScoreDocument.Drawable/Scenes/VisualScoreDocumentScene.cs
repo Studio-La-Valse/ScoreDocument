@@ -6,14 +6,14 @@
     public class VisualScoreDocumentScene : BaseVisualParent<IUniqueScoreElement>
     {
         private readonly IVisualScoreDocumentContentFactory sceneFactory;
-        private readonly IScoreDocumentReader scoreDocumentReader;
+        private readonly IScoreDocument scoreDocumentReader;
 
         /// <summary>
         /// The default constructor. 
         /// </summary>
         /// <param name="sceneFactory"></param>
         /// <param name="scoreDocumentReader"></param>
-        public VisualScoreDocumentScene(IVisualScoreDocumentContentFactory sceneFactory, IScoreDocumentReader scoreDocumentReader) : base(scoreDocumentReader)
+        public VisualScoreDocumentScene(IVisualScoreDocumentContentFactory sceneFactory, IScoreDocument scoreDocumentReader) : base(scoreDocumentReader)
         {
             this.sceneFactory = sceneFactory;
             this.scoreDocumentReader = scoreDocumentReader;

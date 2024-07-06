@@ -1,8 +1,28 @@
-﻿using StudioLaValse.ScoreDocument.Core.Primitives.Extensions;
+﻿using System.Diagnostics;
 using System.Xml.Linq;
 
 namespace StudioLaValse.ScoreDocument.MusicXml.Private
 {
+    internal class MeasureBlock
+    {
+        public List<Chord> Chords { get; } = [];
+    }
+
+    internal class Chord
+    {
+        public List<XElement> Notes { get; } = [];
+
+        public RythmicDuration? RythmicDuration { get; set; }
+
+        public GraceBlock? Grace { get; set; }
+    }
+
+    internal class GraceBlock
+    {
+        public required RythmicDuration RythmicDuration { get; set; }
+        public List<Chord> Chords { get; } = [];
+    }
+
     internal class BlockChainXmlConverter
     {
         public BlockChainXmlConverter()
@@ -10,79 +30,167 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
 
         }
 
-        public void ProcessElements(IEnumerable<XElement> elements, IMeasureBlockChainEditor editor, IScoreLayoutBuilder scoreLayoutBuilder, int divisionsOfOneQuarter)
+        internal static readonly string[] beamTypesThatIndicateAGroupIsNotClosedYet = ["hook start", "continue", "begin"];
+
+        public void ProcessElements(IEnumerable<XElement> elements, IMeasureBlockChain editor, int divisionsOfOneQuarter)
         {
-            var position = new Position(0, 4);
-            foreach (var element in elements)
+            editor.Clear();
+
+            var blocks = CreateBlocks(elements, divisionsOfOneQuarter);
+
+            var blockSizes = blocks.Select(block =>
             {
-                ProcessMeasureElement(element, editor, scoreLayoutBuilder, divisionsOfOneQuarter, ref position);
+                var chordDurations = block.Chords.Select(chord =>
+                {
+                    if (chord.RythmicDuration is not null)
+                    {
+                        return chord.RythmicDuration;
+                    }
+                    throw new UnreachableException();
+                });
+                var sum = chordDurations.Sum();
+                if (!RythmicDuration.TryConstruct(sum, out var rythmicDuration))
+                {
+                    throw new Exception("A valid rythmic duration is required for a note or measure element with a duration, but could not be found.");
+                }
+                return rythmicDuration;
+            }).ToArray();
+
+            editor.Divide(blockSizes);
+
+            foreach(var (blockEditor, block) in editor.ReadBlocks().Zip(blocks))
+            {
+                FillBlock(block, blockEditor);
             }
         }
 
-        private void ProcessMeasureElement(XElement measureElement, IMeasureBlockChainEditor measureBlockChain, IScoreLayoutBuilder scoreLayoutBuilder, int divisionsOfOneQuarter, ref Position position)
+        private IEnumerable<MeasureBlock> CreateBlocks(IEnumerable<XElement> elements, int divisionsOfOneQuarter)
         {
-            if (!measureElement.IsNoteOrForwardOrBackup())
+            if (!elements.Any())
             {
-                return;
+                return [];
             }
 
-            GetRythmicInformationFromNode(measureElement, divisionsOfOneQuarter, out var actualDuration, out var displayDuration, out var grace);
+            var blocks = new List<MeasureBlock>();
 
-            GetInformationFromMeasureElement(measureElement, out var chord, out var rest, out var staff, out var forward, out var backup, out var pitch, out var stemUp);
-
-            if (backup)
+            GraceBlock? pendingGrace = null;
+            MeasureBlock? pendingBlock = null;
+            var notesOrForwards = elements.Where(e => e.IsNoteOrForward());
+            var makeNewBlock = true;
+            foreach (var element in notesOrForwards)
             {
-                position -= actualDuration;
-                return;
-            }
+                GetRythmicInformationFromNode(element, divisionsOfOneQuarter, out var actualDuration, out var displayDuration, out var grace);
 
-            if (forward)
-            {
-                position += actualDuration;
-                return;
-            }
-
-            if (chord && !grace)
-            {
-                position -= actualDuration;
-            }
-
-            var _position = new Position(position.Numinator, position.Denominator);
-            var measureBlock = measureBlockChain.ReadBlocks().First(b => b.ContainsPosition(_position));
-
-            //create a new chord in the block if the no 'chord' attribute is specified, or if there are no chords in the block.
-            if (!chord || !measureBlock.ReadChords().Any())
-            {
-                if (displayDuration is null)
+                if (element.IsGrace())
                 {
-                    if (!RythmicDuration.TryConstruct(actualDuration, out displayDuration))
+                    if(pendingGrace is null)
                     {
-                        throw new Exception("A valid rythmic duration is required for a note or measure element with a duration, but could not be found.");
+                        var _displayDuration = displayDuration;
+                        if(_displayDuration is null)
+                        {
+                            if (!RythmicDuration.TryConstruct(actualDuration, out _displayDuration))
+                            {
+                                throw new Exception("A valid rythmic duration is required for a note or measure element with a duration, but could not be found.");
+                            }
+                        }
+                        pendingGrace = new GraceBlock
+                        {
+                            RythmicDuration = _displayDuration,
+                        };
                     }
+
+                    if (!element.IsChord())
+                    {
+                        pendingGrace.Chords.Add(new Chord());
+                    }
+                    var targetGrace = pendingGrace.Chords.Last();
+                    targetGrace.Notes.Add(element);
+                    continue;
                 }
 
-                measureBlock.AppendChord(displayDuration);
+                if (element.IsChord())
+                {
+                    if(pendingBlock is null || pendingBlock.Chords.Count == 0)
+                    {
+                        throw new UnreachableException();
+                    }
+                }
+                else
+                {
+                    if (pendingBlock is null || makeNewBlock)
+                    {
+                        pendingBlock = new MeasureBlock();
+                        blocks.Add(pendingBlock);
+                    }
+
+                    var newChord = new Chord();
+                    if (pendingGrace is not null)
+                    {
+                        newChord.Grace = pendingGrace;
+                        pendingGrace = null;
+                    }
+                    pendingBlock.Chords.Add(newChord);
+                }
+
+                var chord = pendingBlock.Chords.Last();
+                chord.RythmicDuration = displayDuration;
+
+                if (element.IsNoteOrRest() && element.TryParsePitch(out _))
+                {
+                    chord!.Notes.Add(element);
+
+                    var beams = element.GetBeams();
+                    makeNewBlock = true;
+                    foreach (var beam in beams)
+                    {
+                        if (beamTypesThatIndicateAGroupIsNotClosedYet.Contains(beam))
+                        {
+                            makeNewBlock = false;
+                            break;
+                        }
+                    }
+                }
             }
 
-            //Always add to the last chord in the block
-            var chordDocument = measureBlock.ReadChords().Last();
-
-            if (pitch is not null)
-            {
-                chordDocument.Add(pitch);
-                var note = chordDocument.ReadNotes().Single(n => n.Pitch.Equals(pitch));
-                var layout = scoreLayoutBuilder.NoteLayout(note);
-                layout.StaffIndex = staff ?? 0;
-                scoreLayoutBuilder.Apply(note, layout);
-            }
-
-            if (!grace)
-            {
-                position += actualDuration;
-            }
+            return blocks;
         }
 
+        private void FillBlock(MeasureBlock block, IMeasureBlock measureBlock)
+        {
+            foreach(var chord in block.Chords)
+            {
+                var duration = chord.RythmicDuration ?? throw new UnreachableException();
+                measureBlock.AppendChord(duration);
+                var addedChord = measureBlock.ReadChords().Last();
+                foreach(var note in chord.Notes)
+                {
+                    var staffIndex = note.StaffIndex() ?? 0;
+                    addedChord.Add(note.ParsePitch());
+                    var addedNote = addedChord.ReadNotes().Last();
+                    addedNote.StaffIndex.Value = staffIndex;
+                }
 
+                if (chord.Grace is null)
+                {
+                    continue;
+                }
+
+                addedChord.Grace(chord.RythmicDuration);
+                var addedGrace = addedChord.ReadGraceGroup() ?? throw new UnreachableException();
+                foreach (var graceChord in chord.Grace.Chords)
+                {
+                    addedGrace.AppendChord();
+                    var addedGraceChord = addedGrace.ReadChords().Last();
+                    foreach (var note in graceChord.Notes)
+                    {
+                        var staffIndex = note.StaffIndex() ?? 0;
+                        addedGraceChord.Add(note.ParsePitch());
+                        var addedNote = addedGraceChord.ReadNotes().Last();
+                        addedNote.StaffIndex.Value = staffIndex;
+                    }
+                }
+            }
+        }
 
         private static void GetRythmicInformationFromNode(XElement measureElement, int durationOfOneQuarter, out Fraction actualDuration, out RythmicDuration? displayDuration, out bool grace)
         {
@@ -103,7 +211,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                 var normalRythmicType = normalTypeValue ?? typeString ?? throw new Exception("Cannot handle tuplet information if the type xml node does not exist.");
                 var normalRythmicDuration = normalRythmicType.FromTypeString();
                 var normalRythmicDots = timeModificationElement.Descendants().Where(d => d.Name == "normal-dot").Count();
-                var normalDuration = new RythmicDuration(normalRythmicDuration, normalRythmicDots);
+                RythmicDuration normalDuration = new(normalRythmicDuration, normalRythmicDots);
                 var tupletContent = Enumerable.Range(0, actualNumberValue.ToIntOrThrow())
                     .Select(e => normalDuration)
                     .ToArray();
@@ -115,6 +223,12 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                 var _duration = measureElement.Descendants().FirstOrDefault(d => d.Name == "duration");
                 var noteDuration = _duration?.Value.ToIntOrNull() ?? 0;
                 actualDuration = new Duration(noteDuration, durationOfOneQuarter * 4).Simplify();
+
+                if(RythmicDuration.TryConstruct(actualDuration, out var rythmicDuration))
+                {
+                    displayDuration = rythmicDuration;
+                }
+
             }
             else
             {
@@ -127,26 +241,6 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                     actualDuration = tupletInformation.ToActualDuration(displayDuration);
                 }
             }
-        }
-
-        private static void GetInformationFromMeasureElement(XElement measureElement,
-            out bool chord, out bool rest, out int? staff, out bool forward, out bool backup, out Pitch? pitch, out bool stemUp)
-        {
-            pitch = null;
-            chord = measureElement.Element("chord") != null;
-            rest = measureElement.Element("rest") != null;
-            stemUp = measureElement.Descendants().SingleOrDefault(d => d.Name == "stem")?.Value == "up";
-
-            forward = measureElement.Name == "forward";
-            backup = measureElement.Name == "backup";
-
-            staff = measureElement.Descendants().SingleOrDefault(d => d.Name == "staff")?.Value.ToIntOrThrow() - 1;
-            if (forward || backup || rest)
-            {
-                return;
-            }
-
-            pitch = measureElement.ParsePitch();
         }
     }
 }

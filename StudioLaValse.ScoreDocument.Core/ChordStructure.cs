@@ -9,7 +9,7 @@
         /// The default major chord structure.
         /// </summary>
         public static ChordStructure Major =>
-            new ChordStructure(
+            new(
                 Interval.Unison,
                 Interval.Third,
                 Interval.Fifth);
@@ -18,7 +18,7 @@
         /// The default minor chord structure.
         /// </summary>
         public static ChordStructure Minor =>
-            new ChordStructure(
+            new(
                 Interval.Unison,
                 Interval.MinorThird,
                 Interval.Fifth);

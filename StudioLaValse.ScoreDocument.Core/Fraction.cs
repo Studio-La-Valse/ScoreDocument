@@ -16,7 +16,7 @@ namespace StudioLaValse.ScoreDocument.Core
         /// <summary>
         /// The numinator of the fraction.
         /// </summary>
-        public int Numinator { get; }
+        public int Numerator { get; }
         /// <summary>
         /// The denominator of the fraction.
         /// </summary>
@@ -25,7 +25,7 @@ namespace StudioLaValse.ScoreDocument.Core
         /// Casts the fraction to a decimal.
         /// </summary>
         public decimal Decimal =>
-            Numinator / (decimal)Denominator;
+            Numerator / (decimal)Denominator;
 
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace StudioLaValse.ScoreDocument.Core
             ArgumentOutOfRangeException.ThrowIfNegative(numinator);
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(denominator);
 
-            Numinator = numinator;
+            Numerator = numinator;
 
             Denominator = denominator;
         }
@@ -51,19 +51,42 @@ namespace StudioLaValse.ScoreDocument.Core
         /// <returns></returns>
         public virtual Fraction Simplify()
         {
-            var greatestCommonDivisor = Numinator.GCD(Denominator);
+            var greatestCommonDivisor = Numerator.GCD(Denominator);
 
-            var minPosition = Numinator / greatestCommonDivisor;
+            var minPosition = Numerator / greatestCommonDivisor;
 
             var minSteps = Denominator / greatestCommonDivisor;
 
             return new Fraction(minPosition, minSteps);
         }
 
+        /// <summary>
+        /// Add two fractions.
+        /// </summary>
+        /// <param name="first"></param>
+        /// <param name="second"></param>
+        /// <returns></returns>
+        public static Fraction operator +(Fraction first, Fraction second)
+        {
+            if (first.Denominator == second.Denominator)
+            {
+                return new Duration(first.Numerator + second.Numerator, first.Denominator);
+            }
+
+            var nominator =
+                (first.Numerator * second.Denominator) +
+                (first.Denominator * second.Numerator);
+
+            var denominator = first.Denominator * second.Denominator;
+
+            return new Fraction(nominator, denominator).Simplify();
+        }
+
+
         /// <inheritdoc/>
         public override string ToString()
         {
-            return $"{Numinator} / {Denominator}";
+            return $"{Numerator} / {Denominator}";
         }
     }
 }

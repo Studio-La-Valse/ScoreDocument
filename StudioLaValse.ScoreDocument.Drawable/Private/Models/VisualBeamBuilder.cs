@@ -1,96 +1,100 @@
-﻿using StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers;
-using StudioLaValse.ScoreDocument.Drawable.Private.DrawableElements;
-using StudioLaValse.ScoreDocument.Drawable.Private.Interfaces;
-using System.Diagnostics;
+﻿using StudioLaValse.ScoreDocument.Drawable.Private.Interfaces;
+using StudioLaValse.ScoreDocument.GlyphLibrary;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
 {
     internal sealed class VisualBeamBuilder : IVisualBeamBuilder
     {
-        public VisualBeamBuilder()
-        {
+        private readonly IScoreDocument scoreDocumentLayout;
+        private readonly IUnitToPixelConverter unitToPixelConverter;
+        private readonly IGlyphLibrary glyphLibrary;
 
+        public VisualBeamBuilder(IScoreDocument scoreDocumentLayout, IUnitToPixelConverter unitToPixelConverter, IGlyphLibrary glyphLibrary)
+        {
+            this.scoreDocumentLayout = scoreDocumentLayout;
+            this.unitToPixelConverter = unitToPixelConverter;
+            this.glyphLibrary = glyphLibrary;
         }
 
 
-        public IChordReader GetLayout(VisualStem stem)
+        public IChord GetLayout(VisualStem stem)
         {
             return stem.Chord;
         }
 
 
-        public IEnumerable<BaseDrawableElement> Build(IEnumerable<VisualStem> stems, Ruler beamDefinition, double scale, ColorARGB color)
+        public IEnumerable<BaseDrawableElement> Build(IEnumerable<VisualStem> stems, Ruler beamDefinition, double beamThickness, double beamSpacing, double scale, double positionSpace)
         {
-            if (!stems.Any() || !stems.First().Chord.ReadBeamTypes().Any())
+            if (!stems.Any())
             {
-                return new List<BaseDrawableElement>();
+                return [];
             }
 
-            var groupUp = stems.First().VisuallyUp;
-
-            var beamThickness = 0.8 * scale;
-            var beamSpacing = 0.2 * scale;
-
-            if (stems.Count() == 1)
+            if(stems.Count() == 1 && !GetLayout(stems.First()).ReadBeamTypes().Any())
             {
-                return new List<BaseDrawableElement>() { AsFlag(stems.First(), scale, color) };
+                return [];
             }
 
-            return AsGroup(stems, beamDefinition, beamSpacing, beamThickness, groupUp, color);
+            // Draw beams in the opposite direction of the first stem direction.
+            var drawBeamCanvasUp = !stems.First().VisuallyUp;
+
+            beamThickness *= scale;
+            beamSpacing *= scale;
+            beamThickness = unitToPixelConverter.UnitsToPixels(beamThickness);
+            beamSpacing = unitToPixelConverter.UnitsToPixels(beamSpacing);
+
+            return stems.Count() == 1
+                ? ([AsFlag(stems.First(), scale, scoreDocumentLayout.PageForegroundColor.Value.FromPrimitive())])
+                : AsGroup(stems, beamDefinition, beamSpacing, beamThickness, drawBeamCanvasUp, scoreDocumentLayout.PageForegroundColor.Value.FromPrimitive(), positionSpace);
         }
 
-        public DrawableScoreGlyph AsFlag(VisualStem stem, double scale, ColorARGB color)
+        public DrawableScoreGlyph AsFlag(VisualStem stem, double scale, Geometry.ColorARGB color)
         {
             var flags = stem.VisuallyUp ?
                 new[]
                 {
-                    GlyphLibrary.FlagEighthUp,
-                    GlyphLibrary.FlagSixteenthUp,
-                    GlyphLibrary.FlagThirtySecondUp,
-                    GlyphLibrary.FlagSixtyFourthUp,
+                    glyphLibrary.FlagEighthUp(scale),
+                    glyphLibrary.FlagSixteenthUp(scale),
+                    glyphLibrary.FlagThirtySecondUp(scale),
+                    glyphLibrary.FlagSixtyFourthUp(scale),
                 } :
                 new[]
                 {
-                    GlyphLibrary.FlagEighthDown,
-                    GlyphLibrary.FlagSixteenthDown,
-                    GlyphLibrary.FlagThirtySecondDown,
-                    GlyphLibrary.FlagSixtyFourthDown,
+                    glyphLibrary.FlagEighthDown(scale),
+                    glyphLibrary.FlagSixteenthDown(scale),
+                    glyphLibrary.FlagThirtySecondDown(scale),
+                    glyphLibrary.FlagSixtyFourthDown(scale),
                 };
 
             DrawableScoreGlyph flag = null!;
 
-            var flagIndex = -1;
+            var flagIndex = 3;
 
-            for (PowerOfTwo i = 8; i <= 64; i = i.Double())
+            for (PowerOfTwo i = 64; i >= 8; i /= 2)
             {
-                flagIndex++;
-
                 var beam = GetLayout(stem).ReadBeamType(i);
-                if (beam is not null && beam == BeamType.Flag)
+                if (beam is not null and BeamType.Flag)
                 {
                     var glyph = flags[flagIndex];
 
-                    glyph.Scale = scale;
-
                     flag = new DrawableScoreGlyph(
-                        stem.Origin.X,
+                        stem.Origin.X - stem.Thickness / 2,
                         stem.End.Y,
                         glyph,
+                        HorizontalTextOrigin.Left,
+                        VerticalTextOrigin.Center,
                         color);
+                    break;
                 }
+                flagIndex--;
             }
 
-            if (flag is null)
-            {
-                throw new UnreachableException("Invalid beaming information.");
-            }
-
-            return flag;
+            return flag is null ? throw new UnreachableException("Invalid beaming information.") : flag;
         }
 
-        public IEnumerable<DrawableTrapezoid> AsGroup(IEnumerable<VisualStem> stems, Ruler beamDefinition, double beamSpacing, double beamThickness, bool groupUp, ColorARGB color)
+        public IEnumerable<DrawableBeam> AsGroup(IEnumerable<VisualStem> stems, Ruler beamDefinition, double beamSpacing, double beamThickness, bool crossGroup, Geometry.ColorARGB color, double positionSpace)
         {
-            var beams = new List<DrawableTrapezoid>();
+            List<DrawableBeam> beams = [];
 
             for (PowerOfTwo i = 8; i <= 128; i = i.Double())
             {
@@ -123,13 +127,13 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
 
                         if (beamType == BeamType.HookStart)
                         {
-                            beams.Add(AsHookStart(stem, 1, beamIndex, beamDefinition, beamSpacing, beamThickness, groupUp, color));
+                            beams.Add(AsHookStart(stem, beamIndex, beamDefinition, beamSpacing, beamThickness, crossGroup, color, positionSpace));
                             continue;
                         }
 
                         if (beamType == BeamType.HookEnd)
                         {
-                            beams.Add(AsHookEnd(stem, 1, beamIndex, beamDefinition, beamSpacing, beamThickness, groupUp, color));
+                            beams.Add(AsHookEnd(stem, beamIndex, beamDefinition, beamSpacing, beamThickness, crossGroup, color, positionSpace));
                             continue;
                         }
 
@@ -144,7 +148,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
 
                     if (beamType == BeamType.End)
                     {
-                        beams.Add(BetweenTwoStems(openingStem, stem, beamIndex, beamDefinition, beamSpacing, beamThickness, groupUp, color));
+                        beams.Add(BetweenTwoStems(openingStem, stem, beamIndex, beamDefinition, beamSpacing, beamThickness, crossGroup, color));
                         openingStem = null;
                         continue;
                     }
@@ -156,87 +160,77 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.Models
             return beams;
         }
 
-        public static DrawableTrapezoid BetweenTwoStems(VisualStem left, VisualStem right, int beamIndex, Ruler beamDefinition, double beamSpacing, double beamThickness, bool groupUp, ColorARGB color)
+        public static DrawableBeam BetweenTwoStems(VisualStem left, VisualStem right, int beamIndex, Ruler beamDefinition, double beamSpacing, double beamThickness, bool drawBeamCanvasUp, Geometry.ColorARGB color)
         {
             var stemUp = left.VisuallyUp;
+
+            // Always move the ruler agains the direction of the stem.
+            // If the stem goes up (from the note), move the ruler downwards.
+            // Starts at the tip, moves towards the note.
             var ruler = stemUp ?
-                //draw beams downwards
+                // Move the ruler downwards. Note the inverted y coordinates of the canvas. Y = 0 is top of canvas, etc.
                 beamDefinition.OffsetY(beamIndex * (beamSpacing + beamThickness)) :
-                //draw beams upwards
+                // Move the ruler upwards.
                 beamDefinition.OffsetY(beamIndex * ((beamSpacing + beamThickness) * -1));
 
-            if (stemUp != groupUp)
+            // Unless... When we draw betweeen two stems and it is unclear which direction to choose.
+            // Then choose the direction of the group as a whole.
+            // Note that the direction of the beam thickness never changes.
+            if (left.VisuallyUp != right.VisuallyUp)
             {
-                ruler = stemUp ?
-                    ruler.OffsetY(beamThickness) :
-                    ruler.OffsetY(beamThickness * -1);
+                ruler = drawBeamCanvasUp ?
+                    // Move the ruler upwards. Note the inverted y coordinates of the canvas. Y = 0 is top of canvas, etc.
+                    beamDefinition.OffsetY(beamIndex * (beamSpacing + beamThickness * -1)) :
+                    // Move the ruler downwards.
+                    beamDefinition.OffsetY(beamIndex * (beamSpacing + beamThickness));
             }
-
-            var thickness = stemUp ?
-                beamThickness :
-                beamThickness * -1;
 
             var startPoint = ruler.IntersectVerticalRay(left.End);
-
             var endPoint = ruler.IntersectVerticalRay(right.End);
 
-            return new DrawableTrapezoid(startPoint, endPoint, thickness, color);
+            return new DrawableBeam(startPoint, endPoint, beamThickness, drawBeamCanvasUp, color);
         }
 
-        public static DrawableTrapezoid AsHookEnd(VisualStem stem, double length, int beamIndex, Ruler beamDefinition, double beamSpacing, double beamThickness, bool GroupUp, ColorARGB color)
+        public DrawableBeam AsHookEnd(VisualStem stem, int beamIndex, Ruler beamDefinition, double beamSpacing, double beamThickness, bool drawBeamCanvasUp, Geometry.ColorARGB color, double positionSpace)
         {
             var stemUp = stem.VisuallyUp;
 
+            // Always move the ruler against the direction of the stem.
+            // Hooks are not affected by cross beams. Beams are always drawn in the direction of the group.
+            // The ruler is moved agains the direction of the stem.
             var ruler = stemUp ?
-                //draw beams downwards
+                // Move the ruler downwards. Note the inverted y coordinates of the canvas. Y = 0 is top of canvas, etc.
                 beamDefinition.OffsetY(beamIndex * (beamSpacing + beamThickness)) :
-                //draw beams upwards
+                // Move the ruler upwards.
                 beamDefinition.OffsetY(beamIndex * ((beamSpacing + beamThickness) * -1));
-
-            if (stemUp != GroupUp)
-            {
-                ruler = stemUp ?
-                    ruler.OffsetY(beamThickness) :
-                    ruler.OffsetY(beamThickness * -1);
-            }
-
-            var thickness = stemUp ?
-                beamThickness :
-                beamThickness * -1;
 
             var endPoint = ruler.IntersectVerticalRay(stem.End);
+            
+            var length = positionSpace /2 ;
+            var startPoint = endPoint.Move(length * -1, ruler.Angle.ToRadians());
 
-            var startPoint = endPoint.Move(length * -1, ruler.Angle);
-
-            return new DrawableTrapezoid(startPoint, endPoint, thickness, color);
+            return new DrawableBeam(startPoint, endPoint, beamThickness, drawBeamCanvasUp, color);
         }
 
-        public static DrawableTrapezoid AsHookStart(VisualStem stem, double length, int beamIndex, Ruler beamDefinition, double beamSpacing, double beamThickness, bool groupUp, ColorARGB color)
+        public DrawableBeam AsHookStart(VisualStem stem, int beamIndex, Ruler beamDefinition, double beamSpacing, double beamThickness, bool drawBeamCanvasUp, Geometry.ColorARGB color, double positionSpace)
         {
             var stemUp = stem.VisuallyUp;
 
+            // always move the ruler against the direction of the stem.
+            // Hooks are not affected by cross beams. Beams are always drawn in the direction of the group.
+            // The ruler is moved agains the direction of the stem.
             var ruler = stemUp ?
-                //draw beams downwards
+                // Move the ruler downwards. Note the inverted y coordinates of the canvas. Y = 0 is top of canvas, etc.
                 beamDefinition.OffsetY(beamIndex * (beamSpacing + beamThickness)) :
-                //draw beams upwards
+                // Move the ruler upwards.
                 beamDefinition.OffsetY(beamIndex * ((beamSpacing + beamThickness) * -1));
-
-            if (stemUp != groupUp)
-            {
-                ruler = stemUp ?
-                    ruler.OffsetY(beamThickness) :
-                    ruler.OffsetY(beamThickness * -1);
-            }
-
-            var thickness = stemUp ?
-                beamThickness :
-                beamThickness * -1;
 
             var startPoint = ruler.IntersectVerticalRay(stem.End);
 
-            var endPoint = startPoint.Move(length, ruler.Angle);
+            var length = positionSpace /2;
+            var endPoint = startPoint.Move(length, ruler.Angle.ToRadians());
 
-            return new DrawableTrapezoid(startPoint, endPoint, thickness, color);
+            return new DrawableBeam(startPoint, endPoint, beamThickness, drawBeamCanvasUp, color);
         }
     }
 }

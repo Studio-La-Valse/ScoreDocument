@@ -5,7 +5,7 @@ namespace StudioLaValse.ScoreDocument.Core
     /// <summary>
     /// Represents a musical step.
     /// </summary>
-    public class Step : IEquatable<Step>
+    public readonly struct Step : IEquatable<Step>
     {
         private static readonly string[] stepNames =
         [
@@ -22,185 +22,187 @@ namespace StudioLaValse.ScoreDocument.Core
         /// 
         /// </summary>
         public static Step ADoubleFlat =>
-            new Step(5, -2);
+            new(5, -2);
         /// <summary>
         /// 
         /// </summary>
         public static Step AFlat =>
-            new Step(5, -1);
+            new(5, -1);
         /// <summary>
         /// 
         /// </summary>
         public static Step A =>
-            new Step(5, 0);
+            new(5, 0);
         /// <summary>
         /// 
         /// </summary>
         public static Step ASharp =>
-            new Step(5, 1);
+            new(5, 1);
         /// <summary>
         /// 
         /// </summary>
         public static Step ADoubleSharp =>
-            new Step(5, 2);
+            new(5, 2);
 
         /// <summary>
         /// 
         /// </summary>
         public static Step BDoubleFlat =>
-            new Step(6, -2);
+            new(6, -2);
         /// <summary>
         /// 
         /// </summary>
         public static Step BFlat =>
-            new Step(6, -1);
+            new(6, -1);
         /// <summary>
         /// 
         /// </summary>
         public static Step B =>
-            new Step(6, 0);
+            new(6, 0);
         /// <summary>
         /// 
         /// </summary>
         public static Step BSharp =>
-            new Step(6, 1);
+            new(6, 1);
         /// <summary>
         /// 
         /// </summary>
         public static Step BDoubleSharp =>
-            new Step(6, 2);
+            new(6, 2);
 
         /// <summary>
         /// 
         /// </summary>
         public static Step CDoubleFlat =>
-            new Step(0, -2);
+            new(0, -2);
         /// <summary>
         /// 
         /// </summary>
         public static Step CFlat =>
-            new Step(0, -1);
+            new(0, -1);
         /// <summary>
         /// 
         /// </summary>
         public static Step C =>
-            new Step(0, 0);
+            new(0, 0);
         /// <summary>
         /// 
         /// </summary>
         public static Step CSharp =>
-            new Step(0, 1);
+            new(0, 1);
         /// <summary>
         /// 
         /// </summary>
         public static Step CDoubleSharp =>
-            new Step(0, 2);
+            new(0, 2);
 
         /// <summary>
         /// 
         /// </summary>
         public static Step DDoubleFlat =>
-            new Step(1, -2);
+            new(1, -2);
         /// <summary>
         /// 
         /// </summary>
         public static Step DFlat =>
-            new Step(1, -1);
+            new(1, -1);
         /// <summary>
         /// 
         /// </summary>
         public static Step D =>
-            new Step(1, 0);
+            new(1, 0);
         /// <summary>
         /// 
         /// </summary>
         public static Step DSharp =>
-            new Step(1, 1);
+            new(1, 1);
         /// <summary>
         /// 
         /// </summary>
         public static Step DDoubleSharp =>
-            new Step(1, 2);
+            new(1, 2);
 
 
         /// <summary>
         /// 
         /// </summary>
         public static Step EDoubleFlat =>
-            new Step(2, -2);
+            new(2, -2);
         /// <summary>
         /// 
         /// </summary>
         public static Step EFlat =>
-            new Step(2, -1);
+            new(2, -1);
         /// <summary>
         /// 
         /// </summary>
         public static Step E =>
-            new Step(2, 0);
+            new(2, 0);
         /// <summary>
         /// 
         /// </summary>
         public static Step ESharp =>
-            new Step(2, 1);
+            new(2, 1);
         /// <summary>
         /// 
         /// </summary>
         public static Step EDoubleSharp =>
-            new Step(2, 2);
+            new(2, 2);
 
 
         /// <summary>
         /// 
         /// </summary>
         public static Step FDoubleFlat =>
-            new Step(3, -2);
+            new(3, -2);
         /// <summary>
         /// 
         /// </summary>
         public static Step FFlat =>
-            new Step(3, -1);
+            new(3, -1);
         /// <summary>
         /// 
         /// </summary>
         public static Step F =>
-            new Step(3, 0);
+            new(3, 0);
         /// <summary>
         /// 
         /// </summary>
         public static Step FSharp =>
-            new Step(3, 1);
+            new(3, 1);
         /// <summary>
         /// 
         /// </summary>
         public static Step FDoubleSharp =>
-            new Step(3, 2);
+            new(3, 2);
 
         /// <summary>
         /// 
         /// </summary>
         public static Step GDoubleFlat =>
-            new Step(4, -2);
+            new(4, -2);
         /// <summary>
         /// 
         /// </summary>
         public static Step GFlat =>
-            new Step(4, -1);
+            new(4, -1);
         /// <summary>
         /// 
         /// </summary>
         public static Step G =>
-            new Step(4, 0);
+            new(4, 0);
         /// <summary>
         /// 
         /// </summary>
         public static Step GSharp =>
-            new Step(4, 1);
+            new(4, 1);
         /// <summary>
         /// 
         /// </summary>
         public static Step GDoubleSharp =>
-            new Step(4, 2);
+            new(4, 2);
+
+
 
         /// <summary>
         /// The steps taken from c.
@@ -211,6 +213,8 @@ namespace StudioLaValse.ScoreDocument.Core
         /// </summary>
         public int Shifts { get; }
 
+
+
         /// <summary>
         /// Calculates the number of semitones in the step.
         /// </summary>
@@ -220,14 +224,14 @@ namespace StudioLaValse.ScoreDocument.Core
             {
                 var value = 0;
 
-                for (int i = 0; i < StepsFromC; i++)
+                for (var i = 0; i < StepsFromC; i++)
                 {
                     var indexInOctave = i % 12;
 
-                    value += indexInOctave == 2 || indexInOctave == 6 ? 1 : 2;
+                    value += indexInOctave is 2 or 6 ? 1 : 2;
                 }
 
-                return (int)MathUtils.UnsignedModulo(value + Shifts, 12);
+                return MathUtils.UnsignedModulo(value + Shifts, 12);
             }
         }
         /// <summary>
@@ -253,6 +257,8 @@ namespace StudioLaValse.ScoreDocument.Core
         public Step Dominant =>
             new Scale(this, ScaleStructure.Major).EnumerateSteps().ElementAt(4);
 
+
+
         /// <summary>
         /// Construct a step from the number of steps from c, and the number of shifts. 
         /// If the number of steps is smaller than 0, an exeption will be thrown.
@@ -263,7 +269,7 @@ namespace StudioLaValse.ScoreDocument.Core
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public Step(int step, int shifts)
         {
-            if (shifts < -2 || shifts > 2)
+            if (shifts is < (-2) or > 2)
             {
                 throw new ArgumentOutOfRangeException(nameof(shifts));
             }
@@ -281,17 +287,7 @@ namespace StudioLaValse.ScoreDocument.Core
         /// <inheritdoc/>
         public override bool Equals(object? obj)
         {
-            if (obj is null)
-            {
-                return false;
-            }
-
-            if (obj is not Step other)
-            {
-                return false;
-            }
-
-            return Equals(other);
+            return obj is not null && obj is Step other && Equals(other);
         }
         /// <inheritdoc/>
         public override int GetHashCode()
@@ -299,13 +295,8 @@ namespace StudioLaValse.ScoreDocument.Core
             return new Tuple<int, int>(StepsFromC, Shifts).GetHashCode();
         }
         /// <inheritdoc/>
-        public bool Equals(Step? other)
+        public bool Equals(Step other)
         {
-            if (other is null)
-            {
-                return false;
-            }
-
             return other.StepsFromC == StepsFromC && other.Shifts == Shifts;
         }
         /// <summary>
@@ -316,11 +307,6 @@ namespace StudioLaValse.ScoreDocument.Core
         /// <returns></returns>
         public bool EqualsOrResembles(Step other)
         {
-            if (other is null)
-            {
-                return false;
-            }
-
             return other.SemiTones == SemiTones;
         }
 
@@ -332,7 +318,7 @@ namespace StudioLaValse.ScoreDocument.Core
         public Step MoveAlongCircleOfFifths(int steps)
         {
             var step = this;
-            for (int i = 0; i < steps; i++)
+            for (var i = 0; i < steps; i++)
             {
                 step += Interval.Fifth;
             }
@@ -348,7 +334,7 @@ namespace StudioLaValse.ScoreDocument.Core
                 return new Step(step.StepsFromC, step.Shifts + interval.Shifts);
             }
 
-            var scale = new Scale(step, ScaleStructure.Major);
+            Scale scale = new(step, ScaleStructure.Major);
             var element = scale.EnumerateSteps(interval.Steps + 1).ElementAt(interval.Steps);
             return new Step(element.StepsFromC, element.Shifts + interval.Shifts);
         }

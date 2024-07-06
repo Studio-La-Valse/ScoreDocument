@@ -45,7 +45,7 @@
             var step = origin;
             yield return new Step(step.StepsFromC, step.Shifts);
 
-            for (int i = 0; i < number - 1; i++)
+            for (var i = 0; i < number - 1; i++)
             {
                 var interval = scaleStructure.Intervals.ElementAt(i % scaleStructure.Length);
                 step = IncrementInterval(step, interval);
@@ -63,9 +63,9 @@
         {
             var newStep = step.StepsFromC % 7;
             var newShifts = step.Shifts;
-            for (int _ = 0; _ < interval.Steps; _++)
+            for (var _ = 0; _ < interval.Steps; _++)
             {
-                var newStepIsBorE = newStep == 2 || newStep == 6;
+                var newStepIsBorE = newStep is 2 or 6;
                 if (newStepIsBorE)
                 {
                     newShifts++;

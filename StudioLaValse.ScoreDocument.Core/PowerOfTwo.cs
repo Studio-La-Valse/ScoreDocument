@@ -13,7 +13,7 @@ namespace StudioLaValse.ScoreDocument.Core
         public int Power { get; }
 
         /// <summary>
-        /// The actual value.
+        /// The actual value when two is raised to the <see cref="Power"/>.
         /// </summary>
         public int Value
         {
@@ -21,7 +21,7 @@ namespace StudioLaValse.ScoreDocument.Core
             {
                 var value = 1;
 
-                for (int i = 0; i < Power; i++)
+                for (var i = 0; i < Power; i++)
                 {
                     value *= 2;
                 }
@@ -60,7 +60,7 @@ namespace StudioLaValse.ScoreDocument.Core
 
             var _val = 1;
 
-            int power = 0;
+            var power = 0;
 
             while (_val <= value)
             {
@@ -113,19 +113,18 @@ namespace StudioLaValse.ScoreDocument.Core
         /// Cast the power of two to an integer value.
         /// </summary>
         /// <param name="p"></param>
-        public static implicit operator int(PowerOfTwo p) => p.Value;
+        public static implicit operator int(PowerOfTwo p)
+        {
+            return p.Value;
+        }
+
         /// <summary>
         /// Cast the integer value to a power of two. Throws <see cref="InvalidCastException"/> if the number cannot be casted.
         /// </summary>
         /// <param name="i"></param>
         public static implicit operator PowerOfTwo(int i)
         {
-            if (TryCreate(i, out var result))
-            {
-                return result;
-            }
-
-            throw new InvalidCastException();
+            return TryCreate(i, out var result) ? result : throw new InvalidCastException();
         }
 
         /// <inheritdoc/>
@@ -137,18 +136,19 @@ namespace StudioLaValse.ScoreDocument.Core
         /// <inheritdoc/>
         public bool Equals(PowerOfTwo? other)
         {
-            if (other == null)
-            {
-                return false;
-            }
-
-            return other.Value == this.Value;
+            return other != null && other.Value == Value;
         }
 
         /// <inheritdoc/>
         public override int GetHashCode()
         {
             return Value.GetHashCode();
+        }
+
+        /// <inheritdoc/>
+        public override bool Equals(object? obj)
+        {
+            return Equals(obj as PowerOfTwo);
         }
     }
 
@@ -160,12 +160,7 @@ namespace StudioLaValse.ScoreDocument.Core
         /// <inhertdoc/>
         public bool Equals(PowerOfTwo? x, PowerOfTwo? y)
         {
-            if (x is null)
-            {
-                return false;
-            }
-
-            return x.Equals(y);
+            return x is not null && x.Equals(y);
         }
 
         /// <inhertdoc/>

@@ -4,16 +4,19 @@
     {
         public static IList<double> Map(IList<double> list, double newMin, double newMax)
         {
-            double listMin = list.Min();
-            double listMax = list.Max();
+            var listMin = list.Min();
+            var listMax = list.Max();
 
-            if (listMax - listMin == 0) return list;
-
-            List<double> newList = new List<double>();
-
-            foreach (double value in list)
+            if (listMax - listMin == 0)
             {
-                double newValue = Map(value, listMin, listMax, newMin, newMax);
+                return list;
+            }
+
+            List<double> newList = [];
+
+            foreach (var value in list)
+            {
+                var newValue = Map(value, listMin, listMax, newMin, newMax);
 
                 newList.Add((float)newValue);
             }
@@ -22,16 +25,19 @@
         }
         public static IList<float> Map(IList<float> list, float newMin, float newMax)
         {
-            float listMin = list.Min();
-            float listMax = list.Max();
+            var listMin = list.Min();
+            var listMax = list.Max();
 
-            if (listMax - listMin == 0) return list;
-
-            List<float> newList = new List<float>();
-
-            foreach (float value in list)
+            if (listMax - listMin == 0)
             {
-                double newValue = Map(value, listMin, listMax, newMin, newMax);
+                return list;
+            }
+
+            List<float> newList = [];
+
+            foreach (var value in list)
+            {
+                var newValue = Map(value, listMin, listMax, newMin, newMax);
 
                 newList.Add((float)newValue);
             }
@@ -41,16 +47,20 @@
         public static double[] SubSampleValues(IEnumerable<double> values, int newLength)
         {
             if (!values.Any())
+            {
                 return new double[0];
+            }
 
             var originalCount = values.Count();
 
             if (newLength == originalCount)
+            {
                 return values.ToArray();
+            }
 
             var newArray = new double[newLength];
 
-            for (int i = 0; i < newLength; i++)
+            for (var i = 0; i < newLength; i++)
             {
                 var indexInOriginalCollection = (int)Math.Floor(Map(i, 0d, newLength, 0, originalCount));
                 newArray[i] = values.ElementAt(indexInOriginalCollection);
@@ -61,16 +71,20 @@
         public static float[] SubSampleValues(IEnumerable<float> values, int newLength)
         {
             if (!values.Any())
+            {
                 return new float[0];
+            }
 
             var originalCount = values.Count();
 
             if (newLength == originalCount)
+            {
                 return values.ToArray();
+            }
 
             var newArray = new float[newLength];
 
-            for (int i = 0; i < newLength; i++)
+            for (var i = 0; i < newLength; i++)
             {
                 var indexInOriginalCollection = (int)Math.Floor(Map(i, 0d, newLength, 0, originalCount));
                 newArray[i] = values.ElementAt(indexInOriginalCollection);
@@ -80,21 +94,15 @@
         }
         public static double Map(double value, double minStart, double maxStart, double minEnd, double maxEnd)
         {
-            double fraction = maxStart - minStart;
+            var fraction = maxStart - minStart;
 
-            if (fraction == 0)
-                throw new ArgumentOutOfRangeException();
-
-            return minEnd + (maxEnd - minEnd) * ((value - minStart) / fraction);
+            return fraction == 0 ? throw new ArgumentOutOfRangeException() : minEnd + ((maxEnd - minEnd) * ((value - minStart) / fraction));
         }
         public static decimal Map(decimal value, decimal minStart, decimal maxStart, decimal minEnd, decimal maxEnd)
         {
-            decimal fraction = maxStart - minStart;
+            var fraction = maxStart - minStart;
 
-            if (fraction == 0)
-                throw new ArgumentOutOfRangeException();
-
-            return minEnd + (maxEnd - minEnd) * ((value - minStart) / fraction);
+            return fraction == 0 ? throw new ArgumentOutOfRangeException() : minEnd + ((maxEnd - minEnd) * ((value - minStart) / fraction));
         }
         public static double Clamp(double value, double minValue, double maxValue)
         {

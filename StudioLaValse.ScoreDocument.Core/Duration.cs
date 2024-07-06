@@ -4,7 +4,7 @@
     /// Represents a duration of a musical element.
     /// Extends a generic fraction.
     /// </summary>
-    public class Duration : Fraction
+    public class Duration : Fraction, IEquatable<Duration>
     {
         /// <inheritdoc/>
         public new PowerOfTwo Denominator { get; }
@@ -27,13 +27,13 @@
         /// <returns></returns>
         public override Duration Simplify()
         {
-            if (Numinator == 0)
+            if (Numerator == 0)
             {
                 return new Duration(0, 1);
             }
 
             var denom = Denominator;
-            var num = Numinator;
+            var num = Numerator;
             var halfDenom = denom / 2M;
             var halfNum = num / 2M;
 
@@ -46,6 +46,17 @@
             }
 
             return new Duration(num, denom);
+        }
+
+        /// <inheritdoc/>
+        public bool Equals(Duration? other)
+        {
+            if(other is null)
+            {
+                return false;
+            }
+
+            return Decimal == other.Decimal;
         }
 
 
@@ -61,12 +72,12 @@
         {
             if (first.Denominator == second.Denominator)
             {
-                return new Duration(first.Numinator + second.Numinator, first.Denominator);
+                return new Duration(first.Numerator + second.Numerator, first.Denominator);
             }
 
             var nominator =
-                first.Numinator * second.Denominator +
-                first.Denominator * second.Numinator;
+                (first.Numerator * second.Denominator) +
+                (first.Denominator * second.Numerator);
 
             var denominator = first.Denominator * second.Denominator;
 
@@ -115,6 +126,17 @@
         public static bool operator >=(Duration first, decimal second)
         {
             return first.Decimal >= second;
+        }
+
+        /// <summary>
+        /// Multply this position by n steps.
+        /// </summary>
+        /// <param name="duration"></param>
+        /// <param name="n"></param>
+        /// <returns></returns>
+        public static Duration operator *(Duration duration, int n)
+        {
+            return new Duration(duration.Numerator * n, duration.Denominator).Simplify();
         }
     }
 }

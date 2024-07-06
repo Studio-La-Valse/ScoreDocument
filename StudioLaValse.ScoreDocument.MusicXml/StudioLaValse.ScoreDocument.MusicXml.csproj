@@ -4,13 +4,11 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	  <PackageVersion>2.0.1</PackageVersion>
+	  <PackageVersion>3.0.0</PackageVersion>
   </PropertyGroup>
 	
   <ItemGroup>
-    <ProjectReference Include="..\StudioLaValse.ScoreDocument.Builder\StudioLaValse.ScoreDocument.Builder.csproj" />
     <ProjectReference Include="..\StudioLaValse.ScoreDocument.Core\StudioLaValse.ScoreDocument.Core.csproj" />
-    <ProjectReference Include="..\StudioLaValse.ScoreDocument.Layout\StudioLaValse.ScoreDocument.Layout.csproj" />
     <ProjectReference Include="..\StudioLaValse.ScoreDocument\StudioLaValse.ScoreDocument.csproj" />
   </ItemGroup>
 

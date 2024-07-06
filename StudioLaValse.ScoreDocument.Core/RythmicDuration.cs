@@ -8,11 +8,16 @@ namespace StudioLaValse.ScoreDocument.Core
     public class RythmicDuration : Duration, IEquatable<RythmicDuration>
     {
         /// <summary>
+        /// A default quarter note.
+        /// </summary>
+        public static readonly RythmicDuration QuarterNote = new (4);
+
+        /// <summary>
         /// The number of dots.
         /// </summary>
         public int Dots { get; }
         /// <summary>
-        /// The 
+        /// The denominator of the duration. For example 8 in a one/eigth note. The numerator of a rythmic duration is always 1.
         /// </summary>
         public PowerOfTwo PowerOfTwo { get; }
 
@@ -34,7 +39,7 @@ namespace StudioLaValse.ScoreDocument.Core
 
         private static int IntPow(int x, int pow)
         {
-            int ret = 1;
+            var ret = 1;
             while (pow != 0)
             {
                 if ((pow & 1) == 1)
@@ -58,7 +63,7 @@ namespace StudioLaValse.ScoreDocument.Core
         {
             output = null!;
 
-            if (duration.Numinator == 0)
+            if (duration.Numerator == 0)
             {
                 return false;
             }
@@ -66,7 +71,7 @@ namespace StudioLaValse.ScoreDocument.Core
             //required
             //todo: allow breve note which is a 2/1 note (double of a whole)
             //for now a whole note (one over two to the power 0) is the longest note allowed)
-            if (duration.Numinator > duration.Denominator)
+            if (duration.Numerator > duration.Denominator)
             {
                 return false;
             }
@@ -76,7 +81,7 @@ namespace StudioLaValse.ScoreDocument.Core
                 return false;
             }
 
-            if (PowerOfTwo.TryCreate(duration.Numinator, out var beatsAsPower))
+            if (PowerOfTwo.TryCreate(duration.Numerator, out var beatsAsPower))
             {
                 //eg: 8/16 => 1/2
                 //eg: 64/256 => 1/4
@@ -94,7 +99,7 @@ namespace StudioLaValse.ScoreDocument.Core
             }
 
             //valid: 3, 7, 15, 31, etc
-            if (!PowerOfTwo.TryCreate(duration.Numinator + 1, out var durationNuminatorPlusOneAsPowerOfTwo))
+            if (!PowerOfTwo.TryCreate(duration.Numerator + 1, out var durationNuminatorPlusOneAsPowerOfTwo))
             {
                 return false;
             }
@@ -129,15 +134,17 @@ namespace StudioLaValse.ScoreDocument.Core
         /// Halves the rythmic duration.
         /// </summary>
         /// <returns></returns>
-        public RythmicDuration HalfDuration() =>
-            new RythmicDuration(new PowerOfTwo(PowerOfTwo.Power + 1), Dots);
+        public RythmicDuration HalfDuration()
+        {
+            return new RythmicDuration(new PowerOfTwo(PowerOfTwo.Power + 1), Dots);
+        }
 
         /// <inheritdoc/>
         public override string ToString()
         {
             var start = $"1 / {PowerOfTwo.Value}";
 
-            for (int i = 0; i < Dots; i++)
+            for (var i = 0; i < Dots; i++)
             {
                 start += "dot ";
             }
@@ -148,12 +155,7 @@ namespace StudioLaValse.ScoreDocument.Core
         /// <inheritdoc/>
         public bool Equals(RythmicDuration? other)
         {
-            if (other == null)
-            {
-                return false;
-            }
-
-            return other.PowerOfTwo.Equals(PowerOfTwo) && other.Dots == Dots;
+            return other != null && other.PowerOfTwo.Equals(PowerOfTwo) && other.Dots == Dots;
         }
 
         /// <inheritdoc/>

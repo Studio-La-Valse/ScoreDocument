@@ -11,11 +11,17 @@
         /// <param name="noteGroup"></param>
         /// <param name="staffGroup"></param>
         /// <param name="instrumentMeasure"></param>
+        /// <param name="positionDictionary"></param>
         /// <param name="canvasTopStaffGroup"></param>
-        /// <param name="canvasLeft"></param>
-        /// <param name="allowedSpace"></param>
-        /// <param name="colorARGB"></param>
+        /// <param name="lineSpacing"></param>
+        /// <param name="positionSpace"></param>
         /// <returns></returns>
-        BaseContentWrapper Build(IMeasureBlockReader noteGroup, IStaffGroupReader staffGroup, IInstrumentMeasureReader instrumentMeasure, double canvasTopStaffGroup, double canvasLeft, double allowedSpace, ColorARGB colorARGB);
+        BaseContentWrapper Build(IMeasureBlock noteGroup,
+                                 IStaffGroup staffGroup,
+                                 IInstrumentMeasure instrumentMeasure,
+                                 IReadOnlyDictionary<Position, double> positionDictionary,
+                                 double canvasTopStaffGroup,
+                                 double lineSpacing,
+                                 double positionSpace);
     }
 }

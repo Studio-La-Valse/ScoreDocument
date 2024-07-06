@@ -1,135 +1,169 @@
 ﻿using StudioLaValse.ScoreDocument.Drawable.Extensions;
-using StudioLaValse.ScoreDocument.Layout;
+using StudioLaValse.ScoreDocument.Extensions;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
     internal sealed class VisualChord : BaseContentWrapper
     {
-        private readonly IChordReader chord;
-        private readonly double scale;
         private readonly double canvasLeft;
         private readonly double canvasTopStaffGroup;
-        private readonly IStaffGroupReader staffGroup;
-        private readonly IInstrumentMeasureReader instrumentMeasureReader;
+        private readonly double lineSpacing;
+        private readonly double positionSpacing;
+        private readonly double scoreScale;
+        private readonly double instrumentScale; 
+        private readonly IChord chord;
+        private readonly IStaffGroup staffGroup;
+        private readonly IInstrumentMeasure instrumentMeasureReader;
         private readonly IVisualNoteFactory noteFactory;
         private readonly IVisualRestFactory restFactory;
-        private readonly ColorARGB color;
-        private readonly IScoreLayoutProvider scoreLayoutDictionary;
+        private readonly IScoreDocument scoreDocumentLayout;
+        private readonly IUnitToPixelConverter unitToPixelConverter;
+        private readonly List<Line> overFlowLines;
 
-        public ChordLayout Layout => scoreLayoutDictionary.ChordLayout(chord);
+        public IChord Layout => chord;
         public double XOffset => Layout.XOffset;
 
 
-        public VisualChord(IChordReader chord, double canvasLeft, double canvasTopStaffGroup, IStaffGroupReader staffGroup, IInstrumentMeasureReader instrumentMeasureReader, IVisualNoteFactory noteFactory, IVisualRestFactory restFactory, ColorARGB color, IScoreLayoutProvider scoreLayoutDictionary)
+        public VisualChord(IChord chord,
+                           double canvasLeft,
+                           double canvasTopStaffGroup,
+                           double lineSpacing,
+                           double positionSpacing,
+                           double scoreScale,
+                           double instrumentScale,
+                           IStaffGroup staffGroup,
+                           IInstrumentMeasure instrumentMeasureReader,
+                           IVisualNoteFactory noteFactory,
+                           IVisualRestFactory restFactory,
+                           IScoreDocument scoreDocumentLayout,
+                           IUnitToPixelConverter unitToPixelConverter)
         {
             this.chord = chord;
-            scale = chord.Grace ? 0.5 : 1;
             this.canvasLeft = canvasLeft;
             this.canvasTopStaffGroup = canvasTopStaffGroup;
+            this.lineSpacing = lineSpacing;
+            this.positionSpacing = positionSpacing;
+            this.scoreScale = scoreScale;
+            this.instrumentScale = instrumentScale;
             this.staffGroup = staffGroup;
             this.instrumentMeasureReader = instrumentMeasureReader;
             this.noteFactory = noteFactory;
             this.restFactory = restFactory;
-            this.color = color;
-            this.scoreLayoutDictionary = scoreLayoutDictionary;
+            this.scoreDocumentLayout = scoreDocumentLayout;
+            this.unitToPixelConverter = unitToPixelConverter;
+            overFlowLines = GetOverflowLines();
         }
 
 
 
         public IEnumerable<BaseContentWrapper> GetNotes()
         {
-            var notes = chord.ReadNotes();
+            var scoreScale = scoreDocumentLayout.Scale;
+            var instrumentScale = staffGroup.InstrumentRibbon.Scale;
+
+            var notes = this.chord.ReadNotes();
             if (!notes.Any())
             {
-                var canvasTop = staffGroup.EnumerateStaves(1).First().HeightFromLineIndex(canvasTopStaffGroup, 4, scoreLayoutDictionary);
-                yield return restFactory.Build(chord, canvasLeft, canvasTop, scale, color);
+                var canvasTop = canvasTopStaffGroup + unitToPixelConverter.UnitsToPixels(staffGroup.EnumerateStaves().First().DistanceFromTop(4, lineSpacing, scoreScale, instrumentScale));
+                yield return restFactory.Build(chord, canvasLeft, canvasTop, lineSpacing, scoreScale, instrumentScale);
                 yield break;
             }
 
             foreach (var note in notes)
             {
-                var staffIndex = scoreLayoutDictionary.NoteLayout(note).StaffIndex;
-                var clef = instrumentMeasureReader.GetClef(staffIndex, chord.Position, scoreLayoutDictionary);
+                var staffIndex = note.StaffIndex;
+                if (staffIndex >= staffGroup.NumberOfStaves)
+                {
+                    continue;
+                }
+
+                var clef = instrumentMeasureReader.GetClef(staffIndex, chord.Position);
                 var lineIndex = clef.LineIndexAtPitch(note.Pitch);
                 var offsetDots = lineIndex % 2 == 0;
-                var canvasTop = staffGroup.HeightOnCanvas(canvasTopStaffGroup, staffIndex, lineIndex, scoreLayoutDictionary);
+                var canvasTop = canvasTopStaffGroup + unitToPixelConverter.UnitsToPixels(staffGroup.DistanceFromTop(staffIndex, lineIndex, lineSpacing, scoreDocumentLayout));
                 var accidental = GetAccidental(note);
-                yield return noteFactory.Build(note, canvasLeft + XOffset, canvasTop, scale, offsetDots, accidental, color);
+                yield return noteFactory.Build(note, canvasLeft + XOffset, canvasTop, lineSpacing, scoreScale, instrumentScale, offsetDots, accidental);
             }
         }
 
 
-        public Accidental? GetAccidental(INoteReader note)
+        public Accidental? GetAccidental(INote note)
         {
-            var noteLayout = scoreLayoutDictionary.NoteLayout(note);
+            var noteLayout = note;
             var forceAccidental = noteLayout.ForceAccidental;
-            if (forceAccidental != AccidentalDisplay.Default)
+
+            if (forceAccidental == AccidentalDisplay.ForceOff)
             {
-                if (forceAccidental == AccidentalDisplay.ForceOn)
-                {
-                    return (Accidental)note.Pitch.Shift;
-                }
-                else
-                {
-                    return null;
-                }
+                return null;
             }
 
-            var accidental = instrumentMeasureReader.GetAccidental(note.Pitch, note.Position, noteLayout.StaffIndex, scoreLayoutDictionary);
-            return accidental;
+            if (forceAccidental == AccidentalDisplay.Default)
+            {
+                return instrumentMeasureReader.GetAccidental(note.Pitch, note.Position, noteLayout.StaffIndex);
+            }
+
+            if (forceAccidental == AccidentalDisplay.ForceAccidental)
+            {
+                return note.Pitch.Shift == 0 ? null : (Accidental)note.Pitch.Shift;
+            }
+
+            return (Accidental)note.Pitch.Shift;
         }
 
 
-        public IEnumerable<DrawableLineHorizontal> GetOverflowLines()
+        public List<Line> GetOverflowLines()
         {
-            var notes = chord.ReadNotes();
+            var notes = this.chord.ReadNotes();
             if (!notes.Any())
             {
-                yield break;
+                return [];
             }
 
             var canvasTopStaff = canvasTopStaffGroup;
-            var linesFromChord = new List<DrawableLineHorizontal>();
-            var staffIndex = 0;
-            var staffGroupLayout = scoreLayoutDictionary.StaffGroupLayout(staffGroup);
-            foreach (var staff in staffGroup.EnumerateStaves(staffGroupLayout.NumberOfStaves))
+            List<Line> linesFromChord = [];
+            var staffGroupLayout = staffGroup;
+            foreach (var staff in staffGroup.EnumerateStaves())
             {
-                var staffLayout = scoreLayoutDictionary.StaffLayout(staff);
+                var staffLayout = staff;
                 var notesOnStaff = notes
-                    .Where(c => scoreLayoutDictionary.NoteLayout(c).StaffIndex == staffIndex)
+                    .Where(c => c.StaffIndex == staff.IndexInStaffGroup)
                     .OrderBy(c => c.Pitch.IndexOnKlavier);
+
                 if (notesOnStaff.Any())
                 {
                     var lowestNote = notesOnStaff.First();
                     var highestNote = notesOnStaff.Last();
                     foreach (var note in new[] { highestNote, lowestNote })
                     {
-                        var overflowLines = OverflowLinesFromNote(note, 2, canvasTopStaff, staff);
+                        var lineLength = positionSpacing * 0.85;
+                        var overflowLines = OverflowLinesFromNote(note, lineLength, canvasTopStaff, staff);
 
                         foreach (var line in overflowLines)
                         {
-                            if (linesFromChord.Any(l => l.Y1.AlmostEqualTo(line.Y1)))
+                            if (linesFromChord.Any(l => l.Start.Y.AlmostEqualTo(line.Start.Y)))
                             {
                                 continue;
                             }
 
-                            yield return line;
+                            linesFromChord.Add(line);
                         }
                     }
                 }
 
-                canvasTopStaff += staff.CalculateHeight(scoreLayoutDictionary);
-                canvasTopStaff += staffLayout.DistanceToNext;
-            }
-        }
-        public IEnumerable<DrawableLineHorizontal> OverflowLinesFromNote(INoteReader note, double width, double canvasTopStaff, IStaffReader staff)
-        {
-            DrawableLineHorizontal fromHeight(double height)
-            {
-                return new DrawableLineHorizontal(height, canvasLeft - width / 2, width, 0.1, color);
+                canvasTopStaff += unitToPixelConverter.UnitsToPixels(staff.CalculateHeight(lineSpacing, scoreScale, instrumentScale));
+                canvasTopStaff += unitToPixelConverter.UnitsToPixels(staffLayout.DistanceToNext * scoreScale);
             }
 
-            var lineIndex = instrumentMeasureReader.GetClef(staff.IndexInStaffGroup, note.Position, scoreLayoutDictionary).LineIndexAtPitch(note.Pitch);
+            return linesFromChord;
+        }
+        public IEnumerable<Line> OverflowLinesFromNote(INote note, double width, double canvasTopStaff, IStaff staff)
+        {
+            Line fromHeight(double height)
+            {
+                return new Line(canvasLeft - (width / 2), height, canvasLeft + (width / 2), height);
+            }
+
+            var lineIndex = instrumentMeasureReader.GetClef(staff.IndexInStaffGroup, note.Position).LineIndexAtPitch(note.Pitch);
             var overflowTop = lineIndex < -1;
             var overflowBottom = lineIndex > 9;
 
@@ -142,7 +176,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                         continue;
                     }
 
-                    var height = staff.HeightFromLineIndex(canvasTopStaff, i, scoreLayoutDictionary);
+                    var height = canvasTopStaff + unitToPixelConverter.UnitsToPixels(staff.DistanceFromTop(i, lineSpacing, scoreScale, instrumentScale));
                     yield return fromHeight(height);
                 }
             }
@@ -156,7 +190,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                         continue;
                     }
 
-                    var height = staff.HeightFromLineIndex(canvasTopStaff, i, scoreLayoutDictionary);
+                    var height = canvasTopStaff + unitToPixelConverter.UnitsToPixels(staff.DistanceFromTop(i, lineSpacing, scoreScale, instrumentScale));
                     yield return fromHeight(height);
                 }
             }
@@ -169,7 +203,14 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 
         public override IEnumerable<BaseDrawableElement> GetDrawableElements()
         {
-            return GetOverflowLines();
+            return overFlowLines.Select(l => 
+            {
+                return new DrawableLineHorizontal(l.Start.Y,
+                                                  l.Start.X,
+                                                  l.Start.DistanceTo(l.End),
+                                                  unitToPixelConverter.UnitsToPixels(scoreDocumentLayout.HorizontalStaffLineThickness * scoreScale * instrumentScale),
+                                                  scoreDocumentLayout.PageForegroundColor.Value.FromPrimitive());
+            });
         }
         public override IEnumerable<BaseContentWrapper> GetContentWrappers()
         {

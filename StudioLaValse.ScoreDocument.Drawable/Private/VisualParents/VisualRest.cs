@@ -1,10 +1,12 @@
-﻿using StudioLaValse.ScoreDocument.Drawable.Private.DrawableElements;
-using StudioLaValse.ScoreDocument.Drawable.Private.Models;
+﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
     internal sealed class VisualRest : BaseVisualNote
     {
+        private readonly IGlyphLibrary glyphLibrary;
+        private readonly IScoreDocument scoreDocumentLayout;
+
         public Glyph GlyphPrototype
         {
             get
@@ -13,23 +15,25 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
                 var glyphs = new[]
                 {
-                    GlyphLibrary.RestWhole,
-                    GlyphLibrary.RestHalf,
-                    GlyphLibrary.RestQuarter,
-                    GlyphLibrary.RestEighth,
-                    GlyphLibrary.RestSixteenth,
-                    GlyphLibrary.RestThirtySecond,
+                    glyphLibrary.RestWhole(Scale),
+                    glyphLibrary.RestHalf(Scale),
+                    glyphLibrary.RestQuarter(Scale),
+                    glyphLibrary.RestEighth(Scale),
+                    glyphLibrary.RestSixteenth(Scale),
+                    glyphLibrary.RestThirtySecond(Scale),
                 };
 
-                for (int i = 0; i < 6; i++)
+                for (var i = 0; i < 6; i++)
                 {
                     if (DisplayDuration.Decimal >= duration)
+                    {
                         return glyphs[i];
+                    }
 
                     duration /= 2;
                 }
 
-                return GlyphLibrary.RestEighth;
+                return glyphs[3];
             }
         }
         public override DrawableScoreGlyph Glyph
@@ -38,28 +42,42 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             {
                 var glyph = GlyphPrototype;
 
-                if (measureElement.Grace)
-                {
-                    glyph.Scale = 0.5;
-                }
-
                 return new DrawableScoreGlyph(
                     XPosition,
                     HeightOnCanvas,
                     glyph,
                     HorizontalTextOrigin.Center,
                     VerticalTextOrigin.Center,
-                    DisplayColor);
+                    scoreDocumentLayout.PageForegroundColor.Value.FromPrimitive());
             }
         }
 
         public override bool OffsetDots => false;
         public override double XOffset => 0;
 
-        public VisualRest(IChordReader note, double canvasLeft, double canvasTop, double scale, ColorARGB color, ISelection<IUniqueScoreElement> selection) :
-            base(note, canvasLeft, canvasTop, scale, color, selection)
+        public VisualRest(IChord note,
+                          double canvasLeft,
+                          double canvasTop,
+                          double lineSpacing,
+                          double scoreScale,
+                          double instrumentScale,
+                          IGlyphLibrary glyphLibrary,
+                          IScoreDocument scoreDocumentLayout,
+                          ISelection<IUniqueScoreElement> selection,
+                          IUnitToPixelConverter unitToPixelConverter) :
+            base(note,
+                 canvasLeft,
+                 canvasTop,
+                 lineSpacing,
+                 scoreScale,
+                 instrumentScale,
+                 1,
+                 scoreDocumentLayout,
+                 selection,
+                 unitToPixelConverter)
         {
-
+            this.glyphLibrary = glyphLibrary;
+            this.scoreDocumentLayout = scoreDocumentLayout;
         }
     }
 }

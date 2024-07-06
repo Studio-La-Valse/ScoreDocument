@@ -1,6 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Layout;
-
-namespace StudioLaValse.ScoreDocument.Drawable.Scenes
+﻿namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
     /// <summary>
     /// The default implementation of the visual system measure factory.
@@ -9,7 +7,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
     {
         private readonly ISelection<IUniqueScoreElement> selection;
         private readonly IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory;
-        private readonly IScoreLayoutProvider scoreLayoutDictionary;
+        private readonly IScoreDocument scoreLayoutDictionary;
+        private readonly IUnitToPixelConverter unitToPixelConverter;
 
         /// <summary>
         /// The default constructor
@@ -17,17 +16,29 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// <param name="selection"></param>
         /// <param name="visualInstrumentMeasureFactory"></param>
         /// <param name="scoreLayoutDictionary"></param>
-        public VisualSystemMeasureFactory(ISelection<IUniqueScoreElement> selection, IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory, IScoreLayoutProvider scoreLayoutDictionary)
+        /// <param name="unitToPixelConverter"></param>
+        public VisualSystemMeasureFactory(ISelection<IUniqueScoreElement> selection, IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory, IScoreDocument scoreLayoutDictionary, IUnitToPixelConverter unitToPixelConverter)
         {
             this.selection = selection;
             this.visualInstrumentMeasureFactory = visualInstrumentMeasureFactory;
             this.scoreLayoutDictionary = scoreLayoutDictionary;
+            this.unitToPixelConverter = unitToPixelConverter;
         }
 
         /// <inheritdoc/>
-        public BaseContentWrapper CreateContent(IScoreMeasureReader scoreMeasure, IStaffSystemReader staffSystem, double canvasLeft, double canvasTop, double width, bool firstMeasure, ColorARGB colorARGB)
+        public BaseContentWrapper CreateContent(IScoreMeasure scoreMeasure, IStaffSystem staffSystem, double canvasLeft, double canvasTop, double width, double lineSpacing)
         {
-            return new VisualSystemMeasure(scoreMeasure, staffSystem, canvasLeft, canvasTop, width, firstMeasure, colorARGB, selection, visualInstrumentMeasureFactory, scoreLayoutDictionary);
+            return new VisualSystemMeasure(
+                scoreMeasure,
+                staffSystem,
+                canvasLeft,
+                canvasTop,
+                width,
+                lineSpacing,
+                selection,
+                visualInstrumentMeasureFactory,
+                scoreLayoutDictionary,
+                unitToPixelConverter);
         }
     }
 }

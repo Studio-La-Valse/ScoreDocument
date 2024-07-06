@@ -28,11 +28,11 @@
                 alpha += 100;
             }
 
-            var rectangle = new DrawableRectangle(creator.BoundingBox().Expand(1), new ColorARGB(alpha, 255, 0, 0), cornerRounding: 1);
-            return new List<BaseDrawableElement>()
-            {
+            DrawableRectangle rectangle = new(creator.BoundingBox().Expand(1), new ColorARGB(alpha, 255, 0, 0), cornerRounding: 1);
+            return
+            [
                 rectangle
-            };
+            ];
         }
     }
 }

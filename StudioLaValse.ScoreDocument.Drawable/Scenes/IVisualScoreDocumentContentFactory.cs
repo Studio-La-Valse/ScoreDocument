@@ -10,6 +10,6 @@
         /// </summary>
         /// <param name="scoreDocument"></param>
         /// <returns></returns>
-        BaseContentWrapper CreateContent(IScoreDocumentReader scoreDocument);
+        BaseContentWrapper CreateContent(IScoreDocument scoreDocument);
     }
 }

@@ -11,9 +11,10 @@
         /// <param name="element"></param>
         /// <param name="canvasLeft"></param>
         /// <param name="canvasTop"></param>
-        /// <param name="scale"></param>
-        /// <param name="color"></param>
+        /// <param name="lineSpacing"></param>
+        /// <param name="scoreScale"></param>
+        /// <param name="instrumentScale"></param>
         /// <returns></returns>
-        BaseContentWrapper Build(IChordReader element, double canvasLeft, double canvasTop, double scale, ColorARGB color);
+        BaseContentWrapper Build(IChord element, double canvasLeft, double canvasTop, double lineSpacing, double scoreScale, double instrumentScale);
     }
 }

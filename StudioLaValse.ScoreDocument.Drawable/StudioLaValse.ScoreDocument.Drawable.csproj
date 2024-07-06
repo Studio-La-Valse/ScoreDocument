@@ -4,18 +4,13 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<PackageVersion>2.0.1</PackageVersion>
+		<PackageVersion>3.0.0</PackageVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="StudioLaValse.Drawable" Version="2.0.4" />
-		<PackageReference Include="StudioLaValse.Drawable.Interaction" Version="2.0.4" />
+		<PackageReference Include="StudioLaValse.Drawable" Version="3.0.0" />
+		<PackageReference Include="StudioLaValse.Drawable.Interaction" Version="3.0.0" />
 		<PackageReference Include="StudioLaValse.Geometry" Version="1.0.0" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\StudioLaValse.ScoreDocument.Layout\StudioLaValse.ScoreDocument.Layout.csproj" />
-		<ProjectReference Include="..\StudioLaValse.ScoreDocument\StudioLaValse.ScoreDocument.csproj" />
 	</ItemGroup>
 
 	<!--build-->
@@ -32,7 +27,7 @@
 
 	<PropertyGroup>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
-		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<TreatWarningsAsErrors>True</TreatWarningsAsErrors>
 	</PropertyGroup>
 
 	<!--meta data-->
@@ -60,6 +55,12 @@
 
 	<ItemGroup>
 		<None Include="../README.md" Pack="true" PackagePath="" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\StudioLaValse.ScoreDocument.Core\StudioLaValse.ScoreDocument.Core.csproj" />
+	  <ProjectReference Include="..\StudioLaValse.ScoreDocument.GlyphLibrary\StudioLaValse.ScoreDocument.GlyphLibrary.csproj" />
+	  <ProjectReference Include="..\StudioLaValse.ScoreDocument\StudioLaValse.ScoreDocument.csproj" />
 	</ItemGroup>
 
 </Project>

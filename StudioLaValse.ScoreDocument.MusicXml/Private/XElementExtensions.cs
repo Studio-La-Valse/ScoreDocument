@@ -1,4 +1,6 @@
-﻿using System.Xml.Linq;
+﻿using StudioLaValse.ScoreDocument.Core;
+using System.Reflection.Metadata.Ecma335;
+using System.Xml.Linq;
 
 namespace StudioLaValse.ScoreDocument.MusicXml.Private
 {
@@ -6,35 +8,15 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
     {
         public static double ToDoubleOrThrow(this string s)
         {
-            if (!double.TryParse(s, out var result))
-            {
-                throw new Exception();
-            }
-
-            return result;
+            return !double.TryParse(s, out var result) ? throw new Exception() : result;
         }
         public static int ToIntOrThrow(this string s)
         {
-            if (!int.TryParse(s, out var result))
-            {
-                throw new Exception();
-            }
-
-            return result;
+            return !int.TryParse(s, out var result) ? throw new Exception() : result;
         }
         public static int? ToIntOrNull(this string s)
         {
-            if (s is null)
-            {
-                return null;
-            }
-
-            if (!int.TryParse(s, out var result))
-            {
-                throw new Exception();
-            }
-
-            return result;
+            return s is null ? null : !int.TryParse(s, out var result) ? throw new Exception() : result;
         }
 
         public static IEnumerable<int> ExtractVoices(this XElement measure)
@@ -75,6 +57,42 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             return element.Name == "note" || element.Name == "forward" || element.Name == "backup";
         }
 
+        public static bool IsNoteOrRest(this XElement element)
+        {
+            return element.Name == "note";
+        }
+
+        public static int? StaffIndex(this XElement element)
+        {
+            return element.Descendants().SingleOrDefault(d => d.Name == "staff")?.Value.ToIntOrThrow() - 1;
+        }
+
+        public static IEnumerable<string> GetBeams(this XElement element)
+        {
+            var beams = element.Descendants().Where(a => a.Name == "beam").Select(e => e.Value);
+            return beams;
+        }
+
+        public static bool IsNoteOrForward(this XElement element)
+        {
+            return element.Name == "note" || element.Name == "forward";
+        }
+
+        public static bool IsBackward(this XElement element)
+        {
+            return element.Name == "backup";
+        }
+
+        public static bool IsGrace(this XElement element)
+        {
+            return element.Descendants().Any(d => d.Name == "grace");
+        }
+
+        public static bool IsChord(this XElement element)
+        {
+            return element.Element("chord") != null;
+        }
+
         public static PowerOfTwo FromTypeString(this string @string)
         {
             return @string switch
@@ -96,13 +114,34 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             };
         }
 
-        public static Pitch ParsePitch(this XElement measureElement)
+        public static bool TryParsePitch(this XElement element, out Pitch pitch)
         {
-            var step = measureElement.Descendants().Single(d => d.Name == "step").Value;
-            var octave = measureElement.Descendants().Single(d => d.Name == "octave").Value;
-            var alter = measureElement.Descendants().SingleOrDefault(d => d.Name == "alter")?.Value;
+            pitch = default;
 
-            var octaveInt = octave.ToIntOrThrow();
+            var step = element.Descendants().FirstOrDefault(d => d.Name == "step")?.Value;
+            if(step == null)
+            {
+                return false;
+            }
+
+            var octave = element.Descendants().FirstOrDefault(d => d.Name == "octave")?.Value;
+            if(octave == null)
+            {
+                return false;
+            }
+
+            var alter = element.Descendants().FirstOrDefault(d => d.Name == "alter")?.Value;
+            var alterInt = alter is null ? 0 : alter.ToIntOrThrow();
+
+            var octaveInt =  0;
+            if(int.TryParse(octave, out var result))
+            {
+                octaveInt = result;
+            }
+            else
+            {
+                return false;
+            }
 
             var _step = step.ToLower() switch
             {
@@ -116,11 +155,20 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                 _ => throw new NotSupportedException()
             };
 
-            var alterInt = alter is null ? 0 : alter.ToIntOrThrow();
+            Step stepAlter = new(_step.StepsFromC, alterInt);
 
-            var stepAlter = new Step(_step.StepsFromC, alterInt);
+            pitch = new Pitch(stepAlter, octaveInt);
+            return true;
+        }
 
-            return new Pitch(stepAlter, octaveInt);
+        public static Pitch ParsePitch(this XElement measureElement)
+        {
+            if(measureElement.TryParsePitch(out var pitch))
+            {
+                return pitch;
+            }
+
+            throw new InvalidOperationException($"XEelemnt {measureElement} does not soom to have a pitch.");
         }
     }
 }

@@ -1,52 +1,31 @@
 ﻿using StudioLaValse.ScoreDocument.Drawable.Extensions;
-using StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers;
-using StudioLaValse.ScoreDocument.Layout;
+using StudioLaValse.ScoreDocument.Extensions;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
     internal sealed class VisualSystemMeasure : BaseSelectableParent<IUniqueScoreElement>
     {
-        private readonly IScoreMeasureReader scoreMeasure;
+        private readonly IScoreMeasure scoreMeasure;
         private readonly IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory;
-        private readonly IScoreLayoutProvider scoreLayoutDictionary;
-        private readonly IStaffSystemReader staffSystem;
+        private readonly IScoreDocument scoreLayoutDictionary;
+        private readonly IUnitToPixelConverter unitToPixelConverter;
+        private readonly IStaffSystem staffSystem;
         private readonly double width;
-        private readonly bool firstMeasure;
-        private readonly ColorARGB color;
+        private readonly double lineSpacing;
         private readonly double canvasLeft;
         private readonly double canvasTop;
 
 
-        public ScoreMeasureLayout Layout => scoreLayoutDictionary.ScoreMeasureLayout(scoreMeasure);
-
+        public IScoreMeasure Layout => 
+            scoreMeasure;
         public double PaddingRight =>
-            Layout.PaddingRight + NextMeasureKeyPadding;
-        public double PaddingLeft
-        {
-            get
-            {
-                var basePadding = Layout.PaddingLeft;
-
-                if (Layout.IsNewSystem)
-                {
-                    var keySignature = scoreMeasure.KeySignature;
-                    var flats = keySignature.DefaultFlats;
-                    var numberOfAccidentals = flats ?
-                        keySignature.EnumerateFlats().Count() :
-                        keySignature.EnumerateSharps().Count();
-                    basePadding -= 3;
-                    basePadding += numberOfAccidentals * VisualStaff.KeySignatureGlyphSpacing;
-                    basePadding += VisualStaff.ClefSpacing;
-
-                    if (scoreMeasure.IndexInScore == 0)
-                    {
-                        basePadding += VisualStaff.KeySignatureSpacing;
-                    }
-                }
-
-                return basePadding;
-            }
-        }
+            Layout.PaddingRight * ScoreScale + NextMeasureKeyPadding * ScoreScale;
+        public double Height =>
+            unitToPixelConverter.UnitsToPixels(staffSystem.CalculateHeight(lineSpacing, scoreLayoutDictionary));
+        public double PaddingLeft =>
+            Layout.PaddingLeft * ScoreScale;
+        public double ScoreScale =>
+            scoreLayoutDictionary.Scale;
         public double NextMeasureKeyPadding
         {
             get
@@ -56,7 +35,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                     return 0;
                 }
 
-                var keySignature = scoreMeasure.KeySignature;
+                var keySignature = scoreMeasure.KeySignature.Value;
                 var flats = keySignature.DefaultFlats;
                 var numberOfAccidentals = flats ?
                     keySignature.EnumerateFlats().Count() :
@@ -65,7 +44,6 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                 return 1 + numberOfAccidentals;
             }
         }
-
         public KeySignature? InvalidatesNext
         {
             get
@@ -75,29 +53,35 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                     return null;
                 }
 
-                var nextKeySignature = nextMeasure.KeySignature;
-                if (nextKeySignature.Equals(scoreMeasure.KeySignature))
-                {
-                    return null;
-                }
-
-                return nextKeySignature;
+                var nextKeySignature = nextMeasure.KeySignature.Value;
+                return nextKeySignature.Equals(scoreMeasure.KeySignature) ? null : nextKeySignature;
             }
         }
 
 
 
 
-        public VisualSystemMeasure(IScoreMeasureReader scoreMeasure, IStaffSystemReader staffSystem, double canvasLeft, double canvasTop, double width, bool firstMeasure, ColorARGB color, ISelection<IUniqueScoreElement> selection, IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory, IScoreLayoutProvider scoreLayoutDictionary) : base(scoreMeasure, selection)
+
+        public VisualSystemMeasure(IScoreMeasure scoreMeasure,
+                                   IStaffSystem staffSystem,
+                                   double canvasLeft,
+                                   double canvasTop,
+                                   double width,
+                                   double lineSpacing,
+                                   ISelection<IUniqueScoreElement> selection,
+                                   IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory,
+                                   IScoreDocument scoreLayoutDictionary,
+                                   IUnitToPixelConverter unitToPixelConverter) : 
+            base(scoreMeasure, selection)
         {
             this.scoreMeasure = scoreMeasure;
             this.visualInstrumentMeasureFactory = visualInstrumentMeasureFactory;
             this.scoreLayoutDictionary = scoreLayoutDictionary;
+            this.unitToPixelConverter = unitToPixelConverter;
             this.canvasTop = canvasTop;
             this.staffSystem = staffSystem;
             this.width = width;
-            this.firstMeasure = firstMeasure;
-            this.color = color;
+            this.lineSpacing = lineSpacing;
             this.canvasLeft = canvasLeft;
         }
 
@@ -106,34 +90,35 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
         private IEnumerable<BaseContentWrapper> ConstructStaffGroupMeasures()
         {
-            var _canvasTop = canvasTop;
-
+            var canvasTop = this.canvasTop;
+            var positions = scoreMeasure
+                .EnumeratePositions(scoreLayoutDictionary.Scale)
+                .Remap(canvasLeft + PaddingLeft, canvasLeft + width - PaddingRight)
+                .PositionsOnly(out var positionSpace);
+            var scoreScale = scoreLayoutDictionary.Scale;
             foreach (var staffGroup in staffSystem.EnumerateStaffGroups())
             {
                 var ribbonMesaure = scoreMeasure.ReadMeasure(staffGroup.IndexInSystem);
-                var wrapper = visualInstrumentMeasureFactory.CreateContent(ribbonMesaure, staffGroup, _canvasTop, canvasLeft, width, PaddingLeft, PaddingRight, firstMeasure, color);
+                var wrapper = visualInstrumentMeasureFactory.CreateContent(ribbonMesaure, staffGroup, positions, canvasTop, canvasLeft, width, PaddingLeft, PaddingRight, lineSpacing, positionSpace);
                 yield return wrapper;
 
-                var staffGroupLayout = scoreLayoutDictionary.StaffGroupLayout(staffGroup);
-                _canvasTop += staffGroup.CalculateHeight(scoreLayoutDictionary);
-                _canvasTop += staffGroupLayout.DistanceToNext;
+                canvasTop += unitToPixelConverter.UnitsToPixels(staffGroup.CalculateHeight(lineSpacing, scoreLayoutDictionary));
+                canvasTop += unitToPixelConverter.UnitsToPixels(staffGroup.DistanceToNext * scoreScale);
             }
         }
 
 
         public override BoundingBox BoundingBox()
         {
-            return new BoundingBox(canvasLeft + PaddingLeft, canvasLeft + width - PaddingRight, canvasTop, canvasTop + staffSystem.CalculateHeight(scoreLayoutDictionary));
+            return new BoundingBox(canvasLeft + PaddingLeft, canvasLeft + width - PaddingRight, canvasTop, canvasTop + Height);
         }
         public override IEnumerable<BaseDrawableElement> GetDrawableElements()
         {
-            var list = new List<BaseDrawableElement>();
-
-            return list;
+            yield break;
         }
         public override IEnumerable<BaseContentWrapper> GetContentWrappers()
         {
-            var wrappers = new List<BaseContentWrapper>(ConstructStaffGroupMeasures())
+            List<BaseContentWrapper> wrappers = new(ConstructStaffGroupMeasures())
             {
                 new SimpleGhost(this)
             };

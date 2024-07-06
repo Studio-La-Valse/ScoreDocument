@@ -1,4 +1,6 @@
-﻿namespace StudioLaValse.ScoreDocument.Core
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace StudioLaValse.ScoreDocument.Core
 {
     /// <summary>
     /// Represents a musical instrument.
@@ -8,21 +10,17 @@
         private readonly Clef[] defaultClefs;
 
         /// <summary>
-        /// The default instrument.
-        /// </summary>
-        public static Instrument Default => new("Default", 1, [Clef.Treble]);
-        /// <summary>
         /// A violin.
         /// </summary>
-        public static Instrument Violin => new("Violin", 1, [Clef.Treble]);
+        public static Instrument Violin => new("Violin", [Clef.Treble]);
         /// <summary>
         /// A piano.
         /// </summary>
-        public static Instrument Piano => new("Piano", 2, [Clef.Treble, Clef.Bass]);
+        public static Instrument Piano => new("Piano", [Clef.Treble, Clef.Bass]);
         /// <summary>
         /// An organ.
         /// </summary>
-        public static Instrument Organ => new("Organ", 3, [Clef.Treble, Clef.Bass, Clef.Bass]);
+        public static Instrument Organ => new("Organ", [Clef.Treble, Clef.Bass, Clef.Bass]);
 
 
         /// <summary>
@@ -43,35 +41,58 @@
 
 
 
-        private Instrument(string name, int staves, Clef[] defaultClefs)
+        private Instrument(string name, Clef[] defaultClefs)
         {
-            if (defaultClefs.Length != staves)
-                throw new Exception("An equal amount of staves and default clefs is expected.");
-
-            if (staves == 0)
+            if (defaultClefs.Length == 0)
+            {
                 throw new Exception("An instrument needs at least 1 staff.");
+            }
 
             this.defaultClefs = defaultClefs;
 
             Name = name;
-            NumberOfStaves = staves;
+            NumberOfStaves = defaultClefs.Length;
         }
 
 
         /// <summary>
-        /// Tries to get the instrument with the specified name. If it does not exist, the default instrument is returned.
+        /// Tries to get the instrument with the specified name. Returns true if the instrument is a known instrument.
         /// </summary>
         /// <param name="name"></param>
+        /// <param name="instrument"></param>
         /// <returns></returns>
-        public static Instrument TryGetFromName(string name)
+        public static bool TryGetFromName(string name, [NotNullWhen(true)] out Instrument? instrument)
         {
-            return name.ToLowerInvariant() switch
+            instrument = name.ToLowerInvariant() switch
             {
                 "violin" => Violin,
                 "piano" => Piano,
                 "organ" => Organ,
-                _ => Default
+                _ => null
             };
+
+            return instrument is not null;
+        }
+
+        /// <summary>
+        /// Create a custom instrument from a collection of clefs. Each clef will be the default clef for one staff of the instrument.
+        /// Therefore, the instrument will have a number of staves that is equal to the amount of supplied clefs. At least one clef is required.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="clefs"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public static Instrument CreateCustom(string name, params Clef[] clefs)
+        {
+            return clefs.Length == 0
+                ? throw new InvalidOperationException("Please provide at least one clef.")
+                : new Instrument(name, clefs);
+        }
+
+        ///<inheritdoc/>
+        public override string ToString()
+        {
+            return Name;
         }
     }
 }

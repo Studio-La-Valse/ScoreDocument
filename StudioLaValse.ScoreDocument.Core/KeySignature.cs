@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents a musical key signature.
     /// </summary>
-    public class KeySignature : IEquatable<KeySignature>
+    public readonly struct KeySignature : IEquatable<KeySignature>
     {
         /// <summary>
         /// The origin of the key signature.
@@ -14,6 +14,8 @@
         /// </summary>
         public MajorOrMinor MajorOrMinor { get; }
 
+
+
         /// <summary>
         /// Whether the keysignature should by default be displayed using flats instead of sharps.
         /// </summary>
@@ -21,6 +23,10 @@
             IndexInCircleOfFifths > 6;
         /// <summary>
         /// The index in the circle of fifths.
+        /// Please consider the difference between major and minor positions. 
+        /// The minor position is equal to the relative major position.
+        /// In other words, the position for C Major (0), is equal to the position of A Minor (also 0).
+        /// The position for G Major (1), is equal to the position of E Minor (also 1), etcetera.
         /// </summary>
         public int IndexInCircleOfFifths =>
             MajorOrMinor == MajorOrMinor.Major ?
@@ -33,6 +39,7 @@
             MajorOrMinor == MajorOrMinor.Major ?
             new Scale(Origin, ScaleStructure.Major) :
             new Scale(Origin, ScaleStructure.Minor);
+
 
 
 
@@ -49,6 +56,7 @@
 
 
 
+
         /// <summary>
         /// Enumerate the lines on which sharps are displayed for the specified clef.
         /// </summary>
@@ -59,7 +67,7 @@
             return EnumerateSharps()
                 .Select(accidental =>
                 {
-                    var pitch = new Pitch(accidental, 5);
+                    Pitch pitch = new(accidental, 5);
                     var line = targetClef.LineIndexAtPitch(pitch);
                     while (line < targetClef.TopMostSharpLine)
                     {
@@ -79,12 +87,12 @@
         /// <returns></returns>
         public IEnumerable<int> EnumerateFlatLines(Clef targetClef)
         {
-            var highestPitchOnTrebleClef = new Pitch(Step.EFlat, 5);
+            Pitch highestPitchOnTrebleClef = new(Step.EFlat, 5);
 
             return EnumerateFlats()
                 .Select(accidental =>
                 {
-                    var pitch = new Pitch(accidental, 5);
+                    Pitch pitch = new(accidental, 5);
                     var line = targetClef.LineIndexAtPitch(pitch);
                     while (line < targetClef.TopMostFlatLine)
                     {
@@ -104,7 +112,7 @@
         public IEnumerable<Step> EnumerateFlats()
         {
             var accidental = Step.BFlat;
-            for (int i = 0; i < NumberOfFlats(); i++)
+            for (var i = 0; i < NumberOfFlats(); i++)
             {
                 yield return accidental;
                 accidental += Interval.Fourth;
@@ -118,7 +126,7 @@
         public IEnumerable<Step> EnumerateSharps()
         {
             var accidental = Step.FSharp;
-            for (int i = 0; i < NumberOfSharps(); i++)
+            for (var i = 0; i < NumberOfSharps(); i++)
             {
                 yield return accidental;
                 accidental += Interval.Fifth;
@@ -132,14 +140,7 @@
         /// <returns></returns>
         public Accidental? GetAccidentalForPitch(Step pitch)
         {
-            if (IsAccidentalRedundant(pitch))
-            {
-                return null;
-            }
-            else
-            {
-                return (Accidental)pitch.Shifts;
-            }
+            return IsAccidentalRedundant(pitch) ? null : (Accidental)pitch.Shifts;
         }
 
         /// <summary>
@@ -149,7 +150,7 @@
         /// <returns></returns>
         public bool IsAccidentalRedundant(Step pitch)
         {
-            var scale = new Scale(Origin, ScaleStructure.Major);
+            Scale scale = new(Origin, ScaleStructure.Major);
             return scale.Contains(pitch);
         }
 
@@ -171,52 +172,41 @@
             return (12 - IndexInCircleOfFifths) % 12;
         }
 
+
+
+
         /// <inheritdoc/>
-        public bool Equals(KeySignature? other)
+        public readonly bool Equals(KeySignature other)
         {
-            if (other is null)
-            {
-                return false;
-            }
-
-            return other.Origin.Equals(Origin);
+            return other.MajorOrMinor == MajorOrMinor
+                ? other.Origin.Equals(Origin)
+                : MajorOrMinor == MajorOrMinor.Minor
+                    ? other.Origin.RelativeMinor.Equals(Origin)
+                    : other.Origin.RelativeMajor.Equals(Origin);
         }
 
-        /// <summary>
-        /// Determines whether the two key signatures are equal by their properties.
-        /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
-        /// <returns></returns>
-        public static bool operator ==(KeySignature? left, KeySignature? right)
-        {
-            if (left is null || right is null)
-            {
-                return false;
-            }
-
-            return left.Equals(right);
-        }
-
-        /// <summary>
-        /// Determines whether the two key signatures are different by their properties.
-        /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
-        /// <returns></returns>
-        public static bool operator !=(KeySignature? left, KeySignature? right)
-        {
-            return !(left == right);
-        }
         /// <inheritdoc/>
         public override bool Equals(object? obj)
         {
-            return Equals(obj as KeySignature);
+            return obj is KeySignature signature && Equals(signature);
         }
+
         /// <inheritdoc/>
         public override int GetHashCode()
         {
-            return new Tuple<Step, MajorOrMinor>(Origin, MajorOrMinor).GetHashCode();
+            return new Tuple<Step, MajorOrMinor>(Origin, MajorOrMinor.Minor).GetHashCode();
+        }
+
+        /// <inheritdoc/>
+        public static bool operator ==(KeySignature left, KeySignature right)
+        {
+            return left.Equals(right);
+        }
+
+        /// <inheritdoc/>
+        public static bool operator !=(KeySignature left, KeySignature right)
+        {
+            return !(left == right);
         }
     }
 }

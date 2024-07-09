@@ -33,22 +33,22 @@ public static class ScoreDocument
     public static IScoreDocument Create(ScoreDocumentStyleTemplate scoreDocumentStyleTemplate, ScoreDocumentModel scoreDocumentModel)
     {
         var scoreDocument = CreateCore(scoreDocumentStyleTemplate, scoreDocumentModel);
-        return scoreDocument.ProxyUser(); 
+        return scoreDocument.ProxyAuthor(); 
     }
     public static IScoreDocument Create(ScoreDocumentStyleTemplate scoreDocumentStyleTemplate, ScoreDocumentModel scoreDocumentModel, ScoreDocumentLayoutDictionary scoreDocumentLayoutModel)
     {
         var scoreDocument = CreateCore(scoreDocumentStyleTemplate, scoreDocumentModel, scoreDocumentLayoutModel);
-        return scoreDocument.ProxyAuthor();
+        return scoreDocument.ProxyUser();
     }
 
     public static IScoreDocument Create(ScoreDocumentStyleTemplate scoreDocumentStyleTemplate, ICommandManager commandManager, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged, ScoreDocumentModel scoreDocumentModel)
     {
         var scoreDocument = CreateCore(scoreDocumentStyleTemplate, scoreDocumentModel);
-        return scoreDocument.ProxyUser(commandManager, notifyEntityChanged);
+        return scoreDocument.ProxyAuthor(commandManager, notifyEntityChanged);
     }
     public static IScoreDocument Create(ScoreDocumentStyleTemplate scoreDocumentStyleTemplate, ICommandManager commandManager, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged, ScoreDocumentModel scoreDocumentModel, ScoreDocumentLayoutDictionary scoreDocumentLayoutModel)
     {
         var scoreDocument = CreateCore(scoreDocumentStyleTemplate, scoreDocumentModel, scoreDocumentLayoutModel);
-        return scoreDocument.ProxyAuthor(commandManager, notifyEntityChanged);
+        return scoreDocument.ProxyUser(commandManager, notifyEntityChanged);
     }
 }

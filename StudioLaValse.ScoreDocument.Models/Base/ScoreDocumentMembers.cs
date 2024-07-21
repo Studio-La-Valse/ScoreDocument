@@ -28,11 +28,7 @@ public class InstrumentRibbonMembers : InstrumentRibbonLayoutMembers
 
 public class InstrumentMeasureMembers : InstrumentMeasureLayoutMembers
 {
-    [Range(0, int.MaxValue)]
-    public required int ScoreMeasureIndex { get; set; }
 
-    [Range(0, int.MaxValue)]
-    public required int InstrumentRibbonIndex { get; set; }
 }
 
 public class MeasureBlockMembers : MeasureBlockLayoutMembers

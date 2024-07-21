@@ -1,13 +1,23 @@
 ﻿using StudioLaValse.ScoreDocument.Models.Base;
+using System.ComponentModel.DataAnnotations;
 
 namespace StudioLaValse.ScoreDocument.Models
 {
     public class ScoreDocumentMetaDataModel
     {
-        public required Guid Id { get; set; }
         public required Guid ScoreDocumentId { get; set; }
+
+        [EmailAddress]
         public required string OwnerEmail { get; set; }
         public required bool IsPublic { get; set; }
+        public required string ComposerFullName { get; set; }
+        public required string Title { get; set; }
+        public required string Subtitle { get; set; }
+        public required int CompositionYear { get; set; }
+        public required int? CompositionYearStart { get; set; }
+        public required int? CompositionMonth { get; set; }
+        public required DateTime CreationDate { get; set; }
+        public required DateTime LastEditDate { get; set; }
     }
 
     public class ScoreDocumentModel : ScoreDocumentMembers
@@ -36,6 +46,12 @@ namespace StudioLaValse.ScoreDocument.Models
         public required Guid Id { get; set; }
 
         public required List<MeasureBlockModel> MeasureBlocks { get; set; }
+
+        [Range(0, int.MaxValue)]
+        public required int ScoreMeasureIndex { get; set; }
+
+        [Range(0, int.MaxValue)]
+        public required int InstrumentRibbonIndex { get; set; }
     }
 
     public class MeasureBlockModel : MeasureBlockMembers

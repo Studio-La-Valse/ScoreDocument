@@ -30,7 +30,6 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
 
         }
 
-        internal static readonly string[] beamTypesThatIndicateAGroupIsNotClosedYet = ["hook start", "continue", "begin"];
 
         public void ProcessElements(IEnumerable<XElement> elements, IMeasureBlockChain editor, int divisionsOfOneQuarter)
         {
@@ -76,7 +75,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
             GraceBlock? pendingGrace = null;
             MeasureBlock? pendingBlock = null;
             var notesOrForwards = elements.Where(e => e.IsNoteOrForward());
-            var makeNewBlock = true;
+
             foreach (var element in notesOrForwards)
             {
                 GetRythmicInformationFromNode(element, divisionsOfOneQuarter, out var actualDuration, out var displayDuration, out var grace);
@@ -117,6 +116,9 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
                 }
                 else
                 {
+                    var makeNewBlock = (displayDuration is not null && displayDuration.Denominator.Value < 8) ||
+                        (element.GetBeams().FirstOrDefault()?.Equals("begin") ?? true);
+
                     if (pendingBlock is null || makeNewBlock)
                     {
                         pendingBlock = new MeasureBlock();
@@ -137,18 +139,7 @@ namespace StudioLaValse.ScoreDocument.MusicXml.Private
 
                 if (element.IsNoteOrRest() && element.TryParsePitch(out _))
                 {
-                    chord!.Notes.Add(element);
-
-                    var beams = element.GetBeams();
-                    makeNewBlock = true;
-                    foreach (var beam in beams)
-                    {
-                        if (beamTypesThatIndicateAGroupIsNotClosedYet.Contains(beam))
-                        {
-                            makeNewBlock = false;
-                            break;
-                        }
-                    }
+                    chord.Notes.Add(element);
                 }
             }
 

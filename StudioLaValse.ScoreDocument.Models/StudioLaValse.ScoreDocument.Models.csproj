@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	  <PackageVersion>4.0.2</PackageVersion>
+	  <PackageVersion>4.0.5</PackageVersion>
   </PropertyGroup>
 
 	<!--build-->
@@ -45,5 +45,10 @@
 	<ItemGroup>
     <ProjectReference Include="..\StudioLaValse.ScoreDocument.Core\StudioLaValse.ScoreDocument.Core.csproj" />
   </ItemGroup>
+
+
+	<ItemGroup>
+	  <Folder Include="V1\" />
+	</ItemGroup>
 
 </Project>

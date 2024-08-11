@@ -6,9 +6,6 @@ namespace StudioLaValse.ScoreDocument.Models
     public class ScoreDocumentMetaDataModel
     {
         public required Guid ScoreDocumentId { get; set; }
-
-        [EmailAddress]
-        public required string OwnerEmail { get; set; }
         public required bool IsPublic { get; set; }
         public required string ComposerFullName { get; set; }
         public required string Title { get; set; }

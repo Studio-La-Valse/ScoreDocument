@@ -1,5 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Drawable.Private.Interfaces;
-using StudioLaValse.ScoreDocument.GlyphLibrary;
+﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
 using StudioLaValse.ScoreDocument.Extensions;
 using System.Diagnostics.CodeAnalysis;
 
@@ -15,7 +14,6 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         private readonly IGlyphLibrary glyphLibrary;
         private readonly IVisualNoteFactory noteFactory;
         private readonly IVisualRestFactory restFactory;
-        private readonly IVisualBeamBuilder visualBeamBuilder;
         private readonly IVisualNoteGroupFactory visualNoteGroupFactory;
 
         public IMeasureBlock Layout =>
@@ -33,7 +31,6 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                                IGlyphLibrary glyphLibrary,
                                IVisualNoteFactory noteFactory,
                                IVisualRestFactory restFactory,
-                               IVisualBeamBuilder visualBeamBuilder,
                                IVisualNoteGroupFactory visualNoteGroupFactory)
         {
             this.measureBlock = measureBlock;
@@ -44,7 +41,6 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             this.glyphLibrary = glyphLibrary;
             this.noteFactory = noteFactory;
             this.restFactory = restFactory;
-            this.visualBeamBuilder = visualBeamBuilder;
             this.visualNoteGroupFactory = visualNoteGroupFactory;
         }
 
@@ -119,7 +115,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                 .Select(c => c.Equals(principalChord) ? principalStem : CreateStem(c, principalNoteWidth, beamDefinition))
                 .ToArray();
             var hookSize = chords.Select(c => c.SpaceRight.Value).Average() / 2;
-            yield return new VisualBeamGroup(stems, beamDefinition, Layout.BeamThickness, Layout.BeamSpacing, Scale, hookSize, staffGroup.Color.Value.FromPrimitive(), visualBeamBuilder);
+            yield return new VisualBeamGroup(stems, beamDefinition, Layout.BeamThickness, Layout.BeamSpacing, Scale, hookSize, staffGroup.Color.Value.FromPrimitive(), glyphLibrary);
         }
 
 

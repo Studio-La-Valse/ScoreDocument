@@ -104,7 +104,7 @@
                 Scale = 1.0,
                 HorizontalStaffLineThickness = 0.075,
                 VerticalStaffLineThickness = 0.25,
-                FirstSystemIndent = 30,
+                FirstSystemIndent = 10,
                 StemLineThickness = 0.1,
                 InstrumentScales = [],
                 PageStyleTemplate = PageStyleTemplate.Create(),

@@ -1,5 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Drawable.Private.Interfaces;
-using StudioLaValse.ScoreDocument.GlyphLibrary;
+﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
@@ -11,7 +10,6 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         private readonly IVisualNoteFactory noteFactory;
         private readonly IVisualRestFactory restFactory;
         private readonly IGlyphLibrary glyphLibrary;
-        private readonly IVisualBeamBuilder visualBeamBuilder;
 
         /// <summary>
         /// The default constructor.
@@ -24,7 +22,6 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
             this.noteFactory = noteFactory;
             this.restFactory = restFactory;
             this.glyphLibrary = glyphLibrary;
-            visualBeamBuilder = new VisualBeamBuilder(glyphLibrary);
         }
         /// <inheritdoc/>
         public BaseContentWrapper Build(IMeasureBlock noteGroup, IStaffGroup staffGroup, IInstrumentMeasure instrumentMeasure, IReadOnlyDictionary<Position, double> positionDictionary, double canvasTopStaffGroup)
@@ -39,7 +36,6 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
                 glyphLibrary,
                 noteFactory,
                 restFactory,
-                visualBeamBuilder,
                 this);
         }
     }

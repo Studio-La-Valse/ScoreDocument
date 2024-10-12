@@ -9,54 +9,36 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         private readonly double canvasLeft;
         private readonly double canvasTop;
         private readonly double length;
-        private readonly double globalLineSpacing;
-        private readonly double scoreScale;
-        private readonly double instrumentScale;
-        private readonly double lineThickness;
         private readonly Clef openingClef;
         private readonly KeySignature openingKeySignature;
         private readonly TimeSignature? timeSignature;
         private readonly IGlyphLibrary glyphLibrary;
-        private readonly IScoreDocument scoreDocumentLayout;
-        private readonly IUnitToPixelConverter unitToPixelConverter;
 
         public static double SpaceUntilClef { get; } = 1;
-        public static double ClefSpacing { get; } = 11;
+        public static double ClefSpacing { get; } = 6;
         public static double KeySignatureGlyphSpacing { get; } = 1.8;
         public static double TimeSignatureSpacing { get; } = 8;
-        public double Scale => scoreScale * instrumentScale;
-        public double LineThickness => unitToPixelConverter.UnitsToPixels(lineThickness * Scale);
-
+        public double Scale => staff.Scale;
+        public double HorizontalLineThickness => staff.HorizontalStaffLineThickness * Scale;
+        public double VerticalLineThickness => staff.VerticalStaffLineThickness * Scale;
 
         public VisualStaff(IStaff staff,
                            double canvasLeft,
                            double canvasTop,
                            double length,
-                           double globalLineSpacing,
-                           double scoreScale,
-                           double instrumentScale,
-                           double lineThickness,
                            Clef openingClef,
                            KeySignature openingKeySignature,
                            TimeSignature? timeSignature,
-                           IGlyphLibrary glyphLibrary,
-                           IScoreDocument scoreDocumentLayout,
-                           IUnitToPixelConverter unitToPixelConverter)
+                           IGlyphLibrary glyphLibrary)
         {
             this.staff = staff;
             this.canvasLeft = canvasLeft;
             this.canvasTop = canvasTop;
             this.length = length;
-            this.globalLineSpacing = globalLineSpacing;
-            this.scoreScale = scoreScale;
-            this.instrumentScale = instrumentScale;
-            this.lineThickness = lineThickness;
             this.openingClef = openingClef;
             this.openingKeySignature = openingKeySignature;
             this.timeSignature = timeSignature;
             this.glyphLibrary = glyphLibrary;
-            this.scoreDocumentLayout = scoreDocumentLayout;
-            this.unitToPixelConverter = unitToPixelConverter;
         }
 
 
@@ -78,14 +60,14 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                 _ => throw new NotImplementedException()
             };
 
-            _canvasLeft = canvasLeft + (ClefSpacing * scoreScale);
+            _canvasLeft = canvasLeft + (ClefSpacing * Scale);
 
             return new DrawableScoreGlyph(canvasLeft,
-                                          canvasTop + unitToPixelConverter.UnitsToPixels(staff.DistanceFromTop(lineIndex, globalLineSpacing, scoreScale, instrumentScale)),
+                                          canvasTop + staff.DistanceFromTop(lineIndex),
                                           glyph,
                                           HorizontalTextOrigin.Left,
                                           VerticalTextOrigin.Center,
-                                          scoreDocumentLayout.PageForegroundColor.Value.FromPrimitive());
+                                          staff.Color.Value.FromPrimitive());
         }
         public IEnumerable<DrawableScoreGlyph> ConstructOpeningKeySignature(double canvasLeft, out double _canvasLeft)
         {
@@ -110,16 +92,16 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 
             foreach (var line in accidentalLines)
             {
-                _canvasLeft += glyphWidth * KeySignatureGlyphSpacing * scoreScale;
+                _canvasLeft += glyphWidth * KeySignatureGlyphSpacing * staff.Scale;
 
-                var yPosition = canvasTop + unitToPixelConverter.UnitsToPixels(staff.DistanceFromTop(line, globalLineSpacing, scoreScale, instrumentScale));
+                var yPosition = canvasTop + staff.DistanceFromTop(line);
 
-                DrawableScoreGlyph glyph = new(_canvasLeft, yPosition, _glyph, HorizontalTextOrigin.Center, VerticalTextOrigin.Center, scoreDocumentLayout.PageForegroundColor.Value.FromPrimitive());
+                DrawableScoreGlyph glyph = new(_canvasLeft, yPosition, _glyph, HorizontalTextOrigin.Center, VerticalTextOrigin.Center, staff.Color.Value.FromPrimitive());
 
                 list.Add(glyph);
             }
 
-            _canvasLeft += glyphWidth * KeySignatureGlyphSpacing * scoreScale;
+            _canvasLeft += glyphWidth * KeySignatureGlyphSpacing * staff.Scale;
             return list;
         }
         public IEnumerable<DrawableScoreGlyph> ConstructOpeningTimeSignature(double canvasLeft)
@@ -153,8 +135,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 
             var list = new List<DrawableScoreGlyph>()
             {
-                new DrawableScoreGlyph(canvasLeft, canvasTop + unitToPixelConverter.UnitsToPixels(staff.DistanceFromTop(2, globalLineSpacing, scoreScale, instrumentScale)), topGlyph, HorizontalTextOrigin.Left, VerticalTextOrigin.Center, scoreDocumentLayout.PageForegroundColor.Value.FromPrimitive()),
-                new DrawableScoreGlyph(canvasLeft, canvasTop + unitToPixelConverter.UnitsToPixels(staff.DistanceFromTop(6, globalLineSpacing, scoreScale, instrumentScale)), bottomGlyph, HorizontalTextOrigin.Left, VerticalTextOrigin.Center, scoreDocumentLayout.PageForegroundColor.Value.FromPrimitive())
+                new DrawableScoreGlyph(canvasLeft, canvasTop + staff.DistanceFromTop(2), topGlyph, HorizontalTextOrigin.Left, VerticalTextOrigin.Center, staff.Color.Value.FromPrimitive()),
+                new DrawableScoreGlyph(canvasLeft, canvasTop + staff.DistanceFromTop(6), bottomGlyph, HorizontalTextOrigin.Left, VerticalTextOrigin.Center, staff.Color.Value.FromPrimitive())
             };
 
             return list;
@@ -162,22 +144,22 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 
         public IEnumerable<DrawableLineHorizontal> ConstructStaffLines()
         {
-            var verticalLineThickness = scoreDocumentLayout.VerticalStaffLineThickness * Scale;
+            var verticalLineThickness = staff.VerticalStaffLineThickness * Scale;
             var canvasLeft = this.canvasLeft - (verticalLineThickness / 2);
             var length = this.length + verticalLineThickness;
 
             for (var i = 0; i < 5; i++)
             {
-                var heightOnPage = canvasTop + unitToPixelConverter.UnitsToPixels(staff.DistanceFromTop(i * 2, globalLineSpacing, scoreScale, instrumentScale));
+                var heightOnPage = canvasTop + staff.DistanceFromTop(i * 2);
 
-                yield return new DrawableLineHorizontal(heightOnPage, canvasLeft, length, LineThickness, scoreDocumentLayout.PageForegroundColor.Value.FromPrimitive());
+                yield return new DrawableLineHorizontal(heightOnPage, canvasLeft, length, HorizontalLineThickness, staff.Color.Value.FromPrimitive());
             }
         }
 
 
         public override IEnumerable<BaseDrawableElement> GetDrawableElements()
         {
-            var canvasLeft = this.canvasLeft + (SpaceUntilClef * scoreScale);
+            var canvasLeft = this.canvasLeft + (SpaceUntilClef * staff.Scale);
 
             yield return ConstructOpeningClef(canvasLeft, out canvasLeft);
 

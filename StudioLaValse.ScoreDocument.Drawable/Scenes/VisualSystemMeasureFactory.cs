@@ -7,26 +7,20 @@
     {
         private readonly ISelection<IUniqueScoreElement> selection;
         private readonly IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory;
-        private readonly IScoreDocument scoreLayoutDictionary;
-        private readonly IUnitToPixelConverter unitToPixelConverter;
 
         /// <summary>
         /// The default constructor
         /// </summary>
         /// <param name="selection"></param>
         /// <param name="visualInstrumentMeasureFactory"></param>
-        /// <param name="scoreLayoutDictionary"></param>
-        /// <param name="unitToPixelConverter"></param>
-        public VisualSystemMeasureFactory(ISelection<IUniqueScoreElement> selection, IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory, IScoreDocument scoreLayoutDictionary, IUnitToPixelConverter unitToPixelConverter)
+        public VisualSystemMeasureFactory(ISelection<IUniqueScoreElement> selection, IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory)
         {
             this.selection = selection;
             this.visualInstrumentMeasureFactory = visualInstrumentMeasureFactory;
-            this.scoreLayoutDictionary = scoreLayoutDictionary;
-            this.unitToPixelConverter = unitToPixelConverter;
         }
 
         /// <inheritdoc/>
-        public BaseContentWrapper CreateContent(IScoreMeasure scoreMeasure, IStaffSystem staffSystem, double canvasLeft, double canvasTop, double width, double lineSpacing)
+        public BaseContentWrapper CreateContent(IScoreMeasure scoreMeasure, IStaffSystem staffSystem, double canvasLeft, double canvasTop, double width)
         {
             return new VisualSystemMeasure(
                 scoreMeasure,
@@ -34,11 +28,8 @@
                 canvasLeft,
                 canvasTop,
                 width,
-                lineSpacing,
                 selection,
-                visualInstrumentMeasureFactory,
-                scoreLayoutDictionary,
-                unitToPixelConverter);
+                visualInstrumentMeasureFactory);
         }
     }
 }

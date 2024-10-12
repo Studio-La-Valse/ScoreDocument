@@ -27,7 +27,10 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.Default
         }
 
         public TemplateProperty<AccidentalDisplay> ForceAccidental => Layout.ForceAccidental;
+
         public TemplateProperty<int> StaffIndex => Layout.StaffIndex;
+
+        public TemplateProperty<ColorARGB> Color => Layout.Color;
 
 
 

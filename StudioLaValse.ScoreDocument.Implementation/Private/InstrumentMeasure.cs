@@ -28,6 +28,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
 
 
         public ScoreMeasure HostMeasure => scoreMeasure;
+        public InstrumentRibbon HostRibbon => hostRibbon;
         public AuthorInstrumentMeasureLayout AuthorLayout { get; }
         public UserInstrumentMeasureLayout UserLayout { get; set; }
 

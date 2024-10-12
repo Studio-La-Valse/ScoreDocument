@@ -28,7 +28,7 @@ internal class ScoreMeasureProxy(ScoreMeasure source, ILayoutSelector layoutSele
 
     public ReadonlyTemplateProperty<double> PaddingRight => Layout.PaddingRight;
 
-
+    public ReadonlyTemplateProperty<double> Scale => Layout.Scale;
 
 
     public bool TryReadNext([NotNullWhen(true)] out IScoreMeasure? next)

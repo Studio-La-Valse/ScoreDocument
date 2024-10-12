@@ -40,6 +40,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                 Pitch = Pitch.Convert(),
                 ForceAccidental = (int?)AuthorLayout._ForceAccidental.Field,
                 StaffIndex = AuthorLayout._StaffIndex.Field,
+                Color = AuthorLayout._Color.Field?.Convert()
             };
         }
         public GraceNoteLayoutModel GetLayoutModel()
@@ -49,7 +50,8 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                 Id = UserLayout.Guid,
                 GraceNoteId = Guid,
                 ForceAccidental = (int?)UserLayout._ForceAccidental.Field,
-                StaffIndex = UserLayout._StaffIndex.Field
+                StaffIndex = UserLayout._StaffIndex.Field,
+                Color = AuthorLayout._Color.Field?.Convert()
             };
         }
         public GraceNoteMemento GetMemento()
@@ -61,6 +63,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                 Pitch = Pitch.Convert(),
                 ForceAccidental = (int?)AuthorLayout._ForceAccidental.Field,
                 StaffIndex = AuthorLayout._StaffIndex.Field,
+                Color = AuthorLayout._Color.Field?.Convert()
             };
         }
         public void ApplyMemento(GraceNoteMemento memento)

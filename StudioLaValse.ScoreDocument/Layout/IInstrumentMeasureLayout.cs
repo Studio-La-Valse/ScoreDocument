@@ -70,5 +70,15 @@
         /// Specify null to restore the requested number of staves.
         /// </summary>
         TemplateProperty<int?> NumberOfStaves { get; }
+
+        /// <summary>
+        /// Applies inner padding to the left side of the measure. Inherited from score measure.
+        /// </summary>
+        ReadonlyTemplateProperty<double> PaddingLeft { get; }
+
+        /// <summary>
+        /// Applies inner padding to the right side of the measure. Inherited from score measure.
+        /// </summary>
+        ReadonlyTemplateProperty<double> PaddingRight { get; }
     }
 }

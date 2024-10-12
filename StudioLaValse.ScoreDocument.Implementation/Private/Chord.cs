@@ -5,7 +5,7 @@ using StudioLaValse.ScoreDocument.Models;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Private
 {
-    internal sealed class Chord : ScoreElement, IPositionElement, IMementoElement<ChordMemento>, IBeamEditor, IGraceTarget
+    internal sealed class Chord : ScoreElement, IPositionElement, IMementoElement<ChordMemento>, IBeamEditor, IGraceTarget, IUniqueScoreElement
     {
         private readonly List<Note> measureElements;
         private readonly MeasureBlock hostBlock;
@@ -17,6 +17,11 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
         public RythmicDuration RythmicDuration { get; }
         public AuthorChordLayout AuthorLayout { get; }
         public UserChordLayout UserLayout { get; set; }
+        public AuthorRestLayout AuthorRestLayout { get; }
+        public UserRestLayout UserRestLayout { get; set; }
+
+
+
         public int Voice =>
             hostBlock.Voice;
         public Tuplet Tuplet =>
@@ -37,7 +42,8 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
         }
         public InstrumentMeasure HostMeasure =>
             hostBlock.RibbonMeasure;
-
+        public MeasureBlock HostBlock 
+            => hostBlock;
 
         public GraceGroup? GraceGroup { get; set; }
         public int IndexInGroup => hostBlock.IndexOfOrThrow(this);
@@ -47,6 +53,8 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                      ScoreDocumentStyleTemplate documentStyleTemplate,
                      AuthorChordLayout chordLayout,
                      UserChordLayout secondaryChordLayout,
+                     AuthorRestLayout restLayout,
+                     UserRestLayout secondaryRestLayout,
                      Dictionary<PowerOfTwo, BeamType> beamTypes,
                      IKeyGenerator<int> keyGenerator,
                      Guid guid) : base(keyGenerator, guid)
@@ -63,6 +71,8 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
             RythmicDuration = displayDuration;
             AuthorLayout = chordLayout;
             UserLayout = secondaryChordLayout;
+            AuthorRestLayout = restLayout;
+            UserRestLayout = secondaryRestLayout;
         }
 
 
@@ -88,8 +98,8 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                     continue;
                 }
 
-                var noteLayout = new AuthorNoteLayout();
-                var secondaryNoteLayout = new UserNoteLayout(Guid.NewGuid(), noteLayout);
+                var noteLayout = new AuthorNoteLayout(documentStyleTemplate.PageStyleTemplate, hostBlock.UserLayout);
+                var secondaryNoteLayout = new UserNoteLayout(Guid.NewGuid(), noteLayout, hostBlock.UserLayout);
                 Note noteInMeasure = new(pitch, this, noteLayout, secondaryNoteLayout, keyGenerator, Guid.NewGuid());
                 measureElements.Add(noteInMeasure);
             }
@@ -134,7 +144,6 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                 RythmicDuration = RythmicDuration.Convert(),
                 GraceGroup = GraceGroup?.GetModel(),
                 Position = Position.Convert(),
-                XOffset = AuthorLayout._XOffset.Field,
                 SpaceRight = AuthorLayout._SpaceRight.Field
             };
         }
@@ -145,7 +154,6 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
             {
                 Id = UserLayout.Id,
                 ChordId = Guid,
-                XOffset = UserLayout._XOffset.Field,
                 SpaceRight = UserLayout._SpaceRight.Field,
             };
         }
@@ -160,7 +168,6 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                 GraceGroup = GraceGroup?.GetMemento(),
                 RythmicDuration = RythmicDuration.Convert(),
                 Position = Position.Convert(),
-                XOffset = AuthorLayout._XOffset.Field,
                 SpaceRight = AuthorLayout._SpaceRight.Field
             };
         }
@@ -174,8 +181,8 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
             foreach (var noteMemento in memento.Notes)
             {
                 var pitch = noteMemento.Pitch.Convert();
-                var noteLayout = new AuthorNoteLayout();
-                var secondaryLayout = new UserNoteLayout(Guid.NewGuid(), noteLayout);
+                var noteLayout = new AuthorNoteLayout(documentStyleTemplate.PageStyleTemplate, hostBlock.UserLayout);
+                var secondaryLayout = new UserNoteLayout(Guid.NewGuid(), noteLayout, hostBlock.UserLayout);
                 var noteInMeasure = new Note(pitch, this, noteLayout, secondaryLayout, keyGenerator, noteMemento.Id);
                 measureElements.Add(noteInMeasure);
                 noteInMeasure.ApplyMemento(noteMemento);
@@ -192,8 +199,18 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
             }
 
             var chordLayoutModel = memento.Layout;
-            UserLayout = new UserChordLayout(AuthorLayout, chordLayoutModel.Id);
+            UserLayout = new UserChordLayout(AuthorLayout, chordLayoutModel.Id, documentStyleTemplate.MeasureBlockStyleTemplate);
             UserLayout.ApplyMemento(chordLayoutModel);
+        }
+
+        public bool Equals(IUniqueScoreElement? other)
+        {
+            if (other is null)
+            {
+                return false;
+            }
+
+            return other.Id == Id;
         }
     }
 }

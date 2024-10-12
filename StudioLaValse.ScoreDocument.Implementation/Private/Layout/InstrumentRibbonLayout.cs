@@ -1,4 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.Models.Base;
+﻿using StudioLaValse.ScoreDocument.Layout;
+using StudioLaValse.ScoreDocument.Models.Base;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
 {
@@ -15,12 +16,17 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
         public TemplateProperty<string> AbbreviatedName => _AbbreviatedName;
         public TemplateProperty<bool> Collapsed => _Collapsed;
         public TemplateProperty<int> NumberOfStaves => _NumberOfStaves;
-        public TemplateProperty<double> Scale => _Scale;
 
 
-        public InstrumentRibbonLayout()
+        public TemplateProperty<double> Scale { get; }
+
+
+        public InstrumentRibbonLayout(UserScoreDocumentLayout userScoreDocumentLayout)
         {
-
+            double defaultScaleGetter() => _Scale.Value;
+            double parentScaleGetter() => userScoreDocumentLayout.Scale.Value;
+            double scaleAccumulator(double first, double second) => first * second;
+            Scale = new AccumulativeValueTemplateProperty<double>(defaultScaleGetter, parentScaleGetter, scaleAccumulator);
         }
 
         public void Restore()
@@ -50,31 +56,6 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
         {
             ApplyMemento(memento as InstrumentRibbonLayoutMembers);
         }
-
-        public void ResetDisplayName()
-        {
-            _DisplayName.Reset();
-        }
-
-        public void ResetAbbreviatedName()
-        {
-            _AbbreviatedName.Reset();
-        }
-
-        public void ResetCollapsed()
-        {
-            _Collapsed.Reset();
-        }
-
-        public void ResetNumberOfStaves()
-        {
-            _NumberOfStaves.Reset();
-        }
-
-        public void ResetScale()
-        {
-            _Scale.Reset();
-        }
     }
 
     internal class AuthorInstrumentRibbonLayout : InstrumentRibbonLayout
@@ -86,7 +67,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
         public override ValueTemplateProperty<double> _Scale { get; }
 
 
-        public AuthorInstrumentRibbonLayout(Instrument instrument, ScoreDocumentStyleTemplate scoreDocumentStyleTemplate, Guid instrumentRibbonId)
+        public AuthorInstrumentRibbonLayout(Instrument instrument, ScoreDocumentStyleTemplate scoreDocumentStyleTemplate, Guid instrumentRibbonId, UserScoreDocumentLayout userScoreDocumentLayout) : base(userScoreDocumentLayout)
         {
             _DisplayName = new ReferenceTemplateProperty<string>(() => instrument.Name);
             _NumberOfStaves = new ValueTemplateProperty<int>(() => instrument.NumberOfStaves);
@@ -108,7 +89,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
         }
     }
 
-    internal class SecondaryInstrumentRibbonLayout : InstrumentRibbonLayout
+    internal class UserInstrumentRibbonLayout : InstrumentRibbonLayout
     {
         public Guid Id { get; }
         public override ReferenceTemplateProperty<string> _AbbreviatedName { get; }
@@ -117,14 +98,14 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
         public override ValueTemplateProperty<bool> _Collapsed { get; }
         public override ValueTemplateProperty<double> _Scale { get; }
 
-        public SecondaryInstrumentRibbonLayout(AuthorInstrumentRibbonLayout layout, Guid id)
+        public UserInstrumentRibbonLayout(AuthorInstrumentRibbonLayout layout, Guid id, UserScoreDocumentLayout userScoreDocumentLayout) : base(userScoreDocumentLayout)
         {
             Id = id;
             _DisplayName = new ReferenceTemplateProperty<string>(() => layout.DisplayName);
             _NumberOfStaves = new ValueTemplateProperty<int>(() => layout.NumberOfStaves);
             _Collapsed = new ValueTemplateProperty<bool>(() => layout.Collapsed);
             _AbbreviatedName = new ReferenceTemplateProperty<string>(() => layout.AbbreviatedName);
-            _Scale = new ValueTemplateProperty<double>(() => layout.Scale);
+            _Scale = new ValueTemplateProperty<double>(() => layout._Scale);
 
         }
     }

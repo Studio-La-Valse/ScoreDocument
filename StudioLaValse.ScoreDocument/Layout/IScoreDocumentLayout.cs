@@ -18,25 +18,20 @@ namespace StudioLaValse.ScoreDocument.Layout
         ReadonlyTemplateProperty<double> FirstSystemIndent { get; }
 
         /// <summary>
-        /// The horizontal staff line thickness.
-        /// </summary>
-        ReadonlyTemplateProperty<double> HorizontalStaffLineThickness { get; }
-
-        /// <summary>
         /// The global scale of the score content.
         /// Does not scale pages or page margins.
         /// </summary>
         ReadonlyTemplateProperty<double> Scale { get; }
 
         /// <summary>
-        /// Stem line thickness.
-        /// </summary>
-        ReadonlyTemplateProperty<double> StemLineThickness { get; }
-
-        /// <summary>
         /// Vertical line thickness.
         /// </summary>
         ReadonlyTemplateProperty<double> VerticalStaffLineThickness { get; }
+
+        /// <summary>
+        /// The horizontal staff line thickness.
+        /// </summary>
+        ReadonlyTemplateProperty<double> HorizontalStaffLineThickness { get; }
 
         /// <summary>
         /// The page color of the score.

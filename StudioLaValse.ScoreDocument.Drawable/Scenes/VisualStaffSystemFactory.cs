@@ -8,29 +8,23 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
     public class VisualStaffSystemFactory : IVisualStaffSystemFactory
     {
         private readonly IVisualSystemMeasureFactory systemMeasureFactory;
-        private readonly IScoreDocument scoreLayoutDictionary;
-        private readonly IUnitToPixelConverter unitToPixelConverter;
         private readonly IGlyphLibrary glyphLibrary;
 
         /// <summary>
         /// The default constructor.
         /// </summary>
         /// <param name="systemMeasureFactory"></param>
-        /// <param name="scoreLayoutDictionary"></param>
-        /// <param name="unitToPixelConverter"></param>
         /// <param name="glyphLibrary"></param>
-        public VisualStaffSystemFactory(IVisualSystemMeasureFactory systemMeasureFactory, IScoreDocument scoreLayoutDictionary, IUnitToPixelConverter unitToPixelConverter, IGlyphLibrary glyphLibrary)
+        public VisualStaffSystemFactory(IVisualSystemMeasureFactory systemMeasureFactory, IGlyphLibrary glyphLibrary)
         {
             this.systemMeasureFactory = systemMeasureFactory;
-            this.scoreLayoutDictionary = scoreLayoutDictionary;
-            this.unitToPixelConverter = unitToPixelConverter;
             this.glyphLibrary = glyphLibrary;
         }
 
         /// <inheritdoc/>
-        public BaseContentWrapper CreateContent(IStaffSystem staffSystem, double canvasLeft, double canvasTop, double length, double lineSpacing)
+        public BaseContentWrapper CreateContent(IStaffSystem staffSystem, double canvasLeft, double canvasTop, double length)
         {
-            return new VisualStaffSystem(staffSystem, canvasLeft, canvasTop, length, lineSpacing, glyphLibrary, systemMeasureFactory, scoreLayoutDictionary, unitToPixelConverter);
+            return new VisualStaffSystem(staffSystem, canvasLeft, canvasTop, length, glyphLibrary, systemMeasureFactory);
         }
     }
 }

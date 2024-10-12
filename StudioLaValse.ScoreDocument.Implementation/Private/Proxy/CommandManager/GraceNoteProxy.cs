@@ -34,7 +34,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManage
 
         public TemplateProperty<int> StaffIndex => Layout.StaffIndex.WithRerender(notifyEntityChanged, graceNote.InstrumentMeasure, commandManager);
 
-
+        public TemplateProperty<ColorARGB> Color => Layout.Color;
 
         public GraceNoteProxy(GraceNote graceNote, ICommandManager commandManager, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged, ILayoutSelector layoutSelector)
         {

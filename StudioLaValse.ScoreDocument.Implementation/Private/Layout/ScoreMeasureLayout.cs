@@ -10,16 +10,17 @@ internal abstract class ScoreMeasureLayout : IScoreMeasureLayout
 
     public ReadonlyTemplateProperty<double> PaddingLeft { get; }
     public ReadonlyTemplateProperty<double> PaddingRight { get; }
+    public ReadonlyTemplateProperty<double> Scale { get; }
 
 
     public TemplateProperty<KeySignature> KeySignature => _KeySignature;
     public TemplateProperty<double?> PaddingBottom => _PaddingBottom;
 
-
-    protected ScoreMeasureLayout(ScoreMeasureStyleTemplate scoreMeasureStyleTemplate)
+    protected ScoreMeasureLayout(ScoreMeasureStyleTemplate scoreMeasureStyleTemplate, ScoreDocumentStyleTemplate scoreDocumentStyleTemplate)
     {
         PaddingLeft = new ReadonlyTemplatePropertyFromFunc<double>(() => scoreMeasureStyleTemplate.PaddingLeft);
         PaddingRight = new ReadonlyTemplatePropertyFromFunc<double>(() => scoreMeasureStyleTemplate.PaddingRight);
+        Scale = new ReadonlyTemplatePropertyFromFunc<double>(() => scoreDocumentStyleTemplate.Scale);
     }
 
     public void Restore()
@@ -50,7 +51,7 @@ internal class AuthorScoreMeasureLayout : ScoreMeasureLayout
     public override ValueTemplateProperty<KeySignature> _KeySignature { get; }
     public override NullableTemplateProperty<double> _PaddingBottom { get; }
 
-    internal AuthorScoreMeasureLayout(ScoreMeasureStyleTemplate scoreMeasureStyleTemplate) : base(scoreMeasureStyleTemplate)
+    internal AuthorScoreMeasureLayout(ScoreMeasureStyleTemplate scoreMeasureStyleTemplate, ScoreDocumentStyleTemplate scoreDocumentStyleTemplate) : base(scoreMeasureStyleTemplate, scoreDocumentStyleTemplate)
     {
         _KeySignature = new ValueTemplateProperty<KeySignature>(() => new KeySignature(new Step(0, 0), MajorOrMinor.Major));
 
@@ -79,7 +80,7 @@ internal class UserScoreMeasureLayout : ScoreMeasureLayout
 
 
 
-    public UserScoreMeasureLayout(Guid id, AuthorScoreMeasureLayout primaryScoreMeasureLayout, ScoreMeasureStyleTemplate scoreMeasureStyleTemplate) : base(scoreMeasureStyleTemplate)
+    public UserScoreMeasureLayout(Guid id, AuthorScoreMeasureLayout primaryScoreMeasureLayout, ScoreMeasureStyleTemplate scoreMeasureStyleTemplate, ScoreDocumentStyleTemplate scoreDocumentStyleTemplate) : base(scoreMeasureStyleTemplate, scoreDocumentStyleTemplate)
     {
         this.id = id;
 

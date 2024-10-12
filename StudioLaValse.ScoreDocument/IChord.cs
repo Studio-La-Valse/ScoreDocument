@@ -5,7 +5,7 @@ namespace StudioLaValse.ScoreDocument
     /// <summary>
     /// Represents a chord editor interface.
     /// </summary>
-    public interface IChord : INoteContainer<INote>, IChordLayout, IPositionElement, IScoreElement, IUniqueScoreElement
+    public interface IChord : INoteContainer<INote>, IChordLayout, IRestLayout, IPositionElement, IScoreElement, IUniqueScoreElement
     {
         /// <summary>
         /// Prepend a grace chord to this chord.

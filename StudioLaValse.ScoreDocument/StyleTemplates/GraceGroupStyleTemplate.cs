@@ -21,10 +21,6 @@ namespace StudioLaValse.ScoreDocument.StyleTemplates
         /// Gets or sets the default chord duration of all grace groups.
         /// </summary>
         public required PowerOfTwo ChordDuration { get; set; }
-        /// <summary>
-        /// Gets or sets the scale of all grace groups.
-        /// </summary>
-        public required double Scale { get; set; }
 
 
         /// <summary>
@@ -42,7 +38,8 @@ namespace StudioLaValse.ScoreDocument.StyleTemplates
                 OccupySpace = true,
                 ChordSpaceRight = 4,
                 ChordDuration = 8,
-                Scale = 0.5
+                Scale = 0.5,
+                StemThickness = 0.1
             };
         }
 
@@ -52,13 +49,14 @@ namespace StudioLaValse.ScoreDocument.StyleTemplates
         /// <param name="styleTemplate"></param>
         public void Apply(GraceGroupStyleTemplate styleTemplate)
         {
+            base.Apply(styleTemplate);
+
             StemLength = styleTemplate.StemLength;
             BeamAngle = styleTemplate.BeamAngle;
             BeamThickness = styleTemplate.BeamThickness;
             BeamSpacing = styleTemplate.BeamSpacing;
             OccupySpace = styleTemplate.OccupySpace;
             ChordSpaceRight = styleTemplate.ChordSpaceRight;
-            Scale = styleTemplate.Scale;
         }
     }
 }

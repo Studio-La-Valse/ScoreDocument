@@ -7,25 +7,22 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
     {
         private readonly IScoreMeasure scoreMeasure;
         private readonly IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory;
-        private readonly IScoreDocument scoreLayoutDictionary;
-        private readonly IUnitToPixelConverter unitToPixelConverter;
         private readonly IStaffSystem staffSystem;
         private readonly double width;
-        private readonly double lineSpacing;
         private readonly double canvasLeft;
         private readonly double canvasTop;
 
 
+        public double Scale =>
+            scoreMeasure.Scale;
         public IScoreMeasure Layout => 
             scoreMeasure;
         public double PaddingRight =>
-            Layout.PaddingRight * ScoreScale + NextMeasureKeyPadding * ScoreScale;
+            Layout.PaddingRight * Scale + NextMeasureKeyPadding * Scale;
         public double Height =>
-            unitToPixelConverter.UnitsToPixels(staffSystem.CalculateHeight(lineSpacing, scoreLayoutDictionary));
+            staffSystem.CalculateHeight();
         public double PaddingLeft =>
-            Layout.PaddingLeft * ScoreScale;
-        public double ScoreScale =>
-            scoreLayoutDictionary.Scale;
+            Layout.PaddingLeft * Scale;
         public double NextMeasureKeyPadding
         {
             get
@@ -67,21 +64,15 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                                    double canvasLeft,
                                    double canvasTop,
                                    double width,
-                                   double lineSpacing,
                                    ISelection<IUniqueScoreElement> selection,
-                                   IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory,
-                                   IScoreDocument scoreLayoutDictionary,
-                                   IUnitToPixelConverter unitToPixelConverter) : 
+                                   IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory) : 
             base(scoreMeasure, selection)
         {
             this.scoreMeasure = scoreMeasure;
             this.visualInstrumentMeasureFactory = visualInstrumentMeasureFactory;
-            this.scoreLayoutDictionary = scoreLayoutDictionary;
-            this.unitToPixelConverter = unitToPixelConverter;
             this.canvasTop = canvasTop;
             this.staffSystem = staffSystem;
             this.width = width;
-            this.lineSpacing = lineSpacing;
             this.canvasLeft = canvasLeft;
         }
 
@@ -90,20 +81,15 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
         private IEnumerable<BaseContentWrapper> ConstructStaffGroupMeasures()
         {
-            var canvasTop = this.canvasTop;
             var positions = scoreMeasure
-                .EnumeratePositions(scoreLayoutDictionary.Scale)
+                .EnumeratePositions()
                 .Remap(canvasLeft + PaddingLeft, canvasLeft + width - PaddingRight)
                 .PositionsOnly(out var positionSpace);
-            var scoreScale = scoreLayoutDictionary.Scale;
-            foreach (var staffGroup in staffSystem.EnumerateStaffGroups())
+            foreach (var (staffGroup, canvastop) in staffSystem.EnumerateFromTop(this.canvasTop))
             {
                 var ribbonMesaure = scoreMeasure.ReadMeasure(staffGroup.IndexInSystem);
-                var wrapper = visualInstrumentMeasureFactory.CreateContent(ribbonMesaure, staffGroup, positions, canvasTop, canvasLeft, width, PaddingLeft, PaddingRight, lineSpacing, positionSpace);
+                var wrapper = visualInstrumentMeasureFactory.CreateContent(ribbonMesaure, staffGroup, positions, canvasTop, canvasLeft, width);
                 yield return wrapper;
-
-                canvasTop += unitToPixelConverter.UnitsToPixels(staffGroup.CalculateHeight(lineSpacing, scoreLayoutDictionary));
-                canvasTop += unitToPixelConverter.UnitsToPixels(staffGroup.DistanceToNext * scoreScale);
             }
         }
 

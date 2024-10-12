@@ -44,6 +44,16 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
             return note.UserLayout;
         }
 
+        public IRestLayout RestLayout(Chord chord)
+        {
+            return chord.UserRestLayout;
+        }
+
+        public IRestLayout RestLayout(GraceChord graceChord)
+        {
+            return graceChord.UserRestLayout;
+        }
+
         public IScoreDocumentLayout ScoreDocumentLayout(ScoreDocumentCore scoreDocumentCore)
         {
             return scoreDocumentCore.UserLayout;

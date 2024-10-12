@@ -12,23 +12,17 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         private readonly IInstrumentMeasure instrumentMeasure;
         private readonly IReadOnlyDictionary<Position, double> positionDictionary;
         private readonly double canvasTopStaffGroup;
-        private readonly double globalLineSpacing;
-        private readonly double positionSpaceing;
-        private readonly double scoreScale;
-        private readonly double instrumentScale;
         private readonly IGlyphLibrary glyphLibrary;
         private readonly IVisualNoteFactory noteFactory;
         private readonly IVisualRestFactory restFactory;
         private readonly IVisualBeamBuilder visualBeamBuilder;
-        private readonly IScoreDocument scoreLayoutDictionary;
         private readonly IVisualNoteGroupFactory visualNoteGroupFactory;
-        private readonly IUnitToPixelConverter unitToPixelConverter;
 
         public IMeasureBlock Layout =>
             measureBlock;
-        public double StemThickness =>
-            unitToPixelConverter.UnitsToPixels(scoreLayoutDictionary.StemLineThickness * Scale);
-        public double Scale => scoreScale * instrumentScale;
+        public double StemThickness(IChord chord) =>
+            chord.StemLineThickness * Scale;
+        public double Scale => measureBlock.Scale;
 
 
         public VisualNoteGroup(IMeasureBlock measureBlock,
@@ -36,34 +30,22 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                                IInstrumentMeasure instrumentMeasure,
                                IReadOnlyDictionary<Position, double> positionDictionary,
                                double canvasTopStaffGroup,
-                               double globalLineSpacing,
-                               double positionSpaceing,
-                               double scoreScale,
-                               double instrumentScale,
                                IGlyphLibrary glyphLibrary,
                                IVisualNoteFactory noteFactory,
                                IVisualRestFactory restFactory,
                                IVisualBeamBuilder visualBeamBuilder,
-                               IScoreDocument scoreLayoutDictionary,
-                               IVisualNoteGroupFactory visualNoteGroupFactory,
-                               IUnitToPixelConverter unitToPixelConverter)
+                               IVisualNoteGroupFactory visualNoteGroupFactory)
         {
             this.measureBlock = measureBlock;
             this.staffGroup = staffGroup;
             this.instrumentMeasure = instrumentMeasure;
             this.positionDictionary = positionDictionary;
             this.canvasTopStaffGroup = canvasTopStaffGroup;
-            this.globalLineSpacing = globalLineSpacing;
-            this.positionSpaceing = positionSpaceing;
-            this.scoreScale = scoreScale;
-            this.instrumentScale = instrumentScale;
             this.glyphLibrary = glyphLibrary;
             this.noteFactory = noteFactory;
             this.restFactory = restFactory;
             this.visualBeamBuilder = visualBeamBuilder;
-            this.scoreLayoutDictionary = scoreLayoutDictionary;
             this.visualNoteGroupFactory = visualNoteGroupFactory;
-            this.unitToPixelConverter = unitToPixelConverter;
         }
 
 
@@ -95,16 +77,10 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                 yield return new VisualChord(chord,
                     canvasLeft,
                     canvasTopStaffGroup,
-                    globalLineSpacing,
-                    positionSpaceing,
-                    scoreScale,
-                    instrumentScale,
                     staffGroup,
                     instrumentMeasure,
                     noteFactory,
-                    restFactory,
-                    scoreLayoutDictionary, 
-                    unitToPixelConverter);
+                    restFactory);
 
                 var _graceGroup = chord.ReadGraceGroup();
                 if (_graceGroup is null)
@@ -113,7 +89,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                 }
 
                 var gracePositions = CreateDictionary(_graceGroup, canvasLeft);
-                var graceGroup = visualNoteGroupFactory.Build(_graceGroup.Imply(), staffGroup, instrumentMeasure, gracePositions, canvasTopStaffGroup, globalLineSpacing, positionSpaceing);
+                var graceGroup = visualNoteGroupFactory.Build(_graceGroup.Imply(), staffGroup, instrumentMeasure, gracePositions, canvasTopStaffGroup);
                 yield return graceGroup;
             }
         }
@@ -136,15 +112,18 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             var (highestNote, lowestNote) = ConstructChordCanvasY(principalChord, staffGroup, canvasTopStaffGroup);
             var principalStemTipY = (principalStemUp ? highestNote : lowestNote) - (principalStemLength * Scale);
             var principalStemTip = new XY(principalStemOrigin.X, principalStemTipY);
-            var principalStem = new VisualStem(principalStemOrigin, principalStemTip, StemThickness, principalChord, scoreLayoutDictionary);
+            var principalStem = new VisualStem(principalStemOrigin, principalStemTip, StemThickness(principalChord), principalChord);
 
             var beamDefinition = new Ruler(principalStemTip, -Layout.BeamAngle);
             var stems = chords
-                .Select(c => c.Equals((IUniqueScoreElement)principalChord) ? principalStem : CreateStem(c, principalNoteWidth, beamDefinition))
+                .Select(c => c.Equals(principalChord) ? principalStem : CreateStem(c, principalNoteWidth, beamDefinition))
                 .ToArray();
-
-            yield return new VisualBeamGroup(stems, beamDefinition, Layout.BeamThickness, Layout.BeamSpacing, Scale, positionSpaceing, visualBeamBuilder);
+            var hookSize = chords.Select(c => c.SpaceRight.Value).Average() / 2;
+            yield return new VisualBeamGroup(stems, beamDefinition, Layout.BeamThickness, Layout.BeamSpacing, Scale, hookSize, staffGroup.Color.Value.FromPrimitive(), visualBeamBuilder);
         }
+
+
+
         public VisualStem CreateStem(IChord chord, double firstNoteWidth, Ruler beamDefinition)
         {
             var canvasLeft = positionDictionary[chord.Position];
@@ -155,7 +134,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             var stemOrigin = ConstructStemOrigin(chord, staffGroup, canvasTopStaffGroup, canvasLeft, stemUp, firstNoteWidth);
             stemIntersection = beamDefinition.IntersectVerticalRay(stemOrigin);
 
-            var visualStem = new VisualStem(stemOrigin, stemIntersection, StemThickness, chord, scoreLayoutDictionary);
+            var visualStem = new VisualStem(stemOrigin, stemIntersection, StemThickness(chord), chord);
             return visualStem;
         }
         public IChord PickAChordForStem(IEnumerable<IChord> chords, StemDirection stemDirection)
@@ -179,9 +158,9 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             var (highestNote, lowestNote) = ConstructChordCanvasY(chord, staffGroup, staffGroupCanvasTop);
             var canvasY = stemUp ? lowestNote : highestNote;
             var offset = stemUp ?
-                (noteWidth / 2) - (StemThickness / 2) :
-                (-noteWidth / 2) + (StemThickness / 2);
-            var offsetToNeatlyFitNoteHead = unitToPixelConverter.UnitsToPixels((globalLineSpacing * scoreScale * instrumentScale * 0.17 * (stemUp ? -1 : 1)));
+                (noteWidth / 2) - (StemThickness(chord) / 2) :
+                (-noteWidth / 2) + (StemThickness(chord) / 2);
+            var offsetToNeatlyFitNoteHead = Glyph.LineSpacing * Scale * 0.17 * (stemUp ? -1 : 1);
             return new XY(chordCanvasLeft + offset, canvasY + offsetToNeatlyFitNoteHead);
         }
         public (double highestNote, double lowestNote) ConstructChordCanvasY(IChord chord, IStaffGroup staffGroup, double staffGroupCanvasTop)
@@ -191,7 +170,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             if (!chord.ReadNotes().Any())
             {
                 var line = 4;
-                var heightOnCanvas = staffGroupCanvasTop + unitToPixelConverter.UnitsToPixels(staffGroup.EnumerateStaves().First().DistanceFromTop(line, globalLineSpacing, scoreScale, instrumentScale));
+                var heightOnCanvas = staffGroupCanvasTop + staffGroup.EnumerateStaves().First().DistanceFromTop(line);
                 return (heightOnCanvas, heightOnCanvas);
             }
 
@@ -218,7 +197,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             var noteStaffIndex = noteLayout.StaffIndex;
             var clef = instrumentMeasure.GetClef(noteStaffIndex, noteReader.Position);
             var lineIndex = clef.LineIndexAtPitch(noteReader.Pitch);
-            var heightOriginOnCanvas = staffGroupCanvasTop + unitToPixelConverter.UnitsToPixels(staffGroup.DistanceFromTop(noteStaffIndex, lineIndex, globalLineSpacing, scoreLayoutDictionary));
+            var heightOriginOnCanvas = staffGroupCanvasTop + staffGroup.DistanceFromTop(noteStaffIndex, lineIndex);
             return heightOriginOnCanvas;
         }
         public Dictionary<Position, double> CreateDictionary(IGraceGroup graceGroup, double target)

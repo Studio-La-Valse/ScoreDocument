@@ -19,6 +19,17 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManage
 
         public IGraceChordLayout Layout => layoutSelector.GraceChordLayout(graceChord);
 
+        public ReadonlyTemplateProperty<double> StemLineThickness => Layout.StemLineThickness;
+
+        public IRestLayout RestLayout => layoutSelector.RestLayout(graceChord);
+
+        public ReadonlyTemplateProperty<double> Scale => RestLayout.Scale;
+
+        public TemplateProperty<ColorARGB> Color => RestLayout.Color.WithRerender(notifyEntityChanged, graceChord, commandManager);
+
+        public TemplateProperty<int> StaffIndex => RestLayout.StaffIndex.WithRerender(notifyEntityChanged, graceChord.HostMeasure.HostMeasure.HostDocument, commandManager);
+
+        public TemplateProperty<int> Line => RestLayout.StaffIndex.WithRerender(notifyEntityChanged, graceChord.HostMeasure, commandManager);
 
         public GraceChordProxy(GraceChord graceChord, ICommandManager commandManager, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged, ILayoutSelector layoutSelector)
         {

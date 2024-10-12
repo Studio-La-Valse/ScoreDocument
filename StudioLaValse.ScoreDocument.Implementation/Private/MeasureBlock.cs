@@ -115,12 +115,15 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
         }
         public void AppendChord(RythmicDuration rythmicDuration, bool rebeam = true, params Pitch[] pitches)
         {
-            var guid = Guid.NewGuid();
-            var layoutGuid = Guid.NewGuid();
             var beamtypes = new Dictionary<PowerOfTwo, BeamType>();
-            var chordLayout = new AuthorChordLayout(documentStyleTemplate.ChordStyleTemplate, beamtypes);
-            var secondaryChordLayout = new UserChordLayout(chordLayout, layoutGuid);
-            var chord = new Chord(this, rythmicDuration, documentStyleTemplate, chordLayout, secondaryChordLayout, beamtypes, keyGenerator, guid);
+
+            var chordLayout = new AuthorChordLayout(documentStyleTemplate.MeasureBlockStyleTemplate, documentStyleTemplate.ChordStyleTemplate, beamtypes);
+            var secondaryChordLayout = new UserChordLayout(chordLayout, Guid.NewGuid(), documentStyleTemplate.MeasureBlockStyleTemplate);
+
+            var restLayout = new AuthorRestLayout(UserLayout, documentStyleTemplate.PageStyleTemplate);
+            var userRestLayout = new UserRestLayout(UserLayout, restLayout, Guid.NewGuid());
+
+            var chord = new Chord(this, rythmicDuration, documentStyleTemplate, chordLayout, secondaryChordLayout, restLayout, userRestLayout, beamtypes, keyGenerator, Guid.NewGuid());
             chord.Add(pitches);
             chords.Add(chord);
             if (rebeam)
@@ -179,7 +182,8 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                 BeamAngle = AuthorLayout._BeamAngle.Field,
                 StemLength = AuthorLayout._StemLength.Field,
                 StemDirection = AuthorLayout._StemDirection.Field?.ConvertStemDirection(),
-                Position = Position.Convert()
+                Position = Position.Convert(),
+                Scale = AuthorLayout._Scale.Field,
             };
         }
         public MeasureBlockLayoutModel GetLayoutModel()
@@ -191,6 +195,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                 StemLength = UserLayout._StemLength.Field,
                 BeamAngle = UserLayout._BeamAngle.Field,
                 StemDirection = UserLayout._StemDirection.Field?.ConvertStemDirection(),
+                Scale = UserLayout._Scale.Field
             };
         }
         public MeasureBlockMemento GetMemento()
@@ -205,7 +210,8 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                 BeamAngle = AuthorLayout._BeamAngle.Field,
                 StemLength = AuthorLayout._StemLength.Field,
                 StemDirection = AuthorLayout._StemDirection.Field?.ConvertStemDirection(),
-                Position = Position.Convert()
+                Position = Position.Convert(),
+                Scale = AuthorLayout._Scale.Field
             };
         }
         public void ApplyMemento(MeasureBlockMemento memento)
@@ -217,9 +223,13 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
             foreach (var chordMemento in memento.Chords)
             {
                 var beamtypes = new Dictionary<PowerOfTwo, BeamType>();
-                var chordLayout = new AuthorChordLayout(documentStyleTemplate.ChordStyleTemplate, beamtypes);
-                var secondaryChordLayout = new UserChordLayout(chordLayout, Guid.NewGuid());
-                var chord = new Chord(this, chordMemento.RythmicDuration.Convert(), documentStyleTemplate, chordLayout, secondaryChordLayout, beamtypes, keyGenerator, chordMemento.Id);
+                var chordLayout = new AuthorChordLayout(documentStyleTemplate.MeasureBlockStyleTemplate, documentStyleTemplate.ChordStyleTemplate, beamtypes);
+                var secondaryChordLayout = new UserChordLayout(chordLayout, Guid.NewGuid(), documentStyleTemplate.MeasureBlockStyleTemplate);
+
+                var restLayout = new AuthorRestLayout(UserLayout, documentStyleTemplate.PageStyleTemplate);
+                var userRestLayout = new UserRestLayout(UserLayout, restLayout, Guid.NewGuid());
+
+                var chord = new Chord(this, chordMemento.RythmicDuration.Convert(), documentStyleTemplate, chordLayout, secondaryChordLayout, restLayout, userRestLayout, beamtypes, keyGenerator, chordMemento.Id);
                 chords.Add(chord);
                 chord.ApplyMemento(chordMemento);
             }
@@ -227,7 +237,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
             Rebeam();
 
             var measureBlockLayoutModel = memento.Layout;
-            UserLayout = new UserMeasureBlockLayout(measureBlockLayoutModel.Id, AuthorLayout, documentStyleTemplate.MeasureBlockStyleTemplate);
+            UserLayout = new UserMeasureBlockLayout(measureBlockLayoutModel.Id, AuthorLayout, documentStyleTemplate.MeasureBlockStyleTemplate, host.RibbonMeasure.HostRibbon.UserLayout);
             UserLayout.ApplyMemento(measureBlockLayoutModel);
         }
     }

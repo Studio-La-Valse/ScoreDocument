@@ -14,11 +14,7 @@
         /// <param name="canvasTop"></param>
         /// <param name="canvasLeft"></param>
         /// <param name="width"></param>
-        /// <param name="paddingLeft"></param>
-        /// <param name="paddingRight"></param>
-        /// <param name="lineSpacing"></param>
-        /// <param name="positionSpace"></param>
         /// <returns></returns>
-        BaseContentWrapper CreateContent(IInstrumentMeasure source, IStaffGroup staffGroup, IReadOnlyDictionary<Position, double> positionDictionary, double canvasTop, double canvasLeft, double width, double paddingLeft, double paddingRight, double lineSpacing, double positionSpace);
+        BaseContentWrapper CreateContent(IInstrumentMeasure source, IStaffGroup staffGroup, IReadOnlyDictionary<Position, double> positionDictionary, double canvasTop, double canvasLeft, double width);
     }
 }

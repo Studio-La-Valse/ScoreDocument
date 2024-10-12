@@ -5,27 +5,12 @@
     /// </summary>
     public class Glyph
     {
-        //assume: 72em = 1 inch tall (windows spec)
-        //assume: 96dpi, 1 inch is 25.4mm, so 1px = 25.4/96 = 0.26458333mm (also windows spec)
-        //assume: 72em = 96 pixels
-        //assume: 12em = 12/72 logical inch = 1/6 logical inch = 96/6 pixels = 16 pixels = 4,23333328mm
-        //assume: according to smufl spec, one font is one staff height, so one line space = 4,23333328 / 4
-        //so: LineSpacing = 96 * (em / 72d) * (25.4 / 96) / 4;
-        //so: LineSpacing = 1 * (em / 72d) * (25.4 / 1) / 4;
-        //so: LineSpacing = em / 72d * 25.4 / 4;
-        //so: I guess this works but I'm still not really sure why.
+        //according to smufl spec, one font is one staff height
+        //so: one line space is one fourth of the font size
         /// <summary>
-        /// The font size. Defaults to 12, cannot be changed.
+        /// The font size. Defaults to 6, cannot be changed.
         /// </summary>
-        public static readonly double Em = 12;
-        /// <summary>
-        /// Pixels per inch.
-        /// </summary>
-        public static readonly double PixelsPerInch = 72;
-        /// <summary>
-        /// Millimeters per inch.
-        /// </summary>
-        public static readonly double MmPerInch = 25.4;
+        public static readonly double Em = 6;
         /// <summary>
         /// The number of staff spaces.
         /// </summary>
@@ -33,7 +18,7 @@
         /// <summary>
         /// The required space between staff lines to exactly fit this font.
         /// </summary>
-        public static readonly double LineSpacingMm = Em / PixelsPerInch * MmPerInch / StaffSpaces;
+        public static readonly double LineSpacing = Em * 1 / StaffSpaces;
 
 
         /// <summary>

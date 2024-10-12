@@ -1,5 +1,7 @@
 ﻿global using StudioLaValse.CommandManager;
+using StudioLaValse.Drawable;
 using StudioLaValse.ScoreDocument.Implementation.Private.Interfaces;
+using StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManager;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.Default
 {
@@ -8,7 +10,6 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.Default
         private readonly Chord source;
         private readonly ILayoutSelector layoutSelector;
 
-        public IChordLayout Layout => layoutSelector.ChordLayout(source);
 
         public Position Position => source.Position;
 
@@ -16,13 +17,23 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.Default
 
         public Tuplet Tuplet => source.Tuplet;
 
-        public Guid Guid => source.Guid;
-
         public int Id => source.Id;
 
-        public TemplateProperty<double> XOffset => Layout.XOffset;
+        public IChordLayout Layout => layoutSelector.ChordLayout(source);
 
         public TemplateProperty<double> SpaceRight => Layout.SpaceRight;
+
+        public ReadonlyTemplateProperty<double> StemLineThickness => Layout.StemLineThickness;
+
+        public IRestLayout RestLayout => layoutSelector.RestLayout(source);
+
+        public TemplateProperty<ColorARGB> Color => RestLayout.Color;
+
+        public ReadonlyTemplateProperty<double> Scale => RestLayout.Scale;
+
+        public TemplateProperty<int> StaffIndex => RestLayout.StaffIndex;
+
+        public TemplateProperty<int> Line => RestLayout.StaffIndex;
 
 
         public ChordProxy(Chord source, ILayoutSelector layoutSelector)

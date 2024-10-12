@@ -10,8 +10,6 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
     {
         private readonly IVisualNoteFactory noteFactory;
         private readonly IVisualRestFactory restFactory;
-        private readonly IScoreDocument scoreLayoutDictionary;
-        private readonly IUnitToPixelConverter unitToPixelConverter;
         private readonly IGlyphLibrary glyphLibrary;
         private readonly IVisualBeamBuilder visualBeamBuilder;
 
@@ -20,41 +18,29 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// </summary>
         /// <param name="noteFactory"></param>
         /// <param name="restFactory"></param>
-        /// <param name="scoreLayoutDictionary"></param>
-        /// <param name="unitToPixelConverter"></param>
         /// <param name="glyphLibrary"></param>
-        public VisualNoteGroupFactory(IVisualNoteFactory noteFactory, IVisualRestFactory restFactory, IScoreDocument scoreLayoutDictionary, IUnitToPixelConverter unitToPixelConverter, IGlyphLibrary glyphLibrary)
+        public VisualNoteGroupFactory(IVisualNoteFactory noteFactory, IVisualRestFactory restFactory, IGlyphLibrary glyphLibrary)
         {
             this.noteFactory = noteFactory;
             this.restFactory = restFactory;
-            this.scoreLayoutDictionary = scoreLayoutDictionary;
-            this.unitToPixelConverter = unitToPixelConverter;
             this.glyphLibrary = glyphLibrary;
-            visualBeamBuilder = new VisualBeamBuilder(scoreLayoutDictionary, unitToPixelConverter, glyphLibrary);
+            visualBeamBuilder = new VisualBeamBuilder(glyphLibrary);
         }
         /// <inheritdoc/>
-        public BaseContentWrapper Build(IMeasureBlock noteGroup, IStaffGroup staffGroup, IInstrumentMeasure instrumentMeasure, IReadOnlyDictionary<Position, double> positionDictionary, double canvasTopStaffGroup, double lineSpacing, double positionSpacing)
+        public BaseContentWrapper Build(IMeasureBlock noteGroup, IStaffGroup staffGroup, IInstrumentMeasure instrumentMeasure, IReadOnlyDictionary<Position, double> positionDictionary, double canvasTopStaffGroup)
         {
-            var scoreLayout = scoreLayoutDictionary;
-            var scoreScale = scoreLayout.Scale;
-            var instrumentScale = staffGroup.InstrumentRibbon.Scale;
+            var instrumentScale = staffGroup.InstrumentRibbon.Scale.Value;
             return new VisualNoteGroup(
                 noteGroup,
                 staffGroup,
                 instrumentMeasure,
                 positionDictionary,
                 canvasTopStaffGroup,
-                lineSpacing,
-                positionSpacing,
-                scoreScale,
-                instrumentScale,
                 glyphLibrary,
                 noteFactory,
                 restFactory,
                 visualBeamBuilder,
-                scoreLayoutDictionary,
-                this, 
-                unitToPixelConverter);
+                this);
         }
     }
 }

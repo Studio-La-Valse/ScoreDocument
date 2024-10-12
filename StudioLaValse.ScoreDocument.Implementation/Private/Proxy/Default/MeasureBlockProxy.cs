@@ -38,7 +38,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.Default
 
         public ReadonlyTemplateProperty<double> BeamSpacing => Layout.BeamSpacing;
 
-
+        public TemplateProperty<double> Scale => Layout.Scale;
 
 
         public void AppendChord(RythmicDuration rythmicDuration, params Pitch[] pitches)

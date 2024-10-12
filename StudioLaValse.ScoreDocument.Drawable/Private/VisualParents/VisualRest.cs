@@ -4,8 +4,9 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
     internal sealed class VisualRest : BaseVisualNote
     {
+        private readonly IChord chord;
+        private readonly bool offsetDots;
         private readonly IGlyphLibrary glyphLibrary;
-        private readonly IScoreDocument scoreDocumentLayout;
 
         public Glyph GlyphPrototype
         {
@@ -43,41 +44,33 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                 var glyph = GlyphPrototype;
 
                 return new DrawableScoreGlyph(
-                    XPosition,
-                    HeightOnCanvas,
+                    CanvasLeft,
+                    CanvasTop,
                     glyph,
                     HorizontalTextOrigin.Center,
                     VerticalTextOrigin.Center,
-                    scoreDocumentLayout.PageForegroundColor.Value.FromPrimitive());
+                    chord.Color.Value.FromPrimitive());
             }
         }
 
-        public override bool OffsetDots => false;
-        public override double XOffset => 0;
+        public override bool OffsetDots => offsetDots;
+        public override double Scale => chord.Scale;
+        public override ColorARGB Color => chord.Color.Value.FromPrimitive();
 
-        public VisualRest(IChord note,
+        public VisualRest(IChord chord,
                           double canvasLeft,
                           double canvasTop,
-                          double lineSpacing,
-                          double scoreScale,
-                          double instrumentScale,
+                          bool offsetDots,
                           IGlyphLibrary glyphLibrary,
-                          IScoreDocument scoreDocumentLayout,
-                          ISelection<IUniqueScoreElement> selection,
-                          IUnitToPixelConverter unitToPixelConverter) :
-            base(note,
+                          ISelection<IUniqueScoreElement> selection) :
+            base(chord,
                  canvasLeft,
                  canvasTop,
-                 lineSpacing,
-                 scoreScale,
-                 instrumentScale,
-                 1,
-                 scoreDocumentLayout,
-                 selection,
-                 unitToPixelConverter)
+                 selection)
         {
+            this.chord = chord;
+            this.offsetDots = offsetDots;
             this.glyphLibrary = glyphLibrary;
-            this.scoreDocumentLayout = scoreDocumentLayout;
         }
     }
 }

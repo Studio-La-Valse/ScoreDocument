@@ -13,8 +13,7 @@
         /// <param name="canvasLeft"></param>
         /// <param name="canvasTop"></param>
         /// <param name="width"></param>
-        /// <param name="lineSpacing"></param>
         /// <returns></returns>
-        BaseContentWrapper CreateContent(IScoreMeasure scoreMeasure, IStaffSystem staffSystem, double canvasLeft, double canvasTop, double width, double lineSpacing);
+        BaseContentWrapper CreateContent(IScoreMeasure scoreMeasure, IStaffSystem staffSystem, double canvasLeft, double canvasTop, double width);
     }
 }

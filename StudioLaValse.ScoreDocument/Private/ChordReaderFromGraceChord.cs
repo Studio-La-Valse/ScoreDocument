@@ -1,4 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Layout;
+using StudioLaValse.ScoreDocument.StyleTemplates;
 
 namespace StudioLaValse.ScoreDocument.Private;
 
@@ -24,9 +25,17 @@ internal class ChordReaderFromGraceChord : IChord
 
     public int Id => graceChordReader.Id;
 
-    public TemplateProperty<double> XOffset => new TemplatePropertyFromValue<double>(0);
-
     public TemplateProperty<double> SpaceRight => new TemplatePropertyFromReadonlyTemplateProperty<double>(graceChordReader.SpaceRight);
+
+    public TemplateProperty<ColorARGB> Color => graceChordReader.Color;
+
+    public ReadonlyTemplateProperty<double> StemLineThickness => graceChordReader.StemLineThickness;
+
+    public TemplateProperty<int> StaffIndex => graceChordReader.StaffIndex;
+
+    public TemplateProperty<int> Line => graceChordReader.Line;
+
+    public ReadonlyTemplateProperty<double> Scale => graceChordReader.Scale;
 
 
     public ChordReaderFromGraceChord(IGraceChord graceChordReader, MeasureBlockReaderFromGraceGroup measureBlockReaderFromGraceGroup)

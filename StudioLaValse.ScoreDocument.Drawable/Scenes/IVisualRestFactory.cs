@@ -11,10 +11,7 @@
         /// <param name="element"></param>
         /// <param name="canvasLeft"></param>
         /// <param name="canvasTop"></param>
-        /// <param name="lineSpacing"></param>
-        /// <param name="scoreScale"></param>
-        /// <param name="instrumentScale"></param>
         /// <returns></returns>
-        BaseContentWrapper Build(IChord element, double canvasLeft, double canvasTop, double lineSpacing, double scoreScale, double instrumentScale);
+        BaseContentWrapper Build(IChord element, double canvasLeft, double canvasTop);
     }
 }

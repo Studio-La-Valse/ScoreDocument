@@ -1,4 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Core;
+using StudioLaValse.ScoreDocument.StyleTemplates;
 
 namespace StudioLaValse.ScoreDocument.Layout
 {
@@ -8,13 +9,13 @@ namespace StudioLaValse.ScoreDocument.Layout
     public interface IChordLayout : IHasBeamGroup, ILayout
     {
         /// <summary>
-        /// The global offset of this chord.
-        /// </summary>
-        TemplateProperty<double> XOffset { get; }
-
-        /// <summary>
         /// The available space to the right of the chord.
         /// </summary>
-        TemplateProperty<double> SpaceRight { get;  }
+        TemplateProperty<double> SpaceRight { get; }
+
+        /// <summary>
+        /// Stem line thickness.
+        /// </summary>
+        ReadonlyTemplateProperty<double> StemLineThickness { get; }
     }
 }

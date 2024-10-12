@@ -11,9 +11,10 @@ namespace StudioLaValse.ScoreDocument.Extensions
         /// Approximates the required width of a score measure by enumerating all unique positions and accounting for the required space for each of them. 
         /// Takes into account any styling like padding or margins.
         /// </summary>
-        public static double ApproximateWidth(this IScoreMeasure scoreMeasure, double scoreScale)
+        public static double ApproximateWidth(this IScoreMeasure scoreMeasure)
         {
-            var (position, spaceRight) = scoreMeasure.EnumeratePositions(scoreScale).LastOrDefault().Value;
+            var scoreScale = scoreMeasure.Scale;
+            var (position, spaceRight) = scoreMeasure.EnumeratePositions().LastOrDefault().Value;
             var measurePadding = scoreMeasure.PaddingLeft * scoreScale + scoreMeasure.PaddingRight * scoreScale;
             return position + spaceRight + measurePadding;
         }
@@ -21,14 +22,15 @@ namespace StudioLaValse.ScoreDocument.Extensions
         /// <summary>
         /// Create a dictionary of unique positions in the score measure.
         /// </summary>
-        /// <param name="scoreMeasureReader"></param>
-        /// <param name="scoreScale"></param>
+        /// <param name="scoreMeasure"></param>
         /// <returns></returns>
-        public static Dictionary<Position, (double position, double spaceRight)> EnumeratePositions(this IScoreMeasure scoreMeasureReader, double scoreScale)
+        public static Dictionary<Position, (double position, double spaceRight)> EnumeratePositions(this IScoreMeasure scoreMeasure)
         {
+            var scoreScale = scoreMeasure.Scale;
+
             var comparer = new PositionComparer();
             var positions = new Dictionary<Position, (double position, double spaceRight)>(comparer);
-            foreach (var instrumentMeasure in scoreMeasureReader.ReadMeasures())
+            foreach (var instrumentMeasure in scoreMeasure.ReadMeasures())
             {
                 if (instrumentMeasure.Collapsed.Value ?? false)
                 {

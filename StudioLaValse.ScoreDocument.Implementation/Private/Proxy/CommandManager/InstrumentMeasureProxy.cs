@@ -26,6 +26,10 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManage
 
         public int Id => instrumentMeasure.Id;
 
+        public ReadonlyTemplateProperty<double> PaddingLeft => Layout.PaddingLeft;
+
+        public ReadonlyTemplateProperty<double> PaddingRight => Layout.PaddingRight;
+
         public ReadonlyTemplateProperty<KeySignature> KeySignature => Layout.KeySignature;
 
         public TemplateProperty<double?> PaddingBottom => Layout.PaddingBottom.WithRerender(notifyEntityChanged, instrumentMeasure.HostMeasure.HostDocument, commandManager);
@@ -33,8 +37,6 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManage
         public TemplateProperty<bool?> Collapsed => Layout.Collapsed.WithRerender(notifyEntityChanged, instrumentMeasure.HostMeasure.HostDocument, commandManager);
 
         public TemplateProperty<int?> NumberOfStaves => Layout.NumberOfStaves.WithRerender(notifyEntityChanged, instrumentMeasure.HostMeasure.HostDocument, commandManager);
-
-
 
         public InstrumentMeasureProxy(InstrumentMeasure source, ICommandManager commandManager, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged, ILayoutSelector layoutSelector)
         {

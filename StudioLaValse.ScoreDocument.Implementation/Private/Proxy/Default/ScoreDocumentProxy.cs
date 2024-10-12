@@ -1,7 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Extensions;
-using StudioLaValse.ScoreDocument.Implementation.Private;
-using StudioLaValse.ScoreDocument.Implementation.Private.Interfaces;
-using StudioLaValse.ScoreDocument.Models;
+﻿using StudioLaValse.ScoreDocument.Implementation.Private.Interfaces;
 using ColorARGB = StudioLaValse.ScoreDocument.StyleTemplates.ColorARGB;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.Default;
@@ -31,8 +28,6 @@ internal class ScoreDocumentProxy(ScoreDocumentCore score, ILayoutSelector layou
     public ReadonlyTemplateProperty<double> HorizontalStaffLineThickness => Layout.HorizontalStaffLineThickness;
 
     public ReadonlyTemplateProperty<double> Scale => Layout.Scale;
-
-    public ReadonlyTemplateProperty<double> StemLineThickness => Layout.StemLineThickness;
 
     public ReadonlyTemplateProperty<double> VerticalStaffLineThickness => Layout.VerticalStaffLineThickness;
 

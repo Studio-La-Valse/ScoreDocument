@@ -17,11 +17,11 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
         public MeasureBlockChain(InstrumentMeasure ribbonMeasure, ScoreDocumentStyleTemplate scoreDocumentStyle, int voice, IKeyGenerator<int> keyGenerator, Guid guid) : base(keyGenerator, guid)
         {
             this.keyGenerator = keyGenerator;
+            this.scoreDocumentStyle = scoreDocumentStyle;
 
             blocks = [];
 
             RibbonMeasure = ribbonMeasure;
-            this.scoreDocumentStyle = scoreDocumentStyle;
             Voice = voice;
         }
 
@@ -59,7 +59,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
             {
                 throw new InvalidOperationException("There are already blocks that contain content in this block chain.");
             }
-            if (!steps.Sum().Equals(TimeSignature as Duration))
+            if (!steps.Sum().Equals(TimeSignature))
             {
                 throw new InvalidOperationException("The sum of the specified steps does not equal the total duration of the measure.");
             }
@@ -80,8 +80,8 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
         {
             ThrowIfWillCauseOverflow(rythmicDuration);
 
-            var layout = new AuthorMeasureBlockLayout(scoreDocumentStyle.MeasureBlockStyleTemplate, Voice);
-            var secondaryLayout = new UserMeasureBlockLayout(secondaryLayoutGuid, layout, scoreDocumentStyle.MeasureBlockStyleTemplate);
+            var layout = new AuthorMeasureBlockLayout(scoreDocumentStyle.MeasureBlockStyleTemplate, Voice, RibbonMeasure.HostRibbon.UserLayout);
+            var secondaryLayout = new UserMeasureBlockLayout(secondaryLayoutGuid, layout, scoreDocumentStyle.MeasureBlockStyleTemplate, RibbonMeasure.HostRibbon.UserLayout);
             var newBlock = new MeasureBlock(rythmicDuration, this, scoreDocumentStyle, layout, secondaryLayout, keyGenerator, blockGuid);
             blocks.Add(newBlock);
             return newBlock;

@@ -8,8 +8,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="StudioLaValse.Drawable" Version="3.0.0" />
-		<PackageReference Include="StudioLaValse.Drawable.Interaction" Version="3.0.0" />
+		<PackageReference Include="StudioLaValse.Drawable" Version="4.0.2" />
+		<PackageReference Include="StudioLaValse.Drawable.Interaction" Version="4.0.2" />
 		<PackageReference Include="StudioLaValse.Geometry" Version="1.0.0" />
 	</ItemGroup>
 

@@ -12,8 +12,7 @@
         /// <param name="canvasLeft"></param>
         /// <param name="canvasTop"></param>
         /// <param name="length"></param>
-        /// <param name="lineSpacing"></param>
         /// <returns></returns>
-        BaseContentWrapper CreateContent(IStaffSystem staffSystem, double canvasLeft, double canvasTop, double length, double lineSpacing);
+        BaseContentWrapper CreateContent(IStaffSystem staffSystem, double canvasLeft, double canvasTop, double length);
     }
 }

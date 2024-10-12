@@ -19,7 +19,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
 
 
         public AuthorScoreDocumentLayout AuthorLayout { get; }
-        public UserScoreDocumentLayout UserLayout { get; set; }
+        public UserScoreDocumentLayout UserLayout { get; private set; }
 
 
 
@@ -50,8 +50,8 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
         }
         public InstrumentRibbon CreateInstrumentRibbonCore(Instrument instrument, Guid ribbonId, Guid layoutId)
         {
-            var primaryLayout = new AuthorInstrumentRibbonLayout(instrument, styleTemplate, ribbonId);
-            var secondaryLayout = new SecondaryInstrumentRibbonLayout(primaryLayout, layoutId);
+            var primaryLayout = new AuthorInstrumentRibbonLayout(instrument, styleTemplate, ribbonId, UserLayout);
+            var secondaryLayout = new UserInstrumentRibbonLayout(primaryLayout, layoutId, UserLayout);
             var instrumentRibbon = new InstrumentRibbon(this, instrument, primaryLayout, secondaryLayout, keyGenerator, ribbonId);
             return instrumentRibbon;
         }
@@ -83,8 +83,8 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                     previousElement.TimeSignature :
                     new TimeSignature(4, 4);
 
-            var layout = new AuthorScoreMeasureLayout(styleTemplate.ScoreMeasureStyleTemplate);
-            var secondaryLayout = new UserScoreMeasureLayout(layoutGuid, layout, styleTemplate.ScoreMeasureStyleTemplate);
+            var layout = new AuthorScoreMeasureLayout(styleTemplate.ScoreMeasureStyleTemplate, styleTemplate);
+            var secondaryLayout = new UserScoreMeasureLayout(layoutGuid, layout, styleTemplate.ScoreMeasureStyleTemplate, styleTemplate);
             ScoreMeasure scoreMeasure = new(this, timeSignature, layout, secondaryLayout, styleTemplate, keyGenerator, guid);
             return scoreMeasure;
         }

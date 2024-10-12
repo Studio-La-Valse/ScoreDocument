@@ -1,4 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Layout;
+using StudioLaValse.ScoreDocument.StyleTemplates;
 
 namespace StudioLaValse.ScoreDocument.Private
 {
@@ -10,6 +11,13 @@ namespace StudioLaValse.ScoreDocument.Private
 
         public ReadonlyTemplateProperty<double> PaddingBottom => ReadLayout().PaddingBottom;
 
+        public ReadonlyTemplateProperty<double> VerticalStaffLineThickness => ReadLayout().VerticalStaffLineThickness;  
+
+        public ReadonlyTemplateProperty<double> HorizontalStaffLineThickness => ReadLayout().HorizontalStaffLineThickness;
+
+        public ReadonlyTemplateProperty<double> Scale => ReadLayout().Scale;
+
+        public ReadonlyTemplateProperty<ColorARGB> Color => ReadLayout().Color;
 
         public StaffSystem(IScoreDocument scoreDocument)
         {
@@ -36,7 +44,7 @@ namespace StudioLaValse.ScoreDocument.Private
                 return paddingBottom.Value;
             });
             
-            return new StaffSystemLayout(property);
+            return new StaffSystemLayout(property, scoreDocument);
         }
 
         public IEnumerable<IScoreElement> EnumerateChildren()

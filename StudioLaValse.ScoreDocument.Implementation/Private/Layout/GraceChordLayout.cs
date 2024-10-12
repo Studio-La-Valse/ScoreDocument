@@ -9,6 +9,12 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
 
         public ReadonlyTemplateProperty<double> SpaceRight => new ReadonlyTemplatePropertyFromFunc<double>(() => graceGroupLayout.ChordSpacing.Value);
 
+        public ReadonlyTemplateProperty<double> StemLineThickness => throw new NotImplementedException();
+
+        public TemplateProperty<ColorARGB> Color => throw new NotImplementedException();
+
+        public TemplateProperty<double> Scale => throw new NotImplementedException();
+
         public GraceChordLayout(IGraceGroupLayout graceGroupLayout, Dictionary<PowerOfTwo, BeamType> beamTypes)
         {
             this.graceGroupLayout = graceGroupLayout;

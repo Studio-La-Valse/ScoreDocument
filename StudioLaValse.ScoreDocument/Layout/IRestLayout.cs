@@ -3,28 +3,28 @@
 namespace StudioLaValse.ScoreDocument.Layout
 {
     /// <summary>
-    /// Represents a note layout.
+    /// A rest layout.
     /// </summary>
-    public interface INoteLayout 
+    public interface IRestLayout : ILayout
     {
         /// <summary>
-        /// Force a type of accidental.
+        /// Get the color of the rest.
         /// </summary>
-        TemplateProperty<AccidentalDisplay> ForceAccidental { get; }
+        TemplateProperty<ColorARGB> Color { get; }
 
         /// <summary>
-        /// Define the scale of the note. Inherited from containing <see cref="IMeasureBlock"/>
+        /// Define the scale of the rest. Inherited from containing <see cref="IMeasureBlockLayout"/>.
         /// </summary>
         ReadonlyTemplateProperty<double> Scale { get; }
 
         /// <summary>
-        /// Set the staff index of the note.
+        /// The staff on which to place the rest.
         /// </summary>
         TemplateProperty<int> StaffIndex { get; }
 
         /// <summary>
-        /// The color of the note.
+        /// The staffline on which to place the rest.
         /// </summary>
-        TemplateProperty<ColorARGB> Color { get; }
+        TemplateProperty<int> Line { get; }
     }
 }

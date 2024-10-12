@@ -5,15 +5,23 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
     internal abstract class NoteLayout : INoteLayout
     {
         public abstract ValueTemplateProperty<AccidentalDisplay> _ForceAccidental { get; }
-        public abstract ValueTemplateProperty<double> _Scale { get; }
         public abstract ValueTemplateProperty<int> _StaffIndex { get; }
-        public abstract ValueTemplateProperty<double> _XOffset { get; }
+        public abstract ValueTemplateProperty<ColorARGB> _Color { get; }
+
+
+        public ReadonlyTemplateProperty<double> Scale { get; }
+
 
 
         public TemplateProperty<AccidentalDisplay> ForceAccidental => _ForceAccidental;
-        public TemplateProperty<double> Scale => _Scale;
         public TemplateProperty<int> StaffIndex => _StaffIndex;
-        public TemplateProperty<double> XOffset => _XOffset;
+        public TemplateProperty<ColorARGB> Color => _Color;
+
+
+        protected NoteLayout(UserMeasureBlockLayout userMeasureBlockLayout)
+        {
+            Scale = new ReadonlyTemplatePropertyFromFunc<double>(() => userMeasureBlockLayout.Scale);
+        }
 
 
         public void ApplyMemento(NoteLayoutMembers? memento)
@@ -25,9 +33,8 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
             }
 
             _StaffIndex.Field = memento.StaffIndex;
-            _XOffset.Field = memento.XOffset;
             _ForceAccidental.Field = memento.ForceAccidental?.ConvertAccidental();
-            _Scale.Field = memento.Scale;
+            _Color.Field = memento.Color?.Convert();
         }
         public void ApplyMemento(NoteLayoutModel? memento)
         {
@@ -37,47 +44,41 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
         public void Restore()
         {
             _StaffIndex.Reset();
-            _XOffset.Reset();
             _ForceAccidental.Reset();
-            _Scale.Reset();
+            _Color.Reset();
         }
     }
 
     internal class AuthorNoteLayout : NoteLayout
     {
         public override ValueTemplateProperty<AccidentalDisplay> _ForceAccidental { get; }
-        public override ValueTemplateProperty<double> _Scale { get; }
         public override ValueTemplateProperty<int> _StaffIndex { get; }
-        public override ValueTemplateProperty<double> _XOffset { get; }
+        public override ValueTemplateProperty<ColorARGB> _Color { get; }
 
-
-
-        public AuthorNoteLayout()
+        public AuthorNoteLayout(PageStyleTemplate pageStyleTemplate, UserMeasureBlockLayout userMeasureBlockLayout) : base(userMeasureBlockLayout)
         {
             _ForceAccidental = new ValueTemplateProperty<AccidentalDisplay>(() => AccidentalDisplay.Default);
-            _Scale = new ValueTemplateProperty<double>(() => 1);
             _StaffIndex = new ValueTemplateProperty<int>(() => 0);
-            _XOffset = new ValueTemplateProperty<double>(() => 0);
+            _Color = new ValueTemplateProperty<ColorARGB>(() => pageStyleTemplate.ForegroundColor);
         }
     }
 
     internal class UserNoteLayout : NoteLayout
     {
         public Guid Id { get; }
+
         public override ValueTemplateProperty<AccidentalDisplay> _ForceAccidental { get; }
-        public override ValueTemplateProperty<double> _Scale { get; }
         public override ValueTemplateProperty<int> _StaffIndex { get; }
-        public override ValueTemplateProperty<double> _XOffset { get; }
+        public override ValueTemplateProperty<ColorARGB> _Color { get; }
 
 
-        public UserNoteLayout(Guid guid, AuthorNoteLayout primaryLayout)
+        public UserNoteLayout(Guid guid, AuthorNoteLayout primaryLayout, UserMeasureBlockLayout userMeasureBlockLayout) : base(userMeasureBlockLayout)
         {
             Id = guid;
 
             _ForceAccidental = new ValueTemplateProperty<AccidentalDisplay>(() => primaryLayout.ForceAccidental);
-            _Scale = new ValueTemplateProperty<double>(() => primaryLayout.Scale);
-            _StaffIndex = new ValueTemplateProperty<int>(() => primaryLayout.StaffIndex);
-            _XOffset = new ValueTemplateProperty<double>(() => primaryLayout.XOffset);
+            _StaffIndex = new ValueTemplateProperty<int>(() => primaryLayout._StaffIndex);
+            _Color = new ValueTemplateProperty<ColorARGB>(() => primaryLayout.Color);
         }
     }
 }

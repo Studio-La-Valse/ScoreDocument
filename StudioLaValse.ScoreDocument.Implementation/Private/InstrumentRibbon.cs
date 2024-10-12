@@ -10,7 +10,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
 
         public Instrument Instrument { get; }
         public AuthorInstrumentRibbonLayout AuthorLayout { get; }
-        public SecondaryInstrumentRibbonLayout UserLayout { get; set; }
+        public UserInstrumentRibbonLayout UserLayout { get; set; }
 
         public int IndexInScore => score.IndexOf(this);
         public ScoreDocumentCore HostScoreDocument => score;
@@ -19,7 +19,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
         public InstrumentRibbon(ScoreDocumentCore score,
                                 Instrument instrument,
                                 AuthorInstrumentRibbonLayout layout,
-                                SecondaryInstrumentRibbonLayout secondaryLayout,
+                                UserInstrumentRibbonLayout secondaryLayout,
                                 IKeyGenerator<int> keyGenerator,
                                 Guid guid) : base(keyGenerator, guid)
         {
@@ -94,7 +94,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
         {
             AuthorLayout.ApplyMemento(memento);
 
-            UserLayout = new SecondaryInstrumentRibbonLayout(AuthorLayout, memento.Layout.Id);
+            UserLayout = new UserInstrumentRibbonLayout(AuthorLayout, memento.Layout.Id, score.UserLayout);
             UserLayout.ApplyMemento(memento.Layout);
         }
     }

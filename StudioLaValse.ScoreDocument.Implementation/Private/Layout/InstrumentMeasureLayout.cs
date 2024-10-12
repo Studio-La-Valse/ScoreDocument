@@ -4,6 +4,8 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
 {
     internal abstract class InstrumentMeasureLayout : IInstrumentMeasureLayout
     {
+        private readonly ScoreMeasure scoreMeasure;
+
         public abstract NullableTemplateProperty<int> _NumberOfStaves { get; }
         public abstract NullableTemplateProperty<double> _PaddingBottom { get; }
         public abstract NullableTemplateProperty<bool> _Collapsed { get; }
@@ -17,13 +19,13 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
         public TemplateProperty<double?> PaddingBottom => _PaddingBottom;
         public TemplateProperty<bool?> Collapsed => _Collapsed;
         public TemplateProperty<int?> NumberOfStaves => _NumberOfStaves;
-
-
-
+        public ReadonlyTemplateProperty<double> PaddingLeft => new ReadonlyTemplatePropertyFromFunc<double>(() => scoreMeasure.UserLayout.PaddingLeft);
+        public ReadonlyTemplateProperty<double> PaddingRight => new ReadonlyTemplatePropertyFromFunc<double>(() => scoreMeasure.UserLayout.PaddingRight);
 
         protected InstrumentMeasureLayout(ScoreMeasure scoreMeasure)
         {
             KeySignature = new ReadonlyTemplatePropertyFromFunc<KeySignature>(() => scoreMeasure.UserLayout.KeySignature);
+            this.scoreMeasure = scoreMeasure;
         }
 
 

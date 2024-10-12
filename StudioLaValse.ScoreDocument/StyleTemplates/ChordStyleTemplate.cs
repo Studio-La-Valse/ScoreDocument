@@ -18,7 +18,7 @@
         {
             return new ChordStyleTemplate()
             {
-                SpaceRight = 3
+                SpaceRight = 5
             };
         }
 

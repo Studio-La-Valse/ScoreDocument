@@ -28,13 +28,7 @@ internal class ScoreDocumentProxy(ScoreDocumentCore score, ICommandManager comma
 
     public ReadonlyTemplateProperty<double> FirstSystemIndent => Layout.FirstSystemIndent;
 
-    public ReadonlyTemplateProperty<double> HorizontalStaffLineThickness => Layout.HorizontalStaffLineThickness;
-
     public ReadonlyTemplateProperty<double> Scale => Layout.Scale;
-
-    public ReadonlyTemplateProperty<double> StemLineThickness => Layout.StemLineThickness;
-
-    public ReadonlyTemplateProperty<double> VerticalStaffLineThickness => Layout.VerticalStaffLineThickness;
 
 
 
@@ -61,6 +55,11 @@ internal class ScoreDocumentProxy(ScoreDocumentCore score, ICommandManager comma
     public ReadonlyTemplateProperty<double> StaffGroupPaddingBottom => Layout.StaffGroupPaddingBottom;
 
     public ReadonlyTemplateProperty<double> StaffPaddingBottom => Layout.StaffPaddingBottom;
+
+    public ReadonlyTemplateProperty<double> VerticalStaffLineThickness => Layout.VerticalStaffLineThickness;
+
+    public ReadonlyTemplateProperty<double> HorizontalStaffLineThickness => Layout.HorizontalStaffLineThickness;
+
 
     public void AddInstrumentRibbon(Instrument instrument)
     {

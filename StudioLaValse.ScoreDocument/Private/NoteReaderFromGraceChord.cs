@@ -1,4 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Layout;
+using StudioLaValse.ScoreDocument.StyleTemplates;
 
 namespace StudioLaValse.ScoreDocument.Private
 {
@@ -26,10 +27,9 @@ namespace StudioLaValse.ScoreDocument.Private
 
         public TemplateProperty<AccidentalDisplay> ForceAccidental => noteReader.ForceAccidental;
 
-        public TemplateProperty<double> Scale => new TemplatePropertyFromReadonlyTemplateProperty<double>(noteReader.Scale);
+        public TemplateProperty<ColorARGB> Color => noteReader.Color;
 
-        public TemplateProperty<double> XOffset => new TemplatePropertyFromReadonlyTemplateProperty<double>(noteReader.XOffset);
-
+        public ReadonlyTemplateProperty<double> Scale => noteReader.Scale;
 
 
         public NoteReaderFromGraceChord(IGraceNote noteReader, ChordReaderFromGraceChord graceChordReader)

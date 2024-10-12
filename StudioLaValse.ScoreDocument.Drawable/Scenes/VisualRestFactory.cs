@@ -1,4 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
+﻿using StudioLaValse.ScoreDocument.Extensions;
+using StudioLaValse.ScoreDocument.GlyphLibrary;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
@@ -8,28 +9,26 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
     public class VisualRestFactory : IVisualRestFactory
     {
         private readonly ISelection<IUniqueScoreElement> selection;
-        private readonly IScoreDocument scoreDocumentLayout;
-        private readonly IUnitToPixelConverter unitToPixelConverter;
         private readonly IGlyphLibrary glyphLibrary;
 
         /// <summary>
         /// The default constructor.
         /// </summary>
         /// <param name="selection"></param>
-        /// <param name="scoreDocumentLayout"></param>
-        /// <param name="unitToPixelConverter"></param>
         /// <param name="glyphLibrary"></param>
-        public VisualRestFactory(ISelection<IUniqueScoreElement> selection, IScoreDocument scoreDocumentLayout,IUnitToPixelConverter unitToPixelConverter, IGlyphLibrary glyphLibrary)
+        public VisualRestFactory(ISelection<IUniqueScoreElement> selection, IGlyphLibrary glyphLibrary)
         {
             this.selection = selection;
-            this.scoreDocumentLayout = scoreDocumentLayout;
-            this.unitToPixelConverter = unitToPixelConverter;
             this.glyphLibrary = glyphLibrary;
         }
         /// <inheritdoc/>
-        public BaseContentWrapper Build(IChord note, double canvasLeft, double canvasTop, double lineSpacing, double scoreScale, double instrumentScale)
+        public BaseContentWrapper Build(IChord chord, double canvasLeft, double canvasTop)
         {
-            return new VisualRest(note, canvasLeft, canvasTop, lineSpacing, scoreScale, instrumentScale, glyphLibrary, scoreDocumentLayout, selection, unitToPixelConverter);
+            var staffIndex = chord.StaffIndex;
+            var lineIndex = chord.Line;
+            var offsetDots = lineIndex % 2 == 0;
+
+            return new VisualRest(chord, canvasLeft, canvasTop, offsetDots, glyphLibrary, selection);
         }
     }
 }

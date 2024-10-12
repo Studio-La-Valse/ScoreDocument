@@ -46,5 +46,14 @@ namespace StudioLaValse.ScoreDocument.Layout
         /// The content color of the page.
         /// </summary>
         ReadonlyTemplateProperty<ColorARGB> ForegroundColor { get; }
+
+        /// <summary>
+        /// The first system indent.
+        /// </summary>
+        ReadonlyTemplateProperty<double> FirstSystemIndent { get; }
+        /// <summary>
+        /// The page scale, inherited from score scale.
+        /// </summary>
+        ReadonlyTemplateProperty<double> Scale { get; }
     }
 }

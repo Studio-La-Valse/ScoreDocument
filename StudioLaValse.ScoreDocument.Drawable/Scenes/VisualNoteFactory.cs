@@ -1,4 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
+﻿using StudioLaValse.ScoreDocument.Extensions;
+using StudioLaValse.ScoreDocument.GlyphLibrary;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
@@ -8,30 +9,26 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
     public class VisualNoteFactory : IVisualNoteFactory
     {
         private readonly ISelection<IUniqueScoreElement> selection;
-        private readonly IScoreDocument scoreDocumentLayout;
-        private readonly IUnitToPixelConverter unitToPixelConverter;
         private readonly IGlyphLibrary glyphLibrary;
 
         /// <summary>
         /// The default constructor.
         /// </summary>
         /// <param name="selection"></param>
-        /// <param name="scoreDocumentLayout"></param>
-        /// <param name="unitToPixelConverter"></param>
         /// <param name="glyphLibrary"></param>
-        public VisualNoteFactory(ISelection<IUniqueScoreElement> selection, IScoreDocument scoreDocumentLayout, IUnitToPixelConverter unitToPixelConverter, IGlyphLibrary glyphLibrary)
+        public VisualNoteFactory(ISelection<IUniqueScoreElement> selection, IGlyphLibrary glyphLibrary)
         {
             this.selection = selection;
-            this.scoreDocumentLayout = scoreDocumentLayout;
-            this.unitToPixelConverter = unitToPixelConverter;
             this.glyphLibrary = glyphLibrary;
         }
 
         /// <inheritdoc/>
-        public BaseContentWrapper Build(INote note, double canvasLeft, double canvasTop, double lineSpacing, double scoreScale, double instrumentScale, bool offsetDots, Accidental? accidental)
+        public BaseContentWrapper Build(INote note, Clef clef, Accidental? accidental, double canvasLeft, double canvasTop)
         {
-            var noteScale = note.Scale;
-            return new VisualNote(note, canvasLeft, canvasTop, lineSpacing, scoreScale, instrumentScale, noteScale, offsetDots, accidental, glyphLibrary, scoreDocumentLayout, selection, unitToPixelConverter);
+            var lineIndex = clef.LineIndexAtPitch(note.Pitch);
+            var offsetDots = lineIndex % 2 == 0;
+
+            return new VisualNote(note, canvasLeft, canvasTop, offsetDots, accidental, glyphLibrary, selection);
         }
     }
 }

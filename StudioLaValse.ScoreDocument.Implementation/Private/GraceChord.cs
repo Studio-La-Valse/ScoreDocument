@@ -4,7 +4,7 @@ using StudioLaValse.ScoreDocument.Implementation.Private.Memento;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Private
 {
-    internal sealed class GraceChord : ScoreElement, IBeamEditor, IMementoElement<GraceChordMemento>, IGraceTarget
+    internal sealed class GraceChord : ScoreElement, IBeamEditor, IMementoElement<GraceChordMemento>, IGraceTarget, IUniqueScoreElement
     {
         private readonly List<GraceNote> notes = [];
         private readonly GraceGroup graceGroup;
@@ -36,11 +36,17 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
         public AuthorGraceChordLayout AuthorLayout { get; }
         public UserGraceChordLayout UserLayout { get; set; }
 
+        public AuthorRestLayout AuthorRestLayout { get; }
+        public UserRestLayout UserRestLayout { get; set; }
+
+
 
         public GraceChord(GraceGroup graceGroup,
             InstrumentMeasure hostMeasure,
             AuthorGraceChordLayout graceChordLayout,
             UserGraceChordLayout userGraceChordLayout,
+            AuthorRestLayout restLayout,
+            UserRestLayout userRestLayout,
             ScoreDocumentStyleTemplate scoreDocumentStyleTemplate,
             IKeyGenerator<int> keyGenerator,
             Guid guid) : base(keyGenerator, guid)
@@ -50,8 +56,12 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
             this.scoreDocumentStyleTemplate = scoreDocumentStyleTemplate;
 
             HostMeasure = hostMeasure;
+
             AuthorLayout = graceChordLayout;
             UserLayout = userGraceChordLayout;
+
+            AuthorRestLayout = restLayout;
+            UserRestLayout = userRestLayout;
         }
 
         public void Add(params Pitch[] pitches)
@@ -63,7 +73,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                     continue;
                 }
 
-                var authorLayout = new AuthorGraceNoteLayout(graceGroup.UserLayout);
+                var authorLayout = new AuthorGraceNoteLayout(graceGroup.UserLayout, scoreDocumentStyleTemplate.PageStyleTemplate);
                 var userLayout = new UserGraceNoteLayout(Guid.NewGuid(), graceGroup.UserLayout, authorLayout);
                 var graceNote = new GraceNote(HostMeasure, authorLayout, userLayout, scoreDocumentStyleTemplate, graceGroup, pitch, keyGenerator, Guid.NewGuid());
                 Append(graceNote);
@@ -130,7 +140,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
 
             foreach (var note in memento.Notes)
             {
-                var authorLayout = new AuthorGraceNoteLayout(graceGroup.UserLayout);
+                var authorLayout = new AuthorGraceNoteLayout(graceGroup.UserLayout, scoreDocumentStyleTemplate.PageStyleTemplate);
                 var userLayout = new UserGraceNoteLayout(Guid.NewGuid(), graceGroup.UserLayout, authorLayout);
                 var graceNote = new GraceNote(HostMeasure, authorLayout, userLayout, scoreDocumentStyleTemplate, graceGroup, note.Pitch.Convert(), keyGenerator, note.Id);
                 Append(graceNote);
@@ -141,6 +151,16 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
             var layoutModel = memento.Layout;
             UserLayout = new UserGraceChordLayout(layoutModel.Id, graceGroup.UserLayout, AuthorLayout.BeamTypes);
             UserLayout.ApplyMemento(layoutModel);
+        }
+
+        public bool Equals(IUniqueScoreElement? other)
+        {
+            if (other is null)
+            {
+                return false;
+            }
+
+            return other.Id == Id;
         }
     }
 }

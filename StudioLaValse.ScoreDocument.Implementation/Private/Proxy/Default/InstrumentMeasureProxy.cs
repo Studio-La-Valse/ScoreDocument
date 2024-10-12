@@ -24,6 +24,10 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.Default
 
         public int Id => instrumentMeasure.Id;
 
+        public ReadonlyTemplateProperty<double> PaddingLeft => Layout.PaddingLeft;
+
+        public ReadonlyTemplateProperty<double> PaddingRight => Layout.PaddingRight;
+
         public ReadonlyTemplateProperty<KeySignature> KeySignature => Layout.KeySignature;
 
         public TemplateProperty<double?> PaddingBottom => Layout.PaddingBottom;
@@ -31,8 +35,6 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.Default
         public TemplateProperty<bool?> Collapsed => Layout.Collapsed;
 
         public TemplateProperty<int?> NumberOfStaves => Layout.NumberOfStaves;
-
-
 
         public InstrumentMeasureProxy(InstrumentMeasure source, ILayoutSelector layoutSelector)
         {

@@ -9,14 +9,11 @@
         /// Build the visual note.
         /// </summary>
         /// <param name="note"></param>
+        /// <param name="clef"></param>
+        /// <param name="accidental"></param>
         /// <param name="canvasLeft"></param>
         /// <param name="canvasTop"></param>
-        /// <param name="lineSpacing"></param>
-        /// <param name="scoreScale"></param>
-        /// <param name="instrumentScale"></param>
-        /// <param name="offsetDots"></param>
-        /// <param name="accidental"></param>
         /// <returns></returns>
-        BaseContentWrapper Build(INote note, double canvasLeft, double canvasTop, double lineSpacing, double scoreScale, double instrumentScale, bool offsetDots, Accidental? accidental);
+        BaseContentWrapper Build(INote note, Clef clef, Accidental? accidental, double canvasLeft, double canvasTop);
     }
 }

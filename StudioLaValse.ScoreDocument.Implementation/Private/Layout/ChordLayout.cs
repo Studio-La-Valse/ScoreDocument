@@ -1,21 +1,22 @@
 ﻿using StudioLaValse.ScoreDocument.Models.Base;
+using StudioLaValse.ScoreDocument.StyleTemplates;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
 {
     internal abstract class ChordLayout : IChordLayout
     {
         private readonly Dictionary<PowerOfTwo, BeamType> beamTypes;
+        private readonly MeasureBlockStyleTemplate measureBlockStyleTemplate;
 
-        public abstract ValueTemplateProperty<double> _XOffset { get; }
         public abstract ValueTemplateProperty<double> _SpaceRight { get; }
 
-        public TemplateProperty<double> XOffset => _XOffset;
         public TemplateProperty<double> SpaceRight => _SpaceRight;
+        public ReadonlyTemplateProperty<double> StemLineThickness => new ReadonlyTemplatePropertyFromFunc<double>(() => measureBlockStyleTemplate.StemThickness);
 
-
-        protected ChordLayout(Dictionary<PowerOfTwo, BeamType> beamTypes)
+        protected ChordLayout(Dictionary<PowerOfTwo, BeamType> beamTypes, MeasureBlockStyleTemplate chordStyleTemplate)
         {
             this.beamTypes = beamTypes;
+            this.measureBlockStyleTemplate = chordStyleTemplate;
         }
 
 
@@ -31,7 +32,6 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
 
         public void Restore()
         {
-            _XOffset.Reset();
             _SpaceRight.Reset();
         }
 
@@ -43,31 +43,17 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
                 return;
             }
 
-            _XOffset.Field = memento.XOffset;
             _SpaceRight.Field = memento.SpaceRight;
-        }
-
-
-        public void ResetXOffset()
-        {
-            _XOffset.Reset();
-        }
-
-        public void ResetSpaceRight()
-        {
-            _SpaceRight.Reset();
         }
     }
 
     internal class AuthorChordLayout : ChordLayout
     {
-        public override ValueTemplateProperty<double> _XOffset { get; }
         public override ValueTemplateProperty<double> _SpaceRight { get; }
         public Dictionary<PowerOfTwo, BeamType> BeamTypes { get; }
 
-        public AuthorChordLayout(ChordStyleTemplate chordStyleTemplate, Dictionary<PowerOfTwo, BeamType> beamTypes) : base(beamTypes)
+        public AuthorChordLayout(MeasureBlockStyleTemplate measureBlockStyleTemplate, ChordStyleTemplate chordStyleTemplate, Dictionary<PowerOfTwo, BeamType> beamTypes) : base(beamTypes, measureBlockStyleTemplate)
         {
-            _XOffset = new ValueTemplateProperty<double>(() => 0);
             _SpaceRight = new ValueTemplateProperty<double>(() => chordStyleTemplate.SpaceRight);
             BeamTypes = beamTypes;
         }
@@ -76,14 +62,12 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
     internal class UserChordLayout : ChordLayout
     {
         public Guid Id { get; }
-        public override ValueTemplateProperty<double> _XOffset { get; }
         public override ValueTemplateProperty<double> _SpaceRight { get; }
 
-        public UserChordLayout(AuthorChordLayout source, Guid id) : base(source.BeamTypes)
+        public UserChordLayout(AuthorChordLayout source, Guid id, MeasureBlockStyleTemplate measureBlockStyleTemplate) : base(source.BeamTypes, measureBlockStyleTemplate)
         {
             Id = id;
 
-            _XOffset = new ValueTemplateProperty<double>(() => source.XOffset);
             _SpaceRight = new ValueTemplateProperty<double>(() => source.SpaceRight);
         }
     }

@@ -58,14 +58,25 @@ public class MeasureBlockLayoutMembers
     public required double? StemLength { get; set; }
 
     public required int? StemDirection { get; set; }
+
+    [Range(Constants.GreaterThanZero, double.MaxValue)]
+    public required double? Scale { get; set; }
 }
 
 public class ChordLayoutMembers
 {    
-    public required double? XOffset { get; set; }
-
     [Range(Constants.GreaterThanZero, double.MaxValue)]
     public required double? SpaceRight { get; set; }
+}
+
+public class RestLayoutMembers
+{
+    [Range(0, int.MaxValue)]
+    public required int? StaffIndex { get; set; }
+
+    public required int? Line { get; set; }
+
+    public required ColorARGBClass? Color { get; set; }
 }
 
 public class NoteLayoutMembers
@@ -75,10 +86,7 @@ public class NoteLayoutMembers
     [Range(0, int.MaxValue)]
     public required int? StaffIndex { get; set; }
 
-    [Range(Constants.GreaterThanZero, double.MaxValue)]
-    public required double? Scale { get; set; }
-
-    public required double? XOffset { get; set; }
+    public required ColorARGBClass? Color { get; set; }
 }
 
 public class GraceGroupLayoutMembers : MeasureBlockLayoutMembers
@@ -103,4 +111,6 @@ public class GraceNoteLayoutMembers
 
     [Range(0, int.MaxValue)]
     public required int? StaffIndex { get; set; }
+
+    public required ColorARGBClass? Color { get; set; }
 }

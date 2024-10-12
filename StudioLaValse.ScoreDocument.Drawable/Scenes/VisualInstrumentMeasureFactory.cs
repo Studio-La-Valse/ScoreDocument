@@ -9,8 +9,6 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
     {
         private readonly ISelection<IUniqueScoreElement> selection;
         private readonly IVisualNoteGroupFactory noteGroupFactory;
-        private readonly IScoreDocument scoreLayoutDictionary;
-        private readonly IUnitToPixelConverter unitToPixelConverter;
         private readonly IGlyphLibrary glyphLibrary;
 
         /// <summary>
@@ -18,24 +16,17 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         /// </summary>
         /// <param name="selection"></param>
         /// <param name="noteGroupFactory"></param>
-        /// <param name="scoreLayoutDictionary"></param>
-        /// <param name="unitToPixelConverter"></param>
         /// <param name="glyphLibrary"></param>
-        public VisualInstrumentMeasureFactory(ISelection<IUniqueScoreElement> selection, IVisualNoteGroupFactory noteGroupFactory, IScoreDocument scoreLayoutDictionary, IUnitToPixelConverter unitToPixelConverter, IGlyphLibrary glyphLibrary)
+        public VisualInstrumentMeasureFactory(ISelection<IUniqueScoreElement> selection, IVisualNoteGroupFactory noteGroupFactory, IGlyphLibrary glyphLibrary)
         {
             this.selection = selection;
             this.noteGroupFactory = noteGroupFactory;
-            this.scoreLayoutDictionary = scoreLayoutDictionary;
-            this.unitToPixelConverter = unitToPixelConverter;
             this.glyphLibrary = glyphLibrary;
         }
 
         /// <inheritdoc/>
-        public BaseContentWrapper CreateContent(IInstrumentMeasure source, IStaffGroup staffGroup, IReadOnlyDictionary<Position, double> positions, double canvasTop, double canvasLeft, double width, double paddingLeft, double paddingRight, double lineSpacing, double positionSpace)
+        public BaseContentWrapper CreateContent(IInstrumentMeasure source, IStaffGroup staffGroup, IReadOnlyDictionary<Position, double> positions, double canvasTop, double canvasLeft, double width)
         {
-            var scoreLayout = scoreLayoutDictionary;
-            var scoreScale = scoreLayout.Scale;
-            var instrumentScale = staffGroup.InstrumentRibbon.Scale;
             return new VisualStaffGroupMeasure(
                 source,
                 staffGroup,
@@ -43,17 +34,9 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
                 canvasTop,
                 canvasLeft,
                 width,
-                paddingLeft,
-                paddingRight,
-                lineSpacing,
-                positionSpace,
-                scoreScale,
-                instrumentScale,
                 glyphLibrary,
                 noteGroupFactory,
-                selection,
-                scoreLayoutDictionary,
-                unitToPixelConverter);
+                selection);
         }
     }
 }

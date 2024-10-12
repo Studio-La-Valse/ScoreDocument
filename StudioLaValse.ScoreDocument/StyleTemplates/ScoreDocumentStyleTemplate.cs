@@ -101,10 +101,10 @@
         {
             return new ScoreDocumentStyleTemplate()
             {
-                Scale = 1.5,
+                Scale = 1.0,
                 HorizontalStaffLineThickness = 0.075,
                 VerticalStaffLineThickness = 0.25,
-                FirstSystemIndent = 50,
+                FirstSystemIndent = 30,
                 StemLineThickness = 0.1,
                 InstrumentScales = [],
                 PageStyleTemplate = PageStyleTemplate.Create(),

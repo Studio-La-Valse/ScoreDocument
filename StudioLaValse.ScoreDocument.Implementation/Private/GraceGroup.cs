@@ -44,7 +44,11 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                 var beamTypes = new Dictionary<PowerOfTwo, BeamType>();
                 var authorChordLayout = new AuthorGraceChordLayout(UserLayout, beamTypes);
                 var userChordLayout = new UserGraceChordLayout(Guid.NewGuid(), UserLayout, beamTypes);
-                var graceChord = new GraceChord(this, HostMeasure, authorChordLayout, userChordLayout, styleTemplate, keyGenerator, Guid.NewGuid());
+
+                var authorRestLayout = new AuthorRestLayout(UserLayout, styleTemplate.PageStyleTemplate);
+                var userRestLayout = new UserRestLayout(UserLayout, authorRestLayout, Guid.NewGuid());
+                
+                var graceChord = new GraceChord(this, HostMeasure, authorChordLayout, userChordLayout, authorRestLayout, userRestLayout, styleTemplate, keyGenerator, Guid.NewGuid());
                 return graceChord;
             }).ToArray();
 
@@ -95,6 +99,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                 OccupySpace = AuthorLayout._OccupySpace.Field,
                 StemLength = AuthorLayout._StemLength.Field,
                 StemDirection = AuthorLayout._StemDirection.Field?.ConvertStemDirection(),
+                Scale = AuthorLayout._Scale.Field,
             };
         }
         public GraceGroupLayoutModel GetLayoutModel()
@@ -109,6 +114,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                 OccupySpace = UserLayout._OccupySpace.Field,
                 StemLength = UserLayout._StemLength.Field,
                 StemDirection = UserLayout._StemDirection.Field?.ConvertStemDirection(),
+                Scale = UserLayout._Scale.Field,
             };
         }
         public GraceGroupMemento GetMemento()
@@ -124,6 +130,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                 OccupySpace = AuthorLayout._OccupySpace.Field,
                 StemLength = AuthorLayout._StemLength.Field,
                 StemDirection = AuthorLayout._StemDirection.Field?.ConvertStemDirection(),
+                Scale = AuthorLayout._Scale.Field,
             };
         }
         public void ApplyMemento(GraceGroupMemento memento)
@@ -137,7 +144,11 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                 var beamTypes = new Dictionary<PowerOfTwo, BeamType>();
                 var authorChordLayout = new AuthorGraceChordLayout(UserLayout, beamTypes);
                 var userChordLayout = new UserGraceChordLayout(Guid.NewGuid(), UserLayout, beamTypes);
-                var graceChord = new GraceChord(this, HostMeasure, authorChordLayout, userChordLayout, styleTemplate, keyGenerator, chordMemento.Id);
+
+                var authorRestLayout = new AuthorRestLayout(UserLayout, styleTemplate.PageStyleTemplate);
+                var userRestLayout = new UserRestLayout(UserLayout, authorRestLayout, Guid.NewGuid());
+
+                var graceChord = new GraceChord(this, HostMeasure, authorChordLayout, userChordLayout, authorRestLayout, userRestLayout, styleTemplate, keyGenerator, chordMemento.Id);
                 chords.Add(graceChord);
                 graceChord.ApplyMemento(chordMemento);
             }

@@ -215,6 +215,7 @@ public class MeasureBlockLayoutModel : MeasureBlockLayoutMembers
             BeamAngle = null,
             StemDirection = null,
             StemLength = null,
+            Scale = null,
         };
     }
 
@@ -251,17 +252,11 @@ public class ChordLayoutModel : ChordLayoutMembers
             Id = Guid.NewGuid(),
             ChordId = chordId,
             SpaceRight = null,
-            XOffset = null,
         };
     }
 
     public bool HasFieldSet()
     {
-        if (XOffset.HasValue)
-        {
-            return true;
-        }
-
         if (SpaceRight.HasValue)
         {
             return true;
@@ -283,9 +278,8 @@ public class NoteLayoutModel : NoteLayoutMembers
             Id = Guid.NewGuid(),
             NoteId = noteId,
             ForceAccidental = null,
-            Scale = null,
             StaffIndex = null,
-            XOffset = null,
+            Color = null,
         };
     }
 
@@ -297,11 +291,6 @@ public class NoteLayoutModel : NoteLayoutMembers
         }
 
         if (StaffIndex.HasValue)
-        {
-            return true;
-        }
-
-        if (Scale.HasValue)
         {
             return true;
         }
@@ -332,6 +321,7 @@ public class GraceGroupLayoutModel : GraceGroupLayoutMembers
             OccupySpace = null,
             StemDirection = null,
             StemLength = null,
+            Scale = null
         };
     }
 
@@ -363,6 +353,11 @@ public class GraceGroupLayoutModel : GraceGroupLayoutMembers
         }
 
         if (ChordDuration is not null)
+        {
+            return true;
+        }
+
+        if (Scale.HasValue)
         {
             return true;
         }
@@ -404,6 +399,7 @@ public class GraceNoteLayoutModel : GraceNoteLayoutMembers
             GraceNoteId = graceNoteId,
             ForceAccidental = null,
             StaffIndex = null,
+            Color = null,
         };
     }
 
@@ -415,6 +411,11 @@ public class GraceNoteLayoutModel : GraceNoteLayoutMembers
         }
 
         if (StaffIndex.HasValue)
+        {
+            return true;
+        }
+
+        if (Color is not null)
         {
             return true;
         }

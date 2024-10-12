@@ -9,10 +9,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         private readonly bool offsetDots;
         private readonly Accidental? accidental;
         private readonly IGlyphLibrary glyphLibrary;
-        private readonly IScoreDocument scoreDocumentLayout;
 
 
-        public INote NoteLayout => note;
         public override DrawableScoreGlyph Glyph
         {
             get
@@ -24,7 +22,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                     _ => glyphLibrary.NoteHeadBlack(Scale)
                 };
 
-                return new DrawableScoreGlyph(XPosition, canvasTop, glyph, HorizontalTextOrigin.Center, VerticalTextOrigin.Center, scoreDocumentLayout.PageForegroundColor.Value.FromPrimitive());
+                return new DrawableScoreGlyph(CanvasLeft, canvasTop, glyph, HorizontalTextOrigin.Center, VerticalTextOrigin.Center, note.Color.Value.FromPrimitive());
             }
         }
         public DrawableScoreGlyph? AccidentalGlyph
@@ -45,50 +43,38 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                 if (glyph is not null)
                 {
                     return new DrawableScoreGlyph(
-                        XPosition - (glyph.Width() * 2),
+                        CanvasLeft - (glyph.Width() * 2),
                         canvasTop,
                         glyph,
                         HorizontalTextOrigin.Center,
                         VerticalTextOrigin.Center,
-                        scoreDocumentLayout.PageForegroundColor.Value.FromPrimitive());
+                        note.Color.Value.FromPrimitive());
                 }
                 return null;
             }
         }
 
         public override bool OffsetDots => offsetDots;
-        public override double XOffset => NoteLayout.XOffset;
+        public override double Scale => note.Scale;
+        public override ColorARGB Color => note.Color.Value.FromPrimitive();
 
         public VisualNote(INote note,
                           double canvasLeft,
                           double canvasTop,
-                          double lineSpacing,
-                          double scoreScale,
-                          double instrumentScale,
-                          double noteScale,
                           bool offsetDots,
                           Accidental? accidental,
                           IGlyphLibrary glyphLibrary,
-                          IScoreDocument scoreDocumentLayout,
-                          ISelection<IUniqueScoreElement> selection,
-                          IUnitToPixelConverter unitToPixelConverter) :
+                          ISelection<IUniqueScoreElement> selection) :
             base(note,
                  canvasLeft,
                  canvasTop,
-                 lineSpacing,
-                 scoreScale,
-                 instrumentScale,
-                 noteScale,
-                 scoreDocumentLayout,
-                 selection,
-                 unitToPixelConverter)
+                 selection)
         {
             this.note = note;
             this.canvasTop = canvasTop;
             this.offsetDots = offsetDots;
             this.accidental = accidental;
             this.glyphLibrary = glyphLibrary;
-            this.scoreDocumentLayout = scoreDocumentLayout;
         }
 
 

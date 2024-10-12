@@ -5,21 +5,24 @@ namespace StudioLaValse.ScoreDocument.Private
 {
     internal class PageLayout : IPageLayout
     {
-        private readonly IScoreDocument documentLayout;
+        private readonly int indexInScore;
+        private readonly IScoreDocument scoreDocument;
 
-        public ReadonlyTemplateProperty<int> PageWidth => documentLayout.PageWidth;
-        public ReadonlyTemplateProperty<int> PageHeight => documentLayout.PageHeight;
-        public ReadonlyTemplateProperty<double> MarginLeft => documentLayout.PageMarginLeft;
-        public ReadonlyTemplateProperty<double> MarginTop => documentLayout.PageMarginTop;
-        public ReadonlyTemplateProperty<double> MarginRight => documentLayout.PageMarginRight;
-        public ReadonlyTemplateProperty<double> MarginBottom => documentLayout.PageMarginBottom;
-        public ReadonlyTemplateProperty<ColorARGB> PageColor => documentLayout.PageColor;
-        public ReadonlyTemplateProperty<ColorARGB> ForegroundColor => documentLayout.PageForegroundColor;
+        public ReadonlyTemplateProperty<int> PageWidth => scoreDocument.PageWidth;
+        public ReadonlyTemplateProperty<int> PageHeight => scoreDocument.PageHeight;
+        public ReadonlyTemplateProperty<double> MarginLeft => scoreDocument.PageMarginLeft;
+        public ReadonlyTemplateProperty<double> MarginTop => scoreDocument.PageMarginTop;
+        public ReadonlyTemplateProperty<double> MarginRight => scoreDocument.PageMarginRight;
+        public ReadonlyTemplateProperty<double> MarginBottom => scoreDocument.PageMarginBottom;
+        public ReadonlyTemplateProperty<ColorARGB> PageColor => scoreDocument.PageColor;
+        public ReadonlyTemplateProperty<ColorARGB> ForegroundColor => scoreDocument.PageForegroundColor;
+        public ReadonlyTemplateProperty<double> FirstSystemIndent => new ReadonlyTemplatePropertyFromFunc<double>(() => indexInScore == 0 ? scoreDocument.FirstSystemIndent : 0);
+        public ReadonlyTemplateProperty<double> Scale => scoreDocument.Scale;
 
-
-        public PageLayout(IScoreDocument documentLayout)
+        public PageLayout(int indexInScore, IScoreDocument scoreDocument)
         {
-            this.documentLayout = documentLayout;
+            this.indexInScore = indexInScore;
+            this.scoreDocument = scoreDocument;
         }
     }
 }

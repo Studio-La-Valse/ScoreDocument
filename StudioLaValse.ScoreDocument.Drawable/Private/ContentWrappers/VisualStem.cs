@@ -3,7 +3,6 @@
     internal sealed class VisualStem : BaseContentWrapper
     {
         private readonly double thickness;
-        private readonly IScoreDocument scoreDocumentLayout;
 
 
         public XY Origin { get; }
@@ -13,10 +12,9 @@
         public double Thickness => this.thickness;
         public bool VisuallyUp => End.Y < Origin.Y;
 
-        public VisualStem(XY origin, XY end, double thickness, IChord chord, IScoreDocument scoreDocumentLayout)
+        public VisualStem(XY origin, XY end, double thickness, IChord chord)
         {
             this.thickness = thickness;
-            this.scoreDocumentLayout = scoreDocumentLayout;
 
             Origin = origin;
             End = end;
@@ -27,7 +25,7 @@
 
         public override IEnumerable<BaseDrawableElement> GetDrawableElements()
         {
-            yield return new DrawableLine(Origin, End, color: scoreDocumentLayout.PageForegroundColor.Value.FromPrimitive(), Thickness);
+            yield return new DrawableLine(Origin, End, Chord.Color.Value.FromPrimitive(), Thickness);
         }
         public override IEnumerable<BaseContentWrapper> GetContentWrappers()
         {

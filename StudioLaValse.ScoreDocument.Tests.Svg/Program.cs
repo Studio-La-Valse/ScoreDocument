@@ -29,7 +29,7 @@ internal class Program
     {
         var canvasWidth = PageSize.A4.Width;
         var canvasHeight = PageSize.A4.Height;
-        var htmlCanvas = new HTMLCanvas((int)canvasWidth, (int)canvasHeight);
+        var htmlCanvas = new HTMLCanvas(canvasWidth, canvasHeight);
         var canvasPainter = new NewHTMLCanvasPainter(htmlCanvas);
 
         var assembly = Assembly.GetExecutingAssembly();
@@ -37,28 +37,11 @@ internal class Program
 
         using var stream = assembly.GetManifestResourceStream(resourceName);
         var document = XDocument.Load(stream!);
-        var memento = new ScoreDocumentModel()
-        {
-            Id = Guid.NewGuid(),
-            InstrumentRibbons = [],
-            ScoreMeasures = [],
-        };
-        var metaData = new ScoreDocumentMetaDataModel()
-        {
-            CreationDate = DateTime.Now,
-            LastEditDate = DateTime.Now,
-            ScoreDocumentId = memento.Id,
-            ComposerFullName = "",
-            CompositionMonth = DateTime.Now.Month,
-            CompositionYear = DateTime.Now.Year,
-            CompositionYearStart = DateTime.Now.Year,
-            IsPublic = false,
-            Subtitle = "",
-            Title = "Music Xml Document",
-        };
 
         var styleTemplate = ScoreDocumentStyleTemplate.Create();
-        var scoreDocument = Implementation.ScoreDocument.Create(styleTemplate, memento).BuildFromXml(document);
+        styleTemplate.PageStyleTemplate.PageWidth = canvasWidth;
+        styleTemplate.PageStyleTemplate.PageHeight = canvasHeight;
+        var scoreDocument = Implementation.ScoreDocument.Create(styleTemplate).BuildFromXml(document);
 
         var selection = SelectionManager<IUniqueScoreElement>.CreateDefault(e => e.Id);
         var glyphLibrary = new GenericGlyphLibrary(scoreDocument);
@@ -69,7 +52,7 @@ internal class Program
         var systemMeasureFactory = new VisualSystemMeasureFactory(selection, instrumentMeasureFactory);
         var visualStaffFactory = new VisualStaffSystemFactory(systemMeasureFactory, glyphLibrary);
         var visualPageFactory = new VisualPageFactory(visualStaffFactory);
-        var sceneFactory = new SinglePageViewSceneFactory(0, visualPageFactory);
+        var sceneFactory = new SinglePageViewSceneFactory(2, visualPageFactory);
         var scene = new VisualScoreDocumentScene(sceneFactory, scoreDocument);
         canvasPainter.DrawContentWrapper(scene);
         canvasPainter.FinishDrawing();
@@ -176,9 +159,7 @@ public class NewHTMLCanvasPainter : HTMLCanvasPainter
         var x = $"{text.OriginX}".Replace(",", ".");
 
         // Formula below came from trial and error. I don't know why it works or why it is even needed but here we are.
-        // Either correct here with a factor of 0.035 (???) and set vert-align midle OR
-        // correct the height of the measure text function with a factor of 0.818 (?????) and set vert-align to hanging
-        // For now this method is chosen because it seems less wrong.
+        // The Bravura fonts somehow need adjustment.. Its not necessary for other canvas types which makes it more confusing.
         var y = text.FontFamily.Name switch
         {
             "Bravura" => $"{text.OriginY - (text.FontSize * 0.14)}".Replace(",", "."),

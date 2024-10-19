@@ -2,10 +2,10 @@
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
-    internal sealed class VisualBeamGroup : BaseContentWrapper
+    internal sealed class VisualBeamGroup : BaseContentWrapper 
     {
-        private readonly VisualStem[] visualStems;
-        private readonly Ruler visualBeamDefinition;
+        private readonly IEnumerable<VisualStem> stems;
+        private readonly Ruler beamDefinition;
         private readonly double beamThickness;
         private readonly double beamSpacing;
         private readonly double scale;
@@ -13,10 +13,10 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         private readonly ColorARGB color;
         private readonly IGlyphLibrary glyphLibrary;
 
-        public VisualBeamGroup(VisualStem[] visualStems, Ruler visualBeamDefinition, double beamThickness, double beamSpacing, double scale, double hooksize, ColorARGB color, IGlyphLibrary glyphLibrary)
+        public VisualBeamGroup(IEnumerable<VisualStem> stems, Ruler beamDefinition, double beamThickness, double beamSpacing, double scale, double hooksize, ColorARGB color, IGlyphLibrary glyphLibrary)
         {
-            this.visualStems = visualStems;
-            this.visualBeamDefinition = visualBeamDefinition;
+            this.stems = stems;
+            this.beamDefinition = beamDefinition;
             this.beamThickness = beamThickness;
             this.beamSpacing = beamSpacing;
             this.scale = scale;
@@ -25,8 +25,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
             this.glyphLibrary = glyphLibrary;
         }
 
-
-        public IEnumerable<BaseDrawableElement> Build(IEnumerable<VisualStem> stems, Ruler beamDefinition, double beamThickness, double beamSpacing, double scale, double hooksize, ColorARGB color)
+        public IEnumerable<BaseDrawableElement> Build()
         {
             if (!stems.Any())
             {
@@ -41,15 +40,15 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
             // Draw beams in the opposite direction of the first stem direction.
             var drawBeamCanvasUp = !stems.First().VisuallyUp;
 
-            beamThickness *= scale;
-            beamSpacing *= scale;
+            var beamThickness = this.beamThickness * scale;
+            var beamSpacing = this.beamSpacing * scale;
 
             return stems.Count() == 1
-                ? ([AsFlag(stems.First(), scale, color)])
+                ? ([AsFlag(stems.First(), scale, color, glyphLibrary)])
                 : AsGroup(stems, beamDefinition, beamSpacing, beamThickness, drawBeamCanvasUp, color, hooksize);
         }
 
-        public DrawableScoreGlyph AsFlag(VisualStem stem, double scale, Geometry.ColorARGB color)
+        public DrawableScoreGlyph AsFlag(VisualStem stem, double scale, Geometry.ColorARGB color, IGlyphLibrary glyphLibrary)
         {
             var flags = stem.VisuallyUp ?
             new[]
@@ -234,14 +233,14 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
             return new DrawableBeam(startPoint, endPoint, beamThickness, drawBeamCanvasUp, color);
         }
 
+        public override IEnumerable<BaseDrawableElement> GetDrawableElements()
+        {
+            return Build();
+        }
 
         public override IEnumerable<BaseContentWrapper> GetContentWrappers()
         {
-            return visualStems;
-        }
-        public override IEnumerable<BaseDrawableElement> GetDrawableElements()
-        {
-            return Build(visualStems, visualBeamDefinition, beamThickness, beamSpacing, scale, hooksize, color);
+            yield break;
         }
     }
 }

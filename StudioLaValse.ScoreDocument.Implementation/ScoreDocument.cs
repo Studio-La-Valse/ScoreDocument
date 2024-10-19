@@ -30,6 +30,16 @@ public static class ScoreDocument
 
         return scoreDocument;
     }
+    public static IScoreDocument Create(ScoreDocumentStyleTemplate scoreDocumentStyleTemplate)
+    {
+        var memento = new ScoreDocumentModel()
+        {
+            Id = Guid.NewGuid(),
+            InstrumentRibbons = [],
+            ScoreMeasures = [],
+        };
+        return Create(scoreDocumentStyleTemplate, memento);
+    }
     public static IScoreDocument Create(ScoreDocumentStyleTemplate scoreDocumentStyleTemplate, ScoreDocumentModel scoreDocumentModel)
     {
         var scoreDocument = CreateCore(scoreDocumentStyleTemplate, scoreDocumentModel);

@@ -53,52 +53,40 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             {
                 yield break;
             }
+            var (ruler, pincipalStem) = CreateRuler(chords);
+            var stems = new List<VisualStem>();
 
-            foreach(var chord in CreateVisualChords(chords))
+            foreach(var (chord, stem) in CreateVisualChords(chords, ruler))
             {
                 yield return chord;
+                if (stem is not null)
+                {
+                    yield return stem;
+                    stems.Add(stem);
+                }
             }
 
-            foreach(var stemOrBeam in CreateVisualBeamGroup(chords))
-            {
-                yield return stemOrBeam;
-            }
-        }
-        public IEnumerable<BaseContentWrapper> CreateVisualChords(IEnumerable<IChord> chords)
-        {
+            var hookSize = chords.Select(c => c.SpaceRight.Value).Average() / 2;
+            var beamGroup = CreateVisualBeamGroup(chords, stems.ToArray(), ruler, hookSize);
+            yield return beamGroup;
+
             foreach (var chord in chords)
             {
-                var canvasLeft = positionDictionary[chord.Position];
-
-                yield return new VisualChord(chord,
-                    canvasLeft,
-                    canvasTopStaffGroup,
-                    staffGroup,
-                    instrumentMeasure,
-                    noteFactory,
-                    restFactory);
-
                 var _graceGroup = chord.ReadGraceGroup();
                 if (_graceGroup is null)
                 {
                     continue;
                 }
 
-                var gracePositions = CreateDictionary(_graceGroup, canvasLeft);
-                var graceGroup = visualNoteGroupFactory.Build(_graceGroup.Imply(), staffGroup, instrumentMeasure, gracePositions, canvasTopStaffGroup);
-                yield return graceGroup;
+                var canvasLeft = positionDictionary[chord.Position];
+                yield return CreateGraceGroup(_graceGroup, canvasLeft);
             }
         }
-        public IEnumerable<BaseContentWrapper> CreateVisualBeamGroup(IEnumerable<IChord> chords)
+        public (Ruler ruler, VisualStem principalStem) CreateRuler(IEnumerable<IChord> chords)
         {
-            if (!chords.Any() || chords.First().RythmicDuration.Decimal >= 1)
-            {
-                yield break;
-            }
-
             var principalNote = glyphLibrary.NoteHeadBlack(Scale);
             var principalStemDirection = measureBlock.StemDirection.Value;
-            var principalChord = PickAChordForStem(chords, principalStemDirection);
+            var principalChord = PickPrincipleChord(chords, principalStemDirection);
 
             var principalNoteWidth = principalNote.Width();
             var principalStemLength = Layout.StemLength * (principalStemDirection == StemDirection.Down ? -1 : 1);
@@ -110,16 +98,62 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             var principalStemTip = new XY(principalStemOrigin.X, principalStemTipY);
             var principalStem = new VisualStem(principalStemOrigin, principalStemTip, StemThickness(principalChord), principalChord);
 
-            var beamDefinition = new Ruler(principalStemTip, -Layout.BeamAngle);
-            var stems = chords
-                .Select(c => c.Equals(principalChord) ? principalStem : CreateStem(c, principalNoteWidth, beamDefinition))
-                .ToArray();
-            var hookSize = chords.Select(c => c.SpaceRight.Value).Average() / 2;
-            yield return new VisualBeamGroup(stems, beamDefinition, Layout.BeamThickness, Layout.BeamSpacing, Scale, hookSize, staffGroup.Color.Value.FromPrimitive(), glyphLibrary);
+            var beamDefinition = new Ruler(principalStemTip, -Layout.BeamAngle, principalStem);
+            return (beamDefinition, principalStem);
         }
+        public IEnumerable<(BaseContentWrapper, VisualStem?)> CreateVisualChords(IEnumerable<IChord> chords, Ruler ruler)
+        {
+            foreach (var chord in chords)
+            {
+                var canvasLeft = positionDictionary[chord.Position];
+                var drawDirection = true;
+                VisualStem? visualStem = null;
 
+                if(chord.RythmicDuration.Decimal < 1)
+                {
+                    var noteWidth = glyphLibrary.NoteHeadBlack(Scale).Width();
+                    visualStem = ruler.PrincipalStem.Chord.Equals(chord) ?
+                        ruler.PrincipalStem :
+                        CreateStem(chord, noteWidth, ruler);
 
+                    drawDirection = visualStem.VisuallyUp;
+                }
 
+                var visualChord = new VisualChord(chord,
+                    canvasLeft,
+                    canvasTopStaffGroup,
+                    staffGroup,
+                    instrumentMeasure,
+                    noteFactory,
+                    restFactory,
+                    glyphLibrary,
+                    drawDirection);
+
+                yield return (visualChord, visualStem);
+            }
+        }
+        public BaseContentWrapper CreateGraceGroup(IGraceGroup graceGroup, double hostCanvasLeft)
+        {
+            var gracePositions = CreateDictionary(graceGroup, hostCanvasLeft);
+            var visualGraceGroup = visualNoteGroupFactory.Build(graceGroup.Imply(), staffGroup, instrumentMeasure, gracePositions, canvasTopStaffGroup);
+            return visualGraceGroup;
+        }
+        
+
+        public BaseContentWrapper CreateVisualBeamGroup(IEnumerable<IChord> chords, VisualStem[] visualStems, Ruler beamDefinition, double hookSize)
+        {
+            var color = staffGroup.Color.Value.FromPrimitive();
+            return new VisualBeamGroup(
+                visualStems,
+                beamDefinition,
+                Layout.BeamThickness,
+                Layout.BeamSpacing,
+                Scale,
+                hookSize,
+                color,
+                glyphLibrary
+            );
+        }
         public VisualStem CreateStem(IChord chord, double firstNoteWidth, Ruler beamDefinition)
         {
             var canvasLeft = positionDictionary[chord.Position];
@@ -133,7 +167,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             var visualStem = new VisualStem(stemOrigin, stemIntersection, StemThickness(chord), chord);
             return visualStem;
         }
-        public IChord PickAChordForStem(IEnumerable<IChord> chords, StemDirection stemDirection)
+        public IChord PickPrincipleChord(IEnumerable<IChord> chords, StemDirection stemDirection)
         {
             return stemDirection switch
             {

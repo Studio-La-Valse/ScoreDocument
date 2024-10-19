@@ -2,6 +2,24 @@
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
+    /// <summary>
+    /// A note mirror, to specify stem alignment. 
+    /// </summary>
+    internal enum NoteMirror
+    {
+        /// <summary>
+        /// Don't mirror flip the note.
+        /// </summary>
+        NoMirror,
+        /// <summary>
+        /// Move the note from the right side of the stem to the left.
+        /// </summary>
+        Left,
+        /// <summary>
+        /// Move the note from the left side of the stem to the right.
+        /// </summary>
+        Right
+    }
     internal sealed class VisualNote : BaseVisualNote
     {
         private readonly INote note;
@@ -21,8 +39,9 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                     2 => glyphLibrary.NoteHeadWhite(Scale),
                     _ => glyphLibrary.NoteHeadBlack(Scale)
                 };
+                var canvasLeft = CanvasLeft;
 
-                return new DrawableScoreGlyph(CanvasLeft, canvasTop, glyph, HorizontalTextOrigin.Center, VerticalTextOrigin.Center, note.Color.Value.FromPrimitive());
+                return new DrawableScoreGlyph(canvasLeft, canvasTop, glyph, HorizontalTextOrigin.Center, VerticalTextOrigin.Center, note.Color.Value.FromPrimitive());
             }
         }
         public DrawableScoreGlyph? AccidentalGlyph

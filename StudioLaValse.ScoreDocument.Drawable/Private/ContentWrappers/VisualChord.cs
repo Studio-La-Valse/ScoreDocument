@@ -1,5 +1,6 @@
 ﻿using StudioLaValse.ScoreDocument.Drawable.Extensions;
 using StudioLaValse.ScoreDocument.Extensions;
+using StudioLaValse.ScoreDocument.GlyphLibrary;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
@@ -12,6 +13,26 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         private readonly IInstrumentMeasure instrumentMeasure;
         private readonly IVisualNoteFactory noteFactory;
         private readonly IVisualRestFactory restFactory;
+        private readonly IGlyphLibrary glyphLibrary;
+        private readonly bool drawDirectionUp;
+        
+
+        public double Scale => chord.Scale;
+        public RythmicDuration DisplayDuration => chord.RythmicDuration;
+        public Glyph Glyph
+        {
+            get
+            {
+                var glyph = DisplayDuration.PowerOfTwo.Value switch
+                {
+                    1 => glyphLibrary.NoteHeadWhole(Scale),
+                    2 => glyphLibrary.NoteHeadWhite(Scale),
+                    _ => glyphLibrary.NoteHeadBlack(Scale)
+                };
+
+                return glyph;
+            }
+        }
 
         public VisualChord(IChord chord,
                            double canvasLeft,
@@ -19,7 +40,9 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                            IStaffGroup staffGroup,
                            IInstrumentMeasure instrumentMeasureReader,
                            IVisualNoteFactory noteFactory,
-                           IVisualRestFactory restFactory)
+                           IVisualRestFactory restFactory,
+                           IGlyphLibrary glyphLibrary,
+                           bool drawDirectionUp)
         {
             this.chord = chord;
             this.canvasLeft = canvasLeft;
@@ -28,6 +51,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
             this.instrumentMeasure = instrumentMeasureReader;
             this.noteFactory = noteFactory;
             this.restFactory = restFactory;
+            this.glyphLibrary = glyphLibrary;
+            this.drawDirectionUp = drawDirectionUp;
         }
 
 
@@ -46,8 +71,25 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                 yield break;
             }
 
-            foreach (var note in notes)
+            var noteMirror = NoteMirror.NoMirror;
+            var previousNoteMirror = NoteMirror.NoMirror;
+            var previousStaff = -1;
+            var previousLine = -1;
+
+            var notesWithLineIndex = notes.Select(note =>
             {
+                var clef = instrumentMeasure.GetClef(note.StaffIndex, note.Position);
+                var lineIndex = clef.LineIndexAtPitch(note.Pitch);
+                return (note, clef, lineIndex);
+            });
+            notesWithLineIndex = drawDirectionUp ?
+                notesWithLineIndex.OrderByDescending(x => x.note.StaffIndex.Value).ThenByDescending(x => x.lineIndex) :
+                notesWithLineIndex.OrderBy(x => x.note.StaffIndex.Value).ThenBy(x => x.lineIndex);
+
+            var glyphWidth = Glyph.Width();
+            foreach (var (note, clef, lineIndex) in notesWithLineIndex)
+            {
+                var canvasLeft = this.canvasLeft;
                 var noteStaffIndex = note.StaffIndex;
                 var noteIsVisible = noteStaffIndex < staffGroup.NumberOfStaves;
                 if (!noteIsVisible)
@@ -55,13 +97,29 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                     continue;
                 }
 
-                var staffIndex = note.StaffIndex;
-                var clef = instrumentMeasure.GetClef(staffIndex, note.Position);
-                var lineIndex = clef.LineIndexAtPitch(note.Pitch);
-                var canvasTop = canvasTopStaffGroup + staffGroup.DistanceFromTop(staffIndex, lineIndex);
+                var canvasTop = canvasTopStaffGroup + staffGroup.DistanceFromTop(noteStaffIndex, lineIndex);
                 var accidental = GetAccidental(note, instrumentMeasure);
 
+                noteMirror = NoteMirror.NoMirror;
+                if (previousStaff == noteStaffIndex && Math.Abs(previousLine - lineIndex) == 1 && previousNoteMirror == NoteMirror.NoMirror)
+                {
+                    noteMirror = drawDirectionUp ? NoteMirror.Right : NoteMirror.Left;
+                }
+
+                var offset = noteMirror switch
+                {
+                    NoteMirror.NoMirror => 0,
+                    NoteMirror.Left => glyphWidth * -1,
+                    NoteMirror.Right => glyphWidth,
+                    _ => throw new NotImplementedException()
+                };
+                canvasLeft += offset;
+
                 yield return noteFactory.Build(note, clef, accidental, canvasLeft, canvasTop);
+
+                previousLine = lineIndex;
+                previousStaff = noteStaffIndex;
+                previousNoteMirror = noteMirror;
             }
         }
 

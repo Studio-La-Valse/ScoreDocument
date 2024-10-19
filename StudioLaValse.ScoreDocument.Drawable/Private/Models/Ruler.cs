@@ -7,13 +7,13 @@
         /// Angle in Degrees.
         /// </summary>
         public double Angle { get; }
+        public VisualStem PrincipalStem { get; }
 
-
-        public Ruler(XY origin, double angle)
+        public Ruler(XY origin, double angle, VisualStem principalStem)
         {
             Origin = origin;
             Angle = angle;
-
+            PrincipalStem = principalStem;
             var absAngle = Math.Abs(Angle);
             if (absAngle > 0 && (absAngle % 90).IsAlmostEqualTo(0))
             {
@@ -23,7 +23,7 @@
 
         public Ruler OffsetY(double offset)
         {
-            return new Ruler(new XY(Origin.X, Origin.Y + offset), Angle);
+            return new Ruler(new XY(Origin.X, Origin.Y + offset), Angle, PrincipalStem);
         }
 
         public XY IntersectVerticalRay(XY point)

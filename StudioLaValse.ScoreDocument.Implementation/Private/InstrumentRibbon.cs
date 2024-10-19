@@ -53,7 +53,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                 Instrument = Instrument.Convert(),
                 IndexInScore = IndexInScore,
                 AbbreviatedName = AuthorLayout._AbbreviatedName.Field,
-                Collapsed = AuthorLayout._Collapsed.Field,
+                Visibility = AuthorLayout._Collapsed.Field?.ConvertVisibility(),
                 DisplayName = AuthorLayout._DisplayName.Field,
                 NumberOfStaves = AuthorLayout._NumberOfStaves.Field,
                 Scale = AuthorLayout._Scale.Field,
@@ -69,8 +69,8 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                 AbbreviatedName = UserLayout._AbbreviatedName.Field,
                 DisplayName = UserLayout._DisplayName.Field,
                 NumberOfStaves = UserLayout._NumberOfStaves.Field,
-                Collapsed = UserLayout.Collapsed,
-                Scale = UserLayout.Scale
+                Visibility = UserLayout._Collapsed.Field?.ConvertVisibility(),
+                Scale = UserLayout._Scale.Field
             };
         }
 
@@ -83,7 +83,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                 Instrument = Instrument.Convert(),
                 IndexInScore = IndexInScore,
                 AbbreviatedName = AuthorLayout._AbbreviatedName.Field,
-                Collapsed = AuthorLayout._Collapsed.Field,
+                Visibility = AuthorLayout._Collapsed.Field?.ConvertVisibility(),
                 DisplayName = AuthorLayout._DisplayName.Field,
                 NumberOfStaves = AuthorLayout._NumberOfStaves.Field,
                 Scale = AuthorLayout._Scale.Field,

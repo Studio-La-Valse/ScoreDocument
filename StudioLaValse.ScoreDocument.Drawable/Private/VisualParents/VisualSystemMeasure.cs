@@ -85,8 +85,12 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                 .EnumeratePositions()
                 .Remap(canvasLeft + PaddingLeft, canvasLeft + width - PaddingRight)
                 .PositionsOnly(out var positionSpace);
-            foreach (var (staffGroup, canvastop) in staffSystem.EnumerateFromTop(this.canvasTop))
+            foreach (var (staffGroup, canvasTop) in staffSystem.EnumerateFromTop(this.canvasTop))
             {
+                if (staffGroup.Visibility != Visibility.Visible)
+                {
+                    continue;
+                }
                 var ribbonMesaure = scoreMeasure.ReadMeasure(staffGroup.IndexInSystem);
                 var wrapper = visualInstrumentMeasureFactory.CreateContent(ribbonMesaure, staffGroup, positions, canvasTop, canvasLeft, width);
                 yield return wrapper;

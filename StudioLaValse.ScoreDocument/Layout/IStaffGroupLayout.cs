@@ -10,7 +10,7 @@ namespace StudioLaValse.ScoreDocument.Layout
         /// <summary>
         /// Boolean value wether the staffgroup is collapsed.
         /// </summary>
-        ReadonlyTemplateProperty<bool> Collapsed { get; }
+        ReadonlyTemplateProperty<Visibility> Visibility { get; }
 
         /// <summary>
         /// The distance to the next staff group.

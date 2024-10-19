@@ -31,6 +31,10 @@
         /// <returns></returns>
         public static Dictionary<Position, (double, double)> Remap(this Dictionary<Position, (double, double)> positions, double canvasLeft, double canvasRight)
         {
+            if (!positions.Any())
+            {
+                return positions; 
+            }
             var originalMin = positions.Min(e => e.Value.Item1);
             var originalMax = positions.Max(e => e.Value.Item1 + e.Value.Item2);
             var originalMinSpace = positions.Min(e => e.Value.Item2);

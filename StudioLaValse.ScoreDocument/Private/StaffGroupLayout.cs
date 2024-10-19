@@ -5,7 +5,7 @@ namespace StudioLaValse.ScoreDocument.Private
 {
     internal class StaffGroupLayout : IStaffGroupLayout
     {
-        public ReadonlyTemplateProperty<bool> Collapsed { get; }
+        public ReadonlyTemplateProperty<Visibility> Visibility { get; }
 
         public ReadonlyTemplateProperty<int> NumberOfStaves { get; }
 
@@ -22,7 +22,7 @@ namespace StudioLaValse.ScoreDocument.Private
         public StaffGroupLayout(
             ReadonlyTemplateProperty<int> numberOfStaves,
             ReadonlyTemplateProperty<double> distanceToNext,
-            ReadonlyTemplateProperty<bool> collapsed,
+            ReadonlyTemplateProperty<Visibility> collapsed,
             ReadonlyTemplateProperty<double> horizontalStaffLineThickness,
             ReadonlyTemplateProperty<double> verticalStaffLineThickness,
             ReadonlyTemplateProperty<ColorARGB> color,
@@ -30,7 +30,7 @@ namespace StudioLaValse.ScoreDocument.Private
         {
             NumberOfStaves = numberOfStaves;
             DistanceToNext = distanceToNext;
-            Collapsed = collapsed;
+            Visibility = collapsed;
             VerticalStaffLineThickness = verticalStaffLineThickness;
             HorizontalStaffLineThickness = horizontalStaffLineThickness;
             Color = color;

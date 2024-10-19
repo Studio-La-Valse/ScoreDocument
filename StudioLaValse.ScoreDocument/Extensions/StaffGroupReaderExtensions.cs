@@ -1,4 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
+using StudioLaValse.ScoreDocument.Layout;
 using StudioLaValse.ScoreDocument.Private;
 
 namespace StudioLaValse.ScoreDocument.Extensions
@@ -30,7 +31,7 @@ namespace StudioLaValse.ScoreDocument.Extensions
         }
 
         /// <summary>
-        /// Calculates the height of a note in a staff group, assuming the staff group starts a the specified canvas top.
+        /// Calculates the height of a note in a staff group, assuming the staff group starts at the specified canvas top.
         /// Throws an <see cref="ArgumentOutOfRangeException"/> if the staff index specified in the note layout is not present in the staff group.
         /// </summary>
         /// <param name="staffGroup"></param>
@@ -64,15 +65,18 @@ namespace StudioLaValse.ScoreDocument.Extensions
         /// <returns></returns>
         public static double CalculateHeight(this IStaffSystem staffSystem)
         {
-            if (!staffSystem.EnumerateStaffGroups().Any())
+            if (!staffSystem.EnumerateStaffGroups().Where(staffGroup => staffGroup.Visibility != Visibility.Hidden).Any())
             {
                 return 0;
             }
 
             var (lastStaffGruop, lastHeight) = staffSystem.EnumerateFromTop(0).Last();
 
-            var lastStaffGroupHeight = lastStaffGruop.CalculateHeight();
-            lastHeight += lastStaffGroupHeight;
+            if(lastStaffGruop.Visibility != Visibility.Hidden)
+            {
+                var lastStaffGroupHeight = lastStaffGruop.CalculateHeight();
+                lastHeight += lastStaffGroupHeight;
+            }
 
             return lastHeight;
         }
@@ -87,10 +91,20 @@ namespace StudioLaValse.ScoreDocument.Extensions
         {
             foreach (var staffGroup in staffSystem.EnumerateStaffGroups())
             {
-                var staffGroupHeight = staffGroup.CalculateHeight();
+                var staffGroupHeight = 0d;
+                if (staffGroup.Visibility == Visibility.Visible)
+                {
+                    staffGroupHeight = staffGroup.CalculateHeight();
+                }
+
                 yield return (staffGroup, startValue);
 
                 startValue += staffGroupHeight;
+
+                if (staffGroup.Visibility == Visibility.Hidden)
+                {
+                    continue;
+                }
 
                 var lastStafGroupSpacing = staffGroup.DistanceToNext * staffGroup.Scale;
                 startValue += lastStafGroupSpacing;
@@ -105,6 +119,11 @@ namespace StudioLaValse.ScoreDocument.Extensions
         /// <returns></returns>
         public static double CalculateHeight(this IStaffGroup staffGroup)
         {
+            if (staffGroup.Visibility != Visibility.Visible)
+            {
+                return 0;
+            }
+
             var number = staffGroup.NumberOfStaves;
             if (number == 0)
             {

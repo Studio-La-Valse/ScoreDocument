@@ -20,6 +20,7 @@ using StudioLaValse.Geometry;
 using System.Diagnostics;
 using System.IO;
 using StudioLaValse.Drawable.HTML.Extensions;
+using StudioLaValse.ScoreDocument.Core;
 
 namespace StudioLaValse.ScoreDocument.Tests.Svg;
 
@@ -41,8 +42,18 @@ internal class Program
         var styleTemplate = ScoreDocumentStyleTemplate.Create();
         styleTemplate.PageStyleTemplate.PageWidth = canvasWidth;
         styleTemplate.PageStyleTemplate.PageHeight = canvasHeight;
-        var scoreDocument = Implementation.ScoreDocument.Create(styleTemplate).BuildFromXml(document);
-
+        // var scoreDocument = Implementation.ScoreDocument.Create(styleTemplate).BuildFromXml(document);
+        var scoreDocument = Implementation.ScoreDocument.Create(styleTemplate);
+        scoreDocument.AddInstrumentRibbon(Instrument.Violin);
+        scoreDocument.AddInstrumentRibbon(Instrument.Piano);
+        scoreDocument.AddInstrumentRibbon(Instrument.Piano);
+        scoreDocument.ReadInstrumentRibbon(0).Visibility.Value = Visibility.Collapsed;
+        scoreDocument.ReadInstrumentRibbon(1).Visibility.Value = Visibility.Collapsed;
+        for (var i = 0; i < 32; i++)
+        {
+            scoreDocument.AppendScoreMeasure();
+        }
+        
         var selection = SelectionManager<IUniqueScoreElement>.CreateDefault(e => e.Id);
         var glyphLibrary = new GenericGlyphLibrary(scoreDocument);
         var restFactory = new VisualRestFactory(selection, glyphLibrary);
@@ -52,7 +63,7 @@ internal class Program
         var systemMeasureFactory = new VisualSystemMeasureFactory(selection, instrumentMeasureFactory);
         var visualStaffFactory = new VisualStaffSystemFactory(systemMeasureFactory, glyphLibrary);
         var visualPageFactory = new VisualPageFactory(visualStaffFactory);
-        var sceneFactory = new SinglePageViewSceneFactory(2, visualPageFactory);
+        var sceneFactory = new SinglePageViewSceneFactory(0, visualPageFactory);
         var scene = new VisualScoreDocumentScene(sceneFactory, scoreDocument);
         canvasPainter.DrawContentWrapper(scene);
         canvasPainter.FinishDrawing();

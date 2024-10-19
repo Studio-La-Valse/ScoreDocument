@@ -58,9 +58,11 @@
 
         /// <summary>
         /// Request the staff group containing this measure to be collapsed. 
-        /// To reset this request, set this value to null.
+        /// To reset this request, set the visibility to <see cref="Visibility.Visible"/>.
+        /// If another measure in the staff group has requested a collapse, the the staff group will still be collapsed.
+        /// <see cref="Visibility.Hidden"/> overrules <see cref="Visibility.Collapsed"/> behaviour.
         /// </summary>
-        TemplateProperty<bool?> Collapsed { get; }
+        TemplateProperty<Visibility> Visibility { get; }
 
         /// <summary>
         /// Request the staff group containing to display the specified amount of saves.

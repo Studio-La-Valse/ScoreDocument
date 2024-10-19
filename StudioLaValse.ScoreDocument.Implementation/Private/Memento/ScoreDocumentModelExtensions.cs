@@ -40,7 +40,7 @@ internal static class ScoreDocumentModelExtensions
             Id = model.Id,
             Layout = layoutModel,
             AbbreviatedName = model.AbbreviatedName,
-            Collapsed = model.Collapsed,
+            Visibility = model.Visibility,
             DisplayName = model.DisplayName,
             IndexInScore = model.IndexInScore,
             Instrument = model.Instrument,
@@ -83,7 +83,7 @@ internal static class ScoreDocumentModelExtensions
             Layout = layoutModel,
             PaddingBottom = model.PaddingBottom,
             ClefChanges = model.ClefChanges,
-            Collapsed = model.Collapsed,
+            Visibility = model.Visibility,
             NumberOfStaves = model.NumberOfStaves,
             StaffPaddingBottom = model.StaffPaddingBottom,
             MeasureBlocks = []

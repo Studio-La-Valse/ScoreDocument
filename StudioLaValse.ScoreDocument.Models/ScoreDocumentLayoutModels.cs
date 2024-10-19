@@ -70,7 +70,7 @@ public class InstrumentRibbonLayoutModel : InstrumentRibbonLayoutMembers
             Id = Guid.NewGuid(),
             InstrumentRibbonId = instrumentRibbonid,
             AbbreviatedName = null,
-            Collapsed = null,
+            Visibility = null,
             DisplayName = null,
             NumberOfStaves = null,
             Scale = null,
@@ -94,7 +94,7 @@ public class InstrumentRibbonLayoutModel : InstrumentRibbonLayoutMembers
             return true;
         }
 
-        if (Collapsed.HasValue)
+        if (Visibility.HasValue)
         {
             return true;
         }
@@ -157,7 +157,7 @@ public class InstrumentMeasureLayoutModel : InstrumentMeasureLayoutMembers
             Id = Guid.NewGuid(),
             InstrumentMeasureId = instrumentMeasureId,
             ClefChanges = [],
-            Collapsed = null,
+            Visibility = null,
             IgnoredClefChanges = [],
             NumberOfStaves = null,
             PaddingBottom = null,
@@ -182,7 +182,7 @@ public class InstrumentMeasureLayoutModel : InstrumentMeasureLayoutMembers
             return true;
         }
 
-        if (Collapsed.HasValue)
+        if (Visibility.HasValue)
         {
             return true;
         }

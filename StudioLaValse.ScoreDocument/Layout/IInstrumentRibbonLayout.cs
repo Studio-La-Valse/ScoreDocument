@@ -20,7 +20,7 @@
         /// <summary>
         /// Get the collapsed state for this instrument ribbon.
         /// </summary>
-        TemplateProperty<bool> Collapsed { get; }
+        TemplateProperty<Visibility> Visibility { get; }
 
         /// <summary>
         /// Get or set the number of staves displayed for this instrument.

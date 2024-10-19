@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using StudioLaValse.ScoreDocument.Layout;
+using System.Diagnostics.CodeAnalysis;
 
 namespace StudioLaValse.ScoreDocument.Extensions
 {
@@ -13,6 +14,10 @@ namespace StudioLaValse.ScoreDocument.Extensions
         /// </summary>
         public static double ApproximateWidth(this IScoreMeasure scoreMeasure)
         {
+            if (!scoreMeasure.ReadMeasures().Any(m => m.ReadChords().Any()))
+            {
+                return 50;
+            }
             var scoreScale = scoreMeasure.Scale;
             var (position, spaceRight) = scoreMeasure.EnumeratePositions().LastOrDefault().Value;
             var measurePadding = scoreMeasure.PaddingLeft * scoreScale + scoreMeasure.PaddingRight * scoreScale;
@@ -32,10 +37,6 @@ namespace StudioLaValse.ScoreDocument.Extensions
             var positions = new Dictionary<Position, (double position, double spaceRight)>(comparer);
             foreach (var instrumentMeasure in scoreMeasure.ReadMeasures())
             {
-                if (instrumentMeasure.Collapsed.Value ?? false)
-                {
-                    continue;
-                }
                 var left = 0d;
                 foreach (var positionGroup in instrumentMeasure.ReadChords().OrderBy(e => e.Position.Decimal).GroupBy(e => e.Position, comparer))
                 {

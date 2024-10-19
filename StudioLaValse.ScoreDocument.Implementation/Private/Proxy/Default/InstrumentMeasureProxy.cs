@@ -32,7 +32,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.Default
 
         public TemplateProperty<double?> PaddingBottom => Layout.PaddingBottom;
 
-        public TemplateProperty<bool?> Collapsed => Layout.Collapsed;
+        public TemplateProperty<Visibility> Visibility => Layout.Visibility;
 
         public TemplateProperty<int?> NumberOfStaves => Layout.NumberOfStaves;
 

@@ -29,10 +29,11 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                 var knownHeightOfTheBrace = Glyph.Em;
                 var scale = Height / knownHeightOfTheBrace;
                 var heightOfBrace = knownHeightOfTheBrace * scale;
-                var ratioApprox = 1 / 8d;
+                var ratioApprox = 1 / 12d;
                 var widthOfBrace = heightOfBrace * ratioApprox;
                 var braceRight = canvasLeft;
-                var textRight = braceRight - widthOfBrace;
+                var distanceFromBrace = 1;
+                var textRight = braceRight - widthOfBrace - distanceFromBrace;
                 var text = FirstMeasure.MeasureIndex == 0 ? ContextLayout.DisplayName : ContextLayout.AbbreviatedName;
                 var fontFamily = new FontFamilyCore("Arial");
                 var id = new DrawableText(
@@ -57,7 +58,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                     return null;
                 }
 
-                if (ContextLayout.Collapsed)
+                if (Layout.Visibility != Visibility.Visible)
                 {
                     return null;
                 }
@@ -90,6 +91,11 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 
         public IEnumerable<BaseContentWrapper> ConstructStaves()
         {
+            if (Layout.Visibility != Visibility.Visible)
+            {
+                yield break;
+            }
+
             foreach (var (staff, canvasTop) in staffGroup.EnumerateFromTop(this.canvasTop))
             {
                 var clef = FirstMeasure.OpeningClefAtOrDefault(staff.IndexInStaffGroup);
@@ -115,19 +121,22 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 
         public override IEnumerable<BaseDrawableElement> GetDrawableElements()
         {
-            if (ContextLayout.Collapsed)
+            if (ContextLayout.Visibility == Visibility.Hidden)
+            {
+                yield break;
+            }
+
+            if (ContextLayout.Visibility == Visibility.Collapsed)
             {
                 yield return new DrawableLineHorizontal(canvasTop, canvasLeft, length, 0.1, staffGroup.Color.Value.FromPrimitive());
             }
-            else
-            {
-                if (Brace != null)
-                {
-                    yield return Brace;
-                }
 
-                yield return ID;
+            if (Brace != null)
+            {
+                yield return Brace;
             }
+
+            yield return ID;
         }
         public override IEnumerable<BaseContentWrapper> GetContentWrappers()
         {

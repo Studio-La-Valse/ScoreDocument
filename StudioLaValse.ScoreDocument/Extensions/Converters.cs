@@ -324,5 +324,23 @@ namespace StudioLaValse.ScoreDocument.Extensions
         {
             return (int)accidental;
         }
+        /// <summary>
+        /// Converts an integer to a visibility type.
+        /// </summary>
+        /// <param name="i"></param>
+        /// <returns></returns>
+        public static Visibility ConvertVisibility(this int i)
+        {
+            return (Visibility)i;
+        }
+        /// <summary>
+        /// Converts a visibility type to an integer.
+        /// </summary>
+        /// <param name="visibility"></param>
+        /// <returns></returns>
+        public static int ConvertVisibility(this Visibility visibility)
+        {
+            return (int)visibility;
+        }
     }
 }

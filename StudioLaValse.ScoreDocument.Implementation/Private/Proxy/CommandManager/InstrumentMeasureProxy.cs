@@ -34,7 +34,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManage
 
         public TemplateProperty<double?> PaddingBottom => Layout.PaddingBottom.WithRerender(notifyEntityChanged, instrumentMeasure.HostMeasure.HostDocument, commandManager);
 
-        public TemplateProperty<bool?> Collapsed => Layout.Collapsed.WithRerender(notifyEntityChanged, instrumentMeasure.HostMeasure.HostDocument, commandManager);
+        public TemplateProperty<Visibility> Visibility => Layout.Visibility.WithRerender(notifyEntityChanged, instrumentMeasure.HostMeasure.HostDocument, commandManager);
 
         public TemplateProperty<int?> NumberOfStaves => Layout.NumberOfStaves.WithRerender(notifyEntityChanged, instrumentMeasure.HostMeasure.HostDocument, commandManager);
 

@@ -17,7 +17,7 @@ namespace StudioLaValse.ScoreDocument.Private
 
         public int IndexInSystem => InstrumentRibbon.IndexInScore;
 
-        public ReadonlyTemplateProperty<bool> Collapsed => ReadLayout().Collapsed;
+        public ReadonlyTemplateProperty<Visibility> Visibility => ReadLayout().Visibility;
 
         public ReadonlyTemplateProperty<double> DistanceToNext => ReadLayout().DistanceToNext;
 
@@ -88,10 +88,23 @@ namespace StudioLaValse.ScoreDocument.Private
                 return distanceToNext;
             });
 
-            var collapsed = new ReadonlyTemplatePropertyFromFunc<bool>(() =>
+            var collapsed = new ReadonlyTemplatePropertyFromFunc<Visibility>(() =>
             {
-                var collapsed = EnumerateMeasures().Any(m => m.Collapsed.Value ?? false);
-                return collapsed;
+                var hidden = EnumerateMeasures().Any(m => m.Visibility.Value == Layout.Visibility.Hidden || 
+                                                          InstrumentRibbon.Visibility == Layout.Visibility.Hidden);
+                if (hidden)
+                {
+                    return Layout.Visibility.Hidden;
+                }
+
+                var collapsed = EnumerateMeasures().Any(m => m.Visibility.Value == Layout.Visibility.Collapsed || 
+                                                               InstrumentRibbon.Visibility == Layout.Visibility.Collapsed);
+                if (collapsed)
+                {
+                    return Layout.Visibility.Collapsed;
+                }
+
+                return Layout.Visibility.Visible;
             });
 
             var scale = new ReadonlyTemplatePropertyFromFunc<double>(() => InstrumentRibbon.Scale);

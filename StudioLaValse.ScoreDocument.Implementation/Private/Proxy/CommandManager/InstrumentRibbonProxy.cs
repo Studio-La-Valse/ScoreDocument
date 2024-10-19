@@ -19,9 +19,9 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManage
 
         public TemplateProperty<string> DisplayName => Layout.DisplayName.WithRerender(notifyEntityChanged, source.HostScoreDocument, commandManager);
 
-        public TemplateProperty<string> AbbreviatedName => Layout.DisplayName.WithRerender(notifyEntityChanged, source.HostScoreDocument, commandManager);
+        public TemplateProperty<string> AbbreviatedName => Layout.AbbreviatedName.WithRerender(notifyEntityChanged, source.HostScoreDocument, commandManager);
 
-        public TemplateProperty<bool> Collapsed => Layout.Collapsed.WithRerender(notifyEntityChanged, source.HostScoreDocument, commandManager);
+        public TemplateProperty<Visibility> Visibility => Layout.Visibility.WithRerender(notifyEntityChanged, source.HostScoreDocument, commandManager);
 
         public TemplateProperty<int> NumberOfStaves => Layout.NumberOfStaves.WithRerender(notifyEntityChanged, source.HostScoreDocument, commandManager);
 

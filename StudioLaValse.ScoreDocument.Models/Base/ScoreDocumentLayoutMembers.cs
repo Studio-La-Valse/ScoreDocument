@@ -28,7 +28,7 @@ public class InstrumentRibbonLayoutMembers
     [Range(1, int.MaxValue)]
     public required int? NumberOfStaves { get; set; }
 
-    public required bool? Collapsed { get; set; }
+    public required int? Visibility { get; set; }
 
     [Range(Constants.GreaterThanZero, double.MaxValue)]
     public required double? Scale { get; set; }
@@ -42,7 +42,7 @@ public class InstrumentMeasureLayoutMembers
     [Column(TypeName = "jsonb")]
     public required Dictionary<int, double> StaffPaddingBottom { get; set; }
 
-    public required bool? Collapsed { get; set; }
+    public required int? Visibility { get; set; }
 
     [Range(1, int.MaxValue)]
     public required int? NumberOfStaves { get; set; }

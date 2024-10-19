@@ -27,7 +27,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManage
 
         public TemplateProperty<double> Scale => Layout.Scale.WithRerender(notifyEntityChanged, source.HostScoreDocument, commandManager);
 
-
+        public TemplateProperty<int> ZIndex => Layout.ZIndex.WithRerender(notifyEntityChanged, source.HostScoreDocument, commandManager);
 
         public InstrumentRibbonProxy(InstrumentRibbon source, ICommandManager commandManager, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged, ILayoutSelector layoutSelector)
         {

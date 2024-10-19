@@ -26,7 +26,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.Default
 
         public TemplateProperty<double> Scale => Layout.Scale;
 
-
+        public TemplateProperty<int> ZIndex => Layout.ZIndex;
 
         public InstrumentRibbonProxy(InstrumentRibbon source, ILayoutSelector layoutSelector)
         {

@@ -31,12 +31,6 @@
         public required double FirstSystemIndent { get; set; }
 
         /// <summary>
-        /// The scales of instruments.
-        /// </summary>
-        public required Dictionary<Guid, double> InstrumentScales { get; init; }
-
-
-        /// <summary>
         /// The global page style template.
         /// </summary>
         public required PageStyleTemplate PageStyleTemplate { get; init; }
@@ -106,7 +100,6 @@
                 VerticalStaffLineThickness = 0.25,
                 FirstSystemIndent = 10,
                 StemLineThickness = 0.1,
-                InstrumentScales = [],
                 PageStyleTemplate = PageStyleTemplate.Create(),
                 ScoreMeasureStyleTemplate = ScoreMeasureStyleTemplate.Create(),
                 InstrumentMeasureStyleTemplate = new(),
@@ -132,12 +125,6 @@
             VerticalStaffLineThickness = styleTemplate.VerticalStaffLineThickness;
             StemLineThickness = styleTemplate.StemLineThickness;
             FirstSystemIndent = styleTemplate.FirstSystemIndent;
-
-            InstrumentScales.Clear();
-            foreach (var kv in styleTemplate.InstrumentScales)
-            {
-                InstrumentScales.Add(kv.Key, kv.Value);
-            }
 
             PageStyleTemplate.Apply(styleTemplate.PageStyleTemplate);
 

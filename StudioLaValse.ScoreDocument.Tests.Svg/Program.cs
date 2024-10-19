@@ -42,17 +42,7 @@ internal class Program
         var styleTemplate = ScoreDocumentStyleTemplate.Create();
         styleTemplate.PageStyleTemplate.PageWidth = canvasWidth;
         styleTemplate.PageStyleTemplate.PageHeight = canvasHeight;
-        // var scoreDocument = Implementation.ScoreDocument.Create(styleTemplate).BuildFromXml(document);
-        var scoreDocument = Implementation.ScoreDocument.Create(styleTemplate);
-        scoreDocument.AddInstrumentRibbon(Instrument.Violin);
-        scoreDocument.AddInstrumentRibbon(Instrument.Piano);
-        scoreDocument.AddInstrumentRibbon(Instrument.Piano);
-        scoreDocument.ReadInstrumentRibbon(0).Visibility.Value = Visibility.Collapsed;
-        scoreDocument.ReadInstrumentRibbon(1).Visibility.Value = Visibility.Collapsed;
-        for (var i = 0; i < 32; i++)
-        {
-            scoreDocument.AppendScoreMeasure();
-        }
+        var scoreDocument = Implementation.ScoreDocument.Create(styleTemplate).BuildFromXml(document);
         
         var selection = SelectionManager<IUniqueScoreElement>.CreateDefault(e => e.Id);
         var glyphLibrary = new GenericGlyphLibrary(scoreDocument);

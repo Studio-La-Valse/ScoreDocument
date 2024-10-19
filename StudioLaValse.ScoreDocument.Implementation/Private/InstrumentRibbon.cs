@@ -57,6 +57,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                 DisplayName = AuthorLayout._DisplayName.Field,
                 NumberOfStaves = AuthorLayout._NumberOfStaves.Field,
                 Scale = AuthorLayout._Scale.Field,
+                ZIndex = AuthorLayout._ZIndex.Field,
             };
         }
 
@@ -70,7 +71,8 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                 DisplayName = UserLayout._DisplayName.Field,
                 NumberOfStaves = UserLayout._NumberOfStaves.Field,
                 Visibility = UserLayout._Collapsed.Field?.ConvertVisibility(),
-                Scale = UserLayout._Scale.Field
+                Scale = UserLayout._Scale.Field,
+                ZIndex = UserLayout._ZIndex.Field,
             };
         }
 
@@ -87,6 +89,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                 DisplayName = AuthorLayout._DisplayName.Field,
                 NumberOfStaves = AuthorLayout._NumberOfStaves.Field,
                 Scale = AuthorLayout._Scale.Field,
+                ZIndex = AuthorLayout._ZIndex.Field,
             };
         }
 

@@ -45,7 +45,8 @@ internal static class ScoreDocumentModelExtensions
             IndexInScore = model.IndexInScore,
             Instrument = model.Instrument,
             NumberOfStaves = model.NumberOfStaves,
-            Scale = model.Scale
+            Scale = model.Scale,
+            ZIndex = model.ZIndex,
         };
     }
 
@@ -239,19 +240,24 @@ internal static class ScoreDocumentModelExtensions
 
     public static ScoreDocumentLayoutDictionary ExtractLayout(this ScoreDocumentMemento scoreDocumentMemento)
     {
+        var instrumentRibbonLayouts = scoreDocumentMemento.InstrumentRibbons.Select(e => e.Layout).Where(l => l.HasFieldSet()).ToList();
+        var scoreMeasureLayouts = scoreDocumentMemento.ScoreMeasures.Select(e => e.Layout).Where(l => l.HasFieldSet()).ToList();
+
         var dictionary = new ScoreDocumentLayoutDictionary()
         {
             ScoreDocumentLayout = scoreDocumentMemento.Layout,
+            ScoreMeasureLayouts = scoreMeasureLayouts,
+            InstrumentRibbonLayouts = instrumentRibbonLayouts,
             ChordLayouts = [],
             GraceChordLayouts = [],
             GraceGroupLayouts = [],
             GraceNoteLayouts = [],
             InstrumentMeasureLayouts = [],
-            InstrumentRibbonLayouts = scoreDocumentMemento.InstrumentRibbons.Select(e => e.Layout).Where(l => l.HasFieldSet()).ToList(),
             MeasureBlockLayouts = [],
             NoteLayouts = [],
-            ScoreMeasureLayouts = scoreDocumentMemento.ScoreMeasures.Select(e => e.Layout).Where(l => l.HasFieldSet()).ToList(),
         };
+
+
 
         foreach(var scoreMeasure in scoreDocumentMemento.ScoreMeasures)
         {

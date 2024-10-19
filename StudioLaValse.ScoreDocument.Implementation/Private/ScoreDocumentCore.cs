@@ -136,7 +136,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
         }
         public IEnumerable<InstrumentRibbon> EnumerateRibbonsCore()
         {
-            return contentTable.RowHeaders;
+            return contentTable.RowHeaders.OrderBy(p => p.UserLayout.ZIndex.Value);
         }
 
 

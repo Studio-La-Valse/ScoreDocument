@@ -10,13 +10,13 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
         public abstract ValueTemplateProperty<int> _NumberOfStaves { get; }
         public abstract ValueTemplateProperty<Visibility> _Collapsed { get; }
         public abstract ValueTemplateProperty<double> _Scale { get; }
-
+        public abstract ValueTemplateProperty<int> _ZIndex { get; }
 
         public TemplateProperty<string> DisplayName => _DisplayName;
         public TemplateProperty<string> AbbreviatedName => _AbbreviatedName;
         public TemplateProperty<Visibility> Visibility => _Collapsed;
         public TemplateProperty<int> NumberOfStaves => _NumberOfStaves;
-
+        public TemplateProperty<int> ZIndex => _ZIndex;
 
         public TemplateProperty<double> Scale { get; }
 
@@ -36,6 +36,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
             _NumberOfStaves.Reset();
             _Collapsed.Reset();
             _Scale.Reset();
+            _ZIndex.Reset();
         }
 
         public void ApplyMemento(InstrumentRibbonLayoutMembers? memento)
@@ -51,6 +52,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
             _NumberOfStaves.Field = memento.NumberOfStaves;
             _Collapsed.Field = memento.Visibility?.ConvertVisibility();
             _Scale.Field = memento.Scale;
+            _ZIndex.Field = memento.ZIndex;
         }
         public void ApplyMemento(InstrumentRibbonLayoutModel? memento)
         {
@@ -65,7 +67,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
         public override ValueTemplateProperty<int> _NumberOfStaves { get; }
         public override ValueTemplateProperty<Visibility> _Collapsed { get; }
         public override ValueTemplateProperty<double> _Scale { get; }
-
+        public override ValueTemplateProperty<int> _ZIndex { get; }
 
         public AuthorInstrumentRibbonLayout(Instrument instrument, ScoreDocumentStyleTemplate scoreDocumentStyleTemplate, Guid instrumentRibbonId, UserScoreDocumentLayout userScoreDocumentLayout) : base(userScoreDocumentLayout)
         {
@@ -73,7 +75,8 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
             _NumberOfStaves = new ValueTemplateProperty<int>(() => instrument.NumberOfStaves);
             _Collapsed = new ValueTemplateProperty<Visibility>(() => StudioLaValse.ScoreDocument.Layout.Visibility.Visible);
             _AbbreviatedName = new ReferenceTemplateProperty<string>(() => _DisplayName.Value.AbbreviateName());
-            _Scale = new ValueTemplateProperty<double>(() => scoreDocumentStyleTemplate.InstrumentScales.TryGetValue(instrumentRibbonId, out var value) ? value : 1);
+            _Scale = new ValueTemplateProperty<double>(() => 1);
+            _ZIndex = new ValueTemplateProperty<int>(() => 0);
         }
 
         public InstrumentRibbonLayoutMembers GetMemento()
@@ -84,7 +87,8 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
                 DisplayName = _DisplayName.Field,
                 NumberOfStaves = _NumberOfStaves.Field,
                 Visibility = _Collapsed.Field?.ConvertVisibility(),
-                Scale = _Scale.Field
+                Scale = _Scale.Field,
+                ZIndex = _ZIndex.Field
             };
         }
     }
@@ -97,6 +101,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
         public override ValueTemplateProperty<int> _NumberOfStaves { get; }
         public override ValueTemplateProperty<Visibility> _Collapsed { get; }
         public override ValueTemplateProperty<double> _Scale { get; }
+        public override ValueTemplateProperty<int> _ZIndex { get; }
 
         public UserInstrumentRibbonLayout(AuthorInstrumentRibbonLayout layout, Guid id, UserScoreDocumentLayout userScoreDocumentLayout) : base(userScoreDocumentLayout)
         {
@@ -106,6 +111,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
             _Collapsed = new ValueTemplateProperty<Visibility>(() => layout._Collapsed);
             _AbbreviatedName = new ReferenceTemplateProperty<string>(() => layout._AbbreviatedName);
             _Scale = new ValueTemplateProperty<double>(() => layout._Scale);
+            _ZIndex = new ValueTemplateProperty<int>(() => layout._ZIndex);
         }
     }
 }

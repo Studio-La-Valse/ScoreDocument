@@ -18,7 +18,7 @@
         TemplateProperty<string> AbbreviatedName { get; }
 
         /// <summary>
-        /// Get the collapsed state for this instrument ribbon.
+        /// Get the visibility state for this instrument ribbon.
         /// </summary>
         TemplateProperty<Visibility> Visibility { get; }
 
@@ -31,5 +31,12 @@
         /// Get or set the global scale for this instrument ribbon.
         /// </summary>
         TemplateProperty<double> Scale { get; }
+
+        /// <summary>
+        /// A number defining the relative index of this instrument in the score.
+        /// Defaults to 0 and allows negative values.
+        /// Instruments will be enumerated as sorted by this value.
+        /// </summary>
+        TemplateProperty<int> ZIndex { get; }
     }
 }

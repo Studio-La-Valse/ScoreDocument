@@ -74,6 +74,7 @@ public class InstrumentRibbonLayoutModel : InstrumentRibbonLayoutMembers
             DisplayName = null,
             NumberOfStaves = null,
             Scale = null,
+            ZIndex = null,
         };
     }
 
@@ -100,6 +101,11 @@ public class InstrumentRibbonLayoutModel : InstrumentRibbonLayoutMembers
         }
 
         if (Scale.HasValue)
+        {
+            return true;
+        }
+
+        if (ZIndex.HasValue)
         {
             return true;
         }
@@ -232,6 +238,11 @@ public class MeasureBlockLayoutModel : MeasureBlockLayoutMembers
         }
 
         if (StemDirection.HasValue)
+        {
+            return true;
+        }
+
+        if (Scale.HasValue)
         {
             return true;
         }

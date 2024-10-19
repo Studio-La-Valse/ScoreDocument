@@ -46,7 +46,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                     PageWidth,
                     PageHeight,
                     PageColor,
-                    0.05,
+                    0.25,
                     ForegroundColor)
             ];
         }

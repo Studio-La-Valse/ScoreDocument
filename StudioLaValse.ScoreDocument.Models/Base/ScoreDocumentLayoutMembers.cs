@@ -32,6 +32,8 @@ public class InstrumentRibbonLayoutMembers
 
     [Range(Constants.GreaterThanZero, double.MaxValue)]
     public required double? Scale { get; set; }
+
+    public required int? ZIndex { get; set; }
 }
 
 public class InstrumentMeasureLayoutMembers

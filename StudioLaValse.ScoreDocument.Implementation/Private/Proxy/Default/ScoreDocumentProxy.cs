@@ -140,4 +140,14 @@ internal class ScoreDocumentProxy(ScoreDocumentCore score, ILayoutSelector layou
     {
         return score.GetLayoutDictionary();
     }
+
+    public void Edit(Action<ScoreDocumentStyleTemplate> action)
+    {
+        action(score.StyleTemplate);
+    }
+
+    public void Edit(ScoreDocumentStyleTemplate scoreDocumentStyleTemplate)
+    {
+        score.StyleTemplate.Apply(scoreDocumentStyleTemplate);
+    }
 }

@@ -1,5 +1,6 @@
 ﻿using StudioLaValse.ScoreDocument.Layout;
 using StudioLaValse.ScoreDocument.Models;
+using StudioLaValse.ScoreDocument.StyleTemplates;
 
 namespace StudioLaValse.ScoreDocument
 {
@@ -86,6 +87,20 @@ namespace StudioLaValse.ScoreDocument
         /// </summary>
         /// <param name="indexInScore"></param>
         void RemoveScoreMeasure(int indexInScore);
+
+        /// <summary>
+        /// Edit the currently applied style template.
+        /// </summary>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        void Edit(Action<ScoreDocumentStyleTemplate> action);
+
+        /// <summary>
+        /// Apply a new style template.
+        /// </summary>
+        /// <param name="scoreDocumentStyleTemplate"></param>
+        /// <returns></returns>
+        void Edit(ScoreDocumentStyleTemplate scoreDocumentStyleTemplate);
 
         /// <summary>
         /// Freeze the current score document into a serializable object.

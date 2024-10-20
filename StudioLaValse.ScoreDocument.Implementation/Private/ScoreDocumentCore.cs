@@ -20,7 +20,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
 
         public AuthorScoreDocumentLayout AuthorLayout { get; }
         public UserScoreDocumentLayout UserLayout { get; private set; }
-
+        public ScoreDocumentStyleTemplate StyleTemplate => this.styleTemplate;
 
 
         public ScoreDocumentCore(ScoreContentTable contentTable,

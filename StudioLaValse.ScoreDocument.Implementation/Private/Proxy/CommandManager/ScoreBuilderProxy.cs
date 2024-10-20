@@ -1,4 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Implementation.Private.Extensions;
+using System;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManager;
 
@@ -42,6 +43,27 @@ internal class ScoreBuilderProxy : IScoreBuilder
         return this;
     }
 
+    public IScoreBuilder Edit(Action<ScoreDocumentStyleTemplate> action)
+    {
+        void _action(IScoreDocument document)
+        {
+            document.Edit(action);
+        }
+
+        pendingEdits.Enqueue(_action);
+        return this;
+    }
+
+    public IScoreBuilder Edit(ScoreDocumentStyleTemplate scoreDocumentStyleTemplate)
+    {
+        void _action(IScoreDocument document)
+        {
+            document.Edit(scoreDocumentStyleTemplate);
+        }
+
+        pendingEdits.Enqueue(_action);
+        return this;
+    }
 
     public IScoreBuilder Build()
     {
@@ -59,13 +81,11 @@ internal class ScoreBuilderProxy : IScoreBuilder
 
     public ScoreDocumentModel Freeze()
     {
-        Build();
         return scoreDocument.Freeze();
     }
 
     public ScoreDocumentLayoutDictionary FreezeLayout()
     {
-        Build();
         return scoreDocument.FreezeLayout();
     }
 }

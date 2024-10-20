@@ -1,4 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Models;
+using StudioLaValse.ScoreDocument.StyleTemplates;
 
 namespace StudioLaValse.ScoreDocument
 {
@@ -22,6 +23,20 @@ namespace StudioLaValse.ScoreDocument
         /// <param name="action"></param>
         /// <returns></returns>
         IScoreBuilder Edit<TElement>(IEnumerable<int> elementIds, Action<TElement> action) where TElement : IUniqueScoreElement;
+
+        /// <summary>
+        /// Edit the currently applied style template.
+        /// </summary>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        IScoreBuilder Edit(Action<ScoreDocumentStyleTemplate> action);
+
+        /// <summary>
+        /// Apply a new style template.
+        /// </summary>
+        /// <param name="scoreDocumentStyleTemplate"></param>
+        /// <returns></returns>
+        IScoreBuilder Edit(ScoreDocumentStyleTemplate scoreDocumentStyleTemplate);
 
         /// <summary>
         /// Build the pending score builder actions.

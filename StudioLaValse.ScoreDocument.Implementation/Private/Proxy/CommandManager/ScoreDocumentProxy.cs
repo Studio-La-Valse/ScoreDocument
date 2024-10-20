@@ -155,4 +155,30 @@ internal class ScoreDocumentProxy(ScoreDocumentCore score, ICommandManager comma
     {
         return score.GetLayoutDictionary();
     }
+
+    public void Edit(Action<ScoreDocumentStyleTemplate> action)
+    {
+        var transaction = commandManager.ThrowIfNoTransactionOpen();
+        var oldStyleTemplate = ScoreDocumentStyleTemplate.Create();
+        oldStyleTemplate.Apply(score.StyleTemplate);
+
+        var command = new SimpleCommand(
+            _do: () => action(score.StyleTemplate),
+            undo: () => score.StyleTemplate.Apply(oldStyleTemplate)
+        ).ThenInvalidate(notifyEntityChanged, score);
+        transaction.Enqueue(command);
+    }
+
+    public void Edit(ScoreDocumentStyleTemplate scoreDocumentStyleTemplate)
+    {
+        var transaction = commandManager.ThrowIfNoTransactionOpen();
+        var oldStyleTemplate = ScoreDocumentStyleTemplate.Create();
+        oldStyleTemplate.Apply(score.StyleTemplate);
+
+        var command = new SimpleCommand(
+            _do: () => score.StyleTemplate.Apply(scoreDocumentStyleTemplate),
+            undo: () => score.StyleTemplate.Apply(oldStyleTemplate)
+        ).ThenInvalidate(notifyEntityChanged, score);
+        transaction.Enqueue(command);
+    }
 }

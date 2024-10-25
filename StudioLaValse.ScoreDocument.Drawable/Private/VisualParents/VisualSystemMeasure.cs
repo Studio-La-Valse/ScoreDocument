@@ -3,7 +3,7 @@ using StudioLaValse.ScoreDocument.Extensions;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
-    internal sealed class VisualSystemMeasure : BaseSelectableParent<IUniqueScoreElement>
+    internal sealed class VisualSystemMeasure : BaseVisualParent<IUniqueScoreElement>
     {
         private readonly IScoreMeasure scoreMeasure;
         private readonly IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory;
@@ -64,9 +64,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                                    double canvasLeft,
                                    double canvasTop,
                                    double width,
-                                   ISelection<IUniqueScoreElement> selection,
                                    IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory) : 
-            base(scoreMeasure, selection)
+            base(scoreMeasure)
         {
             this.scoreMeasure = scoreMeasure;
             this.visualInstrumentMeasureFactory = visualInstrumentMeasureFactory;
@@ -108,22 +107,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         }
         public override IEnumerable<BaseContentWrapper> GetContentWrappers()
         {
-            List<BaseContentWrapper> wrappers = new(ConstructStaffGroupMeasures())
-            {
-                new SimpleGhost(this)
-            };
-
-            return wrappers;
-        }
-        public override bool Respond(XY point)
-        {
-            return BoundingBox().Contains(point);
-        }
-        public override bool OnMouseMove(XY mousePosition)
-        {
-            var currentlyMouseOver = IsMouseOver;
-            IsMouseOver = BoundingBox().Contains(mousePosition);
-            return currentlyMouseOver != IsMouseOver;
+            return ConstructStaffGroupMeasures();
         }
     }
 }

@@ -14,6 +14,6 @@
         /// <param name="canvasLeft"></param>
         /// <param name="canvasTop"></param>
         /// <returns></returns>
-        BaseContentWrapper Build(INote note, Clef clef, Accidental? accidental, double canvasLeft, double canvasTop);
+        BaseContentWrapper CreateContent(INote note, Clef clef, Accidental? accidental, double canvasLeft, double canvasTop);
     }
 }

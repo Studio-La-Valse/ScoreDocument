@@ -5,17 +5,14 @@
     /// </summary>
     public class VisualSystemMeasureFactory : IVisualSystemMeasureFactory
     {
-        private readonly ISelection<IUniqueScoreElement> selection;
         private readonly IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory;
 
         /// <summary>
         /// The default constructor
         /// </summary>
-        /// <param name="selection"></param>
         /// <param name="visualInstrumentMeasureFactory"></param>
-        public VisualSystemMeasureFactory(ISelection<IUniqueScoreElement> selection, IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory)
+        public VisualSystemMeasureFactory(IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory)
         {
-            this.selection = selection;
             this.visualInstrumentMeasureFactory = visualInstrumentMeasureFactory;
         }
 
@@ -28,7 +25,6 @@
                 canvasLeft,
                 canvasTop,
                 width,
-                selection,
                 visualInstrumentMeasureFactory);
         }
     }

@@ -61,12 +61,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                           double canvasLeft,
                           double canvasTop,
                           bool offsetDots,
-                          IGlyphLibrary glyphLibrary,
-                          ISelection<IUniqueScoreElement> selection) :
-            base(chord,
-                 canvasLeft,
-                 canvasTop,
-                 selection)
+                          IGlyphLibrary glyphLibrary) :
+            base(chord, canvasLeft, canvasTop)
         {
             this.chord = chord;
             this.offsetDots = offsetDots;

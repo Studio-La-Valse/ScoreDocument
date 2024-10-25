@@ -82,12 +82,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                           double canvasTop,
                           bool offsetDots,
                           Accidental? accidental,
-                          IGlyphLibrary glyphLibrary,
-                          ISelection<IUniqueScoreElement> selection) :
-            base(note,
-                 canvasLeft,
-                 canvasTop,
-                 selection)
+                          IGlyphLibrary glyphLibrary) :
+            base(note, canvasLeft, canvasTop)
         {
             this.note = note;
             this.canvasTop = canvasTop;

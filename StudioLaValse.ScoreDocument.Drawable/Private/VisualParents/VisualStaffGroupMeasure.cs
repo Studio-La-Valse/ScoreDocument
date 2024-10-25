@@ -1,10 +1,9 @@
-﻿using StudioLaValse.ScoreDocument.Drawable.Extensions;
-using StudioLaValse.ScoreDocument.Extensions;
+﻿using StudioLaValse.ScoreDocument.Extensions;
 using StudioLaValse.ScoreDocument.GlyphLibrary;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
-    internal sealed class VisualStaffGroupMeasure : BaseSelectableParent<IUniqueScoreElement>
+    internal sealed class VisualStaffGroupMeasure : BaseVisualParent<IUniqueScoreElement>
     {
         private readonly IStaffGroup staffGroup;
         private readonly IReadOnlyDictionary<Position, double> positions;
@@ -55,8 +54,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                                        double canvasLeft,
                                        double width,
                                        IGlyphLibrary glyphLibrary,
-                                       IVisualNoteGroupFactory visualNoteGroupFactory,
-                                       ISelection<IUniqueScoreElement> selection) : base(source, selection)
+                                       IVisualNoteGroupFactory visualNoteGroupFactory) : base(source)
         {
             this.staffGroup = staffGroup;
             this.positions = positions;
@@ -156,21 +154,15 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         }
         public override IEnumerable<BaseContentWrapper> GetContentWrappers()
         {
-            List<BaseContentWrapper> wrappers =
-            [
-                new SimpleGhost(this), .. ConstructNoteGroups(), .. ConstructStaffMeasures()
-            ];
-
-            foreach (var item in wrappers)
+            foreach (var item in ConstructNoteGroups())
             {
                 yield return item;
             }
-        }
-        public override bool OnMouseMove(XY mousePosition)
-        {
-            var previousMouseOver = IsMouseOver;
-            IsMouseOver = BoundingBox().Contains(mousePosition);
-            return previousMouseOver != IsMouseOver;
+
+            foreach (var item in ConstructStaffMeasures())
+            {
+                yield return item;
+            }
         }
     }
 }

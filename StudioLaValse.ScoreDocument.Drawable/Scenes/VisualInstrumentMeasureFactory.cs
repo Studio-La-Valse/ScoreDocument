@@ -7,19 +7,16 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
     /// </summary>
     public class VisualInstrumentMeasureFactory : IVisualInstrumentMeasureFactory
     {
-        private readonly ISelection<IUniqueScoreElement> selection;
         private readonly IVisualNoteGroupFactory noteGroupFactory;
         private readonly IGlyphLibrary glyphLibrary;
 
         /// <summary>
         /// The default constructor.
         /// </summary>
-        /// <param name="selection"></param>
         /// <param name="noteGroupFactory"></param>
         /// <param name="glyphLibrary"></param>
-        public VisualInstrumentMeasureFactory(ISelection<IUniqueScoreElement> selection, IVisualNoteGroupFactory noteGroupFactory, IGlyphLibrary glyphLibrary)
+        public VisualInstrumentMeasureFactory(IVisualNoteGroupFactory noteGroupFactory, IGlyphLibrary glyphLibrary)
         {
-            this.selection = selection;
             this.noteGroupFactory = noteGroupFactory;
             this.glyphLibrary = glyphLibrary;
         }
@@ -35,8 +32,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
                 canvasLeft,
                 width,
                 glyphLibrary,
-                noteGroupFactory,
-                selection);
+                noteGroupFactory);
         }
     }
 }

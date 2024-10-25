@@ -1,6 +1,6 @@
 ﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 {
-    internal abstract class BaseVisualNote : BaseSelectableParent<IUniqueScoreElement>
+    internal abstract class BaseVisualNote : BaseVisualParent<IUniqueScoreElement>
     {
         protected readonly IPositionElement measureElement;
 
@@ -49,8 +49,7 @@
 
         public BaseVisualNote(INote measureElement,
                               double canvasLeft,
-                              double canvasTop,
-                              ISelection<IUniqueScoreElement> selection) : base(measureElement, selection)
+                              double canvasTop) : base(measureElement)
         {
             this.measureElement = measureElement;
             CanvasLeft = canvasLeft;
@@ -58,8 +57,7 @@
         }
         public BaseVisualNote(IChord measureElement,
                               double canvasLeft,
-                              double canvasTop,
-                              ISelection<IUniqueScoreElement> selection) : base(measureElement, selection)
+                              double canvasTop) : base(measureElement)
         {
             this.measureElement = measureElement;
             CanvasLeft = canvasLeft;
@@ -78,11 +76,7 @@
         }
         public override IEnumerable<BaseContentWrapper> GetContentWrappers()
         {
-            yield return new SimpleGhost(this);
-        }
-        public override bool Respond(XY point)
-        {
-            return BoundingBox().Contains(point);
+            yield break;
         }
         public override BoundingBox BoundingBox()
         {

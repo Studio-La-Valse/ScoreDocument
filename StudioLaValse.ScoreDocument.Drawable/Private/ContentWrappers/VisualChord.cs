@@ -67,7 +67,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                 var restLineIndex = this.chord.Line;
                 var canvasTop = canvasTopStaffGroup + staffGroup.DistanceFromTop(restStaffIndex, restLineIndex);
 
-                yield return restFactory.Build(chord, canvasLeft, canvasTop);
+                yield return restFactory.CreateContent(chord, canvasLeft, canvasTop);
                 yield break;
             }
 
@@ -115,7 +115,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                 };
                 canvasLeft += offset;
 
-                yield return noteFactory.Build(note, clef, accidental, canvasLeft, canvasTop);
+                yield return noteFactory.CreateContent(note, clef, accidental, canvasLeft, canvasTop);
 
                 previousLine = lineIndex;
                 previousStaff = noteStaffIndex;

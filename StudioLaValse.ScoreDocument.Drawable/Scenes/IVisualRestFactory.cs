@@ -12,6 +12,6 @@
         /// <param name="canvasLeft"></param>
         /// <param name="canvasTop"></param>
         /// <returns></returns>
-        BaseContentWrapper Build(IChord element, double canvasLeft, double canvasTop);
+        BaseContentWrapper CreateContent(IChord element, double canvasLeft, double canvasTop);
     }
 }

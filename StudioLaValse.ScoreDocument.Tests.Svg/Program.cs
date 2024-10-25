@@ -44,13 +44,12 @@ internal class Program
         styleTemplate.PageStyleTemplate.PageHeight = canvasHeight;
         var scoreDocument = Implementation.ScoreDocument.Create(styleTemplate).BuildFromXml(document);
         
-        var selection = SelectionManager<IUniqueScoreElement>.CreateDefault(e => e.Id);
         var glyphLibrary = new GenericGlyphLibrary(scoreDocument);
-        var restFactory = new VisualRestFactory(selection, glyphLibrary);
-        var noteFactory = new VisualNoteFactory(selection, glyphLibrary);
+        var restFactory = new VisualRestFactory(glyphLibrary);
+        var noteFactory = new VisualNoteFactory(glyphLibrary);
         var noteGroupFactory = new VisualNoteGroupFactory(noteFactory, restFactory, glyphLibrary);
-        var instrumentMeasureFactory = new VisualInstrumentMeasureFactory(selection, noteGroupFactory, glyphLibrary);
-        var systemMeasureFactory = new VisualSystemMeasureFactory(selection, instrumentMeasureFactory);
+        var instrumentMeasureFactory = new VisualInstrumentMeasureFactory(noteGroupFactory, glyphLibrary);
+        var systemMeasureFactory = new VisualSystemMeasureFactory(instrumentMeasureFactory);
         var visualStaffFactory = new VisualStaffSystemFactory(systemMeasureFactory, glyphLibrary);
         var visualPageFactory = new VisualPageFactory(visualStaffFactory);
         var sceneFactory = new SinglePageViewSceneFactory(0, visualPageFactory);
@@ -58,7 +57,8 @@ internal class Program
         canvasPainter.DrawContentWrapper(scene);
         canvasPainter.FinishDrawing();
 
-        var svgContent = """
+        var svgContent = 
+            """
             <style>
                 @font-face {
                     font-family: Bravura;
@@ -160,14 +160,17 @@ public class NewHTMLCanvasPainter : HTMLCanvasPainter
         var x = $"{text.OriginX}".Replace(",", ".");
 
         // Formula below came from trial and error. I don't know why it works or why it is even needed but here we are.
-        // The Bravura fonts somehow need adjustment.. Its not necessary for other canvas types which makes it more confusing.
+        // The Bravura fonts somehow needs adjustment.. Its not necessary for other canvas types which makes it more confusing.
         var y = text.FontFamily.Name switch
         {
             "Bravura" => $"{text.OriginY - (text.FontSize * 0.14)}".Replace(",", "."),
             _ => $"{text.OriginY}".Replace(",", ".")
         };
 
-        var fontStyle = $"style=\"fill:{text.Color.Svg()};\" font-size=\"{text.FontSize.ToString().Replace(",", ".")}px\" font-family=\"{text.FontFamily.Name}\"";
+        var fontStyle = 
+            $"""
+            style=fill:{text.Color.Svg()};" font-size="{text.FontSize.ToString().Replace(",", ".")}px" font-family="{text.FontFamily.Name}"
+            """;
 
         var alignmentBase = text.VerticalAlignment switch
         {
@@ -185,9 +188,11 @@ public class NewHTMLCanvasPainter : HTMLCanvasPainter
         };
 
         var t =
-            $"<text alignment-baseline=\"{alignmentBase}\" text-anchor=\"{textAnchor}\" x=\"{x}\" y=\"{y}\" {fontStyle} visibility=\"visible\">" +
-                text.Text +
-            "</text>";
+            $"""
+            <text alignment-baseline="{alignmentBase}" text-anchor="{textAnchor}" x="{x}" y="{y}" {fontStyle} visibility="visible">
+                {text.Text}
+            </text>
+            """;
 
         canvas.Add(t);
 

@@ -1,5 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Layout;
-using StudioLaValse.ScoreDocument.StyleTemplates;
+using StudioLaValse.ScoreDocument.Models.Classes;
 
 namespace StudioLaValse.ScoreDocument.Private
 {
@@ -15,7 +15,7 @@ namespace StudioLaValse.ScoreDocument.Private
 
         public ReadonlyTemplateProperty<double> Scale => scoreDocument.Scale;
 
-        public ReadonlyTemplateProperty<ColorARGB> Color => scoreDocument.PageForegroundColor;
+        public ReadonlyTemplateProperty<ColorARGBClass> Color => scoreDocument.PageForegroundColor;
 
         public StaffSystemLayout(ReadonlyTemplateProperty<double> paddingBottom, IScoreDocumentLayout scoreDocument)
         {

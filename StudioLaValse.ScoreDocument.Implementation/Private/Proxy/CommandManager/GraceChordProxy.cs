@@ -1,5 +1,7 @@
 ﻿using StudioLaValse.ScoreDocument.Implementation.Private.Interfaces;
 using StudioLaValse.ScoreDocument.Implementation.Private.Memento;
+using StudioLaValse.ScoreDocument.Models.Classes;
+using StudioLaValse.ScoreDocument.Models.V1.StyleTemplates;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManager
 {
@@ -25,7 +27,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManage
 
         public ReadonlyTemplateProperty<double> Scale => RestLayout.Scale;
 
-        public TemplateProperty<ColorARGB> Color => RestLayout.Color.WithRerender(notifyEntityChanged, graceChord, commandManager);
+        public TemplateProperty<ColorARGBClass> Color => RestLayout.Color.WithRerender(notifyEntityChanged, graceChord, commandManager);
 
         public TemplateProperty<int> StaffIndex => RestLayout.StaffIndex.WithRerender(notifyEntityChanged, graceChord.HostMeasure.HostMeasure.HostDocument, commandManager);
 

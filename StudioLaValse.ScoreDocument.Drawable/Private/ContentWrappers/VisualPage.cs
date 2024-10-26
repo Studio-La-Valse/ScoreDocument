@@ -7,7 +7,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         private readonly IPage page;
         private readonly double canvasLeft;
         private readonly double canvasTop;
-        private readonly IVisualStaffSystemFactory staffSystemContentFactory;
+        private readonly IVisualStaffSystemScene staffSystemContentFactory;
 
         public ColorARGB PageColor => page.PageColor.Value.FromPrimitive();
         public ColorARGB ForegroundColor => page.ForegroundColor.Value.FromPrimitive();
@@ -22,7 +22,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         public VisualPage(IPage page,
                           double canvasLeft,
                           double canvasTop,
-                          IVisualStaffSystemFactory staffSystemContentFactory)
+                          IVisualStaffSystemScene staffSystemContentFactory)
         {
             this.page = page;
             this.canvasLeft = canvasLeft;
@@ -72,7 +72,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                 length = Math.Min(length, measureLengthSum);
 
                 var staffSystemLayout = staffSystem;
-                var visualSystem = staffSystemContentFactory.CreateContent(staffSystem, canvasLeft, canvasTop, length);
+                var visualSystem = staffSystemContentFactory.Create(staffSystem, canvasLeft, canvasTop, length);
                 yield return visualSystem;
             }
         }

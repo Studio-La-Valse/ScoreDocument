@@ -1,4 +1,6 @@
-﻿using StudioLaValse.ScoreDocument.Models.Base;
+﻿using StudioLaValse.ScoreDocument.Models.Classes;
+using StudioLaValse.ScoreDocument.Models.V1;
+using StudioLaValse.ScoreDocument.Models.V1.StyleTemplates;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
 {
@@ -8,18 +10,21 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
 
         public abstract ValueTemplateProperty<int> _StaffIndex { get; }
         public abstract ValueTemplateProperty<AccidentalDisplay> _ForceAccidental { get; }
-        public abstract ValueTemplateProperty<ColorARGB> _Color { get; }
+        public abstract ReferenceTemplateProperty<ColorARGBClass> _Color { get; }
+
+        public ReadonlyTemplateProperty<double> Scale { get; }
+
 
         public TemplateProperty<AccidentalDisplay> ForceAccidental => _ForceAccidental;
-        public ReadonlyTemplateProperty<double> Scale => new ReadonlyTemplatePropertyFromFunc<double>(() => graceGroupLayout.Scale);
         public TemplateProperty<int> StaffIndex => _StaffIndex;
-        public ReadonlyTemplateProperty<double> XOffset => new ReadonlyTemplatePropertyFromFunc<double>(() => 0);
-        public TemplateProperty<ColorARGB> Color => _Color;
+        public TemplateProperty<ColorARGBClass> Color => _Color;
 
 
-        public GraceNoteLayout(IGraceGroupLayout graceGroupLayout)
+        public GraceNoteLayout(UserGraceGroupLayout graceGroupLayout)
         {
             this.graceGroupLayout = graceGroupLayout;
+
+            Scale = new ReadonlyTemplatePropertyFromFunc<double>(() => graceGroupLayout.Scale);
         }
 
 
@@ -33,7 +38,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
 
             _StaffIndex.Field = memento.StaffIndex;
             _ForceAccidental.Field = (AccidentalDisplay?)memento.ForceAccidental;
-            _Color.Field = memento.Color?.Convert();
+            _Color.Field = memento.Color;
         }
         public void ApplyMemento(GraceNoteLayoutModel? memento)
         {
@@ -52,13 +57,13 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
     {
         public override ValueTemplateProperty<int> _StaffIndex { get; }
         public override ValueTemplateProperty<AccidentalDisplay> _ForceAccidental { get; }
-        public override ValueTemplateProperty<ColorARGB> _Color { get; }
+        public override ReferenceTemplateProperty<ColorARGBClass> _Color { get; }
 
-        public AuthorGraceNoteLayout(IGraceGroupLayout graceGroupLayout, PageStyleTemplate pageStyleTemplate) : base(graceGroupLayout)
+        public AuthorGraceNoteLayout(UserGraceGroupLayout graceGroupLayout, PageStyleTemplate pageStyleTemplate) : base(graceGroupLayout)
         {
             _StaffIndex = new ValueTemplateProperty<int>(() => 0);
             _ForceAccidental = new ValueTemplateProperty<AccidentalDisplay>(() => AccidentalDisplay.Default);
-            _Color = new ValueTemplateProperty<ColorARGB>(() => pageStyleTemplate.ForegroundColor);
+            _Color = new ReferenceTemplateProperty<ColorARGBClass>(() => pageStyleTemplate.ForegroundColor);
         }
     }
 
@@ -69,15 +74,15 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
 
         public override ValueTemplateProperty<int> _StaffIndex { get; }
         public override ValueTemplateProperty<AccidentalDisplay> _ForceAccidental { get; }
-        public override ValueTemplateProperty<ColorARGB> _Color { get; }
+        public override ReferenceTemplateProperty<ColorARGBClass> _Color { get; }
 
-        public UserGraceNoteLayout(Guid guid, IGraceGroupLayout graceGroupLayout, AuthorGraceNoteLayout authorGraceNoteLayout) : base(graceGroupLayout)
+        public UserGraceNoteLayout(Guid guid, UserGraceGroupLayout graceGroupLayout, AuthorGraceNoteLayout authorGraceNoteLayout) : base(graceGroupLayout)
         {
             this.guid = guid;
 
             _StaffIndex = new ValueTemplateProperty<int>(() => authorGraceNoteLayout.StaffIndex);
             _ForceAccidental = new ValueTemplateProperty<AccidentalDisplay>(() => authorGraceNoteLayout.ForceAccidental);
-            _Color = new ValueTemplateProperty<ColorARGB>(() => authorGraceNoteLayout.Color);
+            _Color = new ReferenceTemplateProperty<ColorARGBClass>(() => authorGraceNoteLayout.Color);
         }
     }
 }

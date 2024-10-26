@@ -1,6 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.StyleTemplates;
-
-namespace StudioLaValse.ScoreDocument.Layout
+﻿namespace StudioLaValse.ScoreDocument.Layout
 {
     /// <summary>
     /// A chord layout. May be implemented by a regular chord or a grace chord.

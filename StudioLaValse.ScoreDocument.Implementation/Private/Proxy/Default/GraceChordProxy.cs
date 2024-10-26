@@ -1,10 +1,4 @@
-﻿using StudioLaValse.CommandManager;
-using StudioLaValse.Drawable;
-using StudioLaValse.ScoreDocument.Implementation.Private;
-using StudioLaValse.ScoreDocument.Implementation.Private.Interfaces;
-using StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManager;
-
-namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.Default
+﻿namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.Default
 {
     internal class GraceChordProxy : IGraceChord
     {
@@ -24,7 +18,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.Default
 
         public IRestLayout RestLayout => layoutSelector.RestLayout(graceChord);
 
-        public TemplateProperty<ColorARGB> Color => RestLayout.Color;
+        public TemplateProperty<ColorARGBClass> Color => RestLayout.Color;
 
         public TemplateProperty<int> StaffIndex => RestLayout.StaffIndex;
 

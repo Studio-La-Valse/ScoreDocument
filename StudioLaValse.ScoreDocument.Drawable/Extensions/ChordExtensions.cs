@@ -19,7 +19,7 @@
         {
             var fraction = maxStart - minStart;
 
-            return fraction == 0 ? throw new InvalidOperationException("Cannot remap numers if the starting min and max values are equal.") : minEnd + (maxEnd - minEnd) * ((value - minStart) / fraction);
+            return fraction == 0 ? throw new InvalidOperationException("Cannot remap numbers if the starting min and max values are equal.") : minEnd + (maxEnd - minEnd) * ((value - minStart) / fraction);
         }
 
         /// <summary>
@@ -31,7 +31,7 @@
         /// <returns></returns>
         public static Dictionary<Position, (double, double)> Remap(this Dictionary<Position, (double, double)> positions, double canvasLeft, double canvasRight)
         {
-            if (!positions.Any())
+            if (positions.Count == 0)
             {
                 return positions; 
             }

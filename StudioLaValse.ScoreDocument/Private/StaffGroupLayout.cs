@@ -1,5 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Layout;
-using StudioLaValse.ScoreDocument.StyleTemplates;
+using StudioLaValse.ScoreDocument.Models.Classes;
 
 namespace StudioLaValse.ScoreDocument.Private
 {
@@ -15,7 +15,7 @@ namespace StudioLaValse.ScoreDocument.Private
 
         public ReadonlyTemplateProperty<double> HorizontalStaffLineThickness { get; }
 
-        public ReadonlyTemplateProperty<ColorARGB> Color { get; }
+        public ReadonlyTemplateProperty<ColorARGBClass> Color { get; }
 
         public ReadonlyTemplateProperty<double> Scale { get; }
 
@@ -25,7 +25,7 @@ namespace StudioLaValse.ScoreDocument.Private
             ReadonlyTemplateProperty<Visibility> collapsed,
             ReadonlyTemplateProperty<double> horizontalStaffLineThickness,
             ReadonlyTemplateProperty<double> verticalStaffLineThickness,
-            ReadonlyTemplateProperty<ColorARGB> color,
+            ReadonlyTemplateProperty<ColorARGBClass> color,
             ReadonlyTemplateProperty<double> scale)
         {
             NumberOfStaves = numberOfStaves;

@@ -1,4 +1,6 @@
 ﻿using StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManager;
+using StudioLaValse.ScoreDocument.Models.V1;
+using StudioLaValse.ScoreDocument.Models.V1.StyleTemplates;
 
 namespace StudioLaValse.ScoreDocument.Implementation;
 

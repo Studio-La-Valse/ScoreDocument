@@ -3,6 +3,8 @@ using StudioLaValse.ScoreDocument.Implementation.Private.Layout;
 using StudioLaValse.ScoreDocument.Implementation.Private.Memento;
 using StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManager;
 using StudioLaValse.ScoreDocument.Implementation.Private.Proxy.Default;
+using StudioLaValse.ScoreDocument.Models.V1;
+using StudioLaValse.ScoreDocument.Models.V1.StyleTemplates;
 
 namespace StudioLaValse.ScoreDocument.Implementation;
 

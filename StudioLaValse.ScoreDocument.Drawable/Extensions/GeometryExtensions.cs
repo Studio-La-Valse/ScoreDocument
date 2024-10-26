@@ -12,7 +12,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         /// </summary>
         /// <param name="color"></param>
         /// <returns></returns>
-        public static ColorARGB FromPrimitive(this StyleTemplates.ColorARGB color)
+        public static ColorARGB FromPrimitive(this ScoreDocument.Models.Classes.ColorARGBClass color)
         {
             return new ColorARGB(color.A, color.R, color.G, color.B);
         }

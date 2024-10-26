@@ -1,5 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Layout;
-using ColorARGB = StudioLaValse.ScoreDocument.StyleTemplates.ColorARGB;
+using StudioLaValse.ScoreDocument.Models.Classes;
 
 namespace StudioLaValse.ScoreDocument.Private
 {
@@ -17,8 +17,8 @@ namespace StudioLaValse.ScoreDocument.Private
         public ReadonlyTemplateProperty<double> MarginTop => Layout.MarginTop;
         public ReadonlyTemplateProperty<int> PageHeight => Layout.PageHeight;
         public ReadonlyTemplateProperty<int> PageWidth => Layout.PageWidth;
-        public ReadonlyTemplateProperty<ColorARGB> PageColor => Layout.PageColor;
-        public ReadonlyTemplateProperty<ColorARGB> ForegroundColor => Layout.ForegroundColor;
+        public ReadonlyTemplateProperty<ColorARGBClass> PageColor => Layout.PageColor;
+        public ReadonlyTemplateProperty<ColorARGBClass> ForegroundColor => Layout.ForegroundColor;
         public ReadonlyTemplateProperty<double> FirstSystemIndent => Layout.FirstSystemIndent;
         public ReadonlyTemplateProperty<double> Scale => scoreDocumentLayout.Scale;
 

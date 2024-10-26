@@ -1,7 +1,8 @@
 ﻿using StudioLaValse.ScoreDocument.Implementation.Private.Interfaces;
 using StudioLaValse.ScoreDocument.Implementation.Private.Layout;
 using StudioLaValse.ScoreDocument.Implementation.Private.Memento;
-using StudioLaValse.ScoreDocument.Models;
+using StudioLaValse.ScoreDocument.Models.V1;
+using StudioLaValse.ScoreDocument.Models.V1.StyleTemplates;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Private
 {
@@ -115,9 +116,10 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
         public void ApplyGrace(RythmicDuration rythmicDuration, params Pitch[] pitches)
         {
             // TODO: leave duration unset?
-            var authorLayout = new AuthorGraceGroupLayout(documentStyleTemplate.GraceGroupStyleTemplate, Voice);
+            var ribbonLayout = hostBlock.RibbonMeasure.HostRibbon.UserLayout;
+            var authorLayout = new AuthorGraceGroupLayout(documentStyleTemplate.GraceGroupStyleTemplate, Voice, ribbonLayout);
             authorLayout.ChordDuration.Value = rythmicDuration;
-            var userLayout = new UserGraceGroupLayout(authorLayout, Guid.NewGuid(), documentStyleTemplate.GraceGroupStyleTemplate);
+            var userLayout = new UserGraceGroupLayout(authorLayout, Guid.NewGuid(), documentStyleTemplate.GraceGroupStyleTemplate, ribbonLayout);
             var graceGroup = new GraceGroup(this, HostMeasure, documentStyleTemplate, authorLayout, userLayout, keyGenerator, Guid.NewGuid());
             graceGroup.Append(pitches);
             ApplyGrace(graceGroup);
@@ -191,8 +193,9 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
             GraceGroup = null;
             if (memento.GraceGroup is not null)
             {
-                var authorLayout = new AuthorGraceGroupLayout(documentStyleTemplate.GraceGroupStyleTemplate, Voice);
-                var userLayout = new UserGraceGroupLayout(authorLayout, Guid.NewGuid(), documentStyleTemplate.GraceGroupStyleTemplate);
+                var ribbonLayout = hostBlock.RibbonMeasure.HostRibbon.UserLayout;
+                var authorLayout = new AuthorGraceGroupLayout(documentStyleTemplate.GraceGroupStyleTemplate, Voice, ribbonLayout);
+                var userLayout = new UserGraceGroupLayout(authorLayout, Guid.NewGuid(), documentStyleTemplate.GraceGroupStyleTemplate, ribbonLayout);
                 var graceGroup = new GraceGroup(this, HostMeasure, documentStyleTemplate, authorLayout, userLayout, keyGenerator, memento.GraceGroup.Id);
                 GraceGroup = graceGroup;
                 graceGroup.ApplyMemento(memento.GraceGroup);

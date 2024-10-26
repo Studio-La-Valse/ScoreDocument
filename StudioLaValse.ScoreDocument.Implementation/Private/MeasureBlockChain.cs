@@ -1,4 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Implementation.Private.Layout;
+using StudioLaValse.ScoreDocument.Models.V1.StyleTemplates;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Private
 {

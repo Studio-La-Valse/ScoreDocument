@@ -1,8 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Implementation.Private.Interfaces;
-using StudioLaValse.ScoreDocument.Implementation.Private.Memento;
-using StudioLaValse.ScoreDocument.Models;
-
-namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManager;
+﻿namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManager;
 
 internal class NoteProxy(Note source, ICommandManager commandManager, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged, ILayoutSelector layoutSelector) : INote
 {
@@ -39,7 +35,7 @@ internal class NoteProxy(Note source, ICommandManager commandManager, INotifyEnt
 
     public TemplateProperty<int> StaffIndex => Layout.StaffIndex.WithRerender(notifyEntityChanged, source.HostMeasure.HostMeasure.HostDocument, commandManager);
 
-    public TemplateProperty<ColorARGB> Color => Layout.Color.WithRerender(notifyEntityChanged, source, commandManager);
+    public TemplateProperty<ColorARGBClass> Color => Layout.Color.WithRerender(notifyEntityChanged, source, commandManager);
 
     public ReadonlyTemplateProperty<double> Scale => Layout.Scale;
 

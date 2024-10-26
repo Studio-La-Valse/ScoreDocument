@@ -1,4 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.StyleTemplates;
+﻿using StudioLaValse.ScoreDocument.Models.Classes;
 
 namespace StudioLaValse.ScoreDocument.Layout
 {
@@ -10,7 +10,7 @@ namespace StudioLaValse.ScoreDocument.Layout
         /// <summary>
         /// Get the color of the rest.
         /// </summary>
-        TemplateProperty<ColorARGB> Color { get; }
+        TemplateProperty<ColorARGBClass> Color { get; }
 
         /// <summary>
         /// Define the scale of the rest. Inherited from containing <see cref="IMeasureBlockLayout"/>.

@@ -1,7 +1,7 @@
 ﻿using StudioLaValse.Drawable;
-using StudioLaValse.ScoreDocument.Models;
+using StudioLaValse.ScoreDocument.Models.V1;
+using StudioLaValse.ScoreDocument.Models.V1.StyleTemplates;
 using StudioLaValse.ScoreDocument.MusicXml;
-using StudioLaValse.ScoreDocument.StyleTemplates;
 using System.Xml.Linq;
 
 namespace StudioLaValse.ScoreDocument.Tests;

@@ -1,11 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Implementation.Private;
-using StudioLaValse.ScoreDocument.Implementation.Private.Interfaces;
-using StudioLaValse.ScoreDocument.Layout;
-using StudioLaValse.ScoreDocument.Models;
-using StudioLaValse.ScoreDocument.Models.Base;
-using System.Diagnostics.CodeAnalysis;
-
-namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.Default
+﻿namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.Default
 {
     internal class InstrumentMeasureProxy : IInstrumentMeasure
     {

@@ -1,5 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Layout;
-using StudioLaValse.ScoreDocument.StyleTemplates;
+using StudioLaValse.ScoreDocument.Models.Classes;
 
 namespace StudioLaValse.ScoreDocument.Private
 {
@@ -27,7 +27,7 @@ namespace StudioLaValse.ScoreDocument.Private
 
         public TemplateProperty<AccidentalDisplay> ForceAccidental => noteReader.ForceAccidental;
 
-        public TemplateProperty<ColorARGB> Color => noteReader.Color;
+        public TemplateProperty<ColorARGBClass> Color => noteReader.Color;
 
         public ReadonlyTemplateProperty<double> Scale => noteReader.Scale;
 

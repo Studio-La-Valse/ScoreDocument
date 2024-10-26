@@ -1,4 +1,6 @@
-﻿namespace StudioLaValse.ScoreDocument.Implementation.Private
+﻿using StudioLaValse.ScoreDocument.Models.V1.StyleTemplates;
+
+namespace StudioLaValse.ScoreDocument.Implementation.Private
 {
     internal sealed class ScoreContentTable
     {

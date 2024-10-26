@@ -1,9 +1,4 @@
-﻿global using StudioLaValse.CommandManager;
-using StudioLaValse.Drawable;
-using StudioLaValse.ScoreDocument.Implementation.Private.Interfaces;
-using StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManager;
-
-namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.Default
+﻿namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.Default
 {
     internal class ChordProxy : IChord
     {
@@ -27,7 +22,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.Default
 
         public IRestLayout RestLayout => layoutSelector.RestLayout(source);
 
-        public TemplateProperty<ColorARGB> Color => RestLayout.Color;
+        public TemplateProperty<ColorARGBClass> Color => RestLayout.Color;
 
         public ReadonlyTemplateProperty<double> Scale => RestLayout.Scale;
 

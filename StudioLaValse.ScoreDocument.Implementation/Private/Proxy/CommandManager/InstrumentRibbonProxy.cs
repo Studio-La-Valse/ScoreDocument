@@ -1,6 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Implementation.Private.Interfaces;
-
-namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManager
+﻿namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManager
 {
     internal class InstrumentRibbonProxy : IInstrumentRibbon
     {

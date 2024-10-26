@@ -6,10 +6,10 @@ namespace StudioLaValse.ScoreDocument.Models.Classes
     public class RythmicDurationClass
     {
         [PowerOfTwo]
-        [Range(1, int.MaxValue)]
+        [Range(1, Constants.SmallestStep)]
         public required int PowerOfTwo { get; set; }
 
-        [Range(0, int.MaxValue)]
+        [Range(0, 12)]
         public required int Dots { get; set; }
     }
 }

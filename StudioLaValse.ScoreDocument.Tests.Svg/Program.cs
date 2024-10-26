@@ -1,26 +1,16 @@
-﻿using StudioLaValse.Drawable;
-using StudioLaValse.Drawable.Interaction.Selection;
-using StudioLaValse.Drawable.Text;
+﻿using StudioLaValse.Drawable.Text;
 using StudioLaValse.ScoreDocument.Drawable.Scenes;
-using StudioLaValse.ScoreDocument.Drawable;
-using StudioLaValse.ScoreDocument.Implementation;
 using StudioLaValse.ScoreDocument.Layout;
-using StudioLaValse.ScoreDocument.Models;
-using StudioLaValse.ScoreDocument.StyleTemplates;
 using StudioLaValse.ScoreDocument.MusicXml;
-using StudioLaValse.CommandManager;
 using System.Reflection;
 using System.Xml.Linq;
 using StudioLaValse.Drawable.HTML;
 using StudioLaValse.ScoreDocument.GlyphLibrary;
 using StudioLaValse.Drawable.Extensions;
-using StudioLaValse.Drawable.BitmapPainters;
 using StudioLaValse.Drawable.DrawableElements;
-using StudioLaValse.Geometry;
 using System.Diagnostics;
-using System.IO;
 using StudioLaValse.Drawable.HTML.Extensions;
-using StudioLaValse.ScoreDocument.Core;
+using StudioLaValse.ScoreDocument.Models.V1.StyleTemplates;
 
 namespace StudioLaValse.ScoreDocument.Tests.Svg;
 
@@ -45,14 +35,14 @@ internal class Program
         var scoreDocument = Implementation.ScoreDocument.Create(styleTemplate).BuildFromXml(document);
         
         var glyphLibrary = new GenericGlyphLibrary(scoreDocument);
-        var restFactory = new VisualRestFactory(glyphLibrary);
-        var noteFactory = new VisualNoteFactory(glyphLibrary);
-        var noteGroupFactory = new VisualNoteGroupFactory(noteFactory, restFactory, glyphLibrary);
-        var instrumentMeasureFactory = new VisualInstrumentMeasureFactory(noteGroupFactory, glyphLibrary);
-        var systemMeasureFactory = new VisualSystemMeasureFactory(instrumentMeasureFactory);
-        var visualStaffFactory = new VisualStaffSystemFactory(systemMeasureFactory, glyphLibrary);
-        var visualPageFactory = new VisualPageFactory(visualStaffFactory);
-        var sceneFactory = new SinglePageViewSceneFactory(0, visualPageFactory);
+        var restFactory = new VisualRestScene(glyphLibrary);
+        var noteFactory = new VisualNoteScene(glyphLibrary);
+        var noteGroupFactory = new VisualNoteGroupScene(noteFactory, restFactory, glyphLibrary);
+        var instrumentMeasureFactory = new VisualInstrumentMeasureScene(noteGroupFactory, glyphLibrary);
+        var systemMeasureFactory = new VisualSystemMeasureScene(instrumentMeasureFactory);
+        var visualStaffFactory = new VisualStaffSystemScene(systemMeasureFactory, glyphLibrary);
+        var visualPageFactory = new VisualPageScene(visualStaffFactory);
+        var sceneFactory = new SinglePageViewScene(0, visualPageFactory);
         var scene = new VisualScoreDocumentScene(sceneFactory, scoreDocument);
         canvasPainter.DrawContentWrapper(scene);
         canvasPainter.FinishDrawing();

@@ -1,4 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.StyleTemplates;
+﻿using StudioLaValse.ScoreDocument.Models.Classes;
 
 namespace StudioLaValse.ScoreDocument.Layout
 {
@@ -40,6 +40,6 @@ namespace StudioLaValse.ScoreDocument.Layout
         /// <summary>
         /// Get the color.
         /// </summary>
-        ReadonlyTemplateProperty<ColorARGB> Color { get; }
+        ReadonlyTemplateProperty<ColorARGBClass> Color { get; }
     }
 }

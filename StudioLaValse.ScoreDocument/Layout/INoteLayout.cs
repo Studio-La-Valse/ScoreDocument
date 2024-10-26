@@ -1,4 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.StyleTemplates;
+﻿using StudioLaValse.ScoreDocument.Models.Classes;
 
 namespace StudioLaValse.ScoreDocument.Layout
 {
@@ -25,6 +25,6 @@ namespace StudioLaValse.ScoreDocument.Layout
         /// <summary>
         /// The color of the note.
         /// </summary>
-        TemplateProperty<ColorARGB> Color { get; }
+        TemplateProperty<ColorARGBClass> Color { get; }
     }
 }

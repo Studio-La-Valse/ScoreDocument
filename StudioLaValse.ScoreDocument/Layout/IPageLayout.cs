@@ -1,4 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.StyleTemplates;
+﻿using StudioLaValse.ScoreDocument.Models.Classes;
 
 namespace StudioLaValse.ScoreDocument.Layout
 {
@@ -40,12 +40,12 @@ namespace StudioLaValse.ScoreDocument.Layout
         /// <summary>
         /// The color of the page.
         /// </summary>
-        ReadonlyTemplateProperty<ColorARGB> PageColor { get; }
+        ReadonlyTemplateProperty<ColorARGBClass> PageColor { get; }
 
         /// <summary>
         /// The content color of the page.
         /// </summary>
-        ReadonlyTemplateProperty<ColorARGB> ForegroundColor { get; }
+        ReadonlyTemplateProperty<ColorARGBClass> ForegroundColor { get; }
 
         /// <summary>
         /// The first system indent.

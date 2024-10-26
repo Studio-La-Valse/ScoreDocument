@@ -1,6 +1,7 @@
 ﻿using StudioLaValse.ScoreDocument.Implementation.Private.Interfaces;
 using StudioLaValse.ScoreDocument.Implementation.Private.Layout;
 using StudioLaValse.ScoreDocument.Implementation.Private.Memento;
+using StudioLaValse.ScoreDocument.Models.V1;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Private
 {
@@ -47,7 +48,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                 Id = Guid,
                 ForceAccidental = (int?)AuthorLayout._ForceAccidental.Field,
                 StaffIndex = AuthorLayout._StaffIndex.Field,
-                Color = AuthorLayout._Color.Field?.Convert(),
+                Color = AuthorLayout._Color.Field,
             };
         }
 
@@ -59,7 +60,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                 NoteId = Guid,
                 ForceAccidental = (int?)UserLayout._ForceAccidental.Field,
                 StaffIndex = UserLayout._StaffIndex.Field,
-                Color = UserLayout._Color.Field?.Convert(),
+                Color = UserLayout._Color.Field,
             };
         }
 
@@ -72,7 +73,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                 Id = Guid,
                 ForceAccidental = (int?)AuthorLayout._ForceAccidental.Field,
                 StaffIndex = AuthorLayout._StaffIndex.Field,
-                Color = AuthorLayout._Color.Field?.Convert()
+                Color = AuthorLayout._Color.Field
             };
         }
 

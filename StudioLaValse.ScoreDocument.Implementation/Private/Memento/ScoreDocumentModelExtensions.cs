@@ -1,4 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Implementation.Private.Extensions;
+using StudioLaValse.ScoreDocument.Models.V1;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Private.Memento;
 

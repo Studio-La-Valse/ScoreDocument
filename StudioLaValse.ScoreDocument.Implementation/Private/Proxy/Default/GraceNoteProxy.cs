@@ -1,5 +1,6 @@
 ﻿using StudioLaValse.ScoreDocument.Implementation.Private;
 using StudioLaValse.ScoreDocument.Implementation.Private.Interfaces;
+using StudioLaValse.ScoreDocument.Models.V1.StyleTemplates;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.Default
 {
@@ -15,8 +16,6 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.Default
 
         public ReadonlyTemplateProperty<double> Scale => Layout.Scale;
 
-        public ReadonlyTemplateProperty<double> XOffset => Layout.XOffset;
-
         public Pitch Pitch
         {
             get => graceNote.Pitch;
@@ -30,7 +29,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.Default
 
         public TemplateProperty<int> StaffIndex => Layout.StaffIndex;
 
-        public TemplateProperty<ColorARGB> Color => Layout.Color;
+        public TemplateProperty<ColorARGBClass> Color => Layout.Color;
 
 
 

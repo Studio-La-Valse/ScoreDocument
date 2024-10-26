@@ -1,10 +1,12 @@
-﻿using StudioLaValse.ScoreDocument.Models.Base;
+﻿using StudioLaValse.ScoreDocument.Models.Classes;
+using StudioLaValse.ScoreDocument.Models.V1;
+using StudioLaValse.ScoreDocument.Models.V1.StyleTemplates;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
 {
     internal abstract class RestLayout : IRestLayout
     {
-        public abstract ValueTemplateProperty<ColorARGB> _Color { get; }
+        public abstract ReferenceTemplateProperty<ColorARGBClass> _Color { get; }
         public abstract ValueTemplateProperty<int> _StaffIndex { get; }
         public abstract ValueTemplateProperty<int> _Line { get; }
 
@@ -12,7 +14,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
         public ReadonlyTemplateProperty<double> Scale { get; }
 
 
-        public TemplateProperty<ColorARGB> Color => _Color;
+        public TemplateProperty<ColorARGBClass> Color => _Color;
         public TemplateProperty<int> StaffIndex => _StaffIndex;
         public TemplateProperty<int> Line => _Line;
 
@@ -43,7 +45,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
                 return;
             }
 
-            _Color.Field = memento.Color?.Convert();
+            _Color.Field = memento.Color;
             _StaffIndex.Field = memento.StaffIndex;
             _Line.Field = memento.Line;
         }
@@ -51,7 +53,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
 
     internal class AuthorRestLayout : RestLayout
     {
-        public override ValueTemplateProperty<ColorARGB> _Color { get; }
+        public override ReferenceTemplateProperty<ColorARGBClass> _Color { get; }
 
         public override ValueTemplateProperty<int> _StaffIndex { get; }
 
@@ -59,14 +61,14 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
 
         public AuthorRestLayout(UserMeasureBlockLayout userMeasureBlockLayout, PageStyleTemplate pageStyleTemplate) : base(userMeasureBlockLayout)
         {
-            _Color = new ValueTemplateProperty<ColorARGB>(() => pageStyleTemplate.ForegroundColor);
+            _Color = new ReferenceTemplateProperty<ColorARGBClass>(() => pageStyleTemplate.ForegroundColor);
             _StaffIndex = new ValueTemplateProperty<int>(() => 0);
             _Line = new ValueTemplateProperty<int>(() => 4);
         }
 
         public AuthorRestLayout(UserGraceGroupLayout userMeasureBlockLayout, PageStyleTemplate pageStyleTemplate) : base(userMeasureBlockLayout)
         {
-            _Color = new ValueTemplateProperty<ColorARGB>(() => pageStyleTemplate.ForegroundColor);
+            _Color = new ReferenceTemplateProperty<ColorARGBClass>(() => pageStyleTemplate.ForegroundColor);
             _StaffIndex = new ValueTemplateProperty<int>(() => 0);
             _Line = new ValueTemplateProperty<int>(() => 4);
         }
@@ -76,7 +78,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
     {
         public Guid Id { get; }
 
-        public override ValueTemplateProperty<ColorARGB> _Color { get; }
+        public override ReferenceTemplateProperty<ColorARGBClass> _Color { get; }
 
         public override ValueTemplateProperty<int> _StaffIndex { get; }
 
@@ -86,7 +88,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
         {
             Id = id;
 
-            _Color = new ValueTemplateProperty<ColorARGB>(() => source.Color);
+            _Color = new ReferenceTemplateProperty<ColorARGBClass>(() => source.Color);
             _StaffIndex = new ValueTemplateProperty<int>(() => source.StaffIndex);
             _Line = new ValueTemplateProperty<int>(() => source.Line);
         }
@@ -95,7 +97,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
         {
             Id = id;
 
-            _Color = new ValueTemplateProperty<ColorARGB>(() => source.Color);
+            _Color = new ReferenceTemplateProperty<ColorARGBClass>(() => source.Color);
             _StaffIndex = new ValueTemplateProperty<int>(() => source.StaffIndex);
             _Line = new ValueTemplateProperty<int>(() => source.Line);
         }

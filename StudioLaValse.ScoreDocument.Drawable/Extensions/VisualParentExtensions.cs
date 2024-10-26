@@ -11,7 +11,7 @@
         /// <param name="visualInstrumentMeasureFactory"></param>
         /// <param name="selection"></param>
         /// <returns></returns>
-        public static IVisualInstrumentMeasureFactory UseSelection(this IVisualInstrumentMeasureFactory visualInstrumentMeasureFactory, ISelection<IUniqueScoreElement> selection)
+        public static IVisualInstrumentMeasureScene UseSelection(this IVisualInstrumentMeasureScene visualInstrumentMeasureFactory, ISelection<IUniqueScoreElement> selection)
         {
             return new VisualInstrumentMeasureFactoryWithSelection(visualInstrumentMeasureFactory, selection);
         }
@@ -22,7 +22,7 @@
         /// <param name="visualNoteFactory"></param>
         /// <param name="selection"></param>
         /// <returns></returns>
-        public static IVisualNoteFactory UseSelection(this IVisualNoteFactory visualNoteFactory, ISelection<IUniqueScoreElement> selection)
+        public static IVisualNoteScene UseSelection(this IVisualNoteScene visualNoteFactory, ISelection<IUniqueScoreElement> selection)
         {
             return new VisualNoteFactoryWithSelection(visualNoteFactory, selection);
         }
@@ -33,7 +33,7 @@
         /// <param name="visualRestFactory"></param>
         /// <param name="selection"></param>
         /// <returns></returns>
-        public static IVisualRestFactory UseSelection(this IVisualRestFactory visualRestFactory, ISelection<IUniqueScoreElement> selection)
+        public static IVisualRestScene UseSelection(this IVisualRestScene visualRestFactory, ISelection<IUniqueScoreElement> selection)
         {
             return new VisualRestFactoryWithSelection(visualRestFactory, selection);
         }
@@ -44,7 +44,7 @@
         /// <param name="visualSystemMeasureFactory"></param>
         /// <param name="selection"></param>
         /// <returns></returns>
-        public static IVisualSystemMeasureFactory UseSelection(this IVisualSystemMeasureFactory visualSystemMeasureFactory, ISelection<IUniqueScoreElement> selection)
+        public static IVisualSystemMeasureScene UseSelection(this IVisualSystemMeasureScene visualSystemMeasureFactory, ISelection<IUniqueScoreElement> selection)
         {
             return new VisualSystemMeasureFactoryWithSelection(visualSystemMeasureFactory, selection);
         }
@@ -108,80 +108,80 @@
             return visualParent;
         }
 
-        class VisualInstrumentMeasureFactoryWithSelection : IVisualInstrumentMeasureFactory
+        class VisualInstrumentMeasureFactoryWithSelection : IVisualInstrumentMeasureScene
         {
-            private readonly IVisualInstrumentMeasureFactory source;
+            private readonly IVisualInstrumentMeasureScene source;
             private readonly ISelection<IUniqueScoreElement> selection;
 
-            public VisualInstrumentMeasureFactoryWithSelection(IVisualInstrumentMeasureFactory source, ISelection<IUniqueScoreElement> selection)
+            public VisualInstrumentMeasureFactoryWithSelection(IVisualInstrumentMeasureScene source, ISelection<IUniqueScoreElement> selection)
             {
                 this.source = source;
                 this.selection = selection;
             }
-            public BaseContentWrapper CreateContent(IInstrumentMeasure source, IStaffGroup staffGroup, IReadOnlyDictionary<Position, double> positionDictionary, double canvasTop, double canvasLeft, double width)
+            public BaseContentWrapper Create(IInstrumentMeasure source, IStaffGroup staffGroup, IReadOnlyDictionary<Position, double> positionDictionary, double canvasTop, double canvasLeft, double width)
             {
                 var baseContentWrapper = this.source
-                    .CreateContent(source, staffGroup, positionDictionary, canvasTop, canvasLeft, width)
+                    .Create(source, staffGroup, positionDictionary, canvasTop, canvasLeft, width)
                     .EnsureVisualParent<IUniqueScoreElement>(source)
                     .UseSelection(selection);
                 return baseContentWrapper;
             }
         }
 
-        class VisualNoteFactoryWithSelection : IVisualNoteFactory
+        class VisualNoteFactoryWithSelection : IVisualNoteScene
         {
-            private readonly IVisualNoteFactory source;
+            private readonly IVisualNoteScene source;
             private readonly ISelection<IUniqueScoreElement> selection;
 
-            public VisualNoteFactoryWithSelection(IVisualNoteFactory source, ISelection<IUniqueScoreElement> selection)
+            public VisualNoteFactoryWithSelection(IVisualNoteScene source, ISelection<IUniqueScoreElement> selection)
             {
                 this.source = source;
                 this.selection = selection;
             }
-            public BaseContentWrapper CreateContent(INote note, Clef clef, Accidental? accidental, double canvasLeft, double canvasTop)
+            public BaseContentWrapper Create(INote note, Clef clef, Accidental? accidental, double canvasLeft, double canvasTop)
             {
                 var baseContentWrapper = source
-                    .CreateContent(note, clef, accidental, canvasLeft, canvasTop)
+                    .Create(note, clef, accidental, canvasLeft, canvasTop)
                     .EnsureVisualParent<IUniqueScoreElement>(note)
                     .UseSelection(selection);
                 return baseContentWrapper;
             }
         }
 
-        class VisualRestFactoryWithSelection : IVisualRestFactory
+        class VisualRestFactoryWithSelection : IVisualRestScene
         {
-            private readonly IVisualRestFactory source;
+            private readonly IVisualRestScene source;
             private readonly ISelection<IUniqueScoreElement> selection;
 
-            public VisualRestFactoryWithSelection(IVisualRestFactory source, ISelection<IUniqueScoreElement> selection)
+            public VisualRestFactoryWithSelection(IVisualRestScene source, ISelection<IUniqueScoreElement> selection)
             {
                 this.source = source;
                 this.selection = selection;
             }
-            public BaseContentWrapper CreateContent(IChord element, double canvasLeft, double canvasTop)
+            public BaseContentWrapper Create(IChord element, double canvasLeft, double canvasTop)
             {
                 var baseContentWrapper = source
-                    .CreateContent(element, canvasLeft, canvasTop)
+                    .Create(element, canvasLeft, canvasTop)
                     .EnsureVisualParent<IUniqueScoreElement>(element)
                     .UseSelection(selection);
                 return baseContentWrapper;
             }
         }
 
-        class VisualSystemMeasureFactoryWithSelection : IVisualSystemMeasureFactory
+        class VisualSystemMeasureFactoryWithSelection : IVisualSystemMeasureScene
         {
-            private readonly IVisualSystemMeasureFactory source;
+            private readonly IVisualSystemMeasureScene source;
             private readonly ISelection<IUniqueScoreElement> selection;
 
-            public VisualSystemMeasureFactoryWithSelection(IVisualSystemMeasureFactory source, ISelection<IUniqueScoreElement> selection)
+            public VisualSystemMeasureFactoryWithSelection(IVisualSystemMeasureScene source, ISelection<IUniqueScoreElement> selection)
             {
                 this.source = source;
                 this.selection = selection;
             }
-            public BaseContentWrapper CreateContent(IScoreMeasure scoreMeasure, IStaffSystem staffSystem, double canvasLeft, double canvasTop, double width)
+            public BaseContentWrapper Create(IScoreMeasure scoreMeasure, IStaffSystem staffSystem, double canvasLeft, double canvasTop, double width)
             {
                 var baseContentWrapper = source
-                    .CreateContent(scoreMeasure, staffSystem, canvasLeft, canvasTop, width)
+                    .Create(scoreMeasure, staffSystem, canvasLeft, canvasTop, width)
                     .EnsureVisualParent<IUniqueScoreElement>(scoreMeasure)
                     .UseSelection(selection);
                 return baseContentWrapper;

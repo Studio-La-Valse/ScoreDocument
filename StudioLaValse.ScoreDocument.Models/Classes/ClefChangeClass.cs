@@ -6,7 +6,8 @@ namespace StudioLaValse.ScoreDocument.Models.Classes
     {
         public required string Clef { get; set; }
 
-        [Range(0, int.MaxValue)]
+        //8 staves should be more than enough.
+        [Range(0, 7)]
         public required int StaffIndex { get; set; }
 
         public required PositionClass Position { get; set; }

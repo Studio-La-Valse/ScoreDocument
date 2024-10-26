@@ -1,8 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Implementation.Private.Interfaces;
-using StudioLaValse.ScoreDocument.Implementation.Private.Memento;
-using ColorARGB = StudioLaValse.ScoreDocument.StyleTemplates.ColorARGB;
-
-namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManager;
+﻿namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManager;
 
 internal class ScoreDocumentProxy(ScoreDocumentCore score, ICommandManager commandManager, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged, ILayoutSelector layoutSelector) : IScoreDocument
 {
@@ -32,9 +28,9 @@ internal class ScoreDocumentProxy(ScoreDocumentCore score, ICommandManager comma
 
 
 
-    public ReadonlyTemplateProperty<ColorARGB> PageColor => Layout.PageColor;
+    public ReadonlyTemplateProperty<ColorARGBClass> PageColor => Layout.PageColor;
 
-    public ReadonlyTemplateProperty<ColorARGB> PageForegroundColor => Layout.PageForegroundColor;
+    public ReadonlyTemplateProperty<ColorARGBClass> PageForegroundColor => Layout.PageForegroundColor;
 
     public ReadonlyTemplateProperty<double> PageMarginBottom => Layout.PageMarginBottom;
 

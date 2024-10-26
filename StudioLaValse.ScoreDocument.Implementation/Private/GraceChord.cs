@@ -1,6 +1,8 @@
 ﻿using StudioLaValse.ScoreDocument.Implementation.Private.Interfaces;
 using StudioLaValse.ScoreDocument.Implementation.Private.Layout;
 using StudioLaValse.ScoreDocument.Implementation.Private.Memento;
+using StudioLaValse.ScoreDocument.Models.V1;
+using StudioLaValse.ScoreDocument.Models.V1.StyleTemplates;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Private
 {
@@ -149,7 +151,8 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
             }
 
             var layoutModel = memento.Layout;
-            UserLayout = new UserGraceChordLayout(layoutModel.Id, graceGroup.UserLayout, AuthorLayout.BeamTypes);
+            var measureBlockStyleTemplate = scoreDocumentStyleTemplate.MeasureBlockStyleTemplate;
+            UserLayout = new UserGraceChordLayout(layoutModel.Id, graceGroup.UserLayout, AuthorLayout.BeamTypes, measureBlockStyleTemplate);
             UserLayout.ApplyMemento(layoutModel);
         }
 

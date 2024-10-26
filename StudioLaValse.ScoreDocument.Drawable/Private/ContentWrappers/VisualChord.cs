@@ -11,8 +11,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         private readonly IChord chord;
         private readonly IStaffGroup staffGroup;
         private readonly IInstrumentMeasure instrumentMeasure;
-        private readonly IVisualNoteFactory noteFactory;
-        private readonly IVisualRestFactory restFactory;
+        private readonly IVisualNoteScene noteFactory;
+        private readonly IVisualRestScene restFactory;
         private readonly IGlyphLibrary glyphLibrary;
         private readonly bool drawDirectionUp;
         
@@ -39,8 +39,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                            double canvasTopStaffGroup,
                            IStaffGroup staffGroup,
                            IInstrumentMeasure instrumentMeasureReader,
-                           IVisualNoteFactory noteFactory,
-                           IVisualRestFactory restFactory,
+                           IVisualNoteScene noteFactory,
+                           IVisualRestScene restFactory,
                            IGlyphLibrary glyphLibrary,
                            bool drawDirectionUp)
         {
@@ -67,7 +67,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                 var restLineIndex = this.chord.Line;
                 var canvasTop = canvasTopStaffGroup + staffGroup.DistanceFromTop(restStaffIndex, restLineIndex);
 
-                yield return restFactory.CreateContent(chord, canvasLeft, canvasTop);
+                yield return restFactory.Create(chord, canvasLeft, canvasTop);
                 yield break;
             }
 
@@ -115,7 +115,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                 };
                 canvasLeft += offset;
 
-                yield return noteFactory.CreateContent(note, clef, accidental, canvasLeft, canvasTop);
+                yield return noteFactory.Create(note, clef, accidental, canvasLeft, canvasTop);
 
                 previousLine = lineIndex;
                 previousStaff = noteStaffIndex;

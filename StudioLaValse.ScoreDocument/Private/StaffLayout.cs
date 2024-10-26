@@ -1,5 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Layout;
-using StudioLaValse.ScoreDocument.StyleTemplates;
+using StudioLaValse.ScoreDocument.Models.Classes;
 
 namespace StudioLaValse.ScoreDocument.Private
 {
@@ -16,7 +16,7 @@ namespace StudioLaValse.ScoreDocument.Private
 
         public ReadonlyTemplateProperty<double> Scale => new ReadonlyTemplatePropertyFromFunc<double>(() => instrumentRibbon.Scale);
 
-        public ReadonlyTemplateProperty<ColorARGB> Color => new ReadonlyTemplatePropertyFromFunc<ColorARGB>(() => scoreDocument.PageForegroundColor);
+        public ReadonlyTemplateProperty<ColorARGBClass> Color => new ReadonlyTemplatePropertyFromFunc<ColorARGBClass>(() => scoreDocument.PageForegroundColor);
 
         public StaffLayout(ReadonlyTemplateProperty<double> distanceToNext, IScoreDocumentLayout scoreDocument, IInstrumentRibbonLayout instrumentRibbon)
         {

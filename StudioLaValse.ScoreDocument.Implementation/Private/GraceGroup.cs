@@ -1,6 +1,8 @@
 ﻿using StudioLaValse.ScoreDocument.Implementation.Private.Interfaces;
 using StudioLaValse.ScoreDocument.Implementation.Private.Layout;
 using StudioLaValse.ScoreDocument.Implementation.Private.Memento;
+using StudioLaValse.ScoreDocument.Models.V1;
+using StudioLaValse.ScoreDocument.Models.V1.StyleTemplates;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Private
 {
@@ -42,8 +44,10 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
             var chords = pitches.Select(pitch =>
             {
                 var beamTypes = new Dictionary<PowerOfTwo, BeamType>();
-                var authorChordLayout = new AuthorGraceChordLayout(UserLayout, beamTypes);
-                var userChordLayout = new UserGraceChordLayout(Guid.NewGuid(), UserLayout, beamTypes);
+                var measureBlockStyleTemplate = styleTemplate.MeasureBlockStyleTemplate;
+
+                var authorChordLayout = new AuthorGraceChordLayout(UserLayout, beamTypes, measureBlockStyleTemplate);
+                var userChordLayout = new UserGraceChordLayout(Guid.NewGuid(), UserLayout, beamTypes, measureBlockStyleTemplate);
 
                 var authorRestLayout = new AuthorRestLayout(UserLayout, styleTemplate.PageStyleTemplate);
                 var userRestLayout = new UserRestLayout(UserLayout, authorRestLayout, Guid.NewGuid());
@@ -142,8 +146,10 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
             foreach (var chordMemento in memento.Chords)
             {
                 var beamTypes = new Dictionary<PowerOfTwo, BeamType>();
-                var authorChordLayout = new AuthorGraceChordLayout(UserLayout, beamTypes);
-                var userChordLayout = new UserGraceChordLayout(Guid.NewGuid(), UserLayout, beamTypes);
+                var measureBlockStyleTemplate = styleTemplate.MeasureBlockStyleTemplate;
+
+                var authorChordLayout = new AuthorGraceChordLayout(UserLayout, beamTypes, measureBlockStyleTemplate);
+                var userChordLayout = new UserGraceChordLayout(Guid.NewGuid(), UserLayout, beamTypes, measureBlockStyleTemplate);
 
                 var authorRestLayout = new AuthorRestLayout(UserLayout, styleTemplate.PageStyleTemplate);
                 var userRestLayout = new UserRestLayout(UserLayout, authorRestLayout, Guid.NewGuid());
@@ -154,7 +160,8 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
             }
 
             var layoutMemento = memento.Layout;
-            UserLayout = new UserGraceGroupLayout(AuthorLayout, layoutMemento.Id, styleTemplate.GraceGroupStyleTemplate);
+            var instrumentRibbonLayout = HostMeasure.HostRibbon.UserLayout;
+            UserLayout = new UserGraceGroupLayout(AuthorLayout, layoutMemento.Id, styleTemplate.GraceGroupStyleTemplate, instrumentRibbonLayout);
             UserLayout.ApplyMemento(layoutMemento);
         }
     }

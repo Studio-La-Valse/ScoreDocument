@@ -1,8 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Implementation.Private.Interfaces;
-using StudioLaValse.ScoreDocument.Models.Base;
-using System.Diagnostics.CodeAnalysis;
-
-namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManager;
+﻿namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManager;
 
 internal class ScoreMeasureProxy(ScoreMeasure source, ICommandManager commandManager, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged, ILayoutSelector layoutSelector) : IScoreMeasure
 {

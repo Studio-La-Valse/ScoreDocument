@@ -1,16 +1,10 @@
-﻿using StudioLaValse.ScoreDocument.Extensions;
-using StudioLaValse.ScoreDocument.Implementation.Private;
-using StudioLaValse.ScoreDocument.Implementation.Private.Interfaces;
-using StudioLaValse.ScoreDocument.Models;
-using ColorARGB = StudioLaValse.ScoreDocument.StyleTemplates.ColorARGB;
+﻿namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.Default;
 
-namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.Default;
-
-internal class ScoreDocumentProxy(ScoreDocumentCore score, ILayoutSelector layoutSelector) : IScoreDocument
+internal class ScoreDocumentProxy(ScoreDocumentCore score, ILayoutSelector layoutSelector, IPositionDictionaryBuilder positionDictionaryBuilder) : IScoreDocument
 {
     private readonly ScoreDocumentCore score = score;
     private readonly ILayoutSelector layoutSelector = layoutSelector;
-
+    private readonly IPositionDictionaryBuilder positionDictionaryBuilder = positionDictionaryBuilder;
 
     public IScoreDocumentLayout Layout => layoutSelector.ScoreDocumentLayout(score);
 
@@ -32,15 +26,13 @@ internal class ScoreDocumentProxy(ScoreDocumentCore score, ILayoutSelector layou
 
     public ReadonlyTemplateProperty<double> Scale => Layout.Scale;
 
-    public ReadonlyTemplateProperty<double> StemLineThickness => Layout.StemLineThickness;
-
     public ReadonlyTemplateProperty<double> VerticalStaffLineThickness => Layout.VerticalStaffLineThickness;
 
 
 
-    public ReadonlyTemplateProperty<ColorARGB> PageColor => Layout.PageColor;
+    public ReadonlyTemplateProperty<ColorARGBClass> PageColor => Layout.PageColor;
 
-    public ReadonlyTemplateProperty<ColorARGB> PageForegroundColor => Layout.PageForegroundColor;
+    public ReadonlyTemplateProperty<ColorARGBClass> PageForegroundColor => Layout.PageForegroundColor;
 
     public ReadonlyTemplateProperty<double> PageMarginBottom => Layout.PageMarginBottom;
 
@@ -115,7 +107,7 @@ internal class ScoreDocumentProxy(ScoreDocumentCore score, ILayoutSelector layou
             yield return measure;
         }
 
-        foreach (var page in this.ReadPages())
+        foreach (var page in this.ReadPages(positionDictionaryBuilder))
         {
             yield return page;
         }
@@ -144,5 +136,15 @@ internal class ScoreDocumentProxy(ScoreDocumentCore score, ILayoutSelector layou
     public ScoreDocumentLayoutDictionary FreezeLayout()
     {
         return score.GetLayoutDictionary();
+    }
+
+    public void Edit(Action<ScoreDocumentStyleTemplate> action)
+    {
+        action(score.StyleTemplate);
+    }
+
+    public void Edit(ScoreDocumentStyleTemplate scoreDocumentStyleTemplate)
+    {
+        score.StyleTemplate.Apply(scoreDocumentStyleTemplate);
     }
 }

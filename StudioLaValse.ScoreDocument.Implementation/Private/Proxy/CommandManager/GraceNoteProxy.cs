@@ -1,7 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Implementation.Private.Interfaces;
-using StudioLaValse.ScoreDocument.Implementation.Private.Memento;
-
-namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManager
+﻿namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManager
 {
     internal class GraceNoteProxy : IGraceNote
     {
@@ -16,8 +13,6 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManage
         public int Id => graceNote.Id;
 
         public ReadonlyTemplateProperty<double> Scale => Layout.Scale;
-
-        public ReadonlyTemplateProperty<double> XOffset => Layout.XOffset;
 
         public Pitch Pitch
         {
@@ -34,7 +29,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManage
 
         public TemplateProperty<int> StaffIndex => Layout.StaffIndex.WithRerender(notifyEntityChanged, graceNote.InstrumentMeasure, commandManager);
 
-
+        public TemplateProperty<ColorARGBClass> Color => Layout.Color;
 
         public GraceNoteProxy(GraceNote graceNote, ICommandManager commandManager, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged, ILayoutSelector layoutSelector)
         {

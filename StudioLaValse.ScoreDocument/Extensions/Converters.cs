@@ -1,6 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Models.Classes;
 using StudioLaValse.ScoreDocument.Layout;
-using StudioLaValse.ScoreDocument.StyleTemplates;
 
 namespace StudioLaValse.ScoreDocument.Extensions
 {
@@ -89,7 +88,7 @@ namespace StudioLaValse.ScoreDocument.Extensions
         public static KeySignature Convert(this KeySignatureClass keySignature)
         {
             var step = keySignature.Step.Convert();
-            var _keySignature = new KeySignature(step, keySignature.Major ? MajorOrMinor.Major : MajorOrMinor.Minor);
+            var _keySignature = new KeySignature(step, keySignature.Minor ? MajorOrMinor.Minor : MajorOrMinor.Major);
             return _keySignature;
         }
         /// <summary>
@@ -100,10 +99,10 @@ namespace StudioLaValse.ScoreDocument.Extensions
         public static KeySignatureClass Convert(this KeySignature keySignature)
         {
             var step = keySignature.Origin.Convert();
-            var major = keySignature.MajorOrMinor == MajorOrMinor.Major ? true : false;
+            var minor = keySignature.MajorOrMinor == MajorOrMinor.Minor ? true : false;
             var _keySignature = new KeySignatureClass()
             {
-                Major = major,
+                Minor = minor,
                 Step = step,
             };
             return _keySignature;
@@ -238,39 +237,6 @@ namespace StudioLaValse.ScoreDocument.Extensions
             return _position;
         }
         /// <summary>
-        /// Converts a color argb model to a color.
-        /// </summary>
-        /// <param name="Color"></param>
-        /// <returns></returns>
-        public static ColorARGB Convert(this ColorARGBClass Color)
-        {
-            var _color = new ColorARGB()
-            {
-                A = Color.A,
-                B = Color.B,
-                G = Color.G,
-                R = Color.R,
-            };
-            return _color;
-        }
-        /// <summary>
-        /// Converts a color to a color model.
-        /// </summary>
-        /// <param name="Color"></param>
-        /// <returns></returns>
-        public static ColorARGBClass Convert(this ColorARGB Color)
-        {
-            var _color = new ColorARGBClass()
-            {
-                A = Color.A,
-                B = Color.B,
-                G = Color.G,
-                R = Color.R,
-            };
-            return _color;
-        }
-
-        /// <summary>
         /// Converts an integer to a beamtype.
         /// </summary>
         /// <param name="i"></param>
@@ -323,6 +289,24 @@ namespace StudioLaValse.ScoreDocument.Extensions
         public static int ConvertStemDirection(this StemDirection accidental)
         {
             return (int)accidental;
+        }
+        /// <summary>
+        /// Converts an integer to a visibility type.
+        /// </summary>
+        /// <param name="i"></param>
+        /// <returns></returns>
+        public static Visibility ConvertVisibility(this int i)
+        {
+            return (Visibility)i;
+        }
+        /// <summary>
+        /// Converts a visibility type to an integer.
+        /// </summary>
+        /// <param name="visibility"></param>
+        /// <returns></returns>
+        public static int ConvertVisibility(this Visibility visibility)
+        {
+            return (int)visibility;
         }
     }
 }

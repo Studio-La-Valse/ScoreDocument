@@ -1,4 +1,6 @@
-﻿namespace StudioLaValse.ScoreDocument.Layout
+﻿using StudioLaValse.ScoreDocument.Models.Classes;
+
+namespace StudioLaValse.ScoreDocument.Layout
 {
     /// <summary>
     /// Represents a note layout.
@@ -11,9 +13,9 @@
         TemplateProperty<AccidentalDisplay> ForceAccidental { get; }
 
         /// <summary>
-        /// Define the scale of the note.
+        /// Define the scale of the note. Inherited from containing <see cref="IMeasureBlock"/>
         /// </summary>
-        TemplateProperty<double> Scale { get; }
+        ReadonlyTemplateProperty<double> Scale { get; }
 
         /// <summary>
         /// Set the staff index of the note.
@@ -21,8 +23,8 @@
         TemplateProperty<int> StaffIndex { get; }
 
         /// <summary>
-        /// Set the horizontal offset of the note.
+        /// The color of the note.
         /// </summary>
-        TemplateProperty<double> XOffset { get; }
+        TemplateProperty<ColorARGBClass> Color { get; }
     }
 }

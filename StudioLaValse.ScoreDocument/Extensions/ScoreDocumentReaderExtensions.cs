@@ -1,4 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
+using StudioLaValse.ScoreDocument.Layout;
 using StudioLaValse.ScoreDocument.Private;
 
 namespace StudioLaValse.ScoreDocument.Extensions
@@ -12,11 +13,11 @@ namespace StudioLaValse.ScoreDocument.Extensions
         /// Read the pages of a score document.
         /// </summary>
         /// <param name="scoreDocument"></param>
+        /// <param name="positionDictionaryBuilder"></param>
         /// <returns></returns>
-        public static IEnumerable<IPage> ReadPages(this IScoreDocument scoreDocument)
+        public static IEnumerable<IPage> ReadPages(this IScoreDocument scoreDocument, IPositionDictionaryBuilder positionDictionaryBuilder)
         {
             var scoreScale = scoreDocument.Scale;
-            var lineSpacing = Glyph.LineSpacingMm;
             var currentpage = new Page(0, scoreDocument);
             currentpage.StaffSystems.Clear();
             var currentSystem = new StaffSystem(scoreDocument);
@@ -35,18 +36,18 @@ namespace StudioLaValse.ScoreDocument.Extensions
             {
                 currentSystem.ScoreMeasures.Add(measure);
 
-                var currentSystemLength = currentSystem.ScoreMeasures.Select(m => m.ApproximateWidth(scoreScale)).Sum();
+                var currentSystemLength = currentSystem.ScoreMeasures.Select(m => m.ApproximateWidth(positionDictionaryBuilder)).Sum();
                 var currentAvailableWidth = pageWidth - pageLayout.MarginLeft - pageLayout.MarginRight;
 
                 // Need to add a new system.
                 if (currentSystemLength > currentAvailableWidth && currentSystem.ScoreMeasures.Any())
                 {
-                    var previousSystemHeight = currentSystem.CalculateHeight(lineSpacing, scoreDocument);
+                    var previousSystemHeight = currentSystem.CalculateHeight();
                     var previousSystemMarginBottom = currentSystem.ReadLayout().PaddingBottom * scoreScale;
                     currentSystem = new StaffSystem(scoreDocument);
                     currentSystemCanvasTop += previousSystemHeight + previousSystemMarginBottom;
 
-                    var currentSystemCanvasBottom = currentSystemCanvasTop + currentSystem.CalculateHeight(lineSpacing, scoreDocument);
+                    var currentSystemCanvasBottom = currentSystemCanvasTop + currentSystem.CalculateHeight();
                     var currentLowestAllowedPoint = pageHeight - pageMarginBottom;
 
                     // Need to add a new page.

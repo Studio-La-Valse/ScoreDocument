@@ -1,7 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Implementation.Private;
-using StudioLaValse.ScoreDocument.Implementation.Private.Interfaces;
-
-namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.Default
+﻿namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.Default
 {
     internal class GraceChordProxy : IGraceChord
     {
@@ -13,9 +10,21 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.Default
 
         public int IndexInGroup => graceChord.IndexInGroup;
 
+        public IGraceChordLayout Layout => layoutSelector.GraceChordLayout(graceChord);
+
         public ReadonlyTemplateProperty<double> SpaceRight => Layout.SpaceRight;
 
-        public IGraceChordLayout Layout => layoutSelector.GraceChordLayout(graceChord);
+        public ReadonlyTemplateProperty<double> StemLineThickness => Layout.StemLineThickness;
+
+        public IRestLayout RestLayout => layoutSelector.RestLayout(graceChord);
+
+        public TemplateProperty<ColorARGBClass> Color => RestLayout.Color;
+
+        public TemplateProperty<int> StaffIndex => RestLayout.StaffIndex;
+
+        public TemplateProperty<int> Line => RestLayout.StaffIndex;
+
+        public ReadonlyTemplateProperty<double> Scale => RestLayout.Scale;
 
 
         public GraceChordProxy(GraceChord graceChord, ILayoutSelector layoutSelector)

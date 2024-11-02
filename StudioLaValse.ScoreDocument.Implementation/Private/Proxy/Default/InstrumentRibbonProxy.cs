@@ -18,15 +18,15 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.Default
 
         public TemplateProperty<string> DisplayName => Layout.DisplayName;
 
-        public TemplateProperty<string> AbbreviatedName => Layout.DisplayName;
+        public TemplateProperty<string> AbbreviatedName => Layout.AbbreviatedName;
 
-        public TemplateProperty<bool> Collapsed => Layout.Collapsed;
+        public TemplateProperty<Visibility> Visibility => Layout.Visibility;
 
         public TemplateProperty<int> NumberOfStaves => Layout.NumberOfStaves;
 
         public TemplateProperty<double> Scale => Layout.Scale;
 
-
+        public TemplateProperty<int> ZIndex => Layout.ZIndex;
 
         public InstrumentRibbonProxy(InstrumentRibbon source, ILayoutSelector layoutSelector)
         {

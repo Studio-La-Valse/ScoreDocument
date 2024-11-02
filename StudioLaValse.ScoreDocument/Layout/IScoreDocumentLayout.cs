@@ -1,4 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.StyleTemplates;
+﻿using StudioLaValse.ScoreDocument.Models.Classes;
 
 namespace StudioLaValse.ScoreDocument.Layout
 {
@@ -18,20 +18,10 @@ namespace StudioLaValse.ScoreDocument.Layout
         ReadonlyTemplateProperty<double> FirstSystemIndent { get; }
 
         /// <summary>
-        /// The horizontal staff line thickness.
-        /// </summary>
-        ReadonlyTemplateProperty<double> HorizontalStaffLineThickness { get; }
-
-        /// <summary>
         /// The global scale of the score content.
         /// Does not scale pages or page margins.
         /// </summary>
         ReadonlyTemplateProperty<double> Scale { get; }
-
-        /// <summary>
-        /// Stem line thickness.
-        /// </summary>
-        ReadonlyTemplateProperty<double> StemLineThickness { get; }
 
         /// <summary>
         /// Vertical line thickness.
@@ -39,14 +29,19 @@ namespace StudioLaValse.ScoreDocument.Layout
         ReadonlyTemplateProperty<double> VerticalStaffLineThickness { get; }
 
         /// <summary>
+        /// The horizontal staff line thickness.
+        /// </summary>
+        ReadonlyTemplateProperty<double> HorizontalStaffLineThickness { get; }
+
+        /// <summary>
         /// The page color of the score.
         /// </summary>
-        ReadonlyTemplateProperty<ColorARGB> PageColor { get; }
+        ReadonlyTemplateProperty<ColorARGBClass> PageColor { get; }
 
         /// <summary>
         /// The page foreground color.
         /// </summary>
-        ReadonlyTemplateProperty<ColorARGB> PageForegroundColor { get; }
+        ReadonlyTemplateProperty<ColorARGBClass> PageForegroundColor { get; }
 
         /// <summary>
         /// The page margin at the bottom.

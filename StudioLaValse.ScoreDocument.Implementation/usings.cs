@@ -1,7 +1,13 @@
 ﻿global using StudioLaValse.ScoreDocument.Core;
-global using StudioLaValse.ScoreDocument.Models;
 global using StudioLaValse.Key;
 global using StudioLaValse.ScoreDocument.Extensions;
 global using StudioLaValse.ScoreDocument.Layout;
 global using System.Diagnostics.CodeAnalysis;
+global using StudioLaValse.ScoreDocument.Implementation.Private.Interfaces;
+global using StudioLaValse.ScoreDocument.Implementation.Private.Memento;
+global using StudioLaValse.ScoreDocument.Models.Classes;
+global using StudioLaValse.ScoreDocument.Drawable;
+global using StudioLaValse.ScoreDocument.Models.V1;
+global using StudioLaValse.ScoreDocument.Models.V1.StyleTemplates;
 global using StudioLaValse.Drawable;
+global using StudioLaValse.CommandManager;

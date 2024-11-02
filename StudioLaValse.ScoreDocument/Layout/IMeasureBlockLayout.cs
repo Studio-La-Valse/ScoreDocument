@@ -29,5 +29,10 @@
         /// Get or set the beam spacing of the measure block.
         /// </summary>
         ReadonlyTemplateProperty<double> BeamSpacing { get; }
+
+        /// <summary>
+        /// The scale of the note group.
+        /// </summary>
+        TemplateProperty<double> Scale { get; }
     }
 }

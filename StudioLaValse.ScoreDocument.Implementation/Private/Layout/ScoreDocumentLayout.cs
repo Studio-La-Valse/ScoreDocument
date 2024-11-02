@@ -1,5 +1,6 @@
-﻿using ColorARGB = StudioLaValse.ScoreDocument.StyleTemplates.ColorARGB;
-using StudioLaValse.ScoreDocument.Models.Base;
+﻿using StudioLaValse.ScoreDocument.Models.Classes;
+using StudioLaValse.ScoreDocument.Models.V1;
+using StudioLaValse.ScoreDocument.Models.V1.StyleTemplates;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
 {
@@ -12,8 +13,8 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
         public ReadonlyTemplateProperty<double> StemLineThickness { get; }
         public ReadonlyTemplateProperty<double> FirstSystemIndent { get; }
 
-        public ReadonlyTemplateProperty<ColorARGB> PageColor { get; }
-        public ReadonlyTemplateProperty<ColorARGB> PageForegroundColor { get; }
+        public ReadonlyTemplateProperty<ColorARGBClass> PageColor { get; }
+        public ReadonlyTemplateProperty<ColorARGBClass> PageForegroundColor { get; }
         public ReadonlyTemplateProperty<double> PageMarginBottom { get; }
         public ReadonlyTemplateProperty<double> PageMarginLeft { get; }
         public ReadonlyTemplateProperty<double> PageMarginRight { get; }
@@ -34,8 +35,8 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
             VerticalStaffLineThickness = new ReadonlyTemplatePropertyFromFunc<double>(() => styleTemplate.VerticalStaffLineThickness);
             StemLineThickness = new ReadonlyTemplatePropertyFromFunc<double>(() => styleTemplate.StemLineThickness);
             FirstSystemIndent = new ReadonlyTemplatePropertyFromFunc<double>(() => styleTemplate.FirstSystemIndent);
-            PageForegroundColor = new ReadonlyTemplatePropertyFromFunc<ColorARGB>(() => styleTemplate.PageStyleTemplate.ForegroundColor);
-            PageColor = new ReadonlyTemplatePropertyFromFunc<ColorARGB>(() => styleTemplate.PageStyleTemplate.PageColor);
+            PageForegroundColor = new ReadonlyTemplatePropertyFromFunc<ColorARGBClass>(() => styleTemplate.PageStyleTemplate.ForegroundColor);
+            PageColor = new ReadonlyTemplatePropertyFromFunc<ColorARGBClass>(() => styleTemplate.PageStyleTemplate.PageColor);
             PageMarginBottom = new ReadonlyTemplatePropertyFromFunc<double>(() => styleTemplate.PageStyleTemplate.MarginBottom);
             PageMarginLeft = new ReadonlyTemplatePropertyFromFunc<double>(() => styleTemplate.PageStyleTemplate.MarginLeft);
             PageMarginRight = new ReadonlyTemplatePropertyFromFunc<double>(() => styleTemplate.PageStyleTemplate.MarginRight);

@@ -26,11 +26,6 @@ namespace StudioLaValse.ScoreDocument.Layout
         TemplateProperty<RythmicDuration> ChordDuration { get; }
 
         /// <summary>
-        /// The scale of this grace group.
-        /// </summary>
-        TemplateProperty<double> Scale { get; }
-
-        /// <summary>
         /// Get or set the block duration. This does not affect the druation of the containing measure whatsoever.
         /// </summary>
         TemplateProperty<RythmicDuration> BlockDuration { get; }

@@ -1,9 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Implementation.Private.Interfaces;
 using StudioLaValse.ScoreDocument.Implementation.Private.Memento;
-using StudioLaValse.ScoreDocument.Layout;
-using StudioLaValse.ScoreDocument.Models;
-using StudioLaValse.ScoreDocument.Models.Base;
-using System.Diagnostics.CodeAnalysis;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManager
 {
@@ -26,15 +22,17 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManage
 
         public int Id => instrumentMeasure.Id;
 
+        public ReadonlyTemplateProperty<double> PaddingLeft => Layout.PaddingLeft;
+
+        public ReadonlyTemplateProperty<double> PaddingRight => Layout.PaddingRight;
+
         public ReadonlyTemplateProperty<KeySignature> KeySignature => Layout.KeySignature;
 
         public TemplateProperty<double?> PaddingBottom => Layout.PaddingBottom.WithRerender(notifyEntityChanged, instrumentMeasure.HostMeasure.HostDocument, commandManager);
 
-        public TemplateProperty<bool?> Collapsed => Layout.Collapsed.WithRerender(notifyEntityChanged, instrumentMeasure.HostMeasure.HostDocument, commandManager);
+        public TemplateProperty<Visibility> Visibility => Layout.Visibility.WithRerender(notifyEntityChanged, instrumentMeasure.HostMeasure.HostDocument, commandManager);
 
         public TemplateProperty<int?> NumberOfStaves => Layout.NumberOfStaves.WithRerender(notifyEntityChanged, instrumentMeasure.HostMeasure.HostDocument, commandManager);
-
-
 
         public InstrumentMeasureProxy(InstrumentMeasure source, ICommandManager commandManager, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged, ILayoutSelector layoutSelector)
         {

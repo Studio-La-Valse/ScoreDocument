@@ -1,10 +1,11 @@
 ﻿using StudioLaValse.ScoreDocument.Implementation.Private.Interfaces;
 using StudioLaValse.ScoreDocument.Implementation.Private.Layout;
 using StudioLaValse.ScoreDocument.Implementation.Private.Memento;
+using StudioLaValse.ScoreDocument.Models.V1;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Private
 {
-    internal class Note : ScoreElement, IMementoElement<NoteMemento>
+    internal class Note : ScoreElement, IUniqueScoreElement, IMementoElement<NoteMemento>
     {
         private readonly Chord container;
 
@@ -46,9 +47,8 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                 Pitch = Pitch.Convert(),
                 Id = Guid,
                 ForceAccidental = (int?)AuthorLayout._ForceAccidental.Field,
-                Scale = AuthorLayout._Scale.Field,
                 StaffIndex = AuthorLayout._StaffIndex.Field,
-                XOffset = AuthorLayout._XOffset.Field,
+                Color = AuthorLayout._Color.Field,
             };
         }
 
@@ -59,9 +59,8 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                 Id = UserLayout.Id,
                 NoteId = Guid,
                 ForceAccidental = (int?)UserLayout._ForceAccidental.Field,
-                Scale = UserLayout._Scale.Field,
                 StaffIndex = UserLayout._StaffIndex.Field,
-                XOffset = UserLayout._XOffset.Field
+                Color = UserLayout._Color.Field,
             };
         }
 
@@ -73,9 +72,8 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                 Layout = GetLayoutModel(),
                 Id = Guid,
                 ForceAccidental = (int?)AuthorLayout._ForceAccidental.Field,
-                Scale = AuthorLayout._Scale.Field,
                 StaffIndex = AuthorLayout._StaffIndex.Field,
-                XOffset = AuthorLayout._XOffset.Field,
+                Color = AuthorLayout._Color.Field
             };
         }
 
@@ -85,8 +83,18 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
             Pitch = memento.Pitch.Convert();
 
             var noteLayoutModel = memento.Layout;
-            UserLayout = new UserNoteLayout(noteLayoutModel.Id, AuthorLayout);
+            UserLayout = new UserNoteLayout(noteLayoutModel.Id, AuthorLayout, container.HostBlock.UserLayout);
             UserLayout.ApplyMemento(noteLayoutModel);
+        }
+
+        public bool Equals(IUniqueScoreElement? other)
+        {
+            if (other is null)
+            {
+                return false;
+            }
+
+            return other.Id == Id;  
         }
     }
 }

@@ -1,16 +1,14 @@
-﻿using StudioLaValse.ScoreDocument.Implementation.Private.Interfaces;
-using StudioLaValse.ScoreDocument.Implementation.Private.Memento;
-using ColorARGB = StudioLaValse.ScoreDocument.StyleTemplates.ColorARGB;
+﻿using StudioLaValse.ScoreDocument.Extensions;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManager;
 
-internal class ScoreDocumentProxy(ScoreDocumentCore score, ICommandManager commandManager, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged, ILayoutSelector layoutSelector) : IScoreDocument
+internal class ScoreDocumentProxy(ScoreDocumentCore score, ICommandManager commandManager, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged, ILayoutSelector layoutSelector, IPositionDictionaryBuilder positionDictionaryBuilder) : IScoreDocument
 {
     private readonly ScoreDocumentCore score = score;
     private readonly ICommandManager commandManager = commandManager;
     private readonly INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged = notifyEntityChanged;
     private readonly ILayoutSelector layoutSelector = layoutSelector;
-
+    private readonly IPositionDictionaryBuilder positionDictionaryBuilder = positionDictionaryBuilder;
 
     public IScoreDocumentLayout Layout => layoutSelector.ScoreDocumentLayout(score);
 
@@ -28,19 +26,13 @@ internal class ScoreDocumentProxy(ScoreDocumentCore score, ICommandManager comma
 
     public ReadonlyTemplateProperty<double> FirstSystemIndent => Layout.FirstSystemIndent;
 
-    public ReadonlyTemplateProperty<double> HorizontalStaffLineThickness => Layout.HorizontalStaffLineThickness;
-
     public ReadonlyTemplateProperty<double> Scale => Layout.Scale;
 
-    public ReadonlyTemplateProperty<double> StemLineThickness => Layout.StemLineThickness;
-
-    public ReadonlyTemplateProperty<double> VerticalStaffLineThickness => Layout.VerticalStaffLineThickness;
 
 
+    public ReadonlyTemplateProperty<ColorARGBClass> PageColor => Layout.PageColor;
 
-    public ReadonlyTemplateProperty<ColorARGB> PageColor => Layout.PageColor;
-
-    public ReadonlyTemplateProperty<ColorARGB> PageForegroundColor => Layout.PageForegroundColor;
+    public ReadonlyTemplateProperty<ColorARGBClass> PageForegroundColor => Layout.PageForegroundColor;
 
     public ReadonlyTemplateProperty<double> PageMarginBottom => Layout.PageMarginBottom;
 
@@ -61,6 +53,11 @@ internal class ScoreDocumentProxy(ScoreDocumentCore score, ICommandManager comma
     public ReadonlyTemplateProperty<double> StaffGroupPaddingBottom => Layout.StaffGroupPaddingBottom;
 
     public ReadonlyTemplateProperty<double> StaffPaddingBottom => Layout.StaffPaddingBottom;
+
+    public ReadonlyTemplateProperty<double> VerticalStaffLineThickness => Layout.VerticalStaffLineThickness;
+
+    public ReadonlyTemplateProperty<double> HorizontalStaffLineThickness => Layout.HorizontalStaffLineThickness;
+
 
     public void AddInstrumentRibbon(Instrument instrument)
     {
@@ -126,7 +123,7 @@ internal class ScoreDocumentProxy(ScoreDocumentCore score, ICommandManager comma
             yield return measure;
         }
 
-        foreach (var page in this.ReadPages())
+        foreach (var page in this.ReadPages(positionDictionaryBuilder))
         {
             yield return page;
         }
@@ -155,5 +152,31 @@ internal class ScoreDocumentProxy(ScoreDocumentCore score, ICommandManager comma
     public ScoreDocumentLayoutDictionary FreezeLayout()
     {
         return score.GetLayoutDictionary();
+    }
+
+    public void Edit(Action<ScoreDocumentStyleTemplate> action)
+    {
+        var transaction = commandManager.ThrowIfNoTransactionOpen();
+        var oldStyleTemplate = ScoreDocumentStyleTemplate.Create();
+        oldStyleTemplate.Apply(score.StyleTemplate);
+
+        var command = new SimpleCommand(
+            _do: () => action(score.StyleTemplate),
+            undo: () => score.StyleTemplate.Apply(oldStyleTemplate)
+        ).ThenInvalidate(notifyEntityChanged, score);
+        transaction.Enqueue(command);
+    }
+
+    public void Edit(ScoreDocumentStyleTemplate scoreDocumentStyleTemplate)
+    {
+        var transaction = commandManager.ThrowIfNoTransactionOpen();
+        var oldStyleTemplate = ScoreDocumentStyleTemplate.Create();
+        oldStyleTemplate.Apply(score.StyleTemplate);
+
+        var command = new SimpleCommand(
+            _do: () => score.StyleTemplate.Apply(scoreDocumentStyleTemplate),
+            undo: () => score.StyleTemplate.Apply(oldStyleTemplate)
+        ).ThenInvalidate(notifyEntityChanged, score);
+        transaction.Enqueue(command);
     }
 }

@@ -5,21 +5,21 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.Default
 {
     internal static class ScoreEditorExtensions
     {
-        public static ScoreDocumentProxy ProxyAuthor(this ScoreDocumentCore score)
+        public static ScoreDocumentProxy ProxyAuthor(this ScoreDocumentCore score, IPositionDictionaryBuilder positionDictionaryBuilder)
         {
             var selector = new AuthorLayoutSelector();
-            return score.Proxy(selector);
+            return score.Proxy(selector, positionDictionaryBuilder);
         }
 
-        public static ScoreDocumentProxy ProxyUser(this ScoreDocumentCore score)
+        public static ScoreDocumentProxy ProxyUser(this ScoreDocumentCore score, IPositionDictionaryBuilder positionDictionaryBuilder)
         {
             var selector = new UserLayoutSelector();
-            return score.Proxy(selector);
+            return score.Proxy(selector, positionDictionaryBuilder);
         }
 
-        public static ScoreDocumentProxy Proxy(this ScoreDocumentCore score, ILayoutSelector layoutSelector)
+        public static ScoreDocumentProxy Proxy(this ScoreDocumentCore score, ILayoutSelector layoutSelector, IPositionDictionaryBuilder positionDictionaryBuilder)
         {
-            return new ScoreDocumentProxy(score, layoutSelector);
+            return new ScoreDocumentProxy(score, layoutSelector, positionDictionaryBuilder);
         }
 
         public static InstrumentRibbonProxy Proxy(this InstrumentRibbon instrumentRibbon, ILayoutSelector layoutSelector)

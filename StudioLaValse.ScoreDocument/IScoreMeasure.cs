@@ -49,7 +49,5 @@ namespace StudioLaValse.ScoreDocument
         /// <param name="next"></param>
         /// <returns></returns>
         bool TryReadNext([NotNullWhen(true)] out IScoreMeasure? next);
-
-
     }
 }

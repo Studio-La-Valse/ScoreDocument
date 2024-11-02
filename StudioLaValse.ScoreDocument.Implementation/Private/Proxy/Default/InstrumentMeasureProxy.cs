@@ -1,11 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Implementation.Private;
-using StudioLaValse.ScoreDocument.Implementation.Private.Interfaces;
-using StudioLaValse.ScoreDocument.Layout;
-using StudioLaValse.ScoreDocument.Models;
-using StudioLaValse.ScoreDocument.Models.Base;
-using System.Diagnostics.CodeAnalysis;
-
-namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.Default
+﻿namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.Default
 {
     internal class InstrumentMeasureProxy : IInstrumentMeasure
     {
@@ -24,15 +17,17 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.Default
 
         public int Id => instrumentMeasure.Id;
 
+        public ReadonlyTemplateProperty<double> PaddingLeft => Layout.PaddingLeft;
+
+        public ReadonlyTemplateProperty<double> PaddingRight => Layout.PaddingRight;
+
         public ReadonlyTemplateProperty<KeySignature> KeySignature => Layout.KeySignature;
 
         public TemplateProperty<double?> PaddingBottom => Layout.PaddingBottom;
 
-        public TemplateProperty<bool?> Collapsed => Layout.Collapsed;
+        public TemplateProperty<Visibility> Visibility => Layout.Visibility;
 
         public TemplateProperty<int?> NumberOfStaves => Layout.NumberOfStaves;
-
-
 
         public InstrumentMeasureProxy(InstrumentMeasure source, ILayoutSelector layoutSelector)
         {

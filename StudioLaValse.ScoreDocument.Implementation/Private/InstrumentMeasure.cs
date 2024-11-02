@@ -2,6 +2,8 @@
 using StudioLaValse.ScoreDocument.Implementation.Private.Interfaces;
 using StudioLaValse.ScoreDocument.Implementation.Private.Layout;
 using StudioLaValse.ScoreDocument.Implementation.Private.Memento;
+using StudioLaValse.ScoreDocument.Models.V1;
+using StudioLaValse.ScoreDocument.Models.V1.StyleTemplates;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Private
 {
@@ -28,6 +30,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
 
 
         public ScoreMeasure HostMeasure => scoreMeasure;
+        public InstrumentRibbon HostRibbon => hostRibbon;
         public AuthorInstrumentMeasureLayout AuthorLayout { get; }
         public UserInstrumentMeasureLayout UserLayout { get; set; }
 
@@ -124,7 +127,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                 InstrumentRibbonIndex = RibbonIndex,
                 MeasureBlocks = blockChains.Values.SelectMany(v => v.GetBlocksCore()).Select(b => b.GetModel()).ToList(),
                 ClefChanges = AuthorLayout._ClefChanges.Select(e => e.Convert()).ToList(),
-                Collapsed = AuthorLayout._Collapsed.Field,
+                Visibility = AuthorLayout._Visibility.Field?.ConvertVisibility(),
                 NumberOfStaves = AuthorLayout._NumberOfStaves.Field,
                 PaddingBottom = AuthorLayout._PaddingBottom.Field,
                 StaffPaddingBottom = AuthorLayout._PaddingBottomForStaves.DeepCopy()
@@ -152,8 +155,8 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                 IgnoredClefChanges = UserLayout._IgnoredClefChanges.Select(e => e.Convert()).ToList(),
                 StaffPaddingBottom = paddingBottomStavesDictionary,
                 NumberOfStaves = UserLayout._NumberOfStaves.Field,
-                PaddingBottom = UserLayout.PaddingBottom,
-                Collapsed = UserLayout.Collapsed
+                PaddingBottom = UserLayout._PaddingBottom.Field,
+                Visibility = UserLayout._Visibility.Field?.ConvertVisibility()
             };
         }
 
@@ -167,7 +170,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                 InstrumentRibbonIndex = RibbonIndex,
                 MeasureBlocks = blockChains.Values.SelectMany(v => v.GetBlocksCore()).Select(b => b.GetMemento()).ToList(),
                 ClefChanges = AuthorLayout._ClefChanges.Select(e => e.Convert()).ToList(),
-                Collapsed = AuthorLayout._Collapsed.Field,
+                Visibility = AuthorLayout._Visibility.Field?.ConvertVisibility(),
                 NumberOfStaves = AuthorLayout._NumberOfStaves.Field,
                 PaddingBottom = AuthorLayout._PaddingBottom.Field,
                 StaffPaddingBottom = AuthorLayout._PaddingBottomForStaves.DeepCopy()

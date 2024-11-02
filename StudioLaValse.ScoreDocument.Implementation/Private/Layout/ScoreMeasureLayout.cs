@@ -1,4 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.Models.Base;
+﻿using StudioLaValse.ScoreDocument.Models.V1;
+using StudioLaValse.ScoreDocument.Models.V1.StyleTemplates;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout;
 
@@ -10,16 +11,17 @@ internal abstract class ScoreMeasureLayout : IScoreMeasureLayout
 
     public ReadonlyTemplateProperty<double> PaddingLeft { get; }
     public ReadonlyTemplateProperty<double> PaddingRight { get; }
+    public ReadonlyTemplateProperty<double> Scale { get; }
 
 
     public TemplateProperty<KeySignature> KeySignature => _KeySignature;
     public TemplateProperty<double?> PaddingBottom => _PaddingBottom;
 
-
-    protected ScoreMeasureLayout(ScoreMeasureStyleTemplate scoreMeasureStyleTemplate)
+    protected ScoreMeasureLayout(ScoreMeasureStyleTemplate scoreMeasureStyleTemplate, UserScoreDocumentLayout userScoreDocumentLayout)
     {
-        PaddingLeft = new ReadonlyTemplatePropertyFromFunc<double>(() => scoreMeasureStyleTemplate.PaddingLeft);
-        PaddingRight = new ReadonlyTemplatePropertyFromFunc<double>(() => scoreMeasureStyleTemplate.PaddingRight);
+        PaddingLeft = new ReadonlyTemplatePropertyFromFunc<double>(() => scoreMeasureStyleTemplate.PaddingLeft * userScoreDocumentLayout.Scale);
+        PaddingRight = new ReadonlyTemplatePropertyFromFunc<double>(() => scoreMeasureStyleTemplate.PaddingRight * userScoreDocumentLayout.Scale);
+        Scale = new ReadonlyTemplatePropertyFromFunc<double>(() => userScoreDocumentLayout.Scale);
     }
 
     public void Restore()
@@ -50,7 +52,7 @@ internal class AuthorScoreMeasureLayout : ScoreMeasureLayout
     public override ValueTemplateProperty<KeySignature> _KeySignature { get; }
     public override NullableTemplateProperty<double> _PaddingBottom { get; }
 
-    internal AuthorScoreMeasureLayout(ScoreMeasureStyleTemplate scoreMeasureStyleTemplate) : base(scoreMeasureStyleTemplate)
+    internal AuthorScoreMeasureLayout(ScoreMeasureStyleTemplate scoreMeasureStyleTemplate, UserScoreDocumentLayout userScoreDocumentLayout) : base(scoreMeasureStyleTemplate, userScoreDocumentLayout)
     {
         _KeySignature = new ValueTemplateProperty<KeySignature>(() => new KeySignature(new Step(0, 0), MajorOrMinor.Major));
 
@@ -79,7 +81,7 @@ internal class UserScoreMeasureLayout : ScoreMeasureLayout
 
 
 
-    public UserScoreMeasureLayout(Guid id, AuthorScoreMeasureLayout primaryScoreMeasureLayout, ScoreMeasureStyleTemplate scoreMeasureStyleTemplate) : base(scoreMeasureStyleTemplate)
+    public UserScoreMeasureLayout(Guid id, AuthorScoreMeasureLayout primaryScoreMeasureLayout, ScoreMeasureStyleTemplate scoreMeasureStyleTemplate, UserScoreDocumentLayout userScoreDocumentLayout) : base(scoreMeasureStyleTemplate, userScoreDocumentLayout)
     {
         this.id = id;
 

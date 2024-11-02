@@ -5,21 +5,21 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManage
 {
     internal static class ScoreEditorExtensions
     {
-        public static ScoreDocumentProxy ProxyAuthor(this ScoreDocumentCore score, ICommandManager commandManager, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged)
+        public static ScoreDocumentProxy ProxyAuthor(this ScoreDocumentCore score, ICommandManager commandManager, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged, IPositionDictionaryBuilder positionDictionaryBuilder)
         {
             var selector = new AuthorLayoutSelector();
-            return score.Proxy(commandManager, notifyEntityChanged, selector);
+            return score.Proxy(commandManager, notifyEntityChanged, selector, positionDictionaryBuilder);
         }
 
-        public static ScoreDocumentProxy ProxyUser(this ScoreDocumentCore score, ICommandManager commandManager, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged)
+        public static ScoreDocumentProxy ProxyUser(this ScoreDocumentCore score, ICommandManager commandManager, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged, IPositionDictionaryBuilder positionDictionaryBuilder)
         {
             var selector = new UserLayoutSelector();
-            return score.Proxy(commandManager, notifyEntityChanged, selector);
+            return score.Proxy(commandManager, notifyEntityChanged, selector, positionDictionaryBuilder);
         }
 
-        public static ScoreDocumentProxy Proxy(this ScoreDocumentCore score, ICommandManager commandManager, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged, ILayoutSelector layoutSelector)
+        public static ScoreDocumentProxy Proxy(this ScoreDocumentCore score, ICommandManager commandManager, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged, ILayoutSelector layoutSelector, IPositionDictionaryBuilder positionDictionaryBuilder)
         {
-            return new ScoreDocumentProxy(score, commandManager, notifyEntityChanged, layoutSelector);
+            return new ScoreDocumentProxy(score, commandManager, notifyEntityChanged, layoutSelector, positionDictionaryBuilder);
         }
 
         public static InstrumentRibbonProxy Proxy(this InstrumentRibbon instrumentRibbon, ICommandManager commandManager, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged, ILayoutSelector layoutSelector)

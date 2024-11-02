@@ -21,7 +21,7 @@ namespace StudioLaValse.ScoreDocument.Models.Attributes
 
         private bool IsPowerOfTwo(int x)
         {
-            return x != 0 && (x & (x - 1)) == 0;
+            return x > 0 && (x & (x - 1)) == 0;
         }
     }
 }

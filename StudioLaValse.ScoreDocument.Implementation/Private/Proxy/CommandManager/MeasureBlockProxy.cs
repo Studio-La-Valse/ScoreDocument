@@ -1,7 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Implementation.Private.Interfaces;
-using StudioLaValse.ScoreDocument.Implementation.Private.Memento;
-
-namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManager
+﻿namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManager
 {
     internal class MeasureBlockProxy(MeasureBlock source, ICommandManager commandManager, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged, ILayoutSelector layoutSelector) : IMeasureBlock
     {
@@ -37,7 +34,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManage
 
         public ReadonlyTemplateProperty<double> BeamSpacing => Layout.BeamSpacing;
 
-
+        public TemplateProperty<double> Scale => Layout.Scale;
 
 
         public void AppendChord(RythmicDuration rythmicDuration, params Pitch[] pitches)

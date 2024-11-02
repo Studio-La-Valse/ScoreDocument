@@ -1,6 +1,8 @@
 ﻿using StudioLaValse.ScoreDocument.Implementation.Private.Interfaces;
 using StudioLaValse.ScoreDocument.Implementation.Private.Layout;
 using StudioLaValse.ScoreDocument.Implementation.Private.Memento;
+using StudioLaValse.ScoreDocument.Models.V1;
+using StudioLaValse.ScoreDocument.Models.V1.StyleTemplates;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Private
 {
@@ -135,7 +137,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
             }
 
             var layoutMemento = memento.Layout;
-            UserLayout = new UserScoreMeasureLayout(Guid, AuthorLayout, scoreDocumentStyleTemplate.ScoreMeasureStyleTemplate);
+            UserLayout = new UserScoreMeasureLayout(Guid, AuthorLayout, scoreDocumentStyleTemplate.ScoreMeasureStyleTemplate, score.UserLayout);
             UserLayout.ApplyMemento(layoutMemento);
         }
 

@@ -34,6 +34,7 @@ namespace StudioLaValse.ScoreDocument.Private
 
         public ReadonlyTemplateProperty<double> BeamThickness => new ReadonlyTemplatePropertyFromFunc<double>(() => graceGroupReader.BeamThickness.Value);
 
+        public TemplateProperty<double> Scale => graceGroupReader.Scale;
 
 
 

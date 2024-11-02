@@ -1,6 +1,7 @@
 ﻿using StudioLaValse.ScoreDocument.Implementation.Private;
 using StudioLaValse.ScoreDocument.Implementation.Private.Interfaces;
 using StudioLaValse.ScoreDocument.Models;
+using StudioLaValse.ScoreDocument.Models.V1.StyleTemplates;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.Default;
 
@@ -33,9 +34,12 @@ internal class NoteProxy(Note source, ILayoutSelector layoutSelector) : INote
 
 
     public TemplateProperty<AccidentalDisplay> ForceAccidental => Layout.ForceAccidental;
-    public TemplateProperty<double> Scale => Layout.Scale;
+
+    public ReadonlyTemplateProperty<double> Scale => Layout.Scale;
+
     public TemplateProperty<int> StaffIndex => Layout.StaffIndex;
-    public TemplateProperty<double> XOffset => Layout.XOffset;
+
+    public TemplateProperty<ColorARGBClass> Color => Layout.Color;
 
 
     public IEnumerable<IScoreElement> EnumerateChildren()

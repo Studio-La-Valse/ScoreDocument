@@ -1,4 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.Extensions;
+﻿using StudioLaValse.ScoreDocument.Drawable.Extensions;
+using StudioLaValse.ScoreDocument.Extensions;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
@@ -7,36 +8,30 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         private readonly IPage page;
         private readonly double canvasLeft;
         private readonly double canvasTop;
-        private readonly double globalLineSpacing;
-        private readonly IVisualStaffSystemFactory staffSystemContentFactory;
-        private readonly IScoreDocument scoreDocumentLayout;
-        private readonly IUnitToPixelConverter unitToPixelConverter;
+        private readonly IVisualStaffSystemScene staffSystemContentFactory;
+        private readonly IPositionDictionaryBuilder positionDictionaryBuilder;
 
         public ColorARGB PageColor => page.PageColor.Value.FromPrimitive();
         public ColorARGB ForegroundColor => page.ForegroundColor.Value.FromPrimitive();
         public IPageLayout Layout => page;
-        public double MarginLeft => unitToPixelConverter.UnitsToPixels(Layout.MarginLeft);
-        public double MarginRight => unitToPixelConverter.UnitsToPixels(Layout.MarginRight);
-        public double MarginTop => unitToPixelConverter.UnitsToPixels(Layout.MarginTop);
-        public double PageWidth => unitToPixelConverter.UnitsToPixels(Layout.PageWidth);
-        public double PageHeight => unitToPixelConverter.UnitsToPixels(Layout.PageHeight);
+        public double MarginLeft => Layout.MarginLeft;
+        public double MarginRight => Layout.MarginRight;
+        public double MarginTop => Layout.MarginTop;
+        public double PageWidth => Layout.PageWidth;
+        public double PageHeight => Layout.PageHeight;
 
 
         public VisualPage(IPage page,
                           double canvasLeft,
                           double canvasTop,
-                          double globalLineSpacing,
-                          IVisualStaffSystemFactory staffSystemContentFactory,
-                          IScoreDocument scoreDocumentLayout,
-                          IUnitToPixelConverter unitToPixelConverter)
+                          IVisualStaffSystemScene staffSystemContentFactory,
+                          IPositionDictionaryBuilder positionDictionaryBuilder)
         {
             this.page = page;
             this.canvasLeft = canvasLeft;
             this.canvasTop = canvasTop;
-            this.globalLineSpacing = globalLineSpacing;
             this.staffSystemContentFactory = staffSystemContentFactory;
-            this.scoreDocumentLayout = scoreDocumentLayout;
-            this.unitToPixelConverter = unitToPixelConverter;
+            this.positionDictionaryBuilder = positionDictionaryBuilder;
         }
 
 
@@ -55,15 +50,14 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                     PageWidth,
                     PageHeight,
                     PageColor,
-                    0.05,
+                    0.25,
                     ForegroundColor)
             ];
         }
 
         public override IEnumerable<BaseContentWrapper> GetContentWrappers()
         {
-            var canvasTop = this.canvasTop + MarginTop;
-            foreach (var staffSystem in page.EnumerateStaffSystems())
+            foreach (var (staffSystem, canvasTop) in page.EnumerateFromTop(this.canvasTop + MarginTop))
             {
                 if (!staffSystem.EnumerateMeasures().Any())
                 {
@@ -73,22 +67,17 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                 var canvasLeft = this.canvasLeft + MarginLeft;
                 if (staffSystem.EnumerateMeasures().First().IndexInScore == 0)
                 {
-                    canvasLeft += scoreDocumentLayout.FirstSystemIndent;
+                    canvasLeft += page.FirstSystemIndent;
                 }
 
                 var canvasRight = this.canvasLeft + PageWidth - MarginRight;
                 var length = canvasRight - canvasLeft;
-                var scoreScale = scoreDocumentLayout.Scale;
-                var measureLengthSum = staffSystem.EnumerateMeasures().Select(m => m.ApproximateWidth(scoreScale)).Sum();
-                measureLengthSum = unitToPixelConverter.UnitsToPixels(measureLengthSum);
+                var measureLengthSum = staffSystem.EnumerateMeasures().Select(m => m.ApproximateWidth(positionDictionaryBuilder)).Sum();
                 length = Math.Min(length, measureLengthSum);
 
                 var staffSystemLayout = staffSystem;
-                var visualSystem = staffSystemContentFactory.CreateContent(staffSystem, canvasLeft, canvasTop, length, globalLineSpacing);
+                var visualSystem = staffSystemContentFactory.Create(staffSystem, canvasLeft, canvasTop, length);
                 yield return visualSystem;
-
-                canvasTop += unitToPixelConverter.UnitsToPixels(staffSystem.CalculateHeight(globalLineSpacing, scoreDocumentLayout));
-                canvasTop += unitToPixelConverter.UnitsToPixels(staffSystemLayout.PaddingBottom * scoreScale);
             }
         }
     }

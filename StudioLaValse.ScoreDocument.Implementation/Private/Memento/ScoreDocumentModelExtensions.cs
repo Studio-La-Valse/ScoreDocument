@@ -1,4 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.Implementation.Private.Extensions;
+using StudioLaValse.ScoreDocument.Models.V1;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Private.Memento;
 
@@ -40,12 +41,13 @@ internal static class ScoreDocumentModelExtensions
             Id = model.Id,
             Layout = layoutModel,
             AbbreviatedName = model.AbbreviatedName,
-            Collapsed = model.Collapsed,
+            Visibility = model.Visibility,
             DisplayName = model.DisplayName,
             IndexInScore = model.IndexInScore,
             Instrument = model.Instrument,
             NumberOfStaves = model.NumberOfStaves,
-            Scale = model.Scale
+            Scale = model.Scale,
+            ZIndex = model.ZIndex,
         };
     }
 
@@ -83,7 +85,7 @@ internal static class ScoreDocumentModelExtensions
             Layout = layoutModel,
             PaddingBottom = model.PaddingBottom,
             ClefChanges = model.ClefChanges,
-            Collapsed = model.Collapsed,
+            Visibility = model.Visibility,
             NumberOfStaves = model.NumberOfStaves,
             StaffPaddingBottom = model.StaffPaddingBottom,
             MeasureBlocks = []
@@ -112,7 +114,8 @@ internal static class ScoreDocumentModelExtensions
             StemDirection = model.StemDirection,
             StemLength = model.StemLength,
             Voice = model.Voice,
-            Chords = []
+            Chords = [],
+            Scale = model.Scale,
         };
 
         foreach (var chord in model.Chords)
@@ -135,7 +138,6 @@ internal static class ScoreDocumentModelExtensions
             Position = model.Position,
             RythmicDuration = model.RythmicDuration,
             Notes = [],
-            XOffset = model.XOffset,
             SpaceRight = model.SpaceRight,
             GraceGroup = null
         };
@@ -167,9 +169,8 @@ internal static class ScoreDocumentModelExtensions
             Layout = layoutModel,
             ForceAccidental = model.ForceAccidental,
             Pitch = model.Pitch,
-            Scale = model.Scale,
             StaffIndex = model.StaffIndex,
-            XOffset = model.XOffset,
+            Color = model.Color,
         };
 
         return memento;
@@ -188,6 +189,7 @@ internal static class ScoreDocumentModelExtensions
             ChordDuration = model.ChordDuration,
             ChordSpacing = model.ChordSpacing,
             OccupySpace = model.OccupySpace,
+            Scale = model.Scale,
         };
 
         foreach (var chord in model.Chords)
@@ -231,6 +233,7 @@ internal static class ScoreDocumentModelExtensions
             ForceAccidental = model.ForceAccidental,
             Pitch = model.Pitch,
             StaffIndex = model.StaffIndex,
+            Color = model.Color,
         };
 
         return memento;
@@ -238,19 +241,24 @@ internal static class ScoreDocumentModelExtensions
 
     public static ScoreDocumentLayoutDictionary ExtractLayout(this ScoreDocumentMemento scoreDocumentMemento)
     {
+        var instrumentRibbonLayouts = scoreDocumentMemento.InstrumentRibbons.Select(e => e.Layout).Where(l => l.HasFieldSet()).ToList();
+        var scoreMeasureLayouts = scoreDocumentMemento.ScoreMeasures.Select(e => e.Layout).Where(l => l.HasFieldSet()).ToList();
+
         var dictionary = new ScoreDocumentLayoutDictionary()
         {
             ScoreDocumentLayout = scoreDocumentMemento.Layout,
+            ScoreMeasureLayouts = scoreMeasureLayouts,
+            InstrumentRibbonLayouts = instrumentRibbonLayouts,
             ChordLayouts = [],
             GraceChordLayouts = [],
             GraceGroupLayouts = [],
             GraceNoteLayouts = [],
             InstrumentMeasureLayouts = [],
-            InstrumentRibbonLayouts = scoreDocumentMemento.InstrumentRibbons.Select(e => e.Layout).Where(l => l.HasFieldSet()).ToList(),
             MeasureBlockLayouts = [],
             NoteLayouts = [],
-            ScoreMeasureLayouts = scoreDocumentMemento.ScoreMeasures.Select(e => e.Layout).Where(l => l.HasFieldSet()).ToList(),
         };
+
+
 
         foreach(var scoreMeasure in scoreDocumentMemento.ScoreMeasures)
         {

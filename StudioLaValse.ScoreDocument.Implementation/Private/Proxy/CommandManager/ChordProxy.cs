@@ -1,5 +1,7 @@
 ﻿using StudioLaValse.ScoreDocument.Implementation.Private.Interfaces;
 using StudioLaValse.ScoreDocument.Implementation.Private.Memento;
+using StudioLaValse.ScoreDocument.Models.Classes;
+using StudioLaValse.ScoreDocument.Models.V1.StyleTemplates;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManager
 {
@@ -10,7 +12,6 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManage
         private readonly INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged;
         private readonly ILayoutSelector layoutSelector;
 
-        public IChordLayout Layout => layoutSelector.ChordLayout(source);
 
         public Position Position => source.Position;
 
@@ -20,10 +21,21 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManage
 
         public int Id => source.Id;
 
-        public TemplateProperty<double> XOffset => Layout.XOffset.WithRerender(notifyEntityChanged, source.HostMeasure, commandManager);
+        public IChordLayout Layout => layoutSelector.ChordLayout(source);
 
         public TemplateProperty<double> SpaceRight => Layout.SpaceRight.WithRerender(notifyEntityChanged, source.HostMeasure, commandManager);
 
+        public ReadonlyTemplateProperty<double> StemLineThickness => Layout.StemLineThickness;
+
+        public IRestLayout RestLayout => layoutSelector.RestLayout(source);
+
+        public ReadonlyTemplateProperty<double> Scale => RestLayout.Scale;
+
+        public TemplateProperty<ColorARGBClass> Color => RestLayout.Color.WithRerender(notifyEntityChanged, source, commandManager);
+
+        public TemplateProperty<int> StaffIndex => RestLayout.StaffIndex.WithRerender(notifyEntityChanged, source.HostMeasure, commandManager);
+
+        public TemplateProperty<int> Line => RestLayout.Line.WithRerender(notifyEntityChanged, source.HostMeasure, commandManager);
 
         public ChordProxy(Chord source, ICommandManager commandManager, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged, ILayoutSelector layoutSelector)
         {

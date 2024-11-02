@@ -1,4 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Models.Base;
+﻿using StudioLaValse.ScoreDocument.Models.V1;
 using System.ComponentModel.DataAnnotations;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Private.Memento;

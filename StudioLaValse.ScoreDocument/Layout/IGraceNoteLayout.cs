@@ -1,4 +1,6 @@
-﻿namespace StudioLaValse.ScoreDocument.Layout
+﻿using StudioLaValse.ScoreDocument.Models.Classes;
+
+namespace StudioLaValse.ScoreDocument.Layout
 {
     /// <summary>
     /// Represents a note layout.
@@ -21,8 +23,8 @@
         TemplateProperty<int> StaffIndex { get; }
 
         /// <summary>
-        /// Set the horizontal offset of the note.
+        /// The color of the note.
         /// </summary>
-        ReadonlyTemplateProperty<double> XOffset { get; }
+        TemplateProperty<ColorARGBClass> Color { get; }
     }
 }

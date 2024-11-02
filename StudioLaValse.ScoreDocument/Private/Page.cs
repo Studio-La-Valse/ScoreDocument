@@ -1,10 +1,12 @@
 ﻿using StudioLaValse.ScoreDocument.Layout;
-using ColorARGB = StudioLaValse.ScoreDocument.StyleTemplates.ColorARGB;
+using StudioLaValse.ScoreDocument.Models.Classes;
 
 namespace StudioLaValse.ScoreDocument.Private
 {
     internal class Page : IPage
     {
+        private readonly IScoreDocument scoreDocumentLayout;
+
         public IList<IStaffSystem> StaffSystems { get; } = [];
         public IPageLayout Layout { get; }
         public int IndexInScore { get; }
@@ -15,15 +17,16 @@ namespace StudioLaValse.ScoreDocument.Private
         public ReadonlyTemplateProperty<double> MarginTop => Layout.MarginTop;
         public ReadonlyTemplateProperty<int> PageHeight => Layout.PageHeight;
         public ReadonlyTemplateProperty<int> PageWidth => Layout.PageWidth;
-        public ReadonlyTemplateProperty<ColorARGB> PageColor => Layout.PageColor;
-        public ReadonlyTemplateProperty<ColorARGB> ForegroundColor => Layout.ForegroundColor;
-
+        public ReadonlyTemplateProperty<ColorARGBClass> PageColor => Layout.PageColor;
+        public ReadonlyTemplateProperty<ColorARGBClass> ForegroundColor => Layout.ForegroundColor;
+        public ReadonlyTemplateProperty<double> FirstSystemIndent => Layout.FirstSystemIndent;
+        public ReadonlyTemplateProperty<double> Scale => scoreDocumentLayout.Scale;
 
         public Page(int indexInScore, IScoreDocument scoreDocumentLayout)
         {
             IndexInScore = indexInScore;
-
-            Layout = new PageLayout(scoreDocumentLayout);
+            this.scoreDocumentLayout = scoreDocumentLayout;
+            Layout = new PageLayout(indexInScore, scoreDocumentLayout);
         }
 
         public IEnumerable<IStaffSystem> EnumerateStaffSystems()

@@ -9,7 +9,6 @@ global using StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers;
 global using StudioLaValse.ScoreDocument.Drawable.Private.DrawableElements;
 global using StudioLaValse.ScoreDocument.Drawable.Private.Ghosts;
 global using StudioLaValse.ScoreDocument.Drawable.Private.Models;
-global using StudioLaValse.ScoreDocument.Drawable.Private.VisualParents;
 global using StudioLaValse.ScoreDocument.Drawable.Scenes;
 global using StudioLaValse.ScoreDocument.Layout;
 global using System.Diagnostics;

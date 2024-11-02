@@ -21,6 +21,11 @@
         ReadonlyTemplateProperty<double> PaddingRight { get; }
 
         /// <summary>
+        /// The scale of the measure.
+        /// </summary>
+        ReadonlyTemplateProperty<double> Scale { get; }
+
+        /// <summary>
         /// Requests padding bottom for this measure in the staff system. 
         /// If no value is applied, no padding is requested. 
         /// The highest non-null value of all measures in the staff system will determine the padding of the staff system.

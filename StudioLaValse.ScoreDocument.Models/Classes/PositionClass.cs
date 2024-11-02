@@ -5,10 +5,11 @@ namespace StudioLaValse.ScoreDocument.Models.Classes
 {
     public class PositionClass : IEquatable<PositionClass>
     {
+        [Range(0, Constants.SmallestStep)]
         public required int Numerator { get; set; }
 
         [PowerOfTwo]
-        [Range(1, int.MaxValue)]
+        [Range(1, Constants.SmallestStep)]
         public required int Denominator { get; set; }
 
         public bool Equals(PositionClass? other)

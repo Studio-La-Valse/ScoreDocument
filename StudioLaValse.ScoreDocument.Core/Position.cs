@@ -16,6 +16,15 @@
         }
 
         /// <summary>
+        /// The first position.
+        /// </summary>
+        /// <returns></returns>
+        public static Position Start()
+        {
+            return new Position(0, 1);
+        }
+
+        /// <summary>
         /// Adds a duration to the specified position.
         /// </summary>
         /// <param name="position"></param>

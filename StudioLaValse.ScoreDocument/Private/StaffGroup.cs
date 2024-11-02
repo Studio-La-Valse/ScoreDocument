@@ -1,38 +1,42 @@
 ﻿using StudioLaValse.ScoreDocument.Extensions;
 using StudioLaValse.ScoreDocument.Layout;
+using StudioLaValse.ScoreDocument.Models.Classes;
 
 namespace StudioLaValse.ScoreDocument.Private
 {
     internal class StaffGroup : IStaffGroup
     {
-        private readonly IScoreDocument documentStyleTemplate;
+        private readonly IScoreDocument scoreDocument;
         private readonly IEnumerable<IScoreMeasure> scoreMeasures;
 
 
         public IInstrumentRibbon InstrumentRibbon { get; }
 
 
-        public Instrument Instrument =>
-            InstrumentRibbon.Instrument;
-        public int IndexInSystem =>
-            InstrumentRibbon.IndexInScore;
+        public Instrument Instrument => InstrumentRibbon.Instrument;
 
-        public ReadonlyTemplateProperty<bool> Collapsed => ReadLayout().Collapsed;
+        public int IndexInSystem => InstrumentRibbon.IndexInScore;
+
+        public ReadonlyTemplateProperty<Visibility> Visibility => ReadLayout().Visibility;
 
         public ReadonlyTemplateProperty<double> DistanceToNext => ReadLayout().DistanceToNext;
 
         public ReadonlyTemplateProperty<int> NumberOfStaves => ReadLayout().NumberOfStaves;
 
+        public ReadonlyTemplateProperty<double> VerticalStaffLineThickness => ReadLayout().VerticalStaffLineThickness;  
 
+        public ReadonlyTemplateProperty<double> HorizontalStaffLineThickness => ReadLayout().HorizontalStaffLineThickness;
 
-        public StaffGroup(IInstrumentRibbon instrumentRibbon,
-            IScoreDocument documentStyleTemplate,
-            IEnumerable<IScoreMeasure> scoreMeasures)
+        public ReadonlyTemplateProperty<ColorARGBClass> Color => ReadLayout().Color;
+
+        public ReadonlyTemplateProperty<double> Scale => ReadLayout().Scale;
+
+        public StaffGroup(IInstrumentRibbon instrumentRibbon, IScoreDocument scoreDocument, IEnumerable<IScoreMeasure> scoreMeasures)
         {
             InstrumentRibbon = instrumentRibbon;
 
             this.scoreMeasures = scoreMeasures;
-            this.documentStyleTemplate = documentStyleTemplate;
+            this.scoreDocument = scoreDocument;
         }
 
 
@@ -48,7 +52,7 @@ namespace StudioLaValse.ScoreDocument.Private
         {
             for (var staffIndex = 0; staffIndex < numberOfStaves; staffIndex++)
             {
-                yield return new Staff(staffIndex, documentStyleTemplate, EnumerateMeasures());
+                yield return new Staff(staffIndex, scoreDocument, InstrumentRibbon, EnumerateMeasures());
             }
         }
 
@@ -80,17 +84,39 @@ namespace StudioLaValse.ScoreDocument.Private
             var distanceToNext = new ReadonlyTemplatePropertyFromFunc<double>(() =>
             {
                 var distanceToNext = EnumerateMeasures().Max(m => m.PaddingBottom.Value) ??
-                    documentStyleTemplate.StaffGroupPaddingBottom.Value;
+                    scoreDocument.StaffGroupPaddingBottom.Value;
                 return distanceToNext;
             });
 
-            var collapsed = new ReadonlyTemplatePropertyFromFunc<bool>(() =>
+            var collapsed = new ReadonlyTemplatePropertyFromFunc<Visibility>(() =>
             {
-                var collapsed = EnumerateMeasures().Any(m => m.Collapsed.Value ?? false);
-                return collapsed;
+                var hidden = EnumerateMeasures().Any(m => m.Visibility.Value == Layout.Visibility.Hidden || 
+                                                          InstrumentRibbon.Visibility == Layout.Visibility.Hidden);
+                if (hidden)
+                {
+                    return Layout.Visibility.Hidden;
+                }
+
+                var collapsed = EnumerateMeasures().Any(m => m.Visibility.Value == Layout.Visibility.Collapsed || 
+                                                               InstrumentRibbon.Visibility == Layout.Visibility.Collapsed);
+                if (collapsed)
+                {
+                    return Layout.Visibility.Collapsed;
+                }
+
+                return Layout.Visibility.Visible;
             });
+
+            var scale = new ReadonlyTemplatePropertyFromFunc<double>(() => InstrumentRibbon.Scale);
             
-            var layout = new StaffGroupLayout(numberOfStaves, distanceToNext, collapsed);
+            var layout = new StaffGroupLayout(numberOfStaves,
+                distanceToNext,
+                collapsed,
+                scoreDocument.HorizontalStaffLineThickness,
+                scoreDocument.VerticalStaffLineThickness,
+                scoreDocument.PageForegroundColor,
+                scale);
+
             return layout;
         }
 

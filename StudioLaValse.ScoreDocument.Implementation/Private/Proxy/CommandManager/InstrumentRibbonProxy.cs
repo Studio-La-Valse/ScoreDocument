@@ -1,6 +1,4 @@
-﻿using StudioLaValse.ScoreDocument.Implementation.Private.Interfaces;
-
-namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManager
+﻿namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManager
 {
     internal class InstrumentRibbonProxy : IInstrumentRibbon
     {
@@ -19,15 +17,15 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManage
 
         public TemplateProperty<string> DisplayName => Layout.DisplayName.WithRerender(notifyEntityChanged, source.HostScoreDocument, commandManager);
 
-        public TemplateProperty<string> AbbreviatedName => Layout.DisplayName.WithRerender(notifyEntityChanged, source.HostScoreDocument, commandManager);
+        public TemplateProperty<string> AbbreviatedName => Layout.AbbreviatedName.WithRerender(notifyEntityChanged, source.HostScoreDocument, commandManager);
 
-        public TemplateProperty<bool> Collapsed => Layout.Collapsed.WithRerender(notifyEntityChanged, source.HostScoreDocument, commandManager);
+        public TemplateProperty<Visibility> Visibility => Layout.Visibility.WithRerender(notifyEntityChanged, source.HostScoreDocument, commandManager);
 
         public TemplateProperty<int> NumberOfStaves => Layout.NumberOfStaves.WithRerender(notifyEntityChanged, source.HostScoreDocument, commandManager);
 
         public TemplateProperty<double> Scale => Layout.Scale.WithRerender(notifyEntityChanged, source.HostScoreDocument, commandManager);
 
-
+        public TemplateProperty<int> ZIndex => Layout.ZIndex.WithRerender(notifyEntityChanged, source.HostScoreDocument, commandManager);
 
         public InstrumentRibbonProxy(InstrumentRibbon source, ICommandManager commandManager, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged, ILayoutSelector layoutSelector)
         {

@@ -1,6 +1,8 @@
 ﻿using StudioLaValse.ScoreDocument.Implementation.Private.Interfaces;
 using StudioLaValse.ScoreDocument.Implementation.Private.Layout;
 using StudioLaValse.ScoreDocument.Implementation.Private.Memento;
+using StudioLaValse.ScoreDocument.Models.V1;
+using StudioLaValse.ScoreDocument.Models.V1.StyleTemplates;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Private
 {
@@ -19,8 +21,8 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
 
 
         public AuthorScoreDocumentLayout AuthorLayout { get; }
-        public UserScoreDocumentLayout UserLayout { get; set; }
-
+        public UserScoreDocumentLayout UserLayout { get; private set; }
+        public ScoreDocumentStyleTemplate StyleTemplate => this.styleTemplate;
 
 
         public ScoreDocumentCore(ScoreContentTable contentTable,
@@ -50,8 +52,8 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
         }
         public InstrumentRibbon CreateInstrumentRibbonCore(Instrument instrument, Guid ribbonId, Guid layoutId)
         {
-            var primaryLayout = new AuthorInstrumentRibbonLayout(instrument, styleTemplate, ribbonId);
-            var secondaryLayout = new SecondaryInstrumentRibbonLayout(primaryLayout, layoutId);
+            var primaryLayout = new AuthorInstrumentRibbonLayout(instrument, styleTemplate, ribbonId, UserLayout);
+            var secondaryLayout = new UserInstrumentRibbonLayout(primaryLayout, layoutId, UserLayout);
             var instrumentRibbon = new InstrumentRibbon(this, instrument, primaryLayout, secondaryLayout, keyGenerator, ribbonId);
             return instrumentRibbon;
         }
@@ -83,8 +85,8 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                     previousElement.TimeSignature :
                     new TimeSignature(4, 4);
 
-            var layout = new AuthorScoreMeasureLayout(styleTemplate.ScoreMeasureStyleTemplate);
-            var secondaryLayout = new UserScoreMeasureLayout(layoutGuid, layout, styleTemplate.ScoreMeasureStyleTemplate);
+            var layout = new AuthorScoreMeasureLayout(styleTemplate.ScoreMeasureStyleTemplate, UserLayout);
+            var secondaryLayout = new UserScoreMeasureLayout(layoutGuid, layout, styleTemplate.ScoreMeasureStyleTemplate, UserLayout);
             ScoreMeasure scoreMeasure = new(this, timeSignature, layout, secondaryLayout, styleTemplate, keyGenerator, guid);
             return scoreMeasure;
         }
@@ -136,7 +138,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
         }
         public IEnumerable<InstrumentRibbon> EnumerateRibbonsCore()
         {
-            return contentTable.RowHeaders;
+            return contentTable.RowHeaders.OrderBy(p => p.UserLayout.ZIndex.Value);
         }
 
 

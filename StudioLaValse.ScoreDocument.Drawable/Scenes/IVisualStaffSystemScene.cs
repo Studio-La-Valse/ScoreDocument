@@ -1,0 +1,18 @@
+﻿namespace StudioLaValse.ScoreDocument.Drawable.Scenes
+{
+    /// <summary>
+    /// A factory interface for creating a visual staff system.
+    /// </summary>
+    public interface IVisualStaffSystemScene
+    {
+        /// <summary>
+        /// Create the visual staff system.
+        /// </summary>
+        /// <param name="staffSystem"></param>
+        /// <param name="canvasLeft"></param>
+        /// <param name="canvasTop"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        BaseContentWrapper Create(IStaffSystem staffSystem, double canvasLeft, double canvasTop, double length);
+    }
+}

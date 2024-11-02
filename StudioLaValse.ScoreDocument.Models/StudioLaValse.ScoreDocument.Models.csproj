@@ -41,14 +41,4 @@
 		</None>
 	</ItemGroup>
 
-
-	<ItemGroup>
-    <ProjectReference Include="..\StudioLaValse.ScoreDocument.Core\StudioLaValse.ScoreDocument.Core.csproj" />
-  </ItemGroup>
-
-
-	<ItemGroup>
-	  <Folder Include="V1\" />
-	</ItemGroup>
-
 </Project>

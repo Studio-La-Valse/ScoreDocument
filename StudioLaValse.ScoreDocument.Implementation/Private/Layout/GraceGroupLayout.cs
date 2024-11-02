@@ -1,4 +1,6 @@
-﻿using StudioLaValse.ScoreDocument.Models.Base;
+﻿using StudioLaValse.ScoreDocument.Layout;
+using StudioLaValse.ScoreDocument.Models.V1;
+using StudioLaValse.ScoreDocument.Models.V1.StyleTemplates;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
 {
@@ -13,30 +15,29 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
         public abstract ValueTemplateProperty<StemDirection> _StemDirection { get; }
 
         public TemplateProperty<bool> OccupySpace => _OccupySpace;
-
         public TemplateProperty<double> ChordSpacing => _ChordSpacing;
-
         public TemplateProperty<RythmicDuration> ChordDuration => _ChordDuration;
-
-        public TemplateProperty<double> Scale => _Scale;
-
         public TemplateProperty<StemDirection> StemDirection => _StemDirection;
-
         public TemplateProperty<double> StemLength => _StemLength;
-
         public TemplateProperty<double> BeamAngle => _BeamAngle;
-
         public TemplateProperty<RythmicDuration> BlockDuration => _ChordDuration;
 
-        public ReadonlyTemplateProperty<double> BeamThickness { get; }
 
+
+        public TemplateProperty<double> Scale { get; }
+        public ReadonlyTemplateProperty<double> BeamThickness { get; }
         public ReadonlyTemplateProperty<double> BeamSpacing { get; }
 
 
-        protected GraceGroupLayout(GraceGroupStyleTemplate graceGroupStyleTemplate)
+        protected GraceGroupLayout(GraceGroupStyleTemplate graceGroupStyleTemplate, UserInstrumentRibbonLayout instrumentRibbonLayout)
         {
             BeamThickness = new ReadonlyTemplatePropertyFromFunc<double>(() => graceGroupStyleTemplate.BeamThickness);
             BeamSpacing = new ReadonlyTemplatePropertyFromFunc<double>(() => graceGroupStyleTemplate.BeamSpacing);
+
+            double defaultScaleGetter() => _Scale.Value;
+            double parentScaleGetter() => instrumentRibbonLayout.Scale.Value;
+            double scaleAccumulator(double first, double second) => first * second;
+            Scale = new AccumulativeValueTemplateProperty<double>(defaultScaleGetter, parentScaleGetter, scaleAccumulator);
         }
 
 
@@ -83,7 +84,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
         public override ValueTemplateProperty<double> _BeamAngle { get; }
         public override ValueTemplateProperty<StemDirection> _StemDirection { get; }
 
-        public AuthorGraceGroupLayout(GraceGroupStyleTemplate graceGroupStyleTemplate, int voice) : base(graceGroupStyleTemplate)
+        public AuthorGraceGroupLayout(GraceGroupStyleTemplate graceGroupStyleTemplate, int voice, UserInstrumentRibbonLayout instrumentRibbonLayout) : base(graceGroupStyleTemplate, instrumentRibbonLayout)
         {
             _OccupySpace = new ValueTemplateProperty<bool>(() => graceGroupStyleTemplate.OccupySpace);
             _ChordSpacing = new ValueTemplateProperty<double>(() => graceGroupStyleTemplate.ChordSpaceRight);
@@ -110,7 +111,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
 
         public Guid Guid => guid;
 
-        public UserGraceGroupLayout(AuthorGraceGroupLayout authorGraceGroupLayout, Guid guid, GraceGroupStyleTemplate graceGroupStyleTemplate) : base(graceGroupStyleTemplate)
+        public UserGraceGroupLayout(AuthorGraceGroupLayout authorGraceGroupLayout, Guid guid, GraceGroupStyleTemplate graceGroupStyleTemplate, UserInstrumentRibbonLayout instrumentRibbonLayout) : base(graceGroupStyleTemplate, instrumentRibbonLayout)
         {
             this.guid = guid;
 

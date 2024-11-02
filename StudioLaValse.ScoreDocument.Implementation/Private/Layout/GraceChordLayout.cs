@@ -1,4 +1,6 @@
-﻿using StudioLaValse.ScoreDocument.Models.Base;
+﻿using StudioLaValse.ScoreDocument.Models.V1;
+using StudioLaValse.ScoreDocument.Models.Classes;
+using StudioLaValse.ScoreDocument.Models.V1.StyleTemplates;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
 {
@@ -6,13 +8,19 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
     {
         private readonly IGraceGroupLayout graceGroupLayout;
         private readonly Dictionary<PowerOfTwo, BeamType> beamTypes;
+        private readonly MeasureBlockStyleTemplate chordStyleTemplate;
 
         public ReadonlyTemplateProperty<double> SpaceRight => new ReadonlyTemplatePropertyFromFunc<double>(() => graceGroupLayout.ChordSpacing.Value);
 
-        public GraceChordLayout(IGraceGroupLayout graceGroupLayout, Dictionary<PowerOfTwo, BeamType> beamTypes)
+        public ReadonlyTemplateProperty<double> StemLineThickness => new ReadonlyTemplatePropertyFromFunc<double>(() => chordStyleTemplate.StemThickness * 0.5);
+
+
+
+        public GraceChordLayout(IGraceGroupLayout graceGroupLayout, Dictionary<PowerOfTwo, BeamType> beamTypes, MeasureBlockStyleTemplate chordStyleTemplate)
         {
             this.graceGroupLayout = graceGroupLayout;
             this.beamTypes = beamTypes;
+            this.chordStyleTemplate = chordStyleTemplate;
         }
 
         public BeamType? ReadBeamType(PowerOfTwo i)
@@ -48,7 +56,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
     {
         public Dictionary<PowerOfTwo, BeamType> BeamTypes { get; }
 
-        public AuthorGraceChordLayout(IGraceGroupLayout graceGroupLayout, Dictionary<PowerOfTwo, BeamType> beamTypes) : base(graceGroupLayout, beamTypes)
+        public AuthorGraceChordLayout(IGraceGroupLayout graceGroupLayout, Dictionary<PowerOfTwo, BeamType> beamTypes, MeasureBlockStyleTemplate chordStyleTemplate) : base(graceGroupLayout, beamTypes, chordStyleTemplate)
         {
             BeamTypes = beamTypes;
         }
@@ -59,7 +67,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
         private readonly Guid guid;
         public Guid Guid => guid;
 
-        public UserGraceChordLayout(Guid guid, IGraceGroupLayout graceGroupLayout, Dictionary<PowerOfTwo, BeamType> beamTypes) : base(graceGroupLayout, beamTypes)
+        public UserGraceChordLayout(Guid guid, IGraceGroupLayout graceGroupLayout, Dictionary<PowerOfTwo, BeamType> beamTypes, MeasureBlockStyleTemplate chordStyleTemplate) : base(graceGroupLayout, beamTypes, chordStyleTemplate)
         {
             this.guid = guid;
         }

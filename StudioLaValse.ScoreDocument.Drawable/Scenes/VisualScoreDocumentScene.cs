@@ -5,7 +5,7 @@
     /// </summary>
     public class VisualScoreDocumentScene : BaseVisualParent<IUniqueScoreElement>
     {
-        private readonly IVisualScoreDocumentContentFactory sceneFactory;
+        private readonly IVisualScoreDocumentScene sceneFactory;
         private readonly IScoreDocument scoreDocumentReader;
 
         /// <summary>
@@ -13,7 +13,7 @@
         /// </summary>
         /// <param name="sceneFactory"></param>
         /// <param name="scoreDocumentReader"></param>
-        public VisualScoreDocumentScene(IVisualScoreDocumentContentFactory sceneFactory, IScoreDocument scoreDocumentReader) : base(scoreDocumentReader)
+        public VisualScoreDocumentScene(IVisualScoreDocumentScene sceneFactory, IScoreDocument scoreDocumentReader) : base(scoreDocumentReader)
         {
             this.sceneFactory = sceneFactory;
             this.scoreDocumentReader = scoreDocumentReader;
@@ -22,7 +22,7 @@
         /// <inheritdoc/>
         public override IEnumerable<BaseContentWrapper> GetContentWrappers()
         {
-            yield return sceneFactory.CreateContent(scoreDocumentReader);
+            yield return sceneFactory.Create(scoreDocumentReader);
         }
 
         /// <inheritdoc/>

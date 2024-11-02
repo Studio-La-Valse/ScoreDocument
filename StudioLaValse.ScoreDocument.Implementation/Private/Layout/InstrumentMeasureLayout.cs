@@ -1,12 +1,14 @@
-﻿using StudioLaValse.ScoreDocument.Models.Base;
+﻿using StudioLaValse.ScoreDocument.Models.V1;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
 {
     internal abstract class InstrumentMeasureLayout : IInstrumentMeasureLayout
     {
+        private readonly ScoreMeasure scoreMeasure;
+
         public abstract NullableTemplateProperty<int> _NumberOfStaves { get; }
         public abstract NullableTemplateProperty<double> _PaddingBottom { get; }
-        public abstract NullableTemplateProperty<bool> _Collapsed { get; }
+        public abstract ValueTemplateProperty<Visibility> _Visibility { get; }
         public abstract HashSet<ClefChange> _ClefChanges { get; }
         public abstract HashSet<ClefChange> _IgnoredClefChanges { get; }
         public abstract Dictionary<int, double> _PaddingBottomForStaves { get; }
@@ -15,15 +17,15 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
 
         public ReadonlyTemplateProperty<KeySignature> KeySignature { get; }
         public TemplateProperty<double?> PaddingBottom => _PaddingBottom;
-        public TemplateProperty<bool?> Collapsed => _Collapsed;
+        public TemplateProperty<Visibility> Visibility => _Visibility;
         public TemplateProperty<int?> NumberOfStaves => _NumberOfStaves;
-
-
-
+        public ReadonlyTemplateProperty<double> PaddingLeft => new ReadonlyTemplatePropertyFromFunc<double>(() => scoreMeasure.UserLayout.PaddingLeft);
+        public ReadonlyTemplateProperty<double> PaddingRight => new ReadonlyTemplatePropertyFromFunc<double>(() => scoreMeasure.UserLayout.PaddingRight);
 
         protected InstrumentMeasureLayout(ScoreMeasure scoreMeasure)
         {
             KeySignature = new ReadonlyTemplatePropertyFromFunc<KeySignature>(() => scoreMeasure.UserLayout.KeySignature);
+            this.scoreMeasure = scoreMeasure;
         }
 
 
@@ -37,7 +39,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
             _IgnoredClefChanges.Clear();
             _NumberOfStaves.Reset();
             _PaddingBottom.Reset();
-            _Collapsed.Reset();
+            _Visibility.Reset();
         }
 
         public void ApplyMemento(InstrumentMeasureLayoutMembers? memento)
@@ -60,7 +62,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
 
             _NumberOfStaves.Field = memento.NumberOfStaves;
             _PaddingBottom.Field = memento.PaddingBottom;
-            _Collapsed.Field = memento.Collapsed;
+            _Visibility.Field = memento.Visibility?.ConvertVisibility();
         }
         public void ApplyMemento(InstrumentMeasureLayoutModel? memento)
         {
@@ -99,7 +101,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
         public override HashSet<ClefChange> _IgnoredClefChanges { get; } = [];
         public override NullableTemplateProperty<int> _NumberOfStaves { get; }
         public override NullableTemplateProperty<double> _PaddingBottom { get; }
-        public override NullableTemplateProperty<bool> _Collapsed { get; }
+        public override ValueTemplateProperty<Visibility> _Visibility { get; }
 
 
         public override IEnumerable<ClefChange> EnumerateClefChanges() => _ClefChanges;
@@ -108,7 +110,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
         public AuthorInstrumentMeasureLayout(ScoreMeasure scoreMeasure) : base(scoreMeasure)
         {
             _NumberOfStaves = new NullableTemplateProperty<int>(() => null);
-            _Collapsed = new NullableTemplateProperty<bool>(() => false);
+            _Visibility = new ValueTemplateProperty<Visibility>(() => StudioLaValse.ScoreDocument.Layout.Visibility.Visible);
             _PaddingBottom = new NullableTemplateProperty<double>(() => null);
         }
 
@@ -162,7 +164,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
                 StaffPaddingBottom = paddingBottomStavesDictionary,
                 NumberOfStaves = _NumberOfStaves.Field,
                 PaddingBottom = PaddingBottom,
-                Collapsed = Collapsed
+                Visibility = Visibility.Value.ConvertVisibility()
             };
         }
     }
@@ -178,7 +180,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
         public override HashSet<ClefChange> _ClefChanges { get; } = [];
         public override NullableTemplateProperty<int> _NumberOfStaves { get; }
         public override NullableTemplateProperty<double> _PaddingBottom { get; }
-        public override NullableTemplateProperty<bool> _Collapsed { get; }
+        public override ValueTemplateProperty<Visibility> _Visibility { get; }
 
 
         public Guid Id { get; }
@@ -197,7 +199,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private.Layout
 
             _NumberOfStaves = new NullableTemplateProperty<int>(() => layout.NumberOfStaves);
             _PaddingBottom = new NullableTemplateProperty<double>(() => layout.PaddingBottom);
-            _Collapsed = new NullableTemplateProperty<bool>(() => layout.Collapsed);
+            _Visibility = new ValueTemplateProperty<Visibility>(() => layout.Visibility);
             paddingBottomForStavesSource = layout._PaddingBottomForStaves;
         }
 

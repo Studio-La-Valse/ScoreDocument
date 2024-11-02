@@ -9,5 +9,10 @@
         /// The available space to the right of the chord.
         /// </summary>
         ReadonlyTemplateProperty<double> SpaceRight { get; }
+
+        /// <summary>
+        /// The stem line thickness of the chord.
+        /// </summary>
+        ReadonlyTemplateProperty<double> StemLineThickness { get; }
     }
 }

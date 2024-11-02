@@ -1,6 +1,7 @@
 ﻿using StudioLaValse.ScoreDocument.Implementation.Private.Interfaces;
 using StudioLaValse.ScoreDocument.Implementation.Private.Layout;
 using StudioLaValse.ScoreDocument.Implementation.Private.Memento;
+using StudioLaValse.ScoreDocument.Models.V1;
 
 namespace StudioLaValse.ScoreDocument.Implementation.Private
 {
@@ -10,7 +11,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
 
         public Instrument Instrument { get; }
         public AuthorInstrumentRibbonLayout AuthorLayout { get; }
-        public SecondaryInstrumentRibbonLayout UserLayout { get; set; }
+        public UserInstrumentRibbonLayout UserLayout { get; set; }
 
         public int IndexInScore => score.IndexOf(this);
         public ScoreDocumentCore HostScoreDocument => score;
@@ -19,7 +20,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
         public InstrumentRibbon(ScoreDocumentCore score,
                                 Instrument instrument,
                                 AuthorInstrumentRibbonLayout layout,
-                                SecondaryInstrumentRibbonLayout secondaryLayout,
+                                UserInstrumentRibbonLayout secondaryLayout,
                                 IKeyGenerator<int> keyGenerator,
                                 Guid guid) : base(keyGenerator, guid)
         {
@@ -53,10 +54,11 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                 Instrument = Instrument.Convert(),
                 IndexInScore = IndexInScore,
                 AbbreviatedName = AuthorLayout._AbbreviatedName.Field,
-                Collapsed = AuthorLayout._Collapsed.Field,
+                Visibility = AuthorLayout._Collapsed.Field?.ConvertVisibility(),
                 DisplayName = AuthorLayout._DisplayName.Field,
                 NumberOfStaves = AuthorLayout._NumberOfStaves.Field,
                 Scale = AuthorLayout._Scale.Field,
+                ZIndex = AuthorLayout._ZIndex.Field,
             };
         }
 
@@ -69,8 +71,9 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                 AbbreviatedName = UserLayout._AbbreviatedName.Field,
                 DisplayName = UserLayout._DisplayName.Field,
                 NumberOfStaves = UserLayout._NumberOfStaves.Field,
-                Collapsed = UserLayout.Collapsed,
-                Scale = UserLayout.Scale
+                Visibility = UserLayout._Collapsed.Field?.ConvertVisibility(),
+                Scale = UserLayout._Scale.Field,
+                ZIndex = UserLayout._ZIndex.Field,
             };
         }
 
@@ -83,10 +86,11 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                 Instrument = Instrument.Convert(),
                 IndexInScore = IndexInScore,
                 AbbreviatedName = AuthorLayout._AbbreviatedName.Field,
-                Collapsed = AuthorLayout._Collapsed.Field,
+                Visibility = AuthorLayout._Collapsed.Field?.ConvertVisibility(),
                 DisplayName = AuthorLayout._DisplayName.Field,
                 NumberOfStaves = AuthorLayout._NumberOfStaves.Field,
                 Scale = AuthorLayout._Scale.Field,
+                ZIndex = AuthorLayout._ZIndex.Field,
             };
         }
 
@@ -94,7 +98,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
         {
             AuthorLayout.ApplyMemento(memento);
 
-            UserLayout = new SecondaryInstrumentRibbonLayout(AuthorLayout, memento.Layout.Id);
+            UserLayout = new UserInstrumentRibbonLayout(AuthorLayout, memento.Layout.Id, score.UserLayout);
             UserLayout.ApplyMemento(memento.Layout);
         }
     }

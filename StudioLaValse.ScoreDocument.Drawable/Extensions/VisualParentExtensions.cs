@@ -118,7 +118,7 @@
                 this.source = source;
                 this.selection = selection;
             }
-            public BaseContentWrapper Create(IInstrumentMeasure source, IStaffGroup staffGroup, IReadOnlyDictionary<Position, double> positionDictionary, double canvasTop, double canvasLeft, double width)
+            public BaseContentWrapper Create(IInstrumentMeasure source, IStaffGroup staffGroup, PositionDictionary positionDictionary, double canvasTop, double canvasLeft, double width)
             {
                 var baseContentWrapper = this.source
                     .Create(source, staffGroup, positionDictionary, canvasTop, canvasLeft, width)

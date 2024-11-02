@@ -1,12 +1,14 @@
-﻿namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManager;
+﻿using StudioLaValse.ScoreDocument.Extensions;
 
-internal class ScoreDocumentProxy(ScoreDocumentCore score, ICommandManager commandManager, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged, ILayoutSelector layoutSelector) : IScoreDocument
+namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.CommandManager;
+
+internal class ScoreDocumentProxy(ScoreDocumentCore score, ICommandManager commandManager, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged, ILayoutSelector layoutSelector, IPositionDictionaryBuilder positionDictionaryBuilder) : IScoreDocument
 {
     private readonly ScoreDocumentCore score = score;
     private readonly ICommandManager commandManager = commandManager;
     private readonly INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged = notifyEntityChanged;
     private readonly ILayoutSelector layoutSelector = layoutSelector;
-
+    private readonly IPositionDictionaryBuilder positionDictionaryBuilder = positionDictionaryBuilder;
 
     public IScoreDocumentLayout Layout => layoutSelector.ScoreDocumentLayout(score);
 
@@ -121,7 +123,7 @@ internal class ScoreDocumentProxy(ScoreDocumentCore score, ICommandManager comma
             yield return measure;
         }
 
-        foreach (var page in this.ReadPages())
+        foreach (var page in this.ReadPages(positionDictionaryBuilder))
         {
             yield return page;
         }

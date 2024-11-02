@@ -85,8 +85,8 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
                     previousElement.TimeSignature :
                     new TimeSignature(4, 4);
 
-            var layout = new AuthorScoreMeasureLayout(styleTemplate.ScoreMeasureStyleTemplate, styleTemplate);
-            var secondaryLayout = new UserScoreMeasureLayout(layoutGuid, layout, styleTemplate.ScoreMeasureStyleTemplate, styleTemplate);
+            var layout = new AuthorScoreMeasureLayout(styleTemplate.ScoreMeasureStyleTemplate, UserLayout);
+            var secondaryLayout = new UserScoreMeasureLayout(layoutGuid, layout, styleTemplate.ScoreMeasureStyleTemplate, UserLayout);
             ScoreMeasure scoreMeasure = new(this, timeSignature, layout, secondaryLayout, styleTemplate, keyGenerator, guid);
             return scoreMeasure;
         }

@@ -1,10 +1,10 @@
 ﻿namespace StudioLaValse.ScoreDocument.Implementation.Private.Proxy.Default;
 
-internal class ScoreDocumentProxy(ScoreDocumentCore score, ILayoutSelector layoutSelector) : IScoreDocument
+internal class ScoreDocumentProxy(ScoreDocumentCore score, ILayoutSelector layoutSelector, IPositionDictionaryBuilder positionDictionaryBuilder) : IScoreDocument
 {
     private readonly ScoreDocumentCore score = score;
     private readonly ILayoutSelector layoutSelector = layoutSelector;
-
+    private readonly IPositionDictionaryBuilder positionDictionaryBuilder = positionDictionaryBuilder;
 
     public IScoreDocumentLayout Layout => layoutSelector.ScoreDocumentLayout(score);
 
@@ -107,7 +107,7 @@ internal class ScoreDocumentProxy(ScoreDocumentCore score, ILayoutSelector layou
             yield return measure;
         }
 
-        foreach (var page in this.ReadPages())
+        foreach (var page in this.ReadPages(positionDictionaryBuilder))
         {
             yield return page;
         }

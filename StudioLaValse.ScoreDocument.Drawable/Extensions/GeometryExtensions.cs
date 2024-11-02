@@ -1,6 +1,6 @@
 ﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
 
-namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
+namespace StudioLaValse.ScoreDocument.Drawable.Extensions
 {
     /// <summary>
     /// Some geometry extensions.
@@ -12,7 +12,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         /// </summary>
         /// <param name="color"></param>
         /// <returns></returns>
-        public static ColorARGB FromPrimitive(this ScoreDocument.Models.Classes.ColorARGBClass color)
+        public static ColorARGB FromPrimitive(this Models.Classes.ColorARGBClass color)
         {
             return new ColorARGB(color.A, color.R, color.G, color.B);
         }
@@ -24,7 +24,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         /// <returns></returns>
         public static XY Measure(this Glyph glyph)
         {
-            if(glyph.KnownWidth is null || glyph.KnownHeight is null)
+            if (glyph.KnownWidth is null || glyph.KnownHeight is null)
             {
                 return ExternalTextMeasure.TextMeasurer.Measure(glyph.StringValue, new(glyph.FontFamilyKey!, glyph.FontFamily), glyph.Points);
             }

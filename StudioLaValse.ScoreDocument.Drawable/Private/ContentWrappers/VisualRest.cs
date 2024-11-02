@@ -1,6 +1,7 @@
-﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
+﻿using StudioLaValse.ScoreDocument.Drawable.Extensions;
+using StudioLaValse.ScoreDocument.GlyphLibrary;
 
-namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
+namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
     internal sealed class VisualRest : BaseVisualNote
     {

@@ -1,6 +1,7 @@
-﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
+﻿using StudioLaValse.ScoreDocument.Drawable.Extensions;
+using StudioLaValse.ScoreDocument.GlyphLibrary;
 
-namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
+namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
     /// <summary>
     /// A note mirror, to specify stem alignment. 
@@ -62,7 +63,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                 if (glyph is not null)
                 {
                     return new DrawableScoreGlyph(
-                        CanvasLeft - (glyph.Width() * 2),
+                        CanvasLeft - glyph.Width() * 2,
                         canvasTop,
                         glyph,
                         HorizontalTextOrigin.Center,

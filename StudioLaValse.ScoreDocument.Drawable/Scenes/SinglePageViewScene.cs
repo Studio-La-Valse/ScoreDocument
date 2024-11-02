@@ -1,5 +1,4 @@
 ﻿using StudioLaValse.ScoreDocument.Extensions;
-using StudioLaValse.ScoreDocument.GlyphLibrary;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Scenes
 {
@@ -10,21 +9,24 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
     {
         private readonly int pageIndex;
         private readonly IVisualPageScene visualPageFactory;
+        private readonly IPositionDictionaryBuilder positionDictionaryBuilder;
 
         /// <summary>
         /// The default constructor.
         /// </summary>
         /// <param name="pageIndex"></param>
         /// <param name="visualPageFactory"></param>
-        public SinglePageViewScene(int pageIndex, IVisualPageScene visualPageFactory)
+        /// <param name="positionDictionaryBuilder"></param>
+        public SinglePageViewScene(int pageIndex, IVisualPageScene visualPageFactory, IPositionDictionaryBuilder positionDictionaryBuilder)
         {
             this.pageIndex = pageIndex;
             this.visualPageFactory = visualPageFactory;
+            this.positionDictionaryBuilder = positionDictionaryBuilder;
         }
         /// <inheritdoc/>
         public BaseContentWrapper Create(IScoreDocument scoreDocument)
         {
-            var page = scoreDocument.ReadPages().ElementAt(pageIndex);
+            var page = scoreDocument.ReadPages(positionDictionaryBuilder).ElementAt(pageIndex);
             return visualPageFactory.Create(page, 0, 0);
         }
     }

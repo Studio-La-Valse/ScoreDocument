@@ -274,10 +274,7 @@ namespace StudioLaValse.ScoreDocument.Core
                 throw new ArgumentOutOfRangeException(nameof(shifts));
             }
 
-            if (step < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(step));
-            }
+            ArgumentOutOfRangeException.ThrowIfNegative(step);
 
             StepsFromC = step % 7;
             Shifts = shifts;

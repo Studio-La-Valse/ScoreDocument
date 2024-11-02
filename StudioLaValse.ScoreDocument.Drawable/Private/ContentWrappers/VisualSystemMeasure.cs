@@ -1,12 +1,12 @@
-﻿using StudioLaValse.ScoreDocument.Drawable.Extensions;
-using StudioLaValse.ScoreDocument.Extensions;
+﻿using StudioLaValse.ScoreDocument.Extensions;
 
-namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
+namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
     internal sealed class VisualSystemMeasure : BaseVisualParent<IUniqueScoreElement>
     {
         private readonly IScoreMeasure scoreMeasure;
         private readonly IVisualInstrumentMeasureScene visualInstrumentMeasureFactory;
+        private readonly IPositionDictionaryBuilder positionDictionaryBuilder;
         private readonly IStaffSystem staffSystem;
         private readonly double width;
         private readonly double canvasLeft;
@@ -15,7 +15,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
         public double Scale =>
             scoreMeasure.Scale;
-        public IScoreMeasure Layout => 
+        public IScoreMeasure Layout =>
             scoreMeasure;
         public double PaddingRight =>
             Layout.PaddingRight * Scale + NextMeasureKeyPadding * Scale;
@@ -64,11 +64,13 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                                    double canvasLeft,
                                    double canvasTop,
                                    double width,
-                                   IVisualInstrumentMeasureScene visualInstrumentMeasureFactory) : 
+                                   IVisualInstrumentMeasureScene visualInstrumentMeasureFactory,
+                                   IPositionDictionaryBuilder positionDictionaryBuilder) :
             base(scoreMeasure)
         {
             this.scoreMeasure = scoreMeasure;
             this.visualInstrumentMeasureFactory = visualInstrumentMeasureFactory;
+            this.positionDictionaryBuilder = positionDictionaryBuilder;
             this.canvasTop = canvasTop;
             this.staffSystem = staffSystem;
             this.width = width;
@@ -81,9 +83,8 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         private IEnumerable<BaseContentWrapper> ConstructStaffGroupMeasures()
         {
             var positions = scoreMeasure
-                .EnumeratePositions()
-                .Remap(canvasLeft + PaddingLeft, canvasLeft + width - PaddingRight)
-                .PositionsOnly(out var positionSpace);
+                .EnumeratePositions(positionDictionaryBuilder)
+                .Remap(canvasLeft + PaddingLeft, width - (PaddingLeft + PaddingRight));
             foreach (var (staffGroup, canvasTop) in staffSystem.EnumerateFromTop(this.canvasTop))
             {
                 if (staffGroup.Visibility != Visibility.Visible)

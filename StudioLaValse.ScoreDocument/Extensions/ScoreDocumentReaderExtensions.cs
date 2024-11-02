@@ -1,4 +1,5 @@
 ﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
+using StudioLaValse.ScoreDocument.Layout;
 using StudioLaValse.ScoreDocument.Private;
 
 namespace StudioLaValse.ScoreDocument.Extensions
@@ -12,8 +13,9 @@ namespace StudioLaValse.ScoreDocument.Extensions
         /// Read the pages of a score document.
         /// </summary>
         /// <param name="scoreDocument"></param>
+        /// <param name="positionDictionaryBuilder"></param>
         /// <returns></returns>
-        public static IEnumerable<IPage> ReadPages(this IScoreDocument scoreDocument)
+        public static IEnumerable<IPage> ReadPages(this IScoreDocument scoreDocument, IPositionDictionaryBuilder positionDictionaryBuilder)
         {
             var scoreScale = scoreDocument.Scale;
             var currentpage = new Page(0, scoreDocument);
@@ -34,7 +36,7 @@ namespace StudioLaValse.ScoreDocument.Extensions
             {
                 currentSystem.ScoreMeasures.Add(measure);
 
-                var currentSystemLength = currentSystem.ScoreMeasures.Select(m => m.ApproximateWidth()).Sum();
+                var currentSystemLength = currentSystem.ScoreMeasures.Select(m => m.ApproximateWidth(positionDictionaryBuilder)).Sum();
                 var currentAvailableWidth = pageWidth - pageLayout.MarginLeft - pageLayout.MarginRight;
 
                 // Need to add a new system.

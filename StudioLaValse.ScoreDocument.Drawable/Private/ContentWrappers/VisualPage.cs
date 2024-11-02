@@ -1,4 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.Extensions;
+﻿using StudioLaValse.ScoreDocument.Drawable.Extensions;
+using StudioLaValse.ScoreDocument.Extensions;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
@@ -8,6 +9,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         private readonly double canvasLeft;
         private readonly double canvasTop;
         private readonly IVisualStaffSystemScene staffSystemContentFactory;
+        private readonly IPositionDictionaryBuilder positionDictionaryBuilder;
 
         public ColorARGB PageColor => page.PageColor.Value.FromPrimitive();
         public ColorARGB ForegroundColor => page.ForegroundColor.Value.FromPrimitive();
@@ -22,12 +24,14 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         public VisualPage(IPage page,
                           double canvasLeft,
                           double canvasTop,
-                          IVisualStaffSystemScene staffSystemContentFactory)
+                          IVisualStaffSystemScene staffSystemContentFactory,
+                          IPositionDictionaryBuilder positionDictionaryBuilder)
         {
             this.page = page;
             this.canvasLeft = canvasLeft;
             this.canvasTop = canvasTop;
             this.staffSystemContentFactory = staffSystemContentFactory;
+            this.positionDictionaryBuilder = positionDictionaryBuilder;
         }
 
 
@@ -68,7 +72,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 
                 var canvasRight = this.canvasLeft + PageWidth - MarginRight;
                 var length = canvasRight - canvasLeft;
-                var measureLengthSum = staffSystem.EnumerateMeasures().Select(m => m.ApproximateWidth()).Sum();
+                var measureLengthSum = staffSystem.EnumerateMeasures().Select(m => m.ApproximateWidth(positionDictionaryBuilder)).Sum();
                 length = Math.Min(length, measureLengthSum);
 
                 var staffSystemLayout = staffSystem;

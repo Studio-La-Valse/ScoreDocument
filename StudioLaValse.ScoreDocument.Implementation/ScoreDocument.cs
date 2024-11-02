@@ -32,7 +32,7 @@ public static class ScoreDocument
 
         return scoreDocument;
     }
-    public static IScoreDocument Create(ScoreDocumentStyleTemplate scoreDocumentStyleTemplate)
+    public static IScoreDocument Create(ScoreDocumentStyleTemplate scoreDocumentStyleTemplate, IPositionDictionaryBuilder positionDictionaryBuilder)
     {
         var memento = new ScoreDocumentModel()
         {
@@ -40,27 +40,27 @@ public static class ScoreDocument
             InstrumentRibbons = [],
             ScoreMeasures = [],
         };
-        return Create(scoreDocumentStyleTemplate, memento);
+        return Create(scoreDocumentStyleTemplate, memento, positionDictionaryBuilder);
     }
-    public static IScoreDocument Create(ScoreDocumentStyleTemplate scoreDocumentStyleTemplate, ScoreDocumentModel scoreDocumentModel)
+    public static IScoreDocument Create(ScoreDocumentStyleTemplate scoreDocumentStyleTemplate, ScoreDocumentModel scoreDocumentModel, IPositionDictionaryBuilder positionDictionaryBuilder)
     {
         var scoreDocument = CreateCore(scoreDocumentStyleTemplate, scoreDocumentModel);
-        return scoreDocument.ProxyAuthor(); 
+        return scoreDocument.ProxyAuthor(positionDictionaryBuilder); 
     }
-    public static IScoreDocument Create(ScoreDocumentStyleTemplate scoreDocumentStyleTemplate, ScoreDocumentModel scoreDocumentModel, ScoreDocumentLayoutDictionary scoreDocumentLayoutModel)
+    public static IScoreDocument Create(ScoreDocumentStyleTemplate scoreDocumentStyleTemplate, ScoreDocumentModel scoreDocumentModel, ScoreDocumentLayoutDictionary scoreDocumentLayoutModel, IPositionDictionaryBuilder positionDictionaryBuilder)
     {
         var scoreDocument = CreateCore(scoreDocumentStyleTemplate, scoreDocumentModel, scoreDocumentLayoutModel);
-        return scoreDocument.ProxyUser();
+        return scoreDocument.ProxyUser(positionDictionaryBuilder);
     }
 
-    public static IScoreDocument Create(ScoreDocumentStyleTemplate scoreDocumentStyleTemplate, ICommandManager commandManager, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged, ScoreDocumentModel scoreDocumentModel)
+    public static IScoreDocument Create(ScoreDocumentStyleTemplate scoreDocumentStyleTemplate, ICommandManager commandManager, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged, ScoreDocumentModel scoreDocumentModel, IPositionDictionaryBuilder positionDictionaryBuilder)
     {
         var scoreDocument = CreateCore(scoreDocumentStyleTemplate, scoreDocumentModel);
-        return scoreDocument.ProxyAuthor(commandManager, notifyEntityChanged);
+        return scoreDocument.ProxyAuthor(commandManager, notifyEntityChanged, positionDictionaryBuilder);
     }
-    public static IScoreDocument Create(ScoreDocumentStyleTemplate scoreDocumentStyleTemplate, ICommandManager commandManager, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged, ScoreDocumentModel scoreDocumentModel, ScoreDocumentLayoutDictionary scoreDocumentLayoutModel)
+    public static IScoreDocument Create(ScoreDocumentStyleTemplate scoreDocumentStyleTemplate, ICommandManager commandManager, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged, ScoreDocumentModel scoreDocumentModel, ScoreDocumentLayoutDictionary scoreDocumentLayoutModel, IPositionDictionaryBuilder positionDictionaryBuilder)
     {
         var scoreDocument = CreateCore(scoreDocumentStyleTemplate, scoreDocumentModel, scoreDocumentLayoutModel);
-        return scoreDocument.ProxyUser(commandManager, notifyEntityChanged);
+        return scoreDocument.ProxyUser(commandManager, notifyEntityChanged, positionDictionaryBuilder);
     }
 }

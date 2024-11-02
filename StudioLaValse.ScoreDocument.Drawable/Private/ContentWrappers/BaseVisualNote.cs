@@ -1,4 +1,4 @@
-﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
+﻿namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
     internal abstract class BaseVisualNote : BaseVisualParent<IUniqueScoreElement>
     {
@@ -81,9 +81,9 @@
         public override BoundingBox BoundingBox()
         {
             return new BoundingBox(
-                CanvasLeft - GlyphLibrary.Glyph.LineSpacing * Scale / 2, 
-                CanvasLeft + GlyphLibrary.Glyph.LineSpacing * Scale / 2, 
-                CanvasTop - GlyphLibrary.Glyph.LineSpacing * Scale / 2, 
+                CanvasLeft - GlyphLibrary.Glyph.LineSpacing * Scale / 2,
+                CanvasLeft + GlyphLibrary.Glyph.LineSpacing * Scale / 2,
+                CanvasTop - GlyphLibrary.Glyph.LineSpacing * Scale / 2,
                 CanvasTop + GlyphLibrary.Glyph.LineSpacing * Scale / 2);
         }
     }

@@ -10,14 +10,14 @@ public static class ScoreBuilder
     {
         return new ScoreBuilderProxy(scoreDocument, commandManager, notifyEntityChanged);
     }
-    public static IScoreBuilder Create(ScoreDocumentStyleTemplate scoreDocumentStyleTemplate, ICommandManager commandManager, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged, ScoreDocumentModel scoreDocumentModel)
+    public static IScoreBuilder Create(ScoreDocumentStyleTemplate scoreDocumentStyleTemplate, ICommandManager commandManager, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged, ScoreDocumentModel scoreDocumentModel, IPositionDictionaryBuilder positionDictionaryBuilder)
     {
-        var scoreDocument = ScoreDocument.Create(scoreDocumentStyleTemplate, scoreDocumentModel);
+        var scoreDocument = ScoreDocument.Create(scoreDocumentStyleTemplate, scoreDocumentModel, positionDictionaryBuilder);
         return new ScoreBuilderProxy(scoreDocument, commandManager, notifyEntityChanged);
     }
-    public static IScoreBuilder Create(ScoreDocumentStyleTemplate scoreDocumentStyleTemplate, ICommandManager commandManager, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged, ScoreDocumentModel scoreDocumentModel, ScoreDocumentLayoutDictionary scoreDocumentLayoutModel)
+    public static IScoreBuilder Create(ScoreDocumentStyleTemplate scoreDocumentStyleTemplate, ICommandManager commandManager, INotifyEntityChanged<IUniqueScoreElement> notifyEntityChanged, ScoreDocumentModel scoreDocumentModel, ScoreDocumentLayoutDictionary scoreDocumentLayoutModel, IPositionDictionaryBuilder positionDictionaryBuilder)
     {
-        var scoreDocument = ScoreDocument.Create(scoreDocumentStyleTemplate, scoreDocumentModel, scoreDocumentLayoutModel);
+        var scoreDocument = ScoreDocument.Create(scoreDocumentStyleTemplate, scoreDocumentModel, scoreDocumentLayoutModel, positionDictionaryBuilder);
         return new ScoreBuilderProxy(scoreDocument, commandManager, notifyEntityChanged);
     }
 }

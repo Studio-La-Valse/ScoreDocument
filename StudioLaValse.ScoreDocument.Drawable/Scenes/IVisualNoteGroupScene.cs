@@ -14,6 +14,6 @@
         /// <param name="positionDictionary"></param>
         /// <param name="canvasTopStaffGroup"></param>
         /// <returns></returns>
-        BaseContentWrapper Create(IMeasureBlock noteGroup, IStaffGroup staffGroup, IInstrumentMeasure instrumentMeasure, IReadOnlyDictionary<Position, double> positionDictionary, double canvasTopStaffGroup);
+        BaseContentWrapper Create(IMeasureBlock noteGroup, IStaffGroup staffGroup, IInstrumentMeasure instrumentMeasure, PositionDictionary positionDictionary, double canvasTopStaffGroup);
     }
 }

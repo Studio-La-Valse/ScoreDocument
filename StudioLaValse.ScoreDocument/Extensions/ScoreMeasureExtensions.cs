@@ -1,94 +1,128 @@
-﻿using StudioLaValse.ScoreDocument.Layout;
-using System.Diagnostics.CodeAnalysis;
+﻿using StudioLaValse.ScoreDocument.Core;
+using StudioLaValse.ScoreDocument.Core.Extensions;
+using StudioLaValse.ScoreDocument.Extensions.Private;
+using StudioLaValse.ScoreDocument.Layout;
 
 namespace StudioLaValse.ScoreDocument.Extensions
 {
     /// <summary>
     /// Extensions to the <see cref="IScoreMeasure"/> interface.
     /// </summary>
-    public static class ScoreMeasureExtensions
+    public static partial class ScoreMeasureExtensions
     {
         /// <summary>
+        /// <param name="scoreMeasure"></param>
         /// Approximates the required width of a score measure by enumerating all unique positions and accounting for the required space for each of them. 
         /// Takes into account any styling like padding or margins.
+        /// <param name="positionDictionaryBuilder"></param>
         /// </summary>
-        public static double ApproximateWidth(this IScoreMeasure scoreMeasure)
+        public static double ApproximateWidth(this IScoreMeasure scoreMeasure, IPositionDictionaryBuilder positionDictionaryBuilder)
         {
             if (!scoreMeasure.ReadMeasures().Any(m => m.ReadChords().Any()))
             {
                 return 50;
             }
             var scoreScale = scoreMeasure.Scale;
-            var (position, spaceRight) = scoreMeasure.EnumeratePositions().LastOrDefault().Value;
+            var rightOfMeasure = scoreMeasure.EnumeratePositions(positionDictionaryBuilder).GetLast().GetRight();
             var measurePadding = scoreMeasure.PaddingLeft * scoreScale + scoreMeasure.PaddingRight * scoreScale;
-            return position + spaceRight + measurePadding;
+            return rightOfMeasure + measurePadding;
+        }
+
+        /// <summary>
+        /// Interpolate a position in a score measure, assuming a canvasleft for the score measure.
+        /// Intended for positions of clef changes for example. Does not work at all for grace positions.
+        /// </summary>
+        /// <param name="scoreMeasure"></param>
+        /// <param name="position"></param>
+        /// <param name="measureStart"></param>
+        /// <param name="positionDictionaryBuilder"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public static double InterpolatePosition(this IScoreMeasure scoreMeasure, Position position, double measureStart, IPositionDictionaryBuilder positionDictionaryBuilder)
+        {
+            var positionDictionary = scoreMeasure.EnumeratePositions(positionDictionaryBuilder);
+            if (positionDictionary.TryGetValue(position, out var positionInMeasure))
+            {
+                return positionInMeasure.Position;
+            }
+
+            var orderedPositions = positionDictionary.ReadAll().OrderBy(e => e.Key.Decimal).ToList();
+            if (orderedPositions.Count == 0)
+            {
+                throw new InvalidOperationException("The source dictionary does not contain any items, so the position cannot be interpolated.");
+            }
+
+            KeyValuePair<Position, PositionInMeasure>? positionLeft = null;
+            KeyValuePair<Position, PositionInMeasure>? positionRight = null;
+            for (var i = 0; i < orderedPositions.Count; i++)
+            {
+                if (orderedPositions[i].Key.Decimal < position.Decimal)
+                {
+                    positionLeft = orderedPositions[i];
+                }
+                else
+                {
+                    positionRight = orderedPositions[i];
+                    break;
+                }
+            }
+
+            if (positionLeft == null)
+            {
+                var firstPositionAvailable = orderedPositions[0].Value.Position;
+                var _positionInMeasure = new PositionInMeasure(measureStart, firstPositionAvailable);
+                var _position = Position.Start();
+                positionLeft = new KeyValuePair<Position, PositionInMeasure>(_position, _positionInMeasure);
+            }
+
+            if (positionRight == null)
+            {
+                var farRight = orderedPositions[^1].Value.GetRight();
+                var _positionInMeasure = new PositionInMeasure(farRight, 0);
+                var _position = scoreMeasure.TimeSignature;
+                positionRight = new KeyValuePair<Position, PositionInMeasure>(position, _positionInMeasure);
+            }
+
+            var param = (double)position.Decimal.Map(0, 1, positionLeft.Value.Key.Decimal, positionRight.Value.Key.Decimal);
+            var resultPosition = param.Map(0, 1, positionLeft.Value.Value.Position, positionRight.Value.Value.Position);
+            return resultPosition;
         }
 
         /// <summary>
         /// Create a dictionary of unique positions in the score measure.
         /// </summary>
         /// <param name="scoreMeasure"></param>
+        /// <param name="positionDictionaryBuilder"></param>
         /// <returns></returns>
-        public static Dictionary<Position, (double position, double spaceRight)> EnumeratePositions(this IScoreMeasure scoreMeasure)
+        public static PositionDictionary EnumeratePositions(this IScoreMeasure scoreMeasure, IPositionDictionaryBuilder positionDictionaryBuilder)
         {
-            var scoreScale = scoreMeasure.Scale;
-
-            var comparer = new PositionComparer();
-            var positions = new Dictionary<Position, (double position, double spaceRight)>(comparer);
-            foreach (var instrumentMeasure in scoreMeasure.ReadMeasures())
-            {
-                var left = 0d;
-                foreach (var positionGroup in instrumentMeasure.ReadChords().OrderBy(e => e.Position.Decimal).GroupBy(e => e.Position, comparer))
-                {
-                    var spaceRight = positionGroup.Max(e => e.SpaceRight * scoreScale);
-                    var graceSpace = positionGroup.Max(e =>
-                    {
-                        var graceGroup = e.ReadGraceGroup();
-                        var space = 0d;
-                        if (graceGroup is null || !graceGroup.OccupySpace)
-                        {
-                            return space;
-                        }
-                        space = graceGroup.ReadChords().Count() * (graceGroup.ChordSpacing * scoreScale * graceGroup.Scale);
-                        return space;
-                    });
-                    left += graceSpace;
-                    var position = positionGroup.First().Position;
-
-                    if (positions.TryGetValue(position, out var positionFromParamer))
-                    {
-                        var maxSpaceRight = Math.Max(spaceRight, positionFromParamer.spaceRight);
-                        var maxLeft = Math.Max(left, positionFromParamer.position);
-                        positions[position] = (maxLeft, maxSpaceRight);
-                        left += maxSpaceRight;
-                    }
-                    else
-                    {
-                        positions.Add(position, (left, spaceRight));
-                        left += spaceRight;
-                    }
-                }
-            }
-            return positions;
-        }
-    }
-
-
-    file class PositionComparer : IEqualityComparer<Position>
-    {
-        public bool Equals(Position? x, Position? y)
-        {
-            if (x == null || y == null)
-            {
-                throw new InvalidOperationException();
-            }
-
-            return x.Decimal == y.Decimal;
+            var equalityComparer = new PositionComparer();
+            var builder = positionDictionaryBuilder ?? new PositionDictionaryBuilder(equalityComparer);
+            var dict = builder.Build(scoreMeasure);
+            return dict;
         }
 
-        public int GetHashCode([DisallowNull] Position obj)
+        /// <summary>
+        /// Enumerate positions in a measure for a grace group.
+        /// </summary>
+        /// <param name="graceGroup"></param>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public static PositionDictionary EnumeratePositions(this IGraceGroup graceGroup, double target)
         {
-            return obj.Decimal.GetHashCode();
+            var equalityComparer = new PositionComparer();
+            var dictionary = new PositionDictionarySource(equalityComparer);
+            var layout = graceGroup;
+            var position = graceGroup.Target;
+            foreach (var chord in graceGroup.ReadChords().OrderBy(e => e.IndexInGroup).Reverse())
+            {
+                var chordSpaceRight = layout.ChordSpacing * layout.Scale;
+                target -= chordSpaceRight;
+                position -= layout.ChordDuration;
+                var positionInMeasure = new PositionInMeasure(target, chordSpaceRight);
+                dictionary.Add(position, positionInMeasure);
+            }
+            return dictionary.AsReadOnly();
         }
     }
 }

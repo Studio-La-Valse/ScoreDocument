@@ -6,14 +6,17 @@
     public class VisualSystemMeasureScene : IVisualSystemMeasureScene
     {
         private readonly IVisualInstrumentMeasureScene visualInstrumentMeasureFactory;
+        private readonly IPositionDictionaryBuilder positionDictionaryBuilder;
 
         /// <summary>
         /// The default constructor
         /// </summary>
         /// <param name="visualInstrumentMeasureFactory"></param>
-        public VisualSystemMeasureScene(IVisualInstrumentMeasureScene visualInstrumentMeasureFactory)
+        /// <param name="positionDictionaryBuilder"></param>
+        public VisualSystemMeasureScene(IVisualInstrumentMeasureScene visualInstrumentMeasureFactory, IPositionDictionaryBuilder positionDictionaryBuilder)
         {
             this.visualInstrumentMeasureFactory = visualInstrumentMeasureFactory;
+            this.positionDictionaryBuilder = positionDictionaryBuilder;
         }
 
         /// <inheritdoc/>
@@ -25,7 +28,8 @@
                 canvasLeft,
                 canvasTop,
                 width,
-                visualInstrumentMeasureFactory);
+                visualInstrumentMeasureFactory,
+                positionDictionaryBuilder);
         }
     }
 }

@@ -11,6 +11,8 @@ using StudioLaValse.Drawable.DrawableElements;
 using System.Diagnostics;
 using StudioLaValse.Drawable.HTML.Extensions;
 using StudioLaValse.ScoreDocument.Models.V1.StyleTemplates;
+using StudioLaValse.ScoreDocument.Extensions;
+using StudioLaValse.ScoreDocument.Core;
 
 namespace StudioLaValse.ScoreDocument.Tests.Svg;
 
@@ -32,17 +34,19 @@ internal class Program
         var styleTemplate = ScoreDocumentStyleTemplate.Create();
         styleTemplate.PageStyleTemplate.PageWidth = canvasWidth;
         styleTemplate.PageStyleTemplate.PageHeight = canvasHeight;
-        var scoreDocument = Implementation.ScoreDocument.Create(styleTemplate).BuildFromXml(document);
-        
+        var positionComparer = new PositionComparer();
+        var positionDictionaryBuilder = new PositionDictionaryBuilder(positionComparer);
+        var scoreDocument = Implementation.ScoreDocument.Create(styleTemplate, positionDictionaryBuilder).BuildFromXml(document);
+
         var glyphLibrary = new GenericGlyphLibrary(scoreDocument);
         var restFactory = new VisualRestScene(glyphLibrary);
         var noteFactory = new VisualNoteScene(glyphLibrary);
         var noteGroupFactory = new VisualNoteGroupScene(noteFactory, restFactory, glyphLibrary);
         var instrumentMeasureFactory = new VisualInstrumentMeasureScene(noteGroupFactory, glyphLibrary);
-        var systemMeasureFactory = new VisualSystemMeasureScene(instrumentMeasureFactory);
-        var visualStaffFactory = new VisualStaffSystemScene(systemMeasureFactory, glyphLibrary);
-        var visualPageFactory = new VisualPageScene(visualStaffFactory);
-        var sceneFactory = new SinglePageViewScene(0, visualPageFactory);
+        var systemMeasureFactory = new VisualSystemMeasureScene(instrumentMeasureFactory, positionDictionaryBuilder);
+        var visualStaffFactory = new VisualStaffSystemScene(systemMeasureFactory, glyphLibrary, positionDictionaryBuilder);
+        var visualPageFactory = new VisualPageScene(visualStaffFactory, positionDictionaryBuilder);
+        var sceneFactory = new SinglePageViewScene(0, visualPageFactory, positionDictionaryBuilder);
         var scene = new VisualScoreDocumentScene(sceneFactory, scoreDocument);
         canvasPainter.DrawContentWrapper(scene);
         canvasPainter.FinishDrawing();

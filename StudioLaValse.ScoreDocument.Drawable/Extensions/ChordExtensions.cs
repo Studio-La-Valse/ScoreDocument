@@ -1,27 +1,12 @@
-﻿namespace StudioLaValse.ScoreDocument.Drawable.Extensions
+﻿using StudioLaValse.ScoreDocument.Core.Extensions;
+
+namespace StudioLaValse.ScoreDocument.Drawable.Extensions
 {
     /// <summary>
     /// Chord extensions.
     /// </summary>
     public static class ChordExtensions
     {
-        /// <summary>
-        /// Remap numbers from a source- to a target range.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="minStart"></param>
-        /// <param name="maxStart"></param>
-        /// <param name="minEnd"></param>
-        /// <param name="maxEnd"></param>
-        /// <returns></returns>
-        /// <exception cref="InvalidOperationException"></exception>
-        public static double Map(this double value, double minStart, double maxStart, double minEnd, double maxEnd)
-        {
-            var fraction = maxStart - minStart;
-
-            return fraction == 0 ? throw new InvalidOperationException("Cannot remap numbers if the starting min and max values are equal.") : minEnd + (maxEnd - minEnd) * ((value - minStart) / fraction);
-        }
-
         /// <summary>
         /// Remap the generated dictionary to canvas space.
         /// </summary>

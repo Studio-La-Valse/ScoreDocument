@@ -1,4 +1,5 @@
-﻿using StudioLaValse.ScoreDocument.Extensions;
+﻿using StudioLaValse.ScoreDocument.Drawable.Extensions;
+using StudioLaValse.ScoreDocument.Extensions;
 using StudioLaValse.ScoreDocument.GlyphLibrary;
 
 namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
@@ -8,7 +9,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
         private readonly IStaff staff;
         private readonly Clef openingClef;
         private readonly Clef? invalidatingNextClef;
-        private readonly IReadOnlyDictionary<Position, double> positionPositions;
+        private readonly PositionDictionary positionPositions;
         private readonly double canvasTop;
         private readonly IGlyphLibrary glyphLibrary;
 
@@ -102,7 +103,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
                         _ => throw new NotSupportedException()
                     };
 
-                    var posX = positionPositions[clefchange.Position] - 0.1;
+                    var posX = positionPositions[clefchange.Position].Position - 0.1;
 
                     yield return new DrawableScoreGlyph(
                         posX,
@@ -153,7 +154,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
             KeySignature? prepareNext,
             Clef? invalidatingNextClef,
             ClefChange[] clefChanges,
-            IReadOnlyDictionary<Position, double> positionPositions,
+            PositionDictionary positionPositions,
             double canvasLeft,
             double width,
             double canvasTop,

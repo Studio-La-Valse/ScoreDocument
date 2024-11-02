@@ -15,6 +15,6 @@
         /// <param name="canvasLeft"></param>
         /// <param name="width"></param>
         /// <returns></returns>
-        BaseContentWrapper Create(IInstrumentMeasure source, IStaffGroup staffGroup, IReadOnlyDictionary<Position, double> positionDictionary, double canvasTop, double canvasLeft, double width);
+        BaseContentWrapper Create(IInstrumentMeasure source, IStaffGroup staffGroup, PositionDictionary positionDictionary, double canvasTop, double canvasLeft, double width);
     }
 }

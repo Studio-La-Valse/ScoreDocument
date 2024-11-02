@@ -17,11 +17,11 @@ internal abstract class ScoreMeasureLayout : IScoreMeasureLayout
     public TemplateProperty<KeySignature> KeySignature => _KeySignature;
     public TemplateProperty<double?> PaddingBottom => _PaddingBottom;
 
-    protected ScoreMeasureLayout(ScoreMeasureStyleTemplate scoreMeasureStyleTemplate, ScoreDocumentStyleTemplate scoreDocumentStyleTemplate)
+    protected ScoreMeasureLayout(ScoreMeasureStyleTemplate scoreMeasureStyleTemplate, UserScoreDocumentLayout userScoreDocumentLayout)
     {
-        PaddingLeft = new ReadonlyTemplatePropertyFromFunc<double>(() => scoreMeasureStyleTemplate.PaddingLeft);
-        PaddingRight = new ReadonlyTemplatePropertyFromFunc<double>(() => scoreMeasureStyleTemplate.PaddingRight);
-        Scale = new ReadonlyTemplatePropertyFromFunc<double>(() => scoreDocumentStyleTemplate.Scale);
+        PaddingLeft = new ReadonlyTemplatePropertyFromFunc<double>(() => scoreMeasureStyleTemplate.PaddingLeft * userScoreDocumentLayout.Scale);
+        PaddingRight = new ReadonlyTemplatePropertyFromFunc<double>(() => scoreMeasureStyleTemplate.PaddingRight * userScoreDocumentLayout.Scale);
+        Scale = new ReadonlyTemplatePropertyFromFunc<double>(() => userScoreDocumentLayout.Scale);
     }
 
     public void Restore()
@@ -52,7 +52,7 @@ internal class AuthorScoreMeasureLayout : ScoreMeasureLayout
     public override ValueTemplateProperty<KeySignature> _KeySignature { get; }
     public override NullableTemplateProperty<double> _PaddingBottom { get; }
 
-    internal AuthorScoreMeasureLayout(ScoreMeasureStyleTemplate scoreMeasureStyleTemplate, ScoreDocumentStyleTemplate scoreDocumentStyleTemplate) : base(scoreMeasureStyleTemplate, scoreDocumentStyleTemplate)
+    internal AuthorScoreMeasureLayout(ScoreMeasureStyleTemplate scoreMeasureStyleTemplate, UserScoreDocumentLayout userScoreDocumentLayout) : base(scoreMeasureStyleTemplate, userScoreDocumentLayout)
     {
         _KeySignature = new ValueTemplateProperty<KeySignature>(() => new KeySignature(new Step(0, 0), MajorOrMinor.Major));
 
@@ -81,7 +81,7 @@ internal class UserScoreMeasureLayout : ScoreMeasureLayout
 
 
 
-    public UserScoreMeasureLayout(Guid id, AuthorScoreMeasureLayout primaryScoreMeasureLayout, ScoreMeasureStyleTemplate scoreMeasureStyleTemplate, ScoreDocumentStyleTemplate scoreDocumentStyleTemplate) : base(scoreMeasureStyleTemplate, scoreDocumentStyleTemplate)
+    public UserScoreMeasureLayout(Guid id, AuthorScoreMeasureLayout primaryScoreMeasureLayout, ScoreMeasureStyleTemplate scoreMeasureStyleTemplate, UserScoreDocumentLayout userScoreDocumentLayout) : base(scoreMeasureStyleTemplate, userScoreDocumentLayout)
     {
         this.id = id;
 

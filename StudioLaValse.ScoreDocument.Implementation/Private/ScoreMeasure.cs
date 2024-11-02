@@ -137,7 +137,7 @@ namespace StudioLaValse.ScoreDocument.Implementation.Private
             }
 
             var layoutMemento = memento.Layout;
-            UserLayout = new UserScoreMeasureLayout(Guid, AuthorLayout, scoreDocumentStyleTemplate.ScoreMeasureStyleTemplate, scoreDocumentStyleTemplate);
+            UserLayout = new UserScoreMeasureLayout(Guid, AuthorLayout, scoreDocumentStyleTemplate.ScoreMeasureStyleTemplate, score.UserLayout);
             UserLayout.ApplyMemento(layoutMemento);
         }
 

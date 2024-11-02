@@ -24,7 +24,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
             this.glyphLibrary = glyphLibrary;
         }
         /// <inheritdoc/>
-        public BaseContentWrapper Create(IMeasureBlock noteGroup, IStaffGroup staffGroup, IInstrumentMeasure instrumentMeasure, IReadOnlyDictionary<Position, double> positionDictionary, double canvasTopStaffGroup)
+        public BaseContentWrapper Create(IMeasureBlock noteGroup, IStaffGroup staffGroup, IInstrumentMeasure instrumentMeasure, PositionDictionary positionDictionary, double canvasTopStaffGroup)
         {
             var instrumentScale = staffGroup.InstrumentRibbon.Scale.Value;
             return new VisualNoteGroup(

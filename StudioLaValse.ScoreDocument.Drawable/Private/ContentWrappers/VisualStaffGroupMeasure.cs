@@ -1,12 +1,13 @@
-﻿using StudioLaValse.ScoreDocument.Extensions;
+﻿using StudioLaValse.ScoreDocument.Drawable.Extensions;
+using StudioLaValse.ScoreDocument.Extensions;
 using StudioLaValse.ScoreDocument.GlyphLibrary;
 
-namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
+namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
     internal sealed class VisualStaffGroupMeasure : BaseVisualParent<IUniqueScoreElement>
     {
         private readonly IStaffGroup staffGroup;
-        private readonly IReadOnlyDictionary<Position, double> positions;
+        private readonly PositionDictionary positions;
         private readonly double canvasTop;
         private readonly double canvasLeft;
         private readonly double width;
@@ -23,7 +24,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
             staffGroup.CalculateHeight();
         public KeySignature KeySignature =>
             source.KeySignature;
-       
+
 
         public KeySignature? InvalidatesNext
         {
@@ -49,7 +50,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
         public VisualStaffGroupMeasure(IInstrumentMeasure source,
                                        IStaffGroup staffGroup,
-                                       IReadOnlyDictionary<Position, double> positions,
+                                       PositionDictionary positions,
                                        double canvasTop,
                                        double canvasLeft,
                                        double width,
@@ -83,7 +84,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         public IEnumerable<BaseContentWrapper> ConstructNoteGroups(IMeasureBlockChain blockChain)
         {
             var blocks = blockChain.ReadBlocks();
-            
+
             foreach (var chordGroup in blocks)
             {
                 var elements = chordGroup.ReadNotes();

@@ -26,10 +26,4 @@
     <ProjectReference Include="..\StudioLaValse.ScoreDocument\StudioLaValse.ScoreDocument.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="Resources\Bach Sheep May Safely Graze.musicxml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>

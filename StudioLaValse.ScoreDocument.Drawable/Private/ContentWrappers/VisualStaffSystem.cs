@@ -1,13 +1,15 @@
 ﻿using StudioLaValse.ScoreDocument.GlyphLibrary;
 using StudioLaValse.ScoreDocument.Drawable.Extensions;
 using StudioLaValse.ScoreDocument.Extensions;
+using StudioLaValse.ScoreDocument.Core.Extensions;
 
-namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
+namespace StudioLaValse.ScoreDocument.Drawable.Private.ContentWrappers
 {
     internal sealed class VisualStaffSystem : BaseContentWrapper
     {
         private readonly IStaffSystem staffSystem;
         private readonly IVisualSystemMeasureScene systemMeasureFactory;
+        private readonly IPositionDictionaryBuilder positionDictionaryBuilder;
         private readonly IGlyphLibrary glyphLibrary;
         private readonly double canvasLeft;
         private readonly double length;
@@ -44,7 +46,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
                 var thickness = isLast ? 0.5 : 0.1;
 
-                return new DrawableLineVertical(canvasLeft + length, canvasTop - (HorizontalLineThickness / 2), Height + HorizontalLineThickness, thickness, staffSystem.Color.Value.FromPrimitive());
+                return new DrawableLineVertical(canvasLeft + length, canvasTop - HorizontalLineThickness / 2, Height + HorizontalLineThickness, thickness, staffSystem.Color.Value.FromPrimitive());
             }
         }
         public DrawableText? MeasureCounter
@@ -82,10 +84,12 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
                                  double canvasTop,
                                  double length,
                                  IGlyphLibrary glyphLibrary,
-                                 IVisualSystemMeasureScene systemMeasureFactory)
+                                 IVisualSystemMeasureScene systemMeasureFactory,
+                                 IPositionDictionaryBuilder positionDictionaryBuilder)
         {
             this.staffSystem = staffSystem;
             this.systemMeasureFactory = systemMeasureFactory;
+            this.positionDictionaryBuilder = positionDictionaryBuilder;
             this.length = length;
             this.glyphLibrary = glyphLibrary;
             this.canvasLeft = canvasLeft;
@@ -98,12 +102,12 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         {
             if (!staffSystem.EnumerateMeasures().Any())
             {
-                throw new UnreachableException();   
+                throw new UnreachableException();
             }
 
             var firstMeasure = staffSystem.EnumerateMeasures().First();
             var keySignature = firstMeasure.KeySignature.Value;
-            var spaceForClef = (VisualStaff.SpaceUntilClef * staffSystem.Scale) + (VisualStaff.ClefSpacing * staffSystem.Scale);
+            var spaceForClef = VisualStaff.SpaceUntilClef * staffSystem.Scale + VisualStaff.ClefSpacing * staffSystem.Scale;
             var spaceForKeySignature = (keySignature.DefaultFlats ? keySignature.NumberOfFlats() : keySignature.NumberOfSharps()) * VisualStaff.KeySignatureGlyphSpacing * staffSystem.Scale;
             var spaceForTimeSignature = firstMeasure.IndexInScore == 0 ? VisualStaff.TimeSignatureSpacing * staffSystem.Scale : 0;
 
@@ -112,7 +116,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
         }
         public IEnumerable<BaseContentWrapper> ConstructSystemMeasures()
         {
-            var approximateSystemLength = staffSystem.EnumerateMeasures().Select(m => m.ApproximateWidth()).Sum();
+            var approximateSystemLength = staffSystem.EnumerateMeasures().Select(m => m.ApproximateWidth(positionDictionaryBuilder)).Sum();
             var paddingStart = CalculateOpeningPadding();
             var availableLength = length - paddingStart;
 
@@ -120,7 +124,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Private.VisualParents
 
             foreach (var measure in staffSystem.EnumerateMeasures())
             {
-                var measureWidth = measure.ApproximateWidth().Map(0, approximateSystemLength, 0, availableLength);
+                var measureWidth = measure.ApproximateWidth(positionDictionaryBuilder).Map(0, approximateSystemLength, 0, availableLength);
 
                 var systemMeasure = systemMeasureFactory.Create(measure, staffSystem, _canvasLeft, canvasTop, measureWidth);
                 yield return systemMeasure;

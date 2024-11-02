@@ -22,7 +22,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
         }
 
         /// <inheritdoc/>
-        public BaseContentWrapper Create(IInstrumentMeasure source, IStaffGroup staffGroup, IReadOnlyDictionary<Position, double> positions, double canvasTop, double canvasLeft, double width)
+        public BaseContentWrapper Create(IInstrumentMeasure source, IStaffGroup staffGroup, PositionDictionary positions, double canvasTop, double canvasLeft, double width)
         {
             return new VisualStaffGroupMeasure(
                 source,

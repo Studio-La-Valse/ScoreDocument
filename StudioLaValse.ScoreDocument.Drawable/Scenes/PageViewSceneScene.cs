@@ -9,14 +9,17 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
     public class PageViewSceneScene : IVisualScoreDocumentScene
     {
         private readonly IVisualPageScene pageFactory;
+        private readonly IPositionDictionaryBuilder positionDictionaryBuilder;
 
         /// <summary>
         /// The default constructor.
         /// </summary>
         /// <param name="pageFactory"></param>
-        public PageViewSceneScene(IVisualPageScene pageFactory)
+        /// <param name="positionDictionaryBuilder"></param>
+        public PageViewSceneScene(IVisualPageScene pageFactory, IPositionDictionaryBuilder positionDictionaryBuilder)
         {
             this.pageFactory = pageFactory;
+            this.positionDictionaryBuilder = positionDictionaryBuilder;
         }
 
         /// <inheritdoc/>
@@ -25,7 +28,7 @@ namespace StudioLaValse.ScoreDocument.Drawable.Scenes
             IList<BaseContentWrapper> pages = [];
 
             var pageCanvasLeft = 0d;
-            foreach (var page in scoreDocument.ReadPages())
+            foreach (var page in scoreDocument.ReadPages(positionDictionaryBuilder))
             {
                 var pageLayout = page;
                 var visualPage = pageFactory.Create(page, pageCanvasLeft, 0);
